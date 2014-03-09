@@ -15,6 +15,7 @@ var selectedSpriteBig =Sprite("selectedbig");
 function star(){
 	this.x=420;
 	this.y=300;
+	this.type=0;
 	this.name="Sol";
 	this.planets=new Array();
 	this.numPlanets=0;
@@ -104,7 +105,7 @@ function initUniverse()
 	stars[0].x=420;
 	stars[0].y=300;
 	stars[0].randomizeSystem();
-	monsta.startTextured(1000000,stars[0].x-48,stars[0].y-48,0,0,0,false,false,"sun");
+	monsta.startTextured(1000000,stars[0].x-48,stars[0].y-48,0,0,0,false,false,"sun"+stars[0].type);
 	
 	for(var i=1;i<numSystems;i++)
 	{
@@ -112,12 +113,13 @@ function initUniverse()
 		stars[i].name=names[0][Math.floor(Math.random()*10)];
 		stars[i].x=Math.floor(Math.random()*6000)-2000;
 		stars[i].y=Math.floor(Math.random()*6000)-2000;
+		stars[i].type=Math.floor(Math.random()*3);
 		stars[i].randomizeSystem();
-		monsta.startTextured(1000000,stars[i].x-48,stars[i].y-48,0,0,0,false,false,"sun");
+		monsta.startTextured(1000000,stars[i].x-48,stars[i].y-48,0,0,0,false,false,"sun"+stars[i].type);
 	}
 	//camera.center(stars[0]);
-	camera.x=stars[1].x/8;
-	camera.y=stars[1].y/8;
+	camera.x=0-stars[1].x+CANVAS_WIDTH/2;
+	camera.y=0-stars[1].y+CANVAS_HEIGHT/2;
 };
 
 function drawStarfield(canv,cam){

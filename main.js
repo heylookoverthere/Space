@@ -299,8 +299,8 @@ function mainMenuUpdate(){
 	{
 		curSystem++;
 		if (curSystem>numSystems-1) {curSystem=0;}
-		camera.x=stars[curSystem].x-CANVAS_WIDTH/2;
-		camera.y=stars[curSystem].y-CANVAS_HEIGHT/2;
+		camera.x=0-stars[curSystem].x+CANVAS_WIDTH/2;
+		camera.y=0-stars[curSystem].y+CANVAS_HEIGHT/2; //todo why is it minus.
 	}
 	
 	if(dkey.check())
