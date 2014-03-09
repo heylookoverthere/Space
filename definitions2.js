@@ -6,6 +6,7 @@ var backStarsY=new Array(numStars);
 var backStarsS=new Array(numStars);
 var spinArt=false;
 var flicker=true;
+var twinkRate=2001;
 
 
 function initUniverse()
@@ -14,7 +15,7 @@ function initUniverse()
 	{
 		backStarsX[i]=Math.floor((Math.random()*universeWidth));
 		backStarsY[i]=Math.floor((Math.random()*universeHeight));
-		backStarsS[i]=Math.floor((Math.random()*3));
+		backStarsS[i]=Math.floor((Math.random()*2)+1);
 	}
 	
 	var suny=Math.floor(Math.random()*CANVAS_HEIGHT)
@@ -55,12 +56,16 @@ function drawStarfield(canv){
 	//fill
 	canv.fillStyle="#00001E";
 	canvas.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
-	canv.fillStyle="#FFFF00";
+	canv.fillStyle="#FFFFB2";//"#FFFF00";
 	for(var i=0;i<numStars;i++)
 	{
 		//console.log("yar");
 		var s=0;
-		if(flicker) {s=Math.random()*2+1;}
+		if(flicker) {
+			if((Math.random()*2000)<twinkRate){
+				s=Math.random()*2;
+			}
+		}
 		canv.fillRect(backStarsX[i], backStarsY[i], backStarsS[i]+s, backStarsS[i]+s);
 	}
 };
