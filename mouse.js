@@ -5,10 +5,7 @@ $(document).bind("contextmenu",function(e){
 	{
 		mX = e.pageX - canvasElement.get(0).offsetLeft;
 		mY = e.pageY - canvasElement.get(0).offsetTop;
-		var sunx=Math.floor(Math.random()*CANVAS_WIDTH)
-		var suny=Math.floor(Math.random()*CANVAS_HEIGHT)
-		sunx=420;
-		suny=300;
+
 		/*for (var p=0;p<4;p++)
 		{
 					monsta.startOrbit(40,sunx,suny,(Math.random()*240)+170,((Math.random()*8)+1)/8,(Math.random()*4)/100,true,null);
@@ -18,7 +15,7 @@ $(document).bind("contextmenu",function(e){
 		{
 					monsta.startOrbit(40,sunx,suny,(Math.random()*50)+170,((Math.random()*8)+1)/8,true,5+Math.floor(Math.random()*1));
 		}*/
-		monsta.startMoon(40,sun.planets[sun.selected],Math.random()*35+15,((Math.random()*8)+1)/8,0,true,null);
+		monsta.startMoon(40,stars[curSystem].planets[stars[curSystem].selected],Math.random()*35+15,((Math.random()*8)+1)/8,0,true,null);
 	}
     return false;
 });

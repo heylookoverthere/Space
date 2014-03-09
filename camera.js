@@ -51,7 +51,9 @@ var camera = {  //represents the camera, aka what part of the map is on screen
     },
     center: function(targ) {
         //if(this.zoom>1) {tx=0;ty=0;x=0;y=0;return;}
-		mapDirty=true;
+		//mapDirty=true;
+		var tax=targ.x;
+		var tay=targ.y;
         if(this.zoom==1)
 		{
 			tax=targ.x-26;// * Math.pow(2, curMap.zoom-1);

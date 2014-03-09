@@ -1,5 +1,5 @@
 
-var gameSpeed=1;
+var gameSpeed=.3;
 
 document.body.addEventListener("click", mouseClick, false);
 //document.body.addEventListener("dblclick", mouseDblClick, false);
@@ -137,6 +137,7 @@ var aikey=new akey("a");
 var addkey=aikey;
 var plkey=new akey("p");
 var dkey=new akey("d");
+var starkey=new akey("s");
 
 var unitinfokey=new akey("u");
 var cardkey=new akey("c");
@@ -224,26 +225,28 @@ function mainMenuDraw(){
 	//canvas.fillText("  New Game",175,450);
 	//canvas.fillStyle = "grey";
 	//canvas.fillText("  Load Game",175,475);
-    canvas.fillText("Gamespeed: "+gameSpeed,815,25);
-	canvas.fillText("Particles: "+ monsta.particles.length,815,40);
-	canvas.fillText("System: "+sun.name,25,55);
-	canvas.fillText("Planets: "+ sun.numPlanets,25,70);
-	canvas.fillText("moons: "+ sun.countMoons(),25,85);
-	canvas.fillText("Astroids: "+ sun.numAstroids,25,100);
-	canvas.fillText("Coords: "+sun.x+","+sun.y,25,115);
-	if(sun.numPlanets>0){
+	canvas.fillText("Camera: "+camera.x+", "+camera.y,755,10);
+
+    canvas.fillText("Gamespeed: "+gameSpeed,755,25);
+	canvas.fillText("Particles: "+ monsta.particles.length,7555,40);
+	canvas.fillText("System: "+stars[curSystem].name,25,55);
+	canvas.fillText("Planets: "+ stars[curSystem].numPlanets,25,70);
+	canvas.fillText("moons: "+ stars[curSystem].countMoons(),25,85);
+	canvas.fillText("Astroids: "+ stars[curSystem].numAstroids,25,100);
+	canvas.fillText("Coords: "+stars[curSystem].x+","+stars[curSystem].y,25,115);
+	if(stars[curSystem].numPlanets>0){
 		var typestr="Class M!";
-		if (sun.planets[sun.selected].type==0) {typestr="Earthy!"}
-		if (sun.planets[sun.selected].type==1) {typestr="Rocky";}
-		if (sun.planets[sun.selected].type==2) {typestr="Hot";}
-		if (sun.planets[sun.selected].type==3) {typestr="Icey";}
-		if (sun.planets[sun.selected].type==4) {typestr="Gas Giant";}
-		if (sun.planets[sun.selected].type==5) {typestr="Small Meteor";}
-		if (sun.planets[sun.selected].type==6) {typestr="Average Meteor";}
+		if (stars[curSystem].planets[stars[curSystem].selected].type==0) {typestr="Earthy!"}
+		if (stars[curSystem].planets[stars[curSystem].selected].type==1) {typestr="Rocky";}
+		if (stars[curSystem].planets[stars[curSystem].selected].type==2) {typestr="Hot";}
+		if (stars[curSystem].planets[stars[curSystem].selected].type==3) {typestr="Icey";}
+		if (stars[curSystem].planets[stars[curSystem].selected].type==4) {typestr="Gas Giant";}
+		if (stars[curSystem].planets[stars[curSystem].selected].type==5) {typestr="Small Meteor";}
+		if (stars[curSystem].planets[stars[curSystem].selected].type==6) {typestr="Average Meteor";}
 	
-		canvas.fillText("Planet Name: "+ sun.planets[sun.selected].name,25,130);
+		canvas.fillText("Planet Name: "+ stars[curSystem].planets[stars[curSystem].selected].name,25,130);
 		canvas.fillText("Planet Type: "+ typestr,25,145);
-		if(sun.planets[sun.selected].orbitDecay>0)
+		if(stars[curSystem].planets[stars[curSystem].selected].orbitDecay>0)
 		{
 			canvas.fillStyle = "red";
 			canvas.fillText("WARNING: ORBIT DECAYING",25,160);
@@ -260,12 +263,12 @@ function mainMenuDraw(){
 	}*/
 	monsta.draw(canvas,camera);
 	//selected.draw(canvas,camera);
-	if(sun.planets[sun.selected].type==4)
+	if((stars[curSystem].planets[stars[curSystem].selected].type==4) || (stars[curSystem].planets[stars[curSystem].selected].type==5))
 	{
-		selectedSpriteBig.draw(canvas, sun.planets[sun.selected].x+camera.x-32,sun.planets[sun.selected].y+camera.y-32);
+		selectedSpriteBig.draw(canvas, stars[curSystem].planets[stars[curSystem].selected].x+camera.x-32,stars[curSystem].planets[stars[curSystem].selected].y+camera.y-32);
 	}else
 	{
-		selectedSprite.draw(canvas, sun.planets[sun.selected].x+camera.x-16,sun.planets[sun.selected].y+camera.y-16);
+		selectedSprite.draw(canvas, stars[curSystem].planets[stars[curSystem].selected].x+camera.x-16,stars[curSystem].planets[stars[curSystem].selected].y+camera.y-16);
 	}
 	//canvas.fillText("Particles: "+ monsta.particles.length,460,550);
 };
@@ -292,14 +295,22 @@ function mainMenuUpdate(){
 		mmcur=!mmcur;
 	}*/
 	
+	if(starkey.check())
+	{
+		curSystem++;
+		if (curSystem>numSystems-1) {curSystem=0;}
+		camera.x=stars[curSystem].x-CANVAS_WIDTH/2;
+		camera.y=stars[curSystem].y-CANVAS_HEIGHT/2;
+	}
+	
 	if(dkey.check())
 	{
-		sun.planets[sun.selected].orbitDecay=1;
+		stars[curSystem].planets[stars[curSystem].selected].orbitDecay=1;
 	}
 	
 	if(plkey.check())
 	{
-		sun.cyclePlanets();
+		stars[curSystem].cyclePlanets();
 	}
 	
 	if(pageupkey.checkDown())
