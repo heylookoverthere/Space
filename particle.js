@@ -7,12 +7,14 @@ function particle(){
 	this.xv=0;
 	this.yv=0;
 	this.textured=false;
+	this.orbitDecay=0;
 	//this.texture=
 	this.size=6;
 	this.speed=(Math.random()*4)+1;
 	this.orbiting=false;
 	this.orbx=0;
 	this.orby=0;
+	this.planet=false;
 	this.orbitDiameter=4;
 	this.orbitTrack=0;
 	this.orbitSpeed=1;
@@ -38,7 +40,17 @@ function particle(){
 		if(tim-this.lastUpdateTime<this.updateRate) { return;}
 		if(this.orbiting)
 		{
+			if(this.planet)
+			{
+				this.orbx=this.sun.x;
+				this.orby=this.sun.y;
+			}
 			this.orbitTrack+=this.orbitSpeed*gameSpeed;
+			this.orbitDiameter-=this.orbitDecay*this.orbitSpeed*gameSpeed;
+			if(this.orbitDiameter<1) 
+			{
+				this.alive=false;
+			}
 			//if((this.shrinking) && (this.orbitDiameter>1)) {this.orbitDiameter--;}
 			if (this.orbitTrack>360){ this.orbitTrack=0;}
 			this.x=this.orbx+Math.cos(this.orbitTrack* (Math.PI / 180))*this.orbitDiameter;
@@ -170,7 +182,114 @@ function particleSystem(){
 		this.startTextured(1000, x, y, Math.cos(ang* (Math.PI / 180))*vel, Math.sin(ang*(Math.PI / 180))*vel,bColors[Math.floor(Math.random()*8)],true,false,tex);
 
 	};
-	this.startOrbit=function(dur,x,y,diam,spd,imm,planettype){
+	this.startPlanet=function(dur,son,diam,spd,decay,imm,planettype){
+		var tod=new particle();
+		//if(!exploader) {exploader=false;}
+		//tod.x=x;
+		//tod.y=y;
+		tod.name=names[1][Math.floor(Math.random()*20)];
+		son.planets[son.numPlanets]=tod;
+		son.numPlanets++;
+		tod.gameSped=true;
+		tod.orbx=son.x;
+		tod.orby=son.y;
+		tod.sun=son;
+		tod.planet=true;
+		tod.exploader=true;
+		tod.orbiting=true;
+		tod.orbitDecay=decay;
+		tod.orbitDiameter=diam;
+		tod.orbitTrack=Math.floor(Math.random()*360);
+		tod.x=son.x+Math.cos(tod.orbitTrack* (Math.PI / 180))*diam;
+		tod.y=son.y+Math.sin(tod.orbitTrack*(Math.PI / 180))*diam;
+		tod.xv=0;
+		tod.yv=0;
+		tod.shrinking=true;
+		tod.alive=true;
+		tod.immortal=imm;
+		tod.orbitSpeed=spd;
+		tod.textured=true;
+		
+		if(planettype==null)
+		{
+			tod.type=Math.floor((Math.random()*5));
+		}else
+		{
+			tod.type=planettype;
+		}
+	
+		//tod.sprite=Sprite("earthsmall");
+		if (tod.type==0) {tod.sprite=Sprite("earthsmall");}
+		if (tod.type==1) {tod.sprite=Sprite("planetsmall");}
+		if (tod.type==2) {tod.sprite=Sprite("hotplanetsmall");}
+		if (tod.type==3) {tod.sprite=Sprite("iceplanetsmall");}
+		if (tod.type==4) {tod.sprite=Sprite("gasplanet");}
+		if (tod.type==5) {tod.sprite=Sprite("meteorsmall");}
+		if (tod.type==6) {tod.sprite=Sprite("meteorlarge");}
+		tod.counter=dur;
+		tod.color="white";
+		tod.gravity=false;
+		tod.exploader=true;
+		var stamp = new Date();
+		tod.startTime=stamp.getTime();
+		tod.durTime=dur;
+		this.particles.push(tod);
+	};
+	
+		this.startAstroid=function(dur,son,diam,spd,decay,imm,planettype){
+		var tod=new particle();
+		//if(!exploader) {exploader=false;}
+		//tod.x=x;
+		//tod.y=y;
+		//son.astroids[son.numAstroids]=tod;
+		son.numAstroids++;
+		tod.gameSped=true;
+		tod.orbx=son.x;
+		tod.orby=son.y;
+		tod.sun=son;
+		tod.planet=true;
+		tod.exploader=true;
+		tod.orbiting=true;
+		tod.orbitDecay=decay;
+		tod.orbitDiameter=diam;
+		tod.orbitTrack=Math.floor(Math.random()*360);
+		tod.x=son.x+Math.cos(tod.orbitTrack* (Math.PI / 180))*diam;
+		tod.y=son.y+Math.sin(tod.orbitTrack*(Math.PI / 180))*diam;
+		tod.xv=0;
+		tod.yv=0;
+		tod.shrinking=true;
+		tod.alive=true;
+		tod.immortal=imm;
+		tod.orbitSpeed=spd;
+		tod.textured=true;
+		
+		if(planettype==null)
+		{
+			tod.type=Math.floor((Math.random()*5));
+		}else
+		{
+			tod.type=planettype;
+		}
+	
+		//tod.sprite=Sprite("earthsmall");
+		if (tod.type==0) {tod.sprite=Sprite("earthsmall");}
+		if (tod.type==1) {tod.sprite=Sprite("planetsmall");}
+		if (tod.type==2) {tod.sprite=Sprite("hotplanetsmall");}
+		if (tod.type==3) {tod.sprite=Sprite("iceplanetsmall");}
+		if (tod.type==4) {tod.sprite=Sprite("gasplanet");}
+		if (tod.type==5) {tod.sprite=Sprite("meteorsmall");}
+		if (tod.type==6) {tod.sprite=Sprite("meteorlarge");}
+		tod.counter=dur;
+		tod.color="white";
+		tod.gravity=false;
+		tod.exploader=true;
+		var stamp = new Date();
+		tod.startTime=stamp.getTime();
+		tod.durTime=dur;
+		this.particles.push(tod);
+	};
+	
+	this.startOrbit=function(dur,x,y,diam,spd,decay,imm,planettype){
 		var tod=new particle();
 		//if(!exploader) {exploader=false;}
 		//tod.x=x;
@@ -178,7 +297,9 @@ function particleSystem(){
 		tod.gameSped=true;
 		tod.orbx=x;
 		tod.orby=y;
+		tod.exploader=true;
 		tod.orbiting=true;
+		tod.orbitDecay=decay;
 		tod.orbitDiameter=diam;
 		tod.orbitTrack=Math.floor(Math.random()*360);
 		tod.x=x+Math.cos(tod.orbitTrack* (Math.PI / 180))*diam;

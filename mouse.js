@@ -11,7 +11,7 @@ $(document).bind("contextmenu",function(e){
 		suny=300;
 		for (var p=0;p<4;p++)
 		{
-					monsta.startOrbit(40,sunx,suny,(Math.random()*240)+170,((Math.random()*8)+1)/8,true,null);
+					monsta.startOrbit(40,sunx,suny,(Math.random()*240)+170,((Math.random()*8)+1)/8,(Math.random()*4)/100,true,null);
 		}/*
 		obt=Math.random()*240+170;
 		for (var p=0;p<160;p++)

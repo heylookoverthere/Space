@@ -1,6 +1,6 @@
 var universeWidth=8200;
 var universeHeight=8200;
-var numStars=4500;
+var numStars=8500;
 var backStarsX=new Array(numStars);
 var backStarsY=new Array(numStars);
 var backStarsS=new Array(numStars);
@@ -8,6 +8,28 @@ var spinArt=false;
 var flicker=true;
 var twinkRate=10;
 
+var selectedSprite =Sprite("selected");
+var selectedSpriteBig =Sprite("selectedbig");
+
+function star(){
+	this.x=420;
+	this.y=300;
+	this.name="Sol";
+	this.planets=new Array();
+	this.numPlanets=0;
+	this.numAstroids=0;
+	this.selected=0;
+	
+	this.cyclePlanets=function(){
+		this.selected++;
+		if(this.selected>this.numPlanets-1)
+		{
+			this.selected=0;
+		}
+	};
+};
+
+var sun=new star();
 
 function initUniverse()
 {
@@ -30,7 +52,7 @@ function initUniverse()
 	var obtw=Math.random()*35+15;
 	for (var p=0;p<160;p++)
 	{
-		monsta.startOrbit(40,sunx,suny,(Math.random()*obtw)+obt,((Math.random()*8)+1)/8,true,5+Math.floor(Math.random()*2));
+		monsta.startAstroid(40,sun,(Math.random()*obtw)+obt,((Math.random()*8)+1)/8,0,true,5+Math.floor(Math.random()*2));
 	}
 	
 	for (var p=0;p<5;p++)
@@ -45,8 +67,8 @@ function initUniverse()
 			{
 				pobt=obt+70;
 			}
-		}
-		monsta.startOrbit(40,sunx,suny,pobt,((Math.random()*8)+1)/8,true,null);
+		}//decay =(Math.random()*4)/10
+		monsta.startPlanet(40,sun,pobt,((Math.random()*8)+1)/8,0,true,null);
 	}
 
 };

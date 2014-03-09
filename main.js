@@ -111,8 +111,8 @@ var radar=true;
 var pausekey=new akey("space");
 var debugkey=new akey("l");
 var escapekey=new akey("esc");
-var pageupkey=new akey("pageup");
-var pagedownkey=new akey("pagedown");
+var pageupkey=new akey("o");
+var pagedownkey=new akey("l");
 var homekey=new akey("home");
 var radarkey=new akey("y");
 var escapekey=new akey("q");
@@ -135,6 +135,7 @@ var menukey=new akey("esc");
 var fleekey=new akey("f");
 var aikey=new akey("a");
 var addkey=aikey;
+var pkey=akey("p");
 
 var unitinfokey=new akey("u");
 var cardkey=new akey("c");
@@ -222,7 +223,16 @@ function mainMenuDraw(){
 	//canvas.fillText("  New Game",175,450);
 	//canvas.fillStyle = "grey";
 	//canvas.fillText("  Load Game",175,475);
-
+    canvas.fillText("Gamespeed: "+gameSpeed,825,55);
+	canvas.fillText("Particles: "+ monsta.particles.length,825,70);
+	canvas.fillText("Name: "+sun.name,25,55);
+	canvas.fillText("Planets: "+ sun.numPlanets,25,70);
+	canvas.fillText("Astroids: "+ sun.numAstroids,25,85);
+	canvas.fillText("Coords: "+sun.x+","+sun.y,25,100);
+	if(sun.numPlanets>0){
+		canvas.fillText("Planet Name: "+ sun.planets[sun.selected].name,25,115);
+	}
+	
 	/*if(mmcur){
 		canvas.fillText("-",160,450);
 	}else	{
@@ -230,6 +240,14 @@ function mainMenuDraw(){
 
 	}*/
 	monsta.draw(canvas,camera);
+	//selected.draw(canvas,camera);
+	if(sun.planets[sun.selected].type==4)
+	{
+		selectedSpriteBig.draw(canvas, sun.planets[sun.selected].x+camera.x,sun.planets[sun.selected].y+camera.y);
+	}else
+	{
+		selectedSprite.draw(canvas, sun.planets[sun.selected].x+camera.x,sun.planets[sun.selected].y+camera.y);
+	}
 	//canvas.fillText("Particles: "+ monsta.particles.length,460,550);
 };
 
@@ -254,6 +272,12 @@ function mainMenuUpdate(){
 	if(upkey.check()){
 		mmcur=!mmcur;
 	}*/
+	
+	if(pkey.check())
+	{
+		sun.cyclePlanets();
+	}
+	
 	if(pageupkey.checkDown())
 	{
 		gameSpeed+=.3;
@@ -262,7 +286,7 @@ function mainMenuUpdate(){
 	if(pagedownkey.checkDown())
 	{
 		gameSpeed-=.3;
-		if (gameSpeed<1) {gameSpeed=1;}
+		if (gameSpeed<.3) {gameSpeed=0;}
 	}
 
 	if(keydown.shift)
@@ -293,6 +317,10 @@ function mainMenuUpdate(){
 	{
 		camera.x=0;
 		camera.y=0;
+	}
+	if(pausekey.check())
+	{
+		spinArt=!spinArt;
 	}
 	
 };
