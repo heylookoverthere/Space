@@ -68,38 +68,9 @@ function akey(k) {  //represents a keyboard button
 
 	//curMap = new Map();
 //INITSDONKEY
+initUniverse();
 
-	var suny=Math.floor(Math.random()*CANVAS_HEIGHT)
-	sunx=420;
-	suny=300;
-	//sunx=CANVAS_WIDTH/2+48;
-	//suny=CANVAS_HEIGHT/2+48;
-	//monsta.post(1,CANVAS_WIDTH/2,CANVAS_HEIGHT/2,true);
-	monsta.startTextured(1000000,sunx-48,suny-48,0,0,0,false,false,"sun");
-
-	var obt=Math.random()*270+70;
-	var obtw=Math.random()*35+15;
-	for (var p=0;p<160;p++)
-	{
-		monsta.startOrbit(40,sunx,suny,(Math.random()*obtw)+obt,((Math.random()*8)+1)/8,true,5+Math.floor(Math.random()*2));
-	}
-	console.log(obt);
-	for (var p=0;p<5;p++)
-	{
-		var pobt=(Math.random()*240)+170;
-		if(Math.abs(pobt-obt<70) )
-		{
-			if(obt<230)
-			{
-				pobt=obt-70;
-			}else
-			{
-				pobt=obt+70;
-			}
-		}
-		monsta.startOrbit(40,sunx,suny,pobt,((Math.random()*8)+1)/8,true,null);
-	}
-
+	
 
 
 distance=function(one,two){
@@ -241,9 +212,10 @@ if(MUSIC_ON){
 }
 
 function mainMenuDraw(){
-	canvas.fillStyle = "black";
-	canvas.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
-	titlesprite.draw(canvas,0,0);
+    drawStarfield(canvas);
+	//canvas.fillStyle = "black";
+	//canvas.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
+	//titlesprite.draw(canvas,0,0);
 	canvas.fillStyle = "white";
 	canvas.font = "16pt Calibri";
 	//canvas.fillText("Press Enter",200,500);
