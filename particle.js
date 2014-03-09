@@ -156,6 +156,12 @@ function particleSystem(){
 				{
 					this.explosion(6,this.particles[i].x,this.particles[i].y,4);
 				}	
+				if(this.particles[i].planet)
+				{
+					console.log(this.particles[i].name +" was destroyed.");
+					this.particles[i].sun.planets.splice(this.planetNum,1);
+					this.particles[i].sun.numPlanets--;
+				}
 				this.particles.splice(i,1);
 			}
 		}
@@ -189,6 +195,7 @@ function particleSystem(){
 		//tod.y=y;
 		tod.name=names[1][Math.floor(Math.random()*20)];
 		son.planets[son.numPlanets]=tod;
+		tod.planetNum=son.numPlanets;
 		son.numPlanets++;
 		tod.gameSped=true;
 		tod.orbx=son.x;

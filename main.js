@@ -135,7 +135,8 @@ var menukey=new akey("esc");
 var fleekey=new akey("f");
 var aikey=new akey("a");
 var addkey=aikey;
-var pkey=akey("p");
+var plkey=new akey("p");
+var dkey=new akey("d");
 
 var unitinfokey=new akey("u");
 var cardkey=new akey("c");
@@ -223,14 +224,31 @@ function mainMenuDraw(){
 	//canvas.fillText("  New Game",175,450);
 	//canvas.fillStyle = "grey";
 	//canvas.fillText("  Load Game",175,475);
-    canvas.fillText("Gamespeed: "+gameSpeed,825,55);
-	canvas.fillText("Particles: "+ monsta.particles.length,825,70);
-	canvas.fillText("Name: "+sun.name,25,55);
+    canvas.fillText("Gamespeed: "+gameSpeed,815,25);
+	canvas.fillText("Particles: "+ monsta.particles.length,815,40);
+	canvas.fillText("System: "+sun.name,25,55);
 	canvas.fillText("Planets: "+ sun.numPlanets,25,70);
 	canvas.fillText("Astroids: "+ sun.numAstroids,25,85);
 	canvas.fillText("Coords: "+sun.x+","+sun.y,25,100);
 	if(sun.numPlanets>0){
+		var typestr="Class M!";
+		if (sun.planets[sun.selected].type==0) {typestr="Earthy!"}
+		if (sun.planets[sun.selected].type==1) {typestr="Rocky";}
+		if (sun.planets[sun.selected].type==2) {typestr="Hot";}
+		if (sun.planets[sun.selected].type==3) {typestr="Icey";}
+		if (sun.planets[sun.selected].type==4) {typestr="Gas Giant";}
+		if (sun.planets[sun.selected].type==5) {typestr="Small Meteor";}
+		if (sun.planets[sun.selected].type==6) {typestr="Average Meteor";}
+	
 		canvas.fillText("Planet Name: "+ sun.planets[sun.selected].name,25,115);
+		canvas.fillText("Planet Type: "+ typestr,25,130);
+		if(sun.planets[sun.selected].orbitDecay>0)
+		{
+			canvas.fillStyle = "red";
+			canvas.fillText("WARNING: ORBIT DECAYING",25,145);
+			canvas.fillStyle = "white";
+		
+		}
 	}
 	
 	/*if(mmcur){
@@ -273,9 +291,15 @@ function mainMenuUpdate(){
 		mmcur=!mmcur;
 	}*/
 	
-	if(pkey.check())
+	if(dkey.check())
+	{
+		sun.planets[sun.selected].orbitDecay=1;
+	}
+	
+	if(plkey.check())
 	{
 		sun.cyclePlanets();
+		console.log("yard");
 	}
 	
 	if(pageupkey.checkDown())
