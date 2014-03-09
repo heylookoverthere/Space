@@ -18,6 +18,8 @@ function particle(){
 	this.orby=0;
 	this.planet=false;
 	this.moon=false;
+	this.astroid=false;
+	this.meteor=false;
 	this.numMoons=0;
 	this.moons=new Array();
 	this.orbitDiameter=4;
@@ -235,7 +237,7 @@ function particleSystem(){
 		
 		if(planettype==null)
 		{
-			tod.type=Math.floor((Math.random()*5));
+			tod.type=Math.floor((Math.random()*6));
 		}else
 		{
 			tod.type=planettype;
@@ -243,19 +245,22 @@ function particleSystem(){
 		tod.width=32;
 		tod.height=32;
 		//tod.sprite=Sprite("earthsmall");
+		var twitch=Math.floor(Math.random()*4);
 		if (tod.type==0) {tod.sprite=Sprite("earthsmall");}
 		if (tod.type==1) {tod.sprite=Sprite("planetsmall");}
 		if (tod.type==2) {tod.sprite=Sprite("hotplanetsmall");}
 		if (tod.type==3) {tod.sprite=Sprite("iceplanetsmall");}
 		if (tod.type==4) 
 		{
-			tod.sprite=Sprite("gasplanet");
+			tod.sprite=Sprite("gasgiant"+twitch);
 			tod.width=64;
 			tod.height=64;
 		}
-		if (tod.type==5) {tod.sprite=Sprite("meteorsmall");}
-		if (tod.type==6) {tod.sprite=Sprite("meteorlarge");}
-		if (tod.type==7) {tod.sprite=Sprite("moon");}
+		if (tod.type==5) {
+			tod.sprite=Sprite("saturn");
+			tod.width=64;
+			tod.height=64;
+		}
 		tod.counter=dur;
 		tod.color="white";
 		tod.gravity=false;
@@ -266,7 +271,7 @@ function particleSystem(){
 		this.particles.push(tod);
 	};
 	
-	this.startMoon=function(dur,son,diam,spd,decay,imm,planettype){
+	this.startMoon=function(dur,son,diam,spd,decay,imm,moonType){
 		var tod=new particle();
 		//if(!exploader) {exploader=false;}
 		//tod.x=x;
@@ -295,18 +300,11 @@ function particleSystem(){
 		tod.orbitSpeed=spd;
 		tod.textured=true;
 		
-		if(planettype==null)
-		{
-			tod.type=Math.floor((Math.random()*5));
-		}else
-		{
-			tod.type=planettype;
-		}
 		tod.width=16;
 		tod.height=16;
-		tod.type=7;
-		//tod.sprite=Sprite("earthsmall");
-		tod.sprite=Sprite("moon");
+		tod.type=Math.floor(Math.random()*4);
+
+		tod.sprite=Sprite("moon"+tod.type);
 		tod.counter=dur;
 		tod.color="white";
 		tod.gravity=false;
@@ -317,7 +315,7 @@ function particleSystem(){
 		this.particles.push(tod);
 	};
 	
-	this.startAstroid=function(dur,son,diam,spd,decay,imm,planettype){
+	this.startAstroid=function(dur,son,diam,spd,decay,imm,type){
 		var tod=new particle();
 		//if(!exploader) {exploader=false;}
 		//tod.x=x;
@@ -343,23 +341,12 @@ function particleSystem(){
 		tod.immortal=imm;
 		tod.orbitSpeed=spd;
 		tod.textured=true;
-		
-		if(planettype==null)
-		{
-			tod.type=Math.floor((Math.random()*5));
-		}else
-		{
-			tod.type=planettype;
-		}
+		tod.astroid=true;
+		tod.type=Math.floor((Math.random()*2)); //todo
 	
 		//tod.sprite=Sprite("earthsmall");
-		if (tod.type==0) {tod.sprite=Sprite("earthsmall");}
-		if (tod.type==1) {tod.sprite=Sprite("planetsmall");}
-		if (tod.type==2) {tod.sprite=Sprite("hotplanetsmall");}
-		if (tod.type==3) {tod.sprite=Sprite("iceplanetsmall");}
-		if (tod.type==4) {tod.sprite=Sprite("gasplanet");}
-		if (tod.type==5) {tod.sprite=Sprite("meteorsmall");}
-		if (tod.type==6) {tod.sprite=Sprite("meteorlarge");}
+		if (tod.type==0) {tod.sprite=Sprite("meteorsmall");}
+		if (tod.type==1) {tod.sprite=Sprite("meteorlarge");}
 		tod.counter=dur;
 		tod.color="white";
 		tod.gravity=false;
