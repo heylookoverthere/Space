@@ -1,6 +1,5 @@
 
-
-
+var gameSpeed=1;
 
 document.body.addEventListener("click", mouseClick, false);
 //document.body.addEventListener("dblclick", mouseDblClick, false);
@@ -216,19 +215,19 @@ function mainMenuDraw(){
 	//canvas.fillStyle = "black";
 	//canvas.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
 	//titlesprite.draw(canvas,0,0);
-	canvas.fillStyle = "white";
-	canvas.font = "16pt Calibri";
+	//canvas.fillStyle = "white";
+	//canvas.font = "16pt Calibri";
 	//canvas.fillText("Press Enter",200,500);
 	//canvas.fillText("  New Game",175,450);
 	//canvas.fillStyle = "grey";
 	//canvas.fillText("  Load Game",175,475);
 
-	if(mmcur){
+	/*if(mmcur){
 		canvas.fillText("-",160,450);
 	}else	{
 		canvas.fillText("-",160,475);
 
-	}
+	}*/
 	monsta.draw(canvas,camera);
 	//canvas.fillText("Particles: "+ monsta.particles.length,460,550);
 };
@@ -256,11 +255,11 @@ function mainMenuUpdate(){
 	}
 	if(leftkey.checkDown())
 	{
-		camera.x+=2;
+		gameSpeed-=.3;
 	}
 	if(rightkey.checkDown())
 	{
-		camera.x-=2;
+		gameSpeed+=.3;
 	}
 		
 };

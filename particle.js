@@ -38,7 +38,7 @@ function particle(){
 		if(tim-this.lastUpdateTime<this.updateRate) { return;}
 		if(this.orbiting)
 		{
-			this.orbitTrack+=this.orbitSpeed;
+			this.orbitTrack+=this.orbitSpeed*gameSpeed;
 			//if((this.shrinking) && (this.orbitDiameter>1)) {this.orbitDiameter--;}
 			if (this.orbitTrack>360){ this.orbitTrack=0;}
 			this.x=this.orbx+Math.cos(this.orbitTrack* (Math.PI / 180))*this.orbitDiameter;
