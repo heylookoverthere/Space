@@ -15,6 +15,9 @@ function particle(){
 	this.orbx=0;
 	this.orby=0;
 	this.planet=false;
+	this.moon=false;
+	this.numMoons=0;
+	this.moons=new Array();
 	this.orbitDiameter=4;
 	this.orbitTrack=0;
 	this.orbitSpeed=1;
@@ -40,7 +43,7 @@ function particle(){
 		if(tim-this.lastUpdateTime<this.updateRate) { return;}
 		if(this.orbiting)
 		{
-			if(this.planet)
+			if((this.planet) || (this.moon))
 			{
 				this.orbx=this.sun.x;
 				this.orby=this.sun.y;
@@ -158,9 +161,19 @@ function particleSystem(){
 				}	
 				if(this.particles[i].planet)
 				{
+					for(var j=0;j<this.particles[i].numMoons;j++)
+					{
+						this.particles[i].moons[j].alive=false;
+					}
 					console.log(this.particles[i].name +" was destroyed.");
 					this.particles[i].sun.planets.splice(this.planetNum,1);
 					this.particles[i].sun.numPlanets--;
+					if(this.particles[i].sun.selected>this.particles[i].planetNum)
+					{
+						//this.particles[i].sun.selected--;
+						//TODO! problem with selected jumping! if the third planet is selected, then the second planet removed, suddenly the third planet is now what used to be the fourth planet.
+					}
+					
 				}
 				this.particles.splice(i,1);
 			}
@@ -201,6 +214,7 @@ function particleSystem(){
 		tod.orbx=son.x;
 		tod.orby=son.y;
 		tod.sun=son;
+		tod.numMoons=0;
 		tod.planet=true;
 		tod.exploader=true;
 		tod.orbiting=true;
@@ -233,6 +247,7 @@ function particleSystem(){
 		if (tod.type==4) {tod.sprite=Sprite("gasplanet");}
 		if (tod.type==5) {tod.sprite=Sprite("meteorsmall");}
 		if (tod.type==6) {tod.sprite=Sprite("meteorlarge");}
+		if (tod.type==7) {tod.sprite=Sprite("moon");}
 		tod.counter=dur;
 		tod.color="white";
 		tod.gravity=false;
@@ -243,7 +258,56 @@ function particleSystem(){
 		this.particles.push(tod);
 	};
 	
-		this.startAstroid=function(dur,son,diam,spd,decay,imm,planettype){
+	this.startMoon=function(dur,son,diam,spd,decay,imm,planettype){
+		var tod=new particle();
+		//if(!exploader) {exploader=false;}
+		//tod.x=x;
+		//tod.y=y;
+		tod.name=names[1][Math.floor(Math.random()*20)];
+		son.moons[son.numMoons]=tod;
+		tod.moonNum=son.numMoons;
+		son.numMoons++;
+		tod.gameSped=true;
+		tod.orbx=son.x;
+		tod.orby=son.y;
+		tod.sun=son;
+		tod.moon=true;
+		tod.exploader=true;
+		tod.orbiting=true;
+		tod.orbitDecay=decay;
+		tod.orbitDiameter=diam;
+		tod.orbitTrack=Math.floor(Math.random()*360);
+		tod.x=son.x+Math.cos(tod.orbitTrack* (Math.PI / 180))*diam;
+		tod.y=son.y+Math.sin(tod.orbitTrack*(Math.PI / 180))*diam;
+		tod.xv=0;
+		tod.yv=0;
+		tod.shrinking=true;
+		tod.alive=true;
+		tod.immortal=imm;
+		tod.orbitSpeed=spd;
+		tod.textured=true;
+		
+		if(planettype==null)
+		{
+			tod.type=Math.floor((Math.random()*5));
+		}else
+		{
+			tod.type=planettype;
+		}
+		tod.type=7;
+		//tod.sprite=Sprite("earthsmall");
+		tod.sprite=Sprite("moon");
+		tod.counter=dur;
+		tod.color="white";
+		tod.gravity=false;
+		tod.exploader=true;
+		var stamp = new Date();
+		tod.startTime=stamp.getTime();
+		tod.durTime=dur;
+		this.particles.push(tod);
+	};
+	
+	this.startAstroid=function(dur,son,diam,spd,decay,imm,planettype){
 		var tod=new particle();
 		//if(!exploader) {exploader=false;}
 		//tod.x=x;

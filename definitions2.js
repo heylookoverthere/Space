@@ -22,7 +22,7 @@ function star(){
 	
 	this.cyclePlanets=function(){
 		this.selected++;
-		console.log("yar");
+		
 		if(this.selected>this.numPlanets-1)
 		{
 			this.selected=0;

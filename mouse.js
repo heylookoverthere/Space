@@ -9,7 +9,7 @@ $(document).bind("contextmenu",function(e){
 		var suny=Math.floor(Math.random()*CANVAS_HEIGHT)
 		sunx=420;
 		suny=300;
-		for (var p=0;p<4;p++)
+		/*for (var p=0;p<4;p++)
 		{
 					monsta.startOrbit(40,sunx,suny,(Math.random()*240)+170,((Math.random()*8)+1)/8,(Math.random()*4)/100,true,null);
 		}/*
@@ -18,7 +18,7 @@ $(document).bind("contextmenu",function(e){
 		{
 					monsta.startOrbit(40,sunx,suny,(Math.random()*50)+170,((Math.random()*8)+1)/8,true,5+Math.floor(Math.random()*1));
 		}*/
-		
+		monsta.startMoon(40,sun.planets[sun.selected],50,((Math.random()*8)+1)/8,0,true,null);
 	}
     return false;
 });

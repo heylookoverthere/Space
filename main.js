@@ -299,7 +299,6 @@ function mainMenuUpdate(){
 	if(plkey.check())
 	{
 		sun.cyclePlanets();
-		console.log("yard");
 	}
 	
 	if(pageupkey.checkDown())
