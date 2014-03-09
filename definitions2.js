@@ -1,20 +1,20 @@
-var universeWidth=1200;
-var universeHeight=1200;
-var numStars=1500;
+var universeWidth=8200;
+var universeHeight=8200;
+var numStars=4500;
 var backStarsX=new Array(numStars);
 var backStarsY=new Array(numStars);
 var backStarsS=new Array(numStars);
 var spinArt=false;
 var flicker=true;
-var twinkRate=2001;
+var twinkRate=10;
 
 
 function initUniverse()
 {
 	for (var i=0;i<numStars;i++)
 	{
-		backStarsX[i]=Math.floor((Math.random()*universeWidth));
-		backStarsY[i]=Math.floor((Math.random()*universeHeight));
+		backStarsX[i]=Math.floor((Math.random()*universeWidth)-universeWidth/2);
+		backStarsY[i]=Math.floor((Math.random()*universeHeight)-universeHeight/2);
 		backStarsS[i]=Math.floor((Math.random()*2)+1);
 	}
 	
@@ -26,7 +26,7 @@ function initUniverse()
 	//monsta.post(1,CANVAS_WIDTH/2,CANVAS_HEIGHT/2,true);
 	monsta.startTextured(1000000,sunx-48,suny-48,0,0,0,false,false,"sun");
 
-	var obt=Math.random()*210+70;
+	var obt=Math.random()*180+70;
 	var obtw=Math.random()*35+15;
 	for (var p=0;p<160;p++)
 	{
@@ -51,7 +51,7 @@ function initUniverse()
 
 };
 
-function drawStarfield(canv){
+function drawStarfield(canv,cam){
 	if(spinArt) {return;}
 	//fill
 	canv.fillStyle="#00001E";
@@ -66,6 +66,6 @@ function drawStarfield(canv){
 				s=Math.random()*2;
 			}
 		}
-		canv.fillRect(backStarsX[i], backStarsY[i], backStarsS[i]+s, backStarsS[i]+s);
+		canv.fillRect(backStarsX[i]+cam.x, backStarsY[i]+cam.y, backStarsS[i]+s, backStarsS[i]+s);
 	}
 };

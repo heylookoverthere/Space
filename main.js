@@ -113,6 +113,7 @@ var debugkey=new akey("l");
 var escapekey=new akey("esc");
 var pageupkey=new akey("pageup");
 var pagedownkey=new akey("pagedown");
+var homekey=new akey("home");
 var radarkey=new akey("y");
 var escapekey=new akey("q");
 var serversavekey=new akey("i");
@@ -211,7 +212,7 @@ if(MUSIC_ON){
 }
 
 function mainMenuDraw(){
-    drawStarfield(canvas);
+    drawStarfield(canvas,camera);
 	//canvas.fillStyle = "black";
 	//canvas.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
 	//titlesprite.draw(canvas,0,0);
@@ -247,21 +248,53 @@ function mainMenuUpdate(){
 	if(startkey.check()){
 		mode=1;
 	}
-	if(downkey.check()){
+	/*if(downkey.check()){
 		mmcur=!mmcur;
 	}
 	if(upkey.check()){
 		mmcur=!mmcur;
-	}
-	if(leftkey.checkDown())
-	{
-		gameSpeed-=.3;
-	}
-	if(rightkey.checkDown())
+	}*/
+	if(pageupkey.checkDown())
 	{
 		gameSpeed+=.3;
+		if (gameSpeed>10) {gameSpeed=10;}
 	}
-		
+	if(pagedownkey.checkDown())
+	{
+		gameSpeed-=.3;
+		if (gameSpeed<1) {gameSpeed=1;}
+	}
+
+	if(keydown.shift)
+	{
+	  cmoverate=10;
+	}else
+	{
+	  cmoverate=5;
+	}
+	if(keydown.left)
+	{
+		camera.x+=cmoverate;
+	}
+	if(keydown.right)
+	{
+		camera.x-=cmoverate;
+	}
+	if(keydown.up)
+	{
+		camera.y+=cmoverate;
+	}
+	if(keydown.down)
+	{
+		camera.y-=cmoverate;
+	}
+
+	if(homekey.check())
+	{
+		camera.x=0;
+		camera.y=0;
+	}
+	
 };
 
 
