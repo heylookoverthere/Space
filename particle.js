@@ -2,6 +2,8 @@ function particle(){
 	this.alive=false;
 	this.x=0;
 	this.y=0;
+	this.width=1;
+	this.height=1;
 	this.color=bColors[Math.floor(Math.random()*8)];
 	this.gravity=false;
 	this.xv=0;
@@ -141,10 +143,10 @@ function particleSystem(){
 				}
 				if(this.particles[i].textured)
 				{
-					this.particles[i].sprite.draw(can, this.particles[i].x+cam.x,this.particles[i].y+cam.y);
+					this.particles[i].sprite.draw(can, this.particles[i].x+cam.x-this.particles[i].width/2,this.particles[i].y+cam.y-this.particles[i].height/2);
 				}else
 				{
-					can.fillRect(this.particles[i].x+cam.x, this.particles[i].y+cam.y, this.particles[i].size*cam.zoom, this.particles[i].size*cam.zoom);
+					can.fillRect(this.particles[i].x+cam.x-this.particles[i].width/2, this.particles[i].y+cam.y-this.particles[i].height/2, this.particles[i].size*cam.zoom, this.particles[i].size*cam.zoom);
 				}
 			}
 		}
@@ -238,13 +240,19 @@ function particleSystem(){
 		{
 			tod.type=planettype;
 		}
-	
+		tod.width=32;
+		tod.height=32;
 		//tod.sprite=Sprite("earthsmall");
 		if (tod.type==0) {tod.sprite=Sprite("earthsmall");}
 		if (tod.type==1) {tod.sprite=Sprite("planetsmall");}
 		if (tod.type==2) {tod.sprite=Sprite("hotplanetsmall");}
 		if (tod.type==3) {tod.sprite=Sprite("iceplanetsmall");}
-		if (tod.type==4) {tod.sprite=Sprite("gasplanet");}
+		if (tod.type==4) 
+		{
+			tod.sprite=Sprite("gasplanet");
+			tod.width=64;
+			tod.height=64;
+		}
 		if (tod.type==5) {tod.sprite=Sprite("meteorsmall");}
 		if (tod.type==6) {tod.sprite=Sprite("meteorlarge");}
 		if (tod.type==7) {tod.sprite=Sprite("moon");}
@@ -294,6 +302,8 @@ function particleSystem(){
 		{
 			tod.type=planettype;
 		}
+		tod.width=16;
+		tod.height=16;
 		tod.type=7;
 		//tod.sprite=Sprite("earthsmall");
 		tod.sprite=Sprite("moon");

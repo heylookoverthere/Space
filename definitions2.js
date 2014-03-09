@@ -28,6 +28,15 @@ function star(){
 			this.selected=0;
 		}
 	};
+	
+	this.countMoons=function(){
+		var ans=0;
+		for(var i=0;i<this.numPlanets;i++)
+		{
+			 ans+=this.planets[i].numMoons
+		}
+		return ans;
+	};
 };
 
 var sun=new star();

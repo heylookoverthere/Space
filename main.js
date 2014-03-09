@@ -228,8 +228,9 @@ function mainMenuDraw(){
 	canvas.fillText("Particles: "+ monsta.particles.length,815,40);
 	canvas.fillText("System: "+sun.name,25,55);
 	canvas.fillText("Planets: "+ sun.numPlanets,25,70);
-	canvas.fillText("Astroids: "+ sun.numAstroids,25,85);
-	canvas.fillText("Coords: "+sun.x+","+sun.y,25,100);
+	canvas.fillText("moons: "+ sun.countMoons(),25,85);
+	canvas.fillText("Astroids: "+ sun.numAstroids,25,100);
+	canvas.fillText("Coords: "+sun.x+","+sun.y,25,115);
 	if(sun.numPlanets>0){
 		var typestr="Class M!";
 		if (sun.planets[sun.selected].type==0) {typestr="Earthy!"}
@@ -240,12 +241,12 @@ function mainMenuDraw(){
 		if (sun.planets[sun.selected].type==5) {typestr="Small Meteor";}
 		if (sun.planets[sun.selected].type==6) {typestr="Average Meteor";}
 	
-		canvas.fillText("Planet Name: "+ sun.planets[sun.selected].name,25,115);
-		canvas.fillText("Planet Type: "+ typestr,25,130);
+		canvas.fillText("Planet Name: "+ sun.planets[sun.selected].name,25,130);
+		canvas.fillText("Planet Type: "+ typestr,25,145);
 		if(sun.planets[sun.selected].orbitDecay>0)
 		{
 			canvas.fillStyle = "red";
-			canvas.fillText("WARNING: ORBIT DECAYING",25,145);
+			canvas.fillText("WARNING: ORBIT DECAYING",25,160);
 			canvas.fillStyle = "white";
 		
 		}
@@ -261,10 +262,10 @@ function mainMenuDraw(){
 	//selected.draw(canvas,camera);
 	if(sun.planets[sun.selected].type==4)
 	{
-		selectedSpriteBig.draw(canvas, sun.planets[sun.selected].x+camera.x,sun.planets[sun.selected].y+camera.y);
+		selectedSpriteBig.draw(canvas, sun.planets[sun.selected].x+camera.x-32,sun.planets[sun.selected].y+camera.y-32);
 	}else
 	{
-		selectedSprite.draw(canvas, sun.planets[sun.selected].x+camera.x,sun.planets[sun.selected].y+camera.y);
+		selectedSprite.draw(canvas, sun.planets[sun.selected].x+camera.x-16,sun.planets[sun.selected].y+camera.y-16);
 	}
 	//canvas.fillText("Particles: "+ monsta.particles.length,460,550);
 };
