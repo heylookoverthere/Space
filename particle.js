@@ -210,9 +210,10 @@ function particleSystem(){
 		//if(!exploader) {exploader=false;}
 		//tod.x=x;
 		//tod.y=y;
-		tod.name=names[1][Math.floor(Math.random()*20)];
+		//tod.name=names[1][Math.floor(Math.random()*20)];
 		son.planets[son.numPlanets]=tod;
 		tod.planetNum=son.numPlanets;
+		tod.name=son.name+ " " +romanize(tod.planetNum);
 		son.numPlanets++;
 		tod.gameSped=true;
 		tod.orbx=son.x;

@@ -1,5 +1,5 @@
-var universeWidth=8200;
-var universeHeight=8200;
+var universeWidth=6000;
+var universeHeight=6000;
 var numStars=8500;
 var backStarsX=new Array(numStars);
 var backStarsY=new Array(numStars);
@@ -8,15 +8,74 @@ var spinArt=false;
 var flicker=true;
 var twinkRate=10;
 var curSystem=0;
+var numShips=1;
+var ships=new Array();
+ships[0]=new starShip();
+var curShip=0;
+var planetTypes = ["Earthy","Rocky","Hot","Ice","Gas Giant","Ringed Gas Giant","WTF"];
+
+var numSystems=40;
 
 var selectedSprite =Sprite("selected");
 var selectedSpriteBig =Sprite("selectedbig");
+
+
+var starNames=new Array(40);
+starNames= ["Eridani","Cygnus","Ceti-Alpha","Omicron Ceti","Monac","Bringold","Alnitak", "Deneb", "Acamar","Rigel","Polaris","Praxillus","Proxima Centauri", "Omicron Persei","Canopus", "Romii", "Sirius","Tahal", "Mintaka", "Vega", "Wolf", "Tau-Ceti","Eminiar","Canaris","Hydra", "Questar", "Arneb", "Amargosa", "Altiar","Draconis","Theloni","Gezid","Indi","Canaris","Sigma", "Cassius","Melona","Minara","Cat's Anus"];
+
+
+var planetNames=new Array(40);
+planetNames= ["Vulcan","Andoria","Arkaria","Benzar","Halii","Tellar","Teneebla","Trill","Draylax", "Coridan", "Aurelia","Ocampa","Talax","Enara Prime","Hoth","Endor","Tatooine","Carcosa","Sobaras"];
+
+function romanize(num) {
+	var str=" ";
+	if(num==0)
+	{
+		str=" Prime";
+	}else if(num==1)
+	{
+		str=" I ";
+	}else if(num==2)
+	{
+		str=" II ";
+	}else if(num==3)
+	{
+		str=" III ";
+	}else if(num==4)
+	{
+		str=" IV ";
+	}else if(num==5)
+	{
+		str=" V ";
+	}else if(num==6)
+	{
+		str=" VI ";
+	}else if(num==7)
+	{
+		str=" VII ";
+	}else if(num==8)
+	{
+		str=" VIII ";
+	}else if(num==9)
+	{
+		str=" IX ";
+	}else if(num==10)
+	{
+		str=" X ";
+	}else
+	{
+		str=" Omega ";
+	}
+	
+	return str;
+};
 
 function star(){
 	this.x=420;
 	this.y=300;
 	this.type=0;
 	this.name="Sol";
+	this.name=starNames[Math.floor(Math.random()*35)];
 	this.planets=new Array();
 	this.numPlanets=0;
 	this.numAstroids=0;
@@ -83,20 +142,73 @@ function star(){
 		}
 
 		};
+
 };
 
 //var sun=new star();
 
+setupOurs=function(sun)
+{
+	var obt=180;
+	var obtw=Math.random()*35+15;
+	var qi=Math.floor(Math.random()*40);
+	for (var p=0;p<160+qi;p++)
+	{
+		monsta.startAstroid(40,sun,(Math.random()*obtw)+obt,((Math.random()*8)+1)/8,0,true,5+Math.floor(Math.random()*2));
+	}
+
+	
+	var qip=Math.floor(Math.random()*8);
+	var ptypes=new Array();
+	ptypes[0]=2;
+	ptypes[1]=2;
+	ptypes[2]=0;
+	ptypes[3]=2;
+	ptypes[4]=4;
+	ptypes[5]=5;
+	ptypes[6]=4;
+	ptypes[7]=4;
+	ptypes[8]=3;
+	for (var p=0;p<9;p++)
+	{
+		var pobt=(Math.random()*44)+(p+1)*35;
+		
+		monsta.startPlanet(40,sun,pobt,((Math.random()*8)+1)/8,0,true,ptypes[p]);
+	}
+	
+	for (var gop=0;gop<this.numPlanets;gop++)
+	{
+		if((Math.random()*10) <5)
+		{
+			var pip=Math.floor(Math.random()*8);
+			for (var po=0;po<pip;po++)
+			{
+				monsta.startMoon(40,sun.planets[gop],Math.random()*35+15,((Math.random()*8)+1)/8,0,true,null);
+			}
+		}
+		
+	}
+	sun.planets[0].name="Mercury";
+	sun.planets[1].name="Venus";
+	sun.planets[2].name="Earth";
+	sun.planets[3].name="Mars";
+	sun.planets[4].name="Jupiter";
+	sun.planets[5].name="Saturn";
+	sun.planets[6].name="Uranus";
+	sun.planets[7].name="Neptune";
+	sun.planets[8].name="Pluto";
+	sun.selected=2;
+};
+
 var stars=new Array();
 
-var numSystems=4;
 
 function initUniverse()
 {
 	for (var i=0;i<numStars;i++)
 	{
-		backStarsX[i]=Math.floor((Math.random()*universeWidth)-universeWidth/2);
-		backStarsY[i]=Math.floor((Math.random()*universeHeight)-universeHeight/2);
+		backStarsX[i]=Math.floor((Math.random()*universeWidth));
+		backStarsY[i]=Math.floor((Math.random()*universeHeight));
 		backStarsS[i]=Math.floor((Math.random()*2)+1);
 	}
 	
@@ -104,22 +216,32 @@ function initUniverse()
 	stars[0].name="Sol";
 	stars[0].x=420;
 	stars[0].y=300;
-	stars[0].randomizeSystem();
+	setupOurs(stars[0]);
 	monsta.startTextured(1000000,stars[0].x-48,stars[0].y-48,0,0,0,false,false,"sun"+stars[0].type);
 	
 	for(var i=1;i<numSystems;i++)
 	{
 		stars[i]=new star();
-		stars[i].name=names[0][Math.floor(Math.random()*10)];
-		stars[i].x=Math.floor(Math.random()*6000)-2000;
-		stars[i].y=Math.floor(Math.random()*6000)-2000;
+		//stars[i].name=names[0][Math.floor(Math.random()*10)];
+		stars[i].x=Math.floor(Math.random()*universeWidth);
+		stars[i].y=Math.floor(Math.random()*universeHeight);
 		stars[i].type=Math.floor(Math.random()*3);
 		stars[i].randomizeSystem();
 		monsta.startTextured(1000000,stars[i].x-48,stars[i].y-48,0,0,0,false,false,"sun"+stars[i].type);
 	}
 	//camera.center(stars[0]);
-	camera.x=0-stars[1].x+CANVAS_WIDTH/2;
-	camera.y=0-stars[1].y+CANVAS_HEIGHT/2;
+	camera.x=0-stars[0].x+CANVAS_WIDTH/2;
+	camera.y=0-stars[0].y+CANVAS_HEIGHT/2;
+	
+};
+
+function initShips(){
+	for(var i=0;i<numShips;i++){
+		ships[i].crewVessel();
+	}
+	
+	ships[curShip].orbit(stars[curSystem].planets[stars[curSystem].selected]);
+	console.log("The U.S.S. "+ships[curShip].name+" is now orbiting " +stars[curSystem].planets[stars[curSystem].selected].name);
 };
 
 function drawStarfield(canv,cam){

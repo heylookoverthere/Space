@@ -68,6 +68,7 @@ function akey(k) {  //represents a keyboard button
 	//curMap = new Map();
 //INITSDONKEY
 initUniverse();
+initShips();
 
 	
 
@@ -138,6 +139,7 @@ var addkey=aikey;
 var plkey=new akey("p");
 var dkey=new akey("d");
 var starkey=new akey("s");
+var gokey=new akey("g");
 
 var unitinfokey=new akey("u");
 var cardkey=new akey("c");
@@ -228,7 +230,7 @@ function mainMenuDraw(){
 	canvas.fillText("Camera: "+camera.x+", "+camera.y,755,10);
 
     canvas.fillText("Gamespeed: "+gameSpeed,755,25);
-	canvas.fillText("Particles: "+ monsta.particles.length,7555,40);
+	canvas.fillText("Particles: "+ monsta.particles.length,755,40);
 	canvas.fillText("System: "+stars[curSystem].name,25,55);
 	canvas.fillText("Planets: "+ stars[curSystem].numPlanets,25,70);
 	canvas.fillText("moons: "+ stars[curSystem].countMoons(),25,85);
@@ -241,8 +243,8 @@ function mainMenuDraw(){
 		if (stars[curSystem].planets[stars[curSystem].selected].type==2) {typestr="Hot";}
 		if (stars[curSystem].planets[stars[curSystem].selected].type==3) {typestr="Icey";}
 		if (stars[curSystem].planets[stars[curSystem].selected].type==4) {typestr="Gas Giant";}
-		if (stars[curSystem].planets[stars[curSystem].selected].type==5) {typestr="Small Meteor";}
-		if (stars[curSystem].planets[stars[curSystem].selected].type==6) {typestr="Average Meteor";}
+		if (stars[curSystem].planets[stars[curSystem].selected].type==5) {typestr="....Rings!";}
+		if (stars[curSystem].planets[stars[curSystem].selected].type==6) {typestr="WTF have you found here.";}
 	
 		canvas.fillText("Planet Name: "+ stars[curSystem].planets[stars[curSystem].selected].name,25,130);
 		canvas.fillText("Planet Type: "+ typestr,25,145);
@@ -254,6 +256,19 @@ function mainMenuDraw(){
 		
 		}
 	}
+	var actiontext="idle";
+	if(ships[curShip].orbiting)
+	{
+		actiontext="Orbiting "+ships[curShip].orbitTarg.name;
+	}
+	canvas.fillText("Ship: "+ships[curShip].prefix+" "+ships[curShip].name,755,455);
+	canvas.fillText("Crew Compliment: "+ ships[curShip].crewNum,755,470);
+	canvas.fillText("Class: "+ ships[curShip].class,755,485);
+	canvas.fillText(actiontext,755,500);
+	canvas.fillText("Coords: "+Math.floor(ships[curShip].x)+","+Math.floor(ships[curShip].y),755,515);
+	canvas.fillText("Heading: "+ ships[curShip].heading,755,530);
+	canvas.fillText("Speed: "+ ships[curShip].speed+"/"+ships[curShip].maxSpeed,755,545);
+	canvas.fillText("Crew Lost: "+ ships[curShip].crewLost,755,585);
 	
 	/*if(mmcur){
 		canvas.fillText("-",160,450);
@@ -271,6 +286,10 @@ function mainMenuDraw(){
 		selectedSprite.draw(canvas, stars[curSystem].planets[stars[curSystem].selected].x+camera.x-16,stars[curSystem].planets[stars[curSystem].selected].y+camera.y-16);
 	}
 	//canvas.fillText("Particles: "+ monsta.particles.length,460,550);
+	for(var i=0;i<numShips;i++)
+	{
+		ships[i].draw(canvas,camera);
+	}
 };
 
 function mainMenuUpdate(){
@@ -294,6 +313,16 @@ function mainMenuUpdate(){
 	if(upkey.check()){
 		mmcur=!mmcur;
 	}*/
+	
+	if(gokey.check())
+	{
+		/*ships[0].gotoDest=true;
+		ships[0].destx=420;
+		ships[0].desty=300;*/
+		
+		ships[curShip].orbit(stars[curSystem].planets[stars[curSystem].selected]);
+		console.log("The U.S.S. "+ships[curShip].name+" is now orbiting " +stars[curSystem].planets[stars[curSystem].selected].name);
+	}
 	
 	if(starkey.check())
 	{
@@ -357,7 +386,10 @@ function mainMenuUpdate(){
 	{
 		spinArt=!spinArt;
 	}
-	
+	for(var i=0;i<numShips;i++)
+	{
+		ships[i].update();
+	}
 };
 
 
