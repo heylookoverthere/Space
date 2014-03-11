@@ -32,10 +32,12 @@ function starShip(){
 	this.xv=0;
 	this.yv=0;
 	this.morale=70;
+	this.turnSpeed=1;
 	this.hp=100;
 	this.prefix="U.S.S.";
 	this.class="Type-2 Shuttle";
 	this.heading=Math.floor(Math.random()*359);
+	this.desiredHeading=this.heading;
 	this.speed=1;
 	this.maxSpeed=5
 	this.type=0;
@@ -126,13 +128,26 @@ function starShip(){
 	this.orbit=function(targ){
 		this.orbiting=true;
 		this.orbitTarg=targ;
+		this.leavingProgress=null;
 	};
 	
 	this.leaveOrbit=function(){
+		this.leavingProgress=null;
 		this.orbiting=false;
 		this.orbitTarg=null;
 		this.heading=this.orbitTrack;
+		this.desiredHeading=this.heading;
 		this.speed=1;
+	};
+	
+	this.orderLeaveOrbit=function(){
+		this.leavingProgress=0;
+	};
+	
+	this.adjustHeading=function(targ){
+		if(targ>360) {return;}
+		if (targ==360) {targ=0;}
+		this.desiredHeading=Math.floor(targ);
 	};
 	
 	this.generateEvent=function(){
@@ -220,6 +235,15 @@ function starShip(){
 				console.log("You flew into the sun moron.");
 			}
 			//if((this.shrinking) && (this.orbitDiameter>1)) {this.orbitDiameter--;}
+			if(this.leavingProgress!=null) 
+			{
+				this.leavingProgress++;
+				if(this.leavingProgress>90)
+				{
+					this.leaveOrbit();
+				}
+				
+			}
 			if (this.orbitTrack>360){ this.orbitTrack=0;}
 			this.x=this.orbx+Math.cos(this.orbitTrack* (Math.PI / 180))*this.orbitDiameter;
 			this.y=this.orby+Math.sin(this.orbitTrack*(Math.PI / 180))*this.orbitDiameter;
@@ -243,6 +267,16 @@ function starShip(){
 		}else
 		
 		{
+			this.leavingProgress=0;
+			if(Math.floor(this.heading)<Math.floor(this.desiredHeading))
+			{
+				this.heading+=this.turnSpeed*gameSpeed;
+				if (this.heading>360) { this.heading=0;}
+			}else if(Math.floor(this.heading)>Math.floor(this.desiredHeading))
+			{
+				this.heading-=this.turnSpeed*gameSpeed;
+				if (this.heading<0) { this.heading=359;}
+			}
 			this.xv=Math.cos((Math.PI / 180)*this.heading);
 			this.yv=Math.sin((Math.PI / 180)*this.heading);
 			this.x+=this.xv*gameSpeed*this.speed;
@@ -265,10 +299,10 @@ function starShip(){
 			can.translate(this.x+cam.x,this.y+cam.y);
 			if(this.orbiting)
 			{
-				can.rotate(this.orbitTrack* (Math.PI / 180));
+				can.rotate((this.orbitTrack-this.leavingProgress)* (Math.PI / 180));
 			}else
 			{
-				can.rotate(this.heading* (Math.PI / 180));//todo negatives.
+				can.rotate((this.heading-90)* (Math.PI / 180));//todo negatives.
 			}
 			this.sprite.draw(can, -this.width/2,-this.height/2);
 			can.restore();

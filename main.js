@@ -270,8 +270,9 @@ function mainMenuDraw(){
 	canvas.fillText("Class: "+ ships[curShip].class,755,485);
 	canvas.fillText(actiontext,755,500);
 	canvas.fillText("Coords: "+Math.floor(ships[curShip].x)+","+Math.floor(ships[curShip].y),755,515);
-	canvas.fillText("Heading: "+ ships[curShip].heading,755,530);
-	canvas.fillText("Speed: "+ ships[curShip].speed+"/"+ships[curShip].maxSpeed,755,545);
+	canvas.fillText("Heading: "+ Math.floor(ships[curShip].heading),755,530);
+	canvas.fillText("Desired Heading: "+ ships[curShip].desiredHeading,755,545);
+	canvas.fillText("Speed: "+ ships[curShip].speed+"/"+ships[curShip].maxSpeed,755,560);
 	canvas.fillText("Crew Lost: "+ ships[curShip].crewLost,755,585);
 	canvas.fillText("OrbitTrack: "+ ships[curShip].orbitTrack,755,600);
 	
@@ -332,9 +333,9 @@ function mainMenuUpdate(){
 		/*ships[0].gotoDest=true;
 		ships[0].destx=420;
 		ships[0].desty=300;*/
-		if(ships[curShip].orbiting)
+		if((ships[curShip].orbiting) && (!this.leavingProgres))
 		{
-			ships[curShip].leaveOrbit();
+			ships[curShip].orderLeaveOrbit();
 		}else
 		{
 			ships[curShip].orbit(stars[curSystem].planets[stars[curSystem].selected]);
