@@ -14,7 +14,7 @@ ships[0]=new starShip();
 var curShip=0;
 var planetTypes = ["Earthy","Rocky","Hot","Ice","Gas Giant","Ringed Gas Giant","WTF"];
 
-var numSystems=40;
+var numSystems=20;
 var starsDrawn=0;
 
 var selectedSprite =Sprite("selected");
@@ -27,6 +27,30 @@ starNames= ["Eridani","Cygnus","Ceti-Alpha","Omicron Ceti","Monac","Bringold","A
 
 var planetNames=new Array(40);
 planetNames= ["Vulcan","Andoria","Arkaria","Benzar","Halii","Tellar","Teneebla","Trill","Draylax", "Coridan", "Aurelia","Ocampa","Talax","Enara Prime","Hoth","Endor","Tatooine","Carcosa","Sobaras"];
+
+function getQuadrant(thingy){
+	var quad="Theta";
+	if(thingy.x<universeWidth/2)
+	{
+		if(thingy.y<universeHeight/2)
+		{
+			quad="Alpha";
+		}else
+		{
+			quad="Delta";
+		}
+	}else
+	{
+		if(thingy.y<universeHeight/2)
+		{
+			quad="Beta";
+		}else
+		{
+			quad="Gamma"
+		}
+	}
+	return quad;
+}
 
 function romanize(num) {
 	var str=" ";
@@ -220,10 +244,10 @@ function initUniverse()
 	
 	stars[0]=new star();
 	stars[0].name="Sol";
-	stars[0].x=universeWidth/2;
-	stars[0].y=universeHeight/2;
-	camera.x=universeWidth/2;
-	camera.y=universeHeight/2;
+	stars[0].x=universeWidth/4;
+	stars[0].y=universeHeight/4;
+	camera.x=universeWidth/4;
+	camera.y=universeHeight/4;
 	setupOurs(stars[0]);
 	monsta.startTextured(1000000,stars[0].x-48,stars[0].y-48,0,0,0,false,false,"sun"+stars[0].type);
 	
@@ -238,8 +262,8 @@ function initUniverse()
 		monsta.startTextured(1000000,stars[i].x-48,stars[i].y-48,0,0,0,false,false,"sun"+stars[i].type);
 	}
 	//camera.center(stars[0]);
-	camera.x=stars[0].x+CANVAS_WIDTH/2;
-	camera.y=stars[0].y+CANVAS_HEIGHT/2;
+	camera.x=0-stars[0].x+CANVAS_WIDTH/2;
+	camera.y=0-stars[0].y+CANVAS_HEIGHT/2;
 	
 };
 

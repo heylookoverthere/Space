@@ -201,7 +201,7 @@ function starShip(){
 			this.sprite.draw(can, -8,-8);
 			can.restore();
 			
-			//this.sprite.draw(can, this.x+cam.x-this.width/2,this.y+cam.y-this.height/2);
+			//this.sprite.draw(can, this.x-cam.x-this.width/2,this.y-cam.y-this.height/2);
 		}
 	};
 };

@@ -238,6 +238,7 @@ function mainMenuDraw(){
 	canvas.fillText("moons: "+ stars[curSystem].countMoons(),25,85);
 	canvas.fillText("Astroids: "+ stars[curSystem].numAstroids,25,100);
 	canvas.fillText("Coords: "+stars[curSystem].x+","+stars[curSystem].y,25,115);
+	canvas.fillText(getQuadrant(stars[curSystem])+" Quadrant",25,130);
 	if(stars[curSystem].numPlanets>0){
 		var typestr="Class M!";
 		if (stars[curSystem].planets[stars[curSystem].selected].type==0) {typestr="Earthy!"}
@@ -248,12 +249,12 @@ function mainMenuDraw(){
 		if (stars[curSystem].planets[stars[curSystem].selected].type==5) {typestr="....Rings!";}
 		if (stars[curSystem].planets[stars[curSystem].selected].type==6) {typestr="WTF have you found here.";}
 	
-		canvas.fillText("Planet Name: "+ stars[curSystem].planets[stars[curSystem].selected].name,25,130);
-		canvas.fillText("Planet Type: "+ typestr,25,145);
+		canvas.fillText("Planet Name: "+ stars[curSystem].planets[stars[curSystem].selected].name,25,145);
+		canvas.fillText("Planet Type: "+ typestr,25,160);
 		if(stars[curSystem].planets[stars[curSystem].selected].orbitDecay>0)
 		{
 			canvas.fillStyle = "red";
-			canvas.fillText("WARNING: ORBIT DECAYING",25,160);
+			canvas.fillText("WARNING: ORBIT DECAYING",25,185);
 			canvas.fillStyle = "white";
 		
 		}
@@ -364,28 +365,28 @@ function mainMenuUpdate(){
 	}
 	if(keydown.left)
 	{
-		if(camera.x<universeWidth-CANVAS_WIDTH)
+		//if(camera.x<universeWidth-CANVAS_WIDTH)
 		{
 			camera.x+=cmoverate;
 		}
 	}
 	if(keydown.right)
 	{
-		if(camera.x>0)
+		//if(camera.x>0)
 		{
 			camera.x-=cmoverate;
 		}
 	}
 	if(keydown.up)
 	{
-		if(camera.y<universeHeight-CANVAS_HEIGHT)
+		//if(camera.y<universeHeight-CANVAS_HEIGHT)
 		{
 			camera.y+=cmoverate;
 		}
 	}
 	if(keydown.down)
 	{
-		if(camera.y>0)
+		//if(camera.y>0)
 		{
 			camera.y-=cmoverate;
 		}
@@ -393,8 +394,8 @@ function mainMenuUpdate(){
 
 	if(homekey.check())
 	{
-		camera.x=universeWidth/2;
-		camera.y=universeHeight/2;
+		camera.x=universeWidth/4;
+		camera.y=universeHeight/4;
 	}
 	if(pausekey.check())
 	{
