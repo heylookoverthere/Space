@@ -31,6 +31,8 @@ function starShip(){
 	this.y=0;
 	this.xv=0;
 	this.yv=0;
+	this.morale=70;
+	this.hp=100;
 	this.prefix="U.S.S.";
 	this.class="Type-2 Shuttle";
 	this.heading=Math.floor(Math.random()*359);
@@ -41,7 +43,7 @@ function starShip(){
 	this.height=16;
 	this.alive=true;
 	this.name="Tim.";
-	this.name=shipNames[Math.floor(Math.random()*20)];//error
+	this.name=shipNames[Math.floor(Math.random()*36)];//error
 	this.crewCapacity=5;
 	this.crewNum=0;
 	this.crew=new Array();
@@ -54,7 +56,7 @@ function starShip(){
 	this.desty=0;
 	this.orby=0;
 	this.orbx=0;
-	this.orbitTrack=0;
+	this.orbitTrack=Math.floor(Math.random()*359);;
 	this.orbitDecay=0;
 	this.orbitSpeed=2;
 	this.sensors=0;
@@ -127,10 +129,11 @@ function starShip(){
 	};
 	
 	this.generateEvent=function(){
-		var j=Math.floor(Math.random()*8);
-		var aRace=races[Math.floor(Math.random()*8)];
+		var j=Math.floor(Math.random()*9);
+		var aRace=races[Math.floor(Math.random()*10)];
 		if(j==0){
 			console.log("The crew of the "+this.name+" has been sodomized by "+ aRace+"s.  Morale is low.");
+			this.morale-=20;
 			if((Math.floor(Math.random()*8)==1))
 			{
 				this.killRandomCrew(" resisting sodomy.");
@@ -142,13 +145,14 @@ function starShip(){
 				this.killRandomCrew(" of severe burns.");
 			}
 		}else if (j==2){
-			console.log("The crew of the "+this.name+" traveled back in time and met Mark Train.  It was neat.");
+			console.log("The crew of the "+this.name+" traveled back in time and met Mark Twain.  It was neat.");
 			if((Math.floor(Math.random()*80)==1))
 			{
 				this.killRandomCrew(" resisting sodomy.");
 			}
 		}else if (j==3){
-			console.log("The "+this.name+" was involved in a skirmish with the "+aRace+" battlecruiser.");
+			console.log("The "+this.name+" was involved in a skirmish with a "+aRace+" battlecruiser.");
+			this.hp-=20;
 			if((Math.floor(Math.random()*4)==1))
 			{
 				this.killRandomCrew(" in the battle.");
@@ -160,13 +164,14 @@ function starShip(){
 				this.killRandomCrew(" in a trap.");
 			}
 		}else if (j==5){
-			console.log("The crew of the "+this.name+" encounter David Bowie floating in space.");
+			console.log("The crew of the "+this.name+" encounters David Bowie floating in space.");
 			if((Math.floor(Math.random()*8)>3))
 			{
 				console.log("They turn off the lights and pretend not to be home.");
 			}else
 			{
 				console.log("He sings a groovy space tune.");
+				this.moral+=10;
 			}
 		}else if (j==6){
 			console.log("The "+this.name+"'s Holodeck became alive.  This happens more often than you might think.");
@@ -179,6 +184,16 @@ function starShip(){
 			if((Math.floor(Math.random()*20)==1))
 			{
 				this.killRandomCrew(" in a random display of the creaters power.");
+			}
+		}else if (j==8){
+			console.log("The "+this.name+" encounteres the remains of a Borg cube.");
+			if((Math.floor(Math.random()*2)==1))
+			{
+				console.log("They salvage a transwarp coil to increase their maximum speed.");
+				this.maxSpeed++;
+			}else
+			{
+				console.log("the ship barely escapes as two more cubes are detected on long range sensors.");
 			}
 		}
 	};
@@ -246,7 +261,7 @@ function starShip(){
 			{
 				can.rotate(this.heading* (Math.PI / 180));
 			}
-			this.sprite.draw(can, -8,-8);
+			this.sprite.draw(can, -this.width/2,-this.height/2);
 			can.restore();
 			
 			//this.sprite.draw(can, this.x-cam.x-this.width/2,this.y-cam.y-this.height/2);
