@@ -1,6 +1,6 @@
-var universeWidth=6000;
-var universeHeight=6000;
-var numStars=8500;
+var universeWidth=60000;
+var universeHeight=60000;
+var numStars=85000;
 var backStarsX=new Array(numStars);
 var backStarsY=new Array(numStars);
 var backStarsS=new Array(numStars);
@@ -15,6 +15,7 @@ var curShip=0;
 var planetTypes = ["Earthy","Rocky","Hot","Ice","Gas Giant","Ringed Gas Giant","WTF"];
 
 var numSystems=40;
+var starsDrawn=0;
 
 var selectedSprite =Sprite("selected");
 var selectedSpriteBig =Sprite("selectedbig");
@@ -149,7 +150,7 @@ function star(){
 
 setupOurs=function(sun)
 {
-	var obt=180;
+	var obt=220;
 	var obtw=Math.random()*35+15;
 	var qi=Math.floor(Math.random()*40);
 	for (var p=0;p<160+qi;p++)
@@ -157,7 +158,6 @@ setupOurs=function(sun)
 		monsta.startAstroid(40,sun,(Math.random()*obtw)+obt,((Math.random()*8)+1)/8,0,true,5+Math.floor(Math.random()*2));
 	}
 
-	
 	var qip=Math.floor(Math.random()*8);
 	var ptypes=new Array();
 	ptypes[0]=2;
@@ -169,24 +169,30 @@ setupOurs=function(sun)
 	ptypes[6]=4;
 	ptypes[7]=4;
 	ptypes[8]=3;
+	
+	var pmoons=new Array();
+	pmoons[0]=0;
+	pmoons[1]=0;
+	pmoons[2]=1;
+	pmoons[3]=2;
+	pmoons[4]=63;
+	pmoons[5]=31;
+	pmoons[6]=32;
+	pmoons[7]=18;
+	pmoons[8]=3;
 	for (var p=0;p<9;p++)
 	{
-		var pobt=(Math.random()*44)+(p+1)*35;
+		var pobt=(Math.random()*44)+(p+1)*50+10;
 		
 		monsta.startPlanet(40,sun,pobt,((Math.random()*8)+1)/8,0,true,ptypes[p]);
 	}
 	
-	for (var gop=0;gop<this.numPlanets;gop++)
+	for (var gop=0;gop<sun.numPlanets;gop++)
 	{
-		if((Math.random()*10) <5)
-		{
-			var pip=Math.floor(Math.random()*8);
-			for (var po=0;po<pip;po++)
+			for (var po=0;po<pmoons[gop];po++)
 			{
 				monsta.startMoon(40,sun.planets[gop],Math.random()*35+15,((Math.random()*8)+1)/8,0,true,null);
 			}
-		}
-		
 	}
 	sun.planets[0].name="Mercury";
 	sun.planets[1].name="Venus";
@@ -214,8 +220,10 @@ function initUniverse()
 	
 	stars[0]=new star();
 	stars[0].name="Sol";
-	stars[0].x=420;
-	stars[0].y=300;
+	stars[0].x=universeWidth/2;
+	stars[0].y=universeHeight/2;
+	camera.x=universeWidth/2;
+	camera.y=universeHeight/2;
 	setupOurs(stars[0]);
 	monsta.startTextured(1000000,stars[0].x-48,stars[0].y-48,0,0,0,false,false,"sun"+stars[0].type);
 	
@@ -230,8 +238,8 @@ function initUniverse()
 		monsta.startTextured(1000000,stars[i].x-48,stars[i].y-48,0,0,0,false,false,"sun"+stars[i].type);
 	}
 	//camera.center(stars[0]);
-	camera.x=0-stars[0].x+CANVAS_WIDTH/2;
-	camera.y=0-stars[0].y+CANVAS_HEIGHT/2;
+	camera.x=stars[0].x+CANVAS_WIDTH/2;
+	camera.y=stars[0].y+CANVAS_HEIGHT/2;
 	
 };
 
@@ -250,15 +258,21 @@ function drawStarfield(canv,cam){
 	canv.fillStyle="#00001E";
 	canvas.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
 	canv.fillStyle="#FFFFB2";//"#FFFF00";
+	starsDrawn=0;
 	for(var i=0;i<numStars;i++)
 	{
-		//console.log("yar");
-		var s=0;
-		if(flicker) {
-			if((Math.random()*2000)<twinkRate){
-				s=Math.random()*2;
+		if((backStarsX[i]+cam.x>0) && (backStarsX[i]+cam.x<CANVAS_WIDTH)&& (backStarsY[i]+cam.y>0) && (backStarsY[i]+cam.y<CANVAS_HEIGHT))
+		//if((backStarsX[i]>cam.x) &&(backStarsX[i]<cam.x+CANVAS_WIDTH) && (backStarsY[i]>cam.y) && (backStarsY[i]<cam.y+CANVAS_HEIGHT))
+		{
+			starsDrawn++;
+			//console.log("yar");
+			var s=0;
+			if(flicker) {
+				if((Math.random()*2000)<twinkRate){
+					s=Math.random()*2;
+				}
 			}
+			canv.fillRect(backStarsX[i]+cam.x, backStarsY[i]+cam.y, backStarsS[i]+s, backStarsS[i]+s);
 		}
-		canv.fillRect(backStarsX[i]+cam.x, backStarsY[i]+cam.y, backStarsS[i]+s, backStarsS[i]+s);
 	}
 };

@@ -231,6 +231,8 @@ function mainMenuDraw(){
 
     canvas.fillText("Gamespeed: "+gameSpeed,755,25);
 	canvas.fillText("Particles: "+ monsta.particles.length,755,40);
+	canvas.fillText("Stars drawn: "+ starsDrawn,755,55);
+	
 	canvas.fillText("System: "+stars[curSystem].name,25,55);
 	canvas.fillText("Planets: "+ stars[curSystem].numPlanets,25,70);
 	canvas.fillText("moons: "+ stars[curSystem].countMoons(),25,85);
@@ -362,25 +364,37 @@ function mainMenuUpdate(){
 	}
 	if(keydown.left)
 	{
-		camera.x+=cmoverate;
+		if(camera.x<universeWidth-CANVAS_WIDTH)
+		{
+			camera.x+=cmoverate;
+		}
 	}
 	if(keydown.right)
 	{
-		camera.x-=cmoverate;
+		if(camera.x>0)
+		{
+			camera.x-=cmoverate;
+		}
 	}
 	if(keydown.up)
 	{
-		camera.y+=cmoverate;
+		if(camera.y<universeHeight-CANVAS_HEIGHT)
+		{
+			camera.y+=cmoverate;
+		}
 	}
 	if(keydown.down)
 	{
-		camera.y-=cmoverate;
+		if(camera.y>0)
+		{
+			camera.y-=cmoverate;
+		}
 	}
 
 	if(homekey.check())
 	{
-		camera.x=0;
-		camera.y=0;
+		camera.x=universeWidth/2;
+		camera.y=universeHeight/2;
 	}
 	if(pausekey.check())
 	{
