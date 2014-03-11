@@ -52,6 +52,9 @@ function mouseClick(e) {  //represents the mouse
 		{
 			case 1:
 				//screenfull.request(canvasElement);
+				var mouseHeading=Math.atan2(ships[curShip].y-mY+camera.y, ships[curShip].x-mX+camera.x)* (180 / Math.PI);
+				ships[curShip].adjustHeading(Math.abs(mouseHeading));
+				console.log(mouseHeading);
 			    break;
 			case 2:
 				alert('Middle mouse button pressed');
@@ -79,7 +82,7 @@ function drawmousetext(can,targ,cam) { //draws unit status info
     can.fillStyle = "blue";
     if(targ.team==1) {  canvas.fillStyle = "red";}
 
-    tempstr = targ.leader.name+": "+targ.getHP()+ " / " +targ.getMaxHP();
+    tempstr = targ.name;
     can.fillText(tempstr, (targ.x-cam.x)*16/cam.zoom+(targ.width/2), (targ.y-cam.y)*16/cam.zoom+targ.height+8);
     
     can.fillStyle = "#5F9EA0";

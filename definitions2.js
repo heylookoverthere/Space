@@ -1,5 +1,5 @@
-var universeWidth=60000;
-var universeHeight=60000;
+var universeWidth=600000;
+var universeHeight=600000;
 var numStars=850000;
 var backStarsX=new Array(numStars);
 var backStarsY=new Array(numStars);
@@ -278,6 +278,7 @@ function initShips(){
 	
 	ships[curShip].orbit(stars[curSystem].planets[stars[curSystem].selected]);
 	console.log("The U.S.S. "+ships[curShip].name+" is now orbiting " +stars[curSystem].planets[stars[curSystem].selected].name);
+	ships[curShip].acceleration=1;
 	
 	for(var p=1;p<numShips-2;p++)
 	{

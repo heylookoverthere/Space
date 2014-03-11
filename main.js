@@ -264,10 +264,23 @@ function mainMenuDraw(){
 		
 		}
 	}
-	var actiontext="idle";
+	var actiontext="Full Stop";
+	if(ships[curShip].speed>0){
+		actiontext="Exploring the " +getQuadrant(ships[curShip]) + " Quadrant";
+	
+	}
 	if(ships[curShip].orbiting)
 	{
-		actiontext="Orbiting "+ships[curShip].orbitTarg.name;
+		if(ships[curShip].leavingProgress)
+		{
+			actiontext="Breaking Orbit";
+		}else
+		{
+			actiontext="Orbiting "+ships[curShip].orbitTarg.name;
+		}
+	}else if(ships[curShip].turning)
+	{
+		actiontext="Adjusting Heading";
 	}
 	canvas.fillText("Ship: "+ships[curShip].prefix+" "+ships[curShip].name,755,455);
 	canvas.fillText("Crew Compliment: "+ ships[curShip].crewNum,755,470);
@@ -277,8 +290,9 @@ function mainMenuDraw(){
 	canvas.fillText("Heading: "+ Math.floor(ships[curShip].heading),755,530);
 	canvas.fillText("Desired Heading: "+ ships[curShip].desiredHeading,755,545);
 	canvas.fillText("Speed: "+ ships[curShip].speed+"/"+ships[curShip].maxSpeed,755,560);
-	canvas.fillText("Crew Lost: "+ ships[curShip].crewLost,755,585);
-	canvas.fillText("OrbitTrack: "+ ships[curShip].orbitTrack,755,600);
+	canvas.fillText(getQuadrant(ships[curShip])+" Quadrant",755,575);
+	canvas.fillText("Crew Lost: "+ ships[curShip].crewLost,755,590);
+	canvas.fillText("OrbitTrack: "+ ships[curShip].orbitTrack,755,605);
 	
 	/*if(mmcur){
 		canvas.fillText("-",160,450);

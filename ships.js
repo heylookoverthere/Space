@@ -33,6 +33,7 @@ function starShip(){
 	this.yv=0;
 	this.morale=70;
 	this.turnSpeed=1;
+	this.acceleration=.5;
 	this.hp=100;
 	this.prefix="U.S.S.";
 	this.class="Type-2 Shuttle";
@@ -40,6 +41,7 @@ function starShip(){
 	this.desiredHeading=this.heading;
 	this.speed=1;
 	this.maxSpeed=5
+	this.status="idle";
 	this.type=0;
 	this.width=16;
 	this.height=16;
@@ -61,6 +63,7 @@ function starShip(){
 	this.orbitTrack=Math.floor(Math.random()*359);;
 	this.orbitDecay=0;
 	this.orbitSpeed=2;
+	this.turning=false;
 	this.sensors=0;
 	this.energyWeapons=new Array();
 	this.phaserBanks=2;
@@ -142,6 +145,7 @@ function starShip(){
 	
 	this.orderLeaveOrbit=function(){
 		this.leavingProgress=0;
+		this.status="Breaking Orbit";
 	};
 	
 	this.adjustHeading=function(targ){
@@ -224,7 +228,7 @@ function starShip(){
 	{
 		if (this.speed<this.maxSpeed)
 		{
-			this.speed+=.5;
+			this.speed+=this.acceleration;
 		}
 	};
 	
@@ -232,7 +236,7 @@ function starShip(){
 	{
 		if (this.speed>0)
 		{
-			this.speed-=.5;
+			this.speed-=this.acceleration;
 		}
 	};
 	
@@ -254,11 +258,15 @@ function starShip(){
 			if(this.leavingProgress!=null) 
 			{
 				this.leavingProgress+=1*gameSpeed;
+				this.status="Breaking Orbit";
 				if(this.leavingProgress>90)
 				{
 					this.leaveOrbit();
 				}
 				
+			}else
+			{
+				this.status="Orbiting";
 			}
 			if (this.orbitTrack>360){ this.orbitTrack=0;}
 			this.x=this.orbx+Math.cos(this.orbitTrack* (Math.PI / 180))*this.orbitDiameter;
@@ -287,11 +295,16 @@ function starShip(){
 			if(Math.floor(this.heading)<Math.floor(this.desiredHeading))
 			{
 				this.heading+=this.turnSpeed*gameSpeed;
+				this.turning=true;
 				if (this.heading>360) { this.heading=0;}
 			}else if(Math.floor(this.heading)>Math.floor(this.desiredHeading))
 			{
 				this.heading-=this.turnSpeed*gameSpeed;
+				this.turning=true;
 				if (this.heading<0) { this.heading=359;}
+			}else
+			{
+				this.turning=false;
 			}
 			this.xv=Math.cos((Math.PI / 180)*this.heading);
 			this.yv=Math.sin((Math.PI / 180)*this.heading);
