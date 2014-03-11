@@ -2,7 +2,7 @@ var shipNames=new Array(40);
 shipNames= ["Enterprise","Hood","Voyager","Defiant","Intrepid","Akira","Excalibur","Lexington","Ohio","Rhode Island","Raven","Gandhi","Exter","Horatio","Yamaguchi","Valdemar","Summit","Dakota","Devore","Drake","Hermes","Agamemnon","Apollo","Ajax","Prokofiev","Constellation","Gettysburg","Magellen","Hathaway", "Stargazer", "Constitution", "Yorktown","Potemkin","Pegasus","Farragut","Valiant","Kelvin"];
 
 var races=new Array(40);
-races= ["Human","Vulan","Andorian","Tellerite","Romulan","Klingon","Betazoid","Trill","Cardassian","Borg","Vidian","Telaxian"];
+races= ["Human","Vulcan","Andorian","Tellerite","Romulan","Klingon","Betazoid","Trill","Cardassian","Borg","Vidian","Telaxian"];
 
 
 
@@ -127,11 +127,59 @@ function starShip(){
 	};
 	
 	this.generateEvent=function(){
+		var j=Math.floor(Math.random()*8);
 		var aRace=races[Math.floor(Math.random()*8)];
-		console.log("The crew of the "+this.name+" has been sodomized by "+ aRace+"s.  Morale is low.");
-		if((Math.floor(Math.random()*8)==1))
-		{
-			this.killRandomCrew(" resisting sodomy.");
+		if(j==0){
+			console.log("The crew of the "+this.name+" has been sodomized by "+ aRace+"s.  Morale is low.");
+			if((Math.floor(Math.random()*8)==1))
+			{
+				this.killRandomCrew(" resisting sodomy.");
+			}
+		}else if (j==1){
+			console.log("A fire broke out aboard the "+this.name+".");
+			if((Math.floor(Math.random()*6)==1))
+			{
+				this.killRandomCrew(" of severe burns.");
+			}
+		}else if (j==2){
+			console.log("The crew of the "+this.name+" traveled back in time and met Mark Train.  It was neat.");
+			if((Math.floor(Math.random()*80)==1))
+			{
+				this.killRandomCrew(" resisting sodomy.");
+			}
+		}else if (j==3){
+			console.log("The "+this.name+" was involved in a skirmish with the "+aRace+" battlecruiser.");
+			if((Math.floor(Math.random()*4)==1))
+			{
+				this.killRandomCrew(" in the battle.");
+			}
+		}else if (j==4){
+			console.log("The "+this.name+" has found the ruins of a long dead civilization.");
+			if((Math.floor(Math.random()*20)==1))
+			{
+				this.killRandomCrew(" in a trap.");
+			}
+		}else if (j==5){
+			console.log("The crew of the "+this.name+" encounter David Bowie floating in space.");
+			if((Math.floor(Math.random()*8)>3))
+			{
+				console.log("They turn off the lights and pretend not to be home.");
+			}else
+			{
+				console.log("He sings a groovy space tune.");
+			}
+		}else if (j==6){
+			console.log("The "+this.name+"'s Holodeck became alive.  This happens more often than you might think.");
+			if((Math.floor(Math.random()*10)==1))
+			{
+				this.killRandomCrew(" at the hands of a hologram.");
+			}
+		}else if (j==7){
+			console.log("The "+this.name+" encountered some evil goo.");
+			if((Math.floor(Math.random()*20)==1))
+			{
+				this.killRandomCrew(" in a random display of the creaters power.");
+			}
 		}
 	};
 	

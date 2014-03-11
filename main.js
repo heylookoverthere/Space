@@ -394,8 +394,9 @@ function mainMenuUpdate(){
 
 	if(homekey.check())
 	{
-		camera.x=universeWidth/4;
-		camera.y=universeHeight/4;
+		camera.x=0-stars[0].x+CANVAS_WIDTH/2;
+		camera.y=0-stars[0].y+CANVAS_HEIGHT/2;
+		curSystem=0;
 	}
 	if(pausekey.check())
 	{
