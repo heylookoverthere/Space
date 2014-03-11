@@ -141,6 +141,10 @@ var dkey=new akey("d");
 var starkey=new akey("s");
 var gokey=new akey("g");
 var toggleshipkey=new akey("h");
+var shipleftkey=new akey("q");
+var shiprightkey=new akey("w");
+var shipgokey=new akey("e");
+var shipslowkey=new akey("r");
 
 var unitinfokey=new akey("u");
 var cardkey=new akey("c");
@@ -319,6 +323,24 @@ function mainMenuUpdate(){
 	if(upkey.check()){
 		mmcur=!mmcur;
 	}*/
+	if(shipleftkey.check())
+	{
+		ships[curShip].adjustHeading(ships[curShip].heading-20);
+	}
+	if(shiprightkey.check())
+	{
+		ships[curShip].adjustHeading(ships[curShip].heading+20);
+	}
+	if(shipgokey.check())
+	{
+		ships[curShip].accelerate();
+	}
+	
+	if(shipslowkey.check())
+	{
+		ships[curShip].decelerate();
+	}
+	
 	if(toggleshipkey.check())
 	{
 		curShip++;

@@ -220,6 +220,22 @@ function starShip(){
 		}
 	};
 	
+	this.accelerate=function()
+	{
+		if (this.speed<this.maxSpeed)
+		{
+			this.speed+=.5;
+		}
+	};
+	
+	this.decelerate=function()
+	{
+		if (this.speed>0)
+		{
+			this.speed-=.5;
+		}
+	};
+	
 	this.update=function(){
 		if(this.orbiting)
 		{
@@ -237,7 +253,7 @@ function starShip(){
 			//if((this.shrinking) && (this.orbitDiameter>1)) {this.orbitDiameter--;}
 			if(this.leavingProgress!=null) 
 			{
-				this.leavingProgress++;
+				this.leavingProgress+=1*gameSpeed;
 				if(this.leavingProgress>90)
 				{
 					this.leaveOrbit();
