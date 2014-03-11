@@ -140,6 +140,7 @@ var plkey=new akey("p");
 var dkey=new akey("d");
 var starkey=new akey("s");
 var gokey=new akey("g");
+var toggleshipkey=new akey("h");
 
 var unitinfokey=new akey("u");
 var cardkey=new akey("c");
@@ -272,6 +273,7 @@ function mainMenuDraw(){
 	canvas.fillText("Heading: "+ ships[curShip].heading,755,530);
 	canvas.fillText("Speed: "+ ships[curShip].speed+"/"+ships[curShip].maxSpeed,755,545);
 	canvas.fillText("Crew Lost: "+ ships[curShip].crewLost,755,585);
+	canvas.fillText("OrbitTrack: "+ ships[curShip].orbitTrack,755,600);
 	
 	/*if(mmcur){
 		canvas.fillText("-",160,450);
@@ -316,15 +318,28 @@ function mainMenuUpdate(){
 	if(upkey.check()){
 		mmcur=!mmcur;
 	}*/
-	
+	if(toggleshipkey.check())
+	{
+		curShip++;
+		if(curShip>numShips-1) {
+			curShip=0;
+		}
+		camera.center(ships[curShip]);
+		camera.follow(ships[curShip]);
+	}
 	if(gokey.check())
 	{
 		/*ships[0].gotoDest=true;
 		ships[0].destx=420;
 		ships[0].desty=300;*/
-		
-		ships[curShip].orbit(stars[curSystem].planets[stars[curSystem].selected]);
-		console.log("The U.S.S. "+ships[curShip].name+" is now orbiting " +stars[curSystem].planets[stars[curSystem].selected].name);
+		if(ships[curShip].orbiting)
+		{
+			ships[curShip].leaveOrbit();
+		}else
+		{
+			ships[curShip].orbit(stars[curSystem].planets[stars[curSystem].selected]);
+			console.log("The U.S.S. "+ships[curShip].name+" is now orbiting " +stars[curSystem].planets[stars[curSystem].selected].name);
+		}
 	}
 	
 	if(starkey.check())
@@ -369,6 +384,7 @@ function mainMenuUpdate(){
 		{
 			camera.x+=cmoverate;
 		}
+		camera.unFollow();
 	}
 	if(keydown.right)
 	{
@@ -376,6 +392,7 @@ function mainMenuUpdate(){
 		{
 			camera.x-=cmoverate;
 		}
+		camera.unFollow();
 	}
 	if(keydown.up)
 	{
@@ -383,6 +400,7 @@ function mainMenuUpdate(){
 		{
 			camera.y+=cmoverate;
 		}
+		camera.unFollow();
 	}
 	if(keydown.down)
 	{
@@ -390,6 +408,7 @@ function mainMenuUpdate(){
 		{
 			camera.y-=cmoverate;
 		}
+		camera.unFollow();
 	}
 
 	if(homekey.check())
@@ -397,6 +416,7 @@ function mainMenuUpdate(){
 		camera.x=0-stars[0].x+CANVAS_WIDTH/2;
 		camera.y=0-stars[0].y+CANVAS_HEIGHT/2;
 		curSystem=0;
+		camera.unFollow();
 	}
 	if(pausekey.check())
 	{
@@ -406,6 +426,7 @@ function mainMenuUpdate(){
 	{
 		ships[i].update();
 	}
+	camera.update();
 };
 
 

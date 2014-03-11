@@ -8,11 +8,13 @@ var spinArt=false;
 var flicker=true;
 var twinkRate=10;
 var curSystem=0;
-var numShips=3;
+var numShips=5;
 var ships=new Array();
 ships[0]=new starShip();
 ships[1]=new starShip();
 ships[2]=new starShip();
+ships[3]=new starShip();
+ships[4]=new starShip();
 var curShip=0;
 var planetTypes = ["Earthy","Rocky","Hot","Ice","Gas Giant","Ringed Gas Giant","WTF"];
 
@@ -277,7 +279,7 @@ function initShips(){
 	ships[curShip].orbit(stars[curSystem].planets[stars[curSystem].selected]);
 	console.log("The U.S.S. "+ships[curShip].name+" is now orbiting " +stars[curSystem].planets[stars[curSystem].selected].name);
 	
-	for(var p=1;p<numShips;p++)
+	for(var p=1;p<numShips-2;p++)
 	{
 		var blah=Math.floor(Math.random()*numSystems);
 		var gah=Math.floor(Math.random()*stars[blah].numPlanets);
@@ -288,6 +290,19 @@ function initShips(){
 		ships[p].sprite=Sprite("ship2");
 		ships[p].maxSpeed=9;
     }
+	
+		ships[2].orbit(stars[0].planets[3]);
+		console.log("The U.S.S. "+ships[2].name+" is now orbiting " +stars[0].planets[3].name);
+		ships[2].class="Borg Cube";
+		ships[2].sprite=Sprite("ship3");
+		ships[2].maxSpeed=9;
+		
+		ships[3].orbit(stars[0].planets[2]);
+		console.log("The U.S.S. "+ships[3].name+" is now orbiting " +stars[0].planets[2].name);
+		ships[3].class="Bird of Prey";
+		ships[3].sprite=Sprite("ship4");
+		ships[3].maxSpeed=7;
+	
 };
 
 function drawStarfield(canv,cam){

@@ -51,7 +51,7 @@ function mouseClick(e) {  //represents the mouse
 		switch (e.which)
 		{
 			case 1:
-				screenfull.request(canvasElement);
+				//screenfull.request(canvasElement);
 			    break;
 			case 2:
 				alert('Middle mouse button pressed');

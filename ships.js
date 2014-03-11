@@ -1,9 +1,9 @@
 var shipNames=new Array(40);
-shipNames= ["Enterprise","Hood","Voyager","Defiant","Intrepid","Akira","Excalibur","Lexington","Ohio","Rhode Island","Raven","Gandhi","Exter","Horatio","Yamaguchi","Valdemar","Summit","Dakota","Devore","Drake","Hermes","Agamemnon","Apollo","Ajax","Prokofiev","Constellation","Gettysburg","Magellen","Hathaway", "Stargazer", "Constitution", "Yorktown","Potemkin","Pegasus","Farragut","Valiant","Kelvin"];
-
+shipNames= ["Enterprise","Hood","Voyager","Defiant","Intrepid","Akira","Excalibur","Lexington","Ohio","Rhode Island","Raven","Gandhi","Exter","Horatio","Yamaguchi","Valdemar","Summit","Dakota","Devore","Drake","Hermes","Agamemnon","Apollo","Ajax","Prokofiev","Constellation","Gettysburg","Magellen","Hathaway", "Stargazer", "Constitution", "Yorktown","Potemkin","Pegasus","Farragut","Valiant","Kelvin","Bozeman"];
+var numShipNames=38;
 var races=new Array(40);
-races= ["Human","Vulcan","Andorian","Tellerite","Romulan","Klingon","Betazoid","Trill","Cardassian","Borg","Vidian","Telaxian"];
-
+races= ["Human","Vulcan","Andorian","Tellerite","Romulan","Klingon","Betazoid","Trill","Cardassian","Borg","Vidian","Telaxian","Ferengi","Pakled","Bajoran","Binar","Hirogen","Gorn"];
+var numRaces=18;
 
 
 function dude() {
@@ -43,7 +43,7 @@ function starShip(){
 	this.height=16;
 	this.alive=true;
 	this.name="Tim.";
-	this.name=shipNames[Math.floor(Math.random()*36)];//error
+	this.name=shipNames[Math.floor(Math.random()*numShipNames)];//error
 	this.crewCapacity=5;
 	this.crewNum=0;
 	this.crew=new Array();
@@ -128,9 +128,16 @@ function starShip(){
 		this.orbitTarg=targ;
 	};
 	
+	this.leaveOrbit=function(){
+		this.orbiting=false;
+		this.orbitTarg=null;
+		this.heading=this.orbitTrack;
+		this.speed=1;
+	};
+	
 	this.generateEvent=function(){
 		var j=Math.floor(Math.random()*9);
-		var aRace=races[Math.floor(Math.random()*10)];
+		var aRace=races[Math.floor(Math.random()*numRaces)];
 		if(j==0){
 			console.log("The crew of the "+this.name+" has been sodomized by "+ aRace+"s.  Morale is low.");
 			this.morale-=20;
@@ -236,8 +243,10 @@ function starShip(){
 		}else
 		
 		{
-			this.x+=this.xv;
-			this.y+=this.yv;
+			this.xv=Math.cos((Math.PI / 180)*this.heading);
+			this.yv=Math.sin((Math.PI / 180)*this.heading);
+			this.x+=this.xv*gameSpeed*this.speed;
+			this.y+=this.yv*gameSpeed*this.speed;
 		}
 		this.tillEvent-=1*gameSpeed;
 		if(this.tillEvent<1)
@@ -259,7 +268,7 @@ function starShip(){
 				can.rotate(this.orbitTrack* (Math.PI / 180));
 			}else
 			{
-				can.rotate(this.heading* (Math.PI / 180));
+				can.rotate(this.heading* (Math.PI / 180));//todo negatives.
 			}
 			this.sprite.draw(can, -this.width/2,-this.height/2);
 			can.restore();
