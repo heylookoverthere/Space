@@ -1,15 +1,32 @@
+/*var oshipNames=new Array(40);
+oshipNames= ["Enterprise","Hood","Voyager","Defiant","Intrepid","Akira","Excalibur","Lexington","Ohio","Rhode Island","Raven","Gandhi","Exter","Horatio","Yamaguchi","Valdemar","Summit","Dakota","Devore","Drake","Hermes","Agamemnon","Apollo","Ajax","Prokofiev","Constellation","Gettysburg","Magellen","Hathaway", "Stargazer", "Constitution", "Yorktown","Potemkin","Pegasus","Farragut","Valiant","Kelvin","Bozeman"];*/
+
 var shipNames=new Array(40);
-shipNames= ["Enterprise","Hood","Voyager","Defiant","Intrepid","Akira","Excalibur","Lexington","Ohio","Rhode Island","Raven","Gandhi","Exter","Horatio","Yamaguchi","Valdemar","Summit","Dakota","Devore","Drake","Hermes","Agamemnon","Apollo","Ajax","Prokofiev","Constellation","Gettysburg","Magellen","Hathaway", "Stargazer", "Constitution", "Yorktown","Potemkin","Pegasus","Farragut","Valiant","Kelvin","Bozeman"];
+for (var q=0;q<10;q++)
+{
+	shipNames[q]=["one","two","three","four","five","six","seven","eight","nine","ten","Testicles"];
+}
+shipNames[0]=["Enterprise","Hood","Voyager","Defiant","Intrepid","Akira","Excalibur","Lexington","Ohio","Rhode Island","Raven","Gandhi","Exter","Horatio","Yamaguchi","Summit","Dakota"];
+shipNames[1]=["D'Kyr","D'Vahl","Tal'Kir","Ti'Mur","T'Pau","T'Vran","Ni'Var","Nyran","Seleya","Sh'Raan","Vaankara","Vahklas","Yarahla"];
+shipNames[4]=["Belak","D'Ridthau","Decius","Devoras","Dividices","Genorex","Haakona","Khazara","Makar"];
+shipNames[5]=["Amar","B'Moth","Bortas","Ch'Tang","Fek'lhr","Gr'oth","Hegh'ta","Hor'Cha","Rotarran","Par'tok","Ya'Vang",];
+for (var ci=0;ci<20;ci++)
+{
+	shipNames[9][ci]=Math.floor(Math.random()*9999);
+}
+
 var numShipNames=38;
 var races=new Array(40);
 races= ["Human","Vulcan","Andorian","Tellerite","Romulan","Klingon","Betazoid","Trill","Cardassian","Borg","Vidian","Telaxian","Ferengi","Pakled","Bajoran","Binar","Hirogen","Gorn"];
 var fContacted=new Array();
 var numRaces=18;
 var shipNamesUsed=new Array();
-fContacted[0]=true;
-for(var ipk=1;ipk<numRaces;ipk++){
+
+for(var ipk=0;ipk<numRaces;ipk++){
 	fContacted[ipk]=false;
+	shipNamesUsed[ipk]=new Array();
 }
+fContacted[0]=true;
 
 function dude() {
 	this.gender=0;
@@ -59,15 +76,15 @@ function starShip(){
 	this.height=16;
 	this.alive=true;
 	this.name="Tim.";
-	var nami=Math.floor(Math.random()*shipNames.length);
+	var nami=Math.floor(Math.random()*shipNames[this.race].length);
 	while(true) {
-        if(shipNamesUsed[nami]) 
+        if(shipNamesUsed[this.race][nami]) 
         {
-            nami=Math.floor(Math.random()*shipNames.length);
+            nami=Math.floor(Math.random()*shipNames[this.race].length);
         }else {break;}
     }
-	this.name=shipNames[nami];
-	shipNamesUsed[nami]=true;
+	this.name=shipNames[this.race][nami];
+	shipNamesUsed[this.race][nami]=true;
 	this.crewCapacity=5;
 	this.crewNum=0;
 	this.crew=new Array();
@@ -112,6 +129,18 @@ function starShip(){
 	
 	this.lightyearsTraveled=0;
 	this.crewLost=0;
+	
+	this.christen=function(){
+		var nami=Math.floor(Math.random()*shipNames[this.race].length);
+		while(true) {
+			if(shipNamesUsed[this.race][nami]) 
+			{
+				nami=Math.floor(Math.random()*shipNames[this.race].length);
+			}else {break;}
+		}
+		this.name=shipNames[this.race][nami];
+		shipNamesUsed[this.race][nami]=true;
+	};
 	
 	this.crewVessel=function(){
 		this.crewNum=Math.floor(Math.random()*4)+2;
@@ -296,12 +325,12 @@ function starShip(){
 			{
 				if((thangs[i]!=this) && (!thangs[i].cloaked)){  //todo, sensors that can detect cloaked ships.
 					thongs.push(thangs[i]);	
-					if(thangs[i].discovered==false){
+					if((thangs[i].discovered==false)  && (this.race==0)){
 						thangs[i].discovered=true;
 						console.log("The "+this.name+ " discoverd the "+thangs[i].name+" System");
 						
 					}
-					if(fContacted[thangs[i].race]==false){
+					if((fContacted[thangs[i].race]==false) && (this.race==0)){
 						fContacted[thangs[i].race]=true;
 						console.log("The "+this.name+ " made first contact with the "+races[thangs[i].race]+"s.");
 						this.generateFContactEvent(thangs[i].race);
@@ -378,13 +407,29 @@ function starShip(){
 			{
 				this.turning=false;
 			}
-			this.xv=Math.cos((Math.PI / 180)*this.heading);
-			this.yv=Math.sin((Math.PI / 180)*this.heading);
+			this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
+			this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
 			this.x+=this.xv*gameSpeed*this.speed;
 			this.y+=this.yv*gameSpeed*this.speed;
+			if(this.x<0)
+			{
+				this.x=0;
+			}
+			if(this.y<0)
+			{
+				this.y=0;
+			}
+			if(this.x>universeWidth)
+			{
+				this.x=universeWidth;
+			}
+			if(this.y>universeHeight)
+			{
+				this.y=universeHeight;
+			}
 		}
 		this.tillEvent-=1*gameSpeed;
-		if(this.tillEvent<1)
+		if((this.tillEvent<1) && (this.race==0)) //todo race vs civ
 		{
 			this.generateEvent();
 			this.tillEvent=Math.random()*8000;
@@ -413,7 +458,13 @@ function starShip(){
 			if(this.shields>0)
 			{
 				canvas.globalAlpha=this.shields/100;
-				this.shieldSprite.draw(can, -this.width-6,-this.height-8);
+				if(this.width<32)
+				{
+					this.shieldSprite.draw(can, -this.width-22,-this.height-24
+				}else
+				{
+					this.shieldSprite.draw(can, -this.width-6,-this.height-8);
+				}
 			}
 			can.restore();
 			

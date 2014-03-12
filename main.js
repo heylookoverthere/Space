@@ -313,6 +313,13 @@ function mainMenuDraw(){
 	for(var i=0;i<numShips;i++)
 	{
 		ships[i].draw(canvas,camera);
+		if(ships[i].class=="Type 2 Shuttle")
+		{
+			shipSelSprite.draw(canvas, ships[i].x+camera.x-8,ships[i].y+camera.y-8);
+		}else
+		{
+			shipSelSpriteB.draw(canvas, ships[i].x+camera.x-16,ships[i].y+camera.y-16);
+		}
 	}
 };
 

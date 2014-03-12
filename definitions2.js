@@ -30,6 +30,8 @@ var starsDrawn=0;
 var selectedSprite =Sprite("selected");
 var selectedSpriteBig =Sprite("selectedbig");
 
+var shipSelSpriteB =Sprite("shipselectedbig");
+var shipSelSprite =Sprite("shipselected");
 
 var starNames=new Array(40);
 starNames= ["Eridani","Cygnus","Ceti-Alpha","Omicron Ceti","Monac","Bringold","Alnitak", "Deneb", "Acamar","Rigel","Polaris","Praxillus","Proxima Centauri", "Omicron Persei","Canopus", "Romii", "Sirius","Tahal", "Mintaka", "Vega", "Wolf", "Tau-Ceti","Eminiar","Canaris","Hydra", "Questar", "Arneb", "Amargosa", "Altiar","Draconis","Theloni","Gezid","Indi","Canaris","Sigma", "Cassius","Melona","Minara","Cat's Anus"];
@@ -314,19 +316,24 @@ function initShips(){
 		ships[i].crewVessel();
 	}
 	
-	ships[curShip].orbit(stars[curSystem].planets[stars[curSystem].selected]);
-	console.log("The U.S.S. "+ships[curShip].name+" is now orbiting " +stars[curSystem].planets[stars[curSystem].selected].name);
+	ships[curShip].orbit(stars[curSystem].planets[stars[curSystem].selected]);	
+	ships[0].christen();
+	ships[0].prefix="U.S.S.";
+	console.log(ships[0].prefix+ships[curShip].name+" is now orbiting " +stars[curSystem].planets[stars[curSystem].selected].name);
 	ships[curShip].acceleration=1;
+
 	
 	ships[1].orbit(stars[0].planets[3]);
 	ships[1].prefix="U.S.S.";
-	console.log(ships[4].prefix+" "+ships[1].name+" is now orbiting " +stars[0].planets[3].name);
+	console.log(ships[1].prefix+" "+ships[1].name+" is now orbiting " +stars[0].planets[3].name);
 	ships[1].class="Galaxy Class";
 	ships[1].race=0;
+	ships[1].christen();
 	ships[1].sprite=Sprite("ship2");
 	ships[1].maxSpeed=9;
 	ships[1].maxShields=70;
 	ships[1].shields=70;
+	
 	
 	for(var p=2;p<numShips-3;p++)
 	{
@@ -339,7 +346,8 @@ function initShips(){
 			ships[p].class="Bird of Prey";
 			ships[p].prefix="I.K.S";
 			ships[p].race=5;
-			console.log(ships[4].prefix+ " "+ships[p].name+" is now orbiting " +stars[blah].planets[gah].name);
+			ships[p].christen();
+			//console.log(ships[p].prefix+ " "+ships[p].name+" is now orbiting " +stars[blah].planets[gah].name);
 			ships[p].sprite=Sprite("ship4");
 			ships[p].maxSpeed=7;
 		}else
@@ -350,6 +358,7 @@ function initShips(){
 			ships[p].prefix="I.K.S";
 			ships[p].sprite=Sprite("ship4");
 			ships[p].race=5;
+			ships[p].christen();
 			ships[p].maxSpeed=7;
 			ships[p].speed=6;
 		}
@@ -359,11 +368,13 @@ function initShips(){
 		
 		ships[5].x=Math.random()*universeWidth/4;
 		ships[5].y=Math.random()*universeHeight/4+universeHeight/2;
-		ships[5].prefix="Borg";
+		ships[5].prefix="Cube";
 		ships[5].race=9;
+		ships[5].christen();
 		ships[5].class="Cube";
 		ships[5].sprite=Sprite("ship3");
 		ships[5].maxSpeed=10;
+		ships[5].adjustHeading(270);
 		ships[5].speed=9;
 		
 		ships[6].x=Math.random()*universeWidth/4;
@@ -371,6 +382,7 @@ function initShips(){
 		ships[6].prefix="Vulcan";
 		ships[6].class="Capitol Ship";
 		ships[6].race=1;
+		ships[6].christen();
 		ships[6].sprite=Sprite("ship5");
 		ships[6].maxSpeed=7;
 		ships[6].speed=3;
@@ -380,6 +392,7 @@ function initShips(){
 		ships[7].prefix="IRW";
 		ships[7].class="Warbird";
 		ships[7].race=4;
+		ships[7].christen();
 		ships[7].sprite=Sprite("ship6");
 		ships[7].maxSpeed=7;
 		ships[7].speed=3;
