@@ -72,8 +72,8 @@ function starShip(){
 	this.maxSpeed=5
 	this.status="idle";
 	this.type=0;
-	this.width=16;
-	this.height=16;
+	this.width=32;
+	this.height=32;
 	this.alive=true;
 	this.name="Tim.";
 	var nami=Math.floor(Math.random()*shipNames[this.race].length);
@@ -460,10 +460,10 @@ function starShip(){
 				canvas.globalAlpha=this.shields/100;
 				if(this.width<32)
 				{
-					this.shieldSprite.draw(can, -this.width-22,-this.height-24
+					this.shieldSprite.draw(can, -this.width,-this.height);
 				}else
 				{
-					this.shieldSprite.draw(can, -this.width-6,-this.height-8);
+					this.shieldSprite.draw(can, -this.width/2-14,-this.height/2-12);
 				}
 			}
 			can.restore();

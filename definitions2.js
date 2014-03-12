@@ -319,6 +319,9 @@ function initShips(){
 	ships[curShip].orbit(stars[curSystem].planets[stars[curSystem].selected]);	
 	ships[0].christen();
 	ships[0].prefix="U.S.S.";
+	ships[0].width=16;
+	ships[0].height=16;
+	ships[0].shieldSprite=Sprite("shields");
 	console.log(ships[0].prefix+ships[curShip].name+" is now orbiting " +stars[curSystem].planets[stars[curSystem].selected].name);
 	ships[curShip].acceleration=1;
 
