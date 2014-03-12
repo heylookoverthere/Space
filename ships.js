@@ -3,8 +3,13 @@ shipNames= ["Enterprise","Hood","Voyager","Defiant","Intrepid","Akira","Excalibu
 var numShipNames=38;
 var races=new Array(40);
 races= ["Human","Vulcan","Andorian","Tellerite","Romulan","Klingon","Betazoid","Trill","Cardassian","Borg","Vidian","Telaxian","Ferengi","Pakled","Bajoran","Binar","Hirogen","Gorn"];
+var fContacted=new Array();
 var numRaces=18;
-
+var shipNamesUsed=new Array();
+fContacted[0]=true;
+for(var ipk=1;ipk<numRaces;ipk++){
+	fContacted[ipk]=false;
+}
 
 function dude() {
 	this.gender=0;
@@ -27,11 +32,18 @@ function crew() {
 };
 
 function starShip(){
+	this.race=0;
 	this.x=0;
 	this.y=0;
 	this.xv=0;
 	this.yv=0;
+	this.shields=0;
+	this.maxShields=100;
+	this.shieldSprite=Sprite("shields1");
+	this.discovered=true;
+	this.sensorRange=5000;
 	this.morale=70;
+	this.cloaked=false;
 	this.turnSpeed=1;
 	this.acceleration=.5;
 	this.hp=100;
@@ -47,7 +59,15 @@ function starShip(){
 	this.height=16;
 	this.alive=true;
 	this.name="Tim.";
-	this.name=shipNames[Math.floor(Math.random()*numShipNames)];//error
+	var nami=Math.floor(Math.random()*shipNames.length);
+	while(true) {
+        if(shipNamesUsed[nami]) 
+        {
+            nami=Math.floor(Math.random()*shipNames.length);
+        }else {break;}
+    }
+	this.name=shipNames[nami];
+	shipNamesUsed[nami]=true;
 	this.crewCapacity=5;
 	this.crewNum=0;
 	this.crew=new Array();
@@ -87,6 +107,8 @@ function starShip(){
 	this.homeWorld="Earph.";
 	this.stores=0;
 	this.cafe=0;
+	this.nearbySystems=new Array();
+	this.nearbyVessels=new Array();
 	
 	this.lightyearsTraveled=0;
 	this.crewLost=0;
@@ -154,12 +176,39 @@ function starShip(){
 		this.desiredHeading=Math.floor(targ);
 	};
 	
+	this.generateFContactEvent=function(who){
+		var j=Math.floor(Math.random()*2);
+			if(who==1) 
+			{
+				console.log("Just like the movie! Together you draft the First Khitomer Accord, outlawing sodomy in space.");
+			}else if(who==4) 
+			{	
+				console.log("Motherfuckers will only communicate with audio.");
+			}else if(who==5) 
+			{
+				console.log("The introductions did not go well.  Ship lost with all hands.");
+			}else if(who==9) 
+			{
+				console.log("They seems pretty friendly, and offer to come show you their nanoprobes. Hilarity ensues.");
+				this.kill();
+			} else
+			{
+				console.log("Unsuprisingly they appear to be huminoids with bumps on their heads.");
+			}
+		};
+	
 	this.generateEvent=function(){
 		var j=Math.floor(Math.random()*9);
 		var aRace=races[Math.floor(Math.random()*numRaces)];
 		if(j==0){
-			console.log("The crew of the "+this.name+" has been sodomized by "+ aRace+"s.  Morale is low.");
-			this.morale-=20;
+			if((aRace=="Vulcan") && (fContacted[1]))
+			{
+				console.log("You can tell the enemy crew is sodomizing you with their eyes, but in the end they abide by the treaty.");
+			}else
+			{
+				console.log("The crew of the "+this.name+" has been sodomized by "+ aRace+"s.  Morale is low.");
+				this.morale-=20;
+			}
 			if((Math.floor(Math.random()*8)==1))
 			{
 				this.killRandomCrew(" resisting sodomy.");
@@ -238,6 +287,29 @@ function starShip(){
 		{
 			this.speed-=this.acceleration;
 		}
+	};
+	
+	this.inSensorRange=function(thangs){
+		var thongs=new Array();
+		for(var i=0;i<thangs.length;i++){
+			if ((Math.abs(thangs[i].x-this.x)<this.sensorRange) && (Math.abs(thangs[i].y-this.y)<this.sensorRange))
+			{
+				if((thangs[i]!=this) && (!thangs[i].cloaked)){  //todo, sensors that can detect cloaked ships.
+					thongs.push(thangs[i]);	
+					if(thangs[i].discovered==false){
+						thangs[i].discovered=true;
+						console.log("The "+this.name+ " discoverd the "+thangs[i].name+" System");
+						
+					}
+					if(fContacted[thangs[i].race]==false){
+						fContacted[thangs[i].race]=true;
+						console.log("The "+this.name+ " made first contact with the "+races[thangs[i].race]+"s.");
+						this.generateFContactEvent(thangs[i].race);
+					}
+				}
+			}
+		}
+		return thongs;
 	};
 	
 	this.update=function(){
@@ -333,7 +405,16 @@ function starShip(){
 			{
 				can.rotate((this.heading-90)* (Math.PI / 180));//todo negatives.
 			}
+			if(this.cloaked)
+			{
+				canvas.globalAlpha=0.30;
+			}
 			this.sprite.draw(can, -this.width/2,-this.height/2);
+			if(this.shields>0)
+			{
+				canvas.globalAlpha=this.shields/100;
+				this.shieldSprite.draw(can, -this.width-6,-this.height-8);
+			}
 			can.restore();
 			
 			//this.sprite.draw(can, this.x-cam.x-this.width/2,this.y-cam.y-this.height/2);

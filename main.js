@@ -82,21 +82,13 @@ function time(){
     this.minutes=0;
     this.seconds=0;
     this.days=0;
+	this.years=2000;
 }
-time.prototype.update=function(){
-    this.seconds++;
-    if(this.seconds>60){
-        this.seconds=0;
-        this.minutes++;
-        if (this.minutes>60){
-            this.hours++;
-            if(this.hours>24) {
-				this.hours=0; 
-				this.days++;
-			} 
-            this.minutes=0;
-            this.seconds=0;
-        }
+time.prototype.update=function(plan){
+    this.days+=plan.orbitSpeed*gameSpeed;
+    if(this.days>360){
+        this.days-=360;
+        this.years++;
     }
 };
 
@@ -237,6 +229,8 @@ function mainMenuDraw(){
     canvas.fillText("Gamespeed: "+gameSpeed,755,25);
 	canvas.fillText("Particles: "+ monsta.particles.length,755,40);
 	canvas.fillText("Stars drawn: "+ starsDrawn,755,55);
+	canvas.fillText("Stardate: "+ Math.floor(theTime.years)+"."+Math.floor(theTime.days) ,755,70);
+	canvas.fillText("taar" ,755,85);
 	
 	canvas.fillText("System: "+stars[curSystem].name,25,55);
 	canvas.fillText("Planets: "+ stars[curSystem].numPlanets,25,70);
@@ -290,10 +284,16 @@ function mainMenuDraw(){
 	canvas.fillText("Heading: "+ Math.floor(ships[curShip].heading),755,530);
 	canvas.fillText("Desired Heading: "+ ships[curShip].desiredHeading,755,545);
 	canvas.fillText("Speed: "+ ships[curShip].speed+"/"+ships[curShip].maxSpeed,755,560);
-	canvas.fillText(getQuadrant(ships[curShip])+" Quadrant",755,575);
+	var ghjk="";
+	if(ships[curShip].cloaked) {ghjk+="Cloaked ";}
+	if(ships[curShip].shields>0) {ghjk+="Shields: "+ships[curShip].shields;}
+	canvas.fillText(ghjk,755,575);
+	//if(ships[curShip].cloaked) {canvas.fillText("Cloaked",755,575);}
+
 	canvas.fillText("Crew Lost: "+ ships[curShip].crewLost,755,590);
 	canvas.fillText("OrbitTrack: "+ ships[curShip].orbitTrack,755,605);
-	
+	canvas.fillText("Ships Detected Nearby: "+ ships[curShip].nearbyVessels.length,755,620)
+	canvas.fillText("Systems Detected Nearby: "+ ships[curShip].nearbySystems.length,755,635)
 	/*if(mmcur){
 		canvas.fillText("-",160,450);
 	}else	{
@@ -329,7 +329,7 @@ function mainMenuUpdate(){
 		//monsta.startOrbit(40000,Math.floor(Math.random()*CANVAS_WIDTH),Math.floor(Math.random()*CANVAS_HEIGHT),60);
 	 }
 	if(startkey.check()){
-		mode=1;
+		//mode=1;
 	}
 	/*if(downkey.check()){
 		mmcur=!mmcur;
@@ -462,14 +462,18 @@ function mainMenuUpdate(){
 	for(var i=0;i<numShips;i++)
 	{
 		ships[i].update();
+		ships[i].nearbySystems=ships[i].inSensorRange(stars);
+		ships[i].nearbyVessels=ships[i].inSensorRange(ships);
 	}
 	camera.update();
+	theTime.update(Earth);
+	
 };
 
 
 
 function worldMapDraw(){
-worldmapsprite.draw(canvas,0,0);
+//worldmapsprite.draw(canvas,0,0);
 	if(starting) {
 		canvas.font = "16pt Calibri";
 		canvas.fillStyle = "white";

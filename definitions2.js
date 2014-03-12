@@ -1,6 +1,6 @@
 var universeWidth=600000;
 var universeHeight=600000;
-var numStars=850000;
+var numStars=950000;
 var backStarsX=new Array(numStars);
 var backStarsY=new Array(numStars);
 var backStarsS=new Array(numStars);
@@ -8,13 +8,19 @@ var spinArt=false;
 var flicker=true;
 var twinkRate=10;
 var curSystem=0;
-var numShips=5;
+var numShips=8;
+var Earth=null;
+//var things=new Array();
 var ships=new Array();
 ships[0]=new starShip();
 ships[1]=new starShip();
 ships[2]=new starShip();
 ships[3]=new starShip();
 ships[4]=new starShip();
+ships[5]=new starShip();
+ships[6]=new starShip();
+ships[7]=new starShip();
+
 var curShip=0;
 var planetTypes = ["Earthy","Rocky","Hot","Ice","Gas Giant","Ringed Gas Giant","WTF"];
 
@@ -27,7 +33,7 @@ var selectedSpriteBig =Sprite("selectedbig");
 
 var starNames=new Array(40);
 starNames= ["Eridani","Cygnus","Ceti-Alpha","Omicron Ceti","Monac","Bringold","Alnitak", "Deneb", "Acamar","Rigel","Polaris","Praxillus","Proxima Centauri", "Omicron Persei","Canopus", "Romii", "Sirius","Tahal", "Mintaka", "Vega", "Wolf", "Tau-Ceti","Eminiar","Canaris","Hydra", "Questar", "Arneb", "Amargosa", "Altiar","Draconis","Theloni","Gezid","Indi","Canaris","Sigma", "Cassius","Melona","Minara","Cat's Anus"];
-
+var starNamesUsed=new Array();
 
 var planetNames=new Array(40);
 planetNames= ["Vulcan","Andoria","Arkaria","Benzar","Halii","Tellar","Teneebla","Trill","Draylax", "Coridan", "Aurelia","Ocampa","Talax","Enara Prime","Hoth","Endor","Tatooine","Carcosa","Sobaras"];
@@ -99,16 +105,35 @@ function romanize(num) {
 	return str;
 };
 
+function planetInfo(){
+	this.pop=Math.random()*6+5;
+	this.scanned=false;
+	this.richness=Math.random()*6+5;
+	this.fertility=Math.random()*6+5;
+	this.inhabited=false;
+};
+
 function star(){
 	this.x=420;
 	this.y=300;
 	this.type=0;
+	this.race=0;
 	this.name="Sol";
-	this.name=starNames[Math.floor(Math.random()*35)];
+	var nami=Math.floor(Math.random()*starNames.length);
+	while(true) {
+        if(starNamesUsed[nami]) 
+        {
+            nami=Math.floor(Math.random()*starNames.length);
+        }else {break;}
+    }
+	this.name=starNames[nami];
+	starNamesUsed[nami]=true;
 	this.planets=new Array();
+	this.planetDetails=new Array();
 	this.numPlanets=0;
 	this.numAstroids=0;
 	this.selected=0;
+	this.discovered=false;
 	
 	this.cyclePlanets=function(){
 		this.selected++;
@@ -116,6 +141,13 @@ function star(){
 		if(this.selected>this.numPlanets-1)
 		{
 			this.selected=0;
+		}
+	};
+	
+	this.scanAllPlanets=function(){
+		for(var i=0;i<this.numPlanets;i++)
+		{
+			this.planetDetails[i].scanned=true;
 		}
 	};
 	
@@ -210,7 +242,7 @@ setupOurs=function(sun)
 	pmoons[8]=3;
 	for (var p=0;p<9;p++)
 	{
-		var pobt=(Math.random()*44)+(p+1)*50+10;
+		var pobt=(Math.random()*44)+(p+1)*80+10;
 		
 		monsta.startPlanet(40,sun,pobt,((Math.random()*8)+1)/8,0,true,ptypes[p]);
 	}
@@ -232,6 +264,12 @@ setupOurs=function(sun)
 	sun.planets[7].name="Neptune";
 	sun.planets[8].name="Pluto";
 	sun.selected=2;
+	sun.discovered=true;
+	Earth=sun.planets[2];
+	Earth.orbitSpeed=1;
+	Earth.orbitTrack=0;
+	sun.planetDetails[2].inhabited=true;
+	sun.planetDetails[2].pop=6;
 };
 
 var stars=new Array();
@@ -280,29 +318,71 @@ function initShips(){
 	console.log("The U.S.S. "+ships[curShip].name+" is now orbiting " +stars[curSystem].planets[stars[curSystem].selected].name);
 	ships[curShip].acceleration=1;
 	
-	for(var p=1;p<numShips-2;p++)
+	ships[1].orbit(stars[0].planets[3]);
+	ships[1].prefix="U.S.S.";
+	console.log(ships[4].prefix+" "+ships[1].name+" is now orbiting " +stars[0].planets[3].name);
+	ships[1].class="Galaxy Class";
+	ships[1].race=0;
+	ships[1].sprite=Sprite("ship2");
+	ships[1].maxSpeed=9;
+	ships[1].maxShields=70;
+	ships[1].shields=70;
+	
+	for(var p=2;p<numShips-3;p++)
 	{
-		var blah=Math.floor(Math.random()*numSystems);
-		var gah=Math.floor(Math.random()*stars[blah].numPlanets);
-		
-		ships[p].orbit(stars[blah].planets[stars[blah].selected]);
-		console.log("The U.S.S. "+ships[p].name+" is now orbiting " +stars[blah].planets[gah].name);
-		ships[p].class="Galaxy Class";
-		ships[p].sprite=Sprite("ship2");
-		ships[p].maxSpeed=9;
+		if(Math.random()*10<5)
+		{
+			var blah=Math.floor(Math.random()*numSystems);
+			var gah=Math.floor(Math.random()*stars[blah].numPlanets);
+			
+			ships[p].orbit(stars[blah].planets[stars[blah].selected]);
+			ships[p].class="Bird of Prey";
+			ships[p].prefix="I.K.S";
+			ships[p].race=5;
+			console.log(ships[4].prefix+ " "+ships[p].name+" is now orbiting " +stars[blah].planets[gah].name);
+			ships[p].sprite=Sprite("ship4");
+			ships[p].maxSpeed=7;
+		}else
+		{
+			ships[p].x=Math.random()*universeWidth/2;
+			ships[p].y=Math.random()*universeHeight/2;
+			ships[p].class="Bird of Prey";
+			ships[p].prefix="I.K.S";
+			ships[p].sprite=Sprite("ship4");
+			ships[p].race=5;
+			ships[p].maxSpeed=7;
+			ships[p].speed=6;
+		}
     }
 	
-		ships[2].orbit(stars[0].planets[3]);
-		console.log("The U.S.S. "+ships[2].name+" is now orbiting " +stars[0].planets[3].name);
-		ships[2].class="Borg Cube";
-		ships[2].sprite=Sprite("ship3");
-		ships[2].maxSpeed=9;
+
 		
-		ships[3].orbit(stars[0].planets[2]);
-		console.log("The U.S.S. "+ships[3].name+" is now orbiting " +stars[0].planets[2].name);
-		ships[3].class="Bird of Prey";
-		ships[3].sprite=Sprite("ship4");
-		ships[3].maxSpeed=7;
+		ships[5].x=Math.random()*universeWidth/4;
+		ships[5].y=Math.random()*universeHeight/4+universeHeight/2;
+		ships[5].prefix="Borg";
+		ships[5].race=9;
+		ships[5].class="Cube";
+		ships[5].sprite=Sprite("ship3");
+		ships[5].maxSpeed=10;
+		ships[5].speed=9;
+		
+		ships[6].x=Math.random()*universeWidth/4;
+		ships[6].y=Math.random()*universeHeight/4;
+		ships[6].prefix="Vulcan";
+		ships[6].class="Capitol Ship";
+		ships[6].race=1;
+		ships[6].sprite=Sprite("ship5");
+		ships[6].maxSpeed=7;
+		ships[6].speed=3;
+		
+		ships[7].x=Math.random()*universeWidth/2;
+		ships[7].y=Math.random()*universeHeight/4;
+		ships[7].prefix="IRW";
+		ships[7].class="Warbird";
+		ships[7].race=4;
+		ships[7].sprite=Sprite("ship6");
+		ships[7].maxSpeed=7;
+		ships[7].speed=3;
 	
 };
 

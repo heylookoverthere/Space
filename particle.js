@@ -212,6 +212,7 @@ function particleSystem(){
 		//tod.y=y;
 		//tod.name=names[1][Math.floor(Math.random()*20)];
 		son.planets[son.numPlanets]=tod;
+		son.planetDetails[son.numPlanets]=new planetInfo();
 		tod.planetNum=son.numPlanets;
 		tod.name=son.name+ " " +romanize(tod.planetNum);
 		son.numPlanets++;
