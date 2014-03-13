@@ -300,6 +300,10 @@ function mainMenuDraw(){
 		canvas.fillText("-",160,475);
 
 	}*/
+	for(var i=0;i<numSystems;i++)
+	{
+		stars[i].draw(canvas,camera);
+	}
 	monsta.draw(canvas,camera);
 	//selected.draw(canvas,camera);
 	if((stars[curSystem].planets[stars[curSystem].selected].type==4) || (stars[curSystem].planets[stars[curSystem].selected].type==5))
