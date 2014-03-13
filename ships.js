@@ -77,6 +77,8 @@ function starShip(){
 	this.xv=0;
 	this.yv=0;
 	
+	this.acceltick=0;
+	this.accelrate=50;
 	this.weaponsHot=0;
 	this.phaserBanks=new Array();
 	this.numPhasers=1;
@@ -98,6 +100,7 @@ function starShip(){
 	this.heading=Math.floor(Math.random()*359);
 	this.desiredHeading=this.heading;
 	this.speed=1;
+	this.desiredSpeed=1;
 	this.maxSpeed=5
 	this.status="idle";
 	this.type=0;
@@ -235,8 +238,10 @@ function starShip(){
 	};
 	
 	this.adjustHeading=function(targ){
-		if(targ>360) {return;}
-		if (targ==360) {targ=0;}
+		if (targ < 0.0)
+			targ += 360.0;
+		else if (targ > 360.0)
+			targ -= 360;
 		this.desiredHeading=Math.floor(targ);
 	};
 	
@@ -342,8 +347,18 @@ function starShip(){
 		ships[curShip].desiredOrbitTarg=null;
 	};
 	
+	this.orderSpeed=function(spd){
+		this.desiredSpeed=spd;
+	};
+	
 	this.accelerate=function()
 	{
+		this.acceltick++;
+		if(this.acceltick<this.accelrate)
+		{
+			return;
+		}
+		this.acceltick=0;
 		if (this.speed<this.maxSpeed)
 		{
 			this.speed+=this.acceleration;
@@ -352,6 +367,12 @@ function starShip(){
 	
 	this.decelerate=function()
 	{
+		this.acceltick++;
+		if(this.acceltick<this.accelrate)
+		{
+			return;
+		}
+		this.acceltick=0;
 		if (this.speed>0)
 		{
 			this.speed-=this.acceleration;
@@ -439,17 +460,31 @@ function starShip(){
 		}//else
 		
 		//{
-			//this.leavingProgress=0;
+			//accel or decel to desired speed
+			if(this.speed<Math.floor(this.desiredSpeed))
+			{
+				this.accelerate();
+			}else if(this.speed>Math.floor(this.desiredSpeed))
+			{
+				this.decelerate();
+			}
+			//turn to desired heading
 			if(Math.floor(this.heading)<Math.floor(this.desiredHeading))
 			{
 				this.heading+=this.turnSpeed*gameSpeed;
 				this.turning=true;
-				if (this.heading>360) { this.heading=0;}
+				if (this.heading < 0.0)
+					this.heading += 360.0;
+				else if (this.heading > 360.0)
+					this.heading -= 360;
 			}else if(Math.floor(this.heading)>Math.floor(this.desiredHeading))
 			{
 				this.heading-=this.turnSpeed*gameSpeed;
 				this.turning=true;
-				if (this.heading<0) { this.heading=359;}
+				if (this.heading < 0.0)
+					this.heading += 360.0;
+				else if (this.heading > 360.0)
+					this.heading -= 360;
 			}else
 			{
 				this.turning=false;

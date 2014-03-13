@@ -288,7 +288,7 @@ function mainMenuDraw(){
 	canvas.fillText("Coords: "+Math.floor(ships[curShip].x)+","+Math.floor(ships[curShip].y),755,515);
 	canvas.fillText("Heading: "+ Math.floor(ships[curShip].heading),755,530);
 	canvas.fillText("Desired Heading: "+ ships[curShip].desiredHeading,755,545);
-	canvas.fillText("Speed: "+ ships[curShip].speed+"/"+ships[curShip].maxSpeed,755,560);
+	canvas.fillText("Speed: "+ ships[curShip].speed+" / "+ships[curShip].desiredSpeed+" / "+ships[curShip].maxSpeed,755,560);
 	var ghjk="";
 	if(ships[curShip].cloaked) {ghjk+="Cloaked ";}
 	if(ships[curShip].shields>0) {ghjk+="Shields: "+ships[curShip].shields;}
