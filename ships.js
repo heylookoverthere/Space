@@ -48,12 +48,41 @@ function crew() {
 
 };
 
+function energyWeapon(hip)
+{
+	this.x=hip.width/2;
+	this.y=hip.height/2;
+	this.target=null;
+	this.strength=5;
+	this.pierce=0;
+	this.charge=1;
+	this.type=0;
+	this.update=function(){
+	
+	};
+	
+	this.fire=function(){
+	
+	};
+	
+	this.draw=function(can,cam){
+	//stroke?!
+	};
+}
+
 function starShip(){
 	this.race=0;
 	this.x=0;
 	this.y=0;
 	this.xv=0;
 	this.yv=0;
+	
+	this.weaponsHot=0;
+	this.phaserBanks=new Array();
+	this.numPhasers=1;
+	this.torpedoBays=new Array();
+	this.numTorpedoBays=0;
+	this.phaserBanks[0]=new energyWeapon(this);
 	this.shields=0;
 	this.maxShields=100;
 	this.shieldSprite=Sprite("shields1");
@@ -91,6 +120,7 @@ function starShip(){
 	this.orbiting=false;
 	this.orbitDiameter=30;
 	this.orbitTarg=null;
+	this.desiredOrbitTarg=null;
 	this.gotoDest=false;
 	this.dest=null;
 	this.destx=0;
@@ -178,6 +208,11 @@ function starShip(){
 			}
 		}
 	};
+	
+	this.orderOrbit=function(targ){
+		this.desiredOrbitTarg=targ;
+		this.orderLeaveOrbit();
+	};	
 	
 	this.orbit=function(targ){
 		this.orbiting=true;
@@ -302,6 +337,11 @@ function starShip(){
 		}
 	};
 	
+	this.manualHelm=function()
+	{
+		ships[curShip].desiredOrbitTarg=null;
+	};
+	
 	this.accelerate=function()
 	{
 		if (this.speed<this.maxSpeed)
@@ -363,6 +403,7 @@ function starShip(){
 				if(this.leavingProgress>90)
 				{
 					this.leaveOrbit();
+					this.leavingProgress=0;
 				}
 				
 			}else
@@ -373,26 +414,32 @@ function starShip(){
 			this.x=this.orbx+Math.cos(this.orbitTrack* (Math.PI / 180))*this.orbitDiameter;
 			this.y=this.orby+Math.sin(this.orbitTrack*(Math.PI / 180))*this.orbitDiameter;
 			this.y+=this.yv;
-			if(this.gotoDest)
-			{
-				if(this.orbx<this.destx) {this.orbx+=this.speed;}
-				if(this.orbx>this.destx) {this.orbx-=this.speed;}
-				if(this.orby<this.desty) {this.orby+=this.speed;}
-				if(this.orby>this.desty) {this.orby-=this.speed;}
-				if((Math.abs(this.orbx-this.destx)<5) && (Math.abs(this.orby-this.desty)<5)) {this.gotoDest=false;}
-			}
-		}else if(this.gotoDest)//TODO
+			
+		}else if(this.desiredOrbitTarg)//TODO
 		{
-				console.log("yaaaar");
-				if(this.x<this.destx) {this.x+=this.speed;}
-				if(this.x>this.destx) {this.x-=this.speed;}
-				if(this.y<this.desty) {this.y+=this.speed;}
-				if(this.y>this.desty) {this.y-=this.speed;}
-				if((Math.abs(this.x-this.destx)<5) && (Math.abs(this.by-this.desty)<5)) {this.gotoDest=false;}
-		}else
+				this.status="Enroute to "+this.desiredOrbitTarg.name;
+				//console.log("yaaaar");
+				var beta=Math.atan2(this.desiredOrbitTarg.y-this.y,this.desiredOrbitTarg.x-this.x)* (180 / Math.PI);
+				
+				if (beta < 0.0)
+					beta += 360.0;
+				else if (beta > 360.0)
+					beta -= 360;
+				this.desiredHeading=beta;
+				if(this.speed<1)
+				{
+					this.speed=this.maxSpeed;
+				}
+				if((Math.abs(this.x-this.desiredOrbitTarg.x)<50) && (Math.abs(this.y-this.desiredOrbitTarg.y)<50)) 
+				{
+					console.log("arrived!");
+					this.orbit(this.desiredOrbitTarg);
+					this.desiredOrbitTarg=null;
+				}
+		}//else
 		
-		{
-			this.leavingProgress=0;
+		//{
+			//this.leavingProgress=0;
 			if(Math.floor(this.heading)<Math.floor(this.desiredHeading))
 			{
 				this.heading+=this.turnSpeed*gameSpeed;
@@ -427,7 +474,7 @@ function starShip(){
 			{
 				this.y=universeHeight;
 			}
-		}
+		//}
 		this.tillEvent-=1*gameSpeed;
 		if((this.tillEvent<1) && (this.race==0)) //todo race vs civ
 		{

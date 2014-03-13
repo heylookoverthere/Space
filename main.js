@@ -260,8 +260,13 @@ function mainMenuDraw(){
 	}
 	var actiontext="Full Stop";
 	if(ships[curShip].speed>0){
-		actiontext="Exploring the " +getQuadrant(ships[curShip]) + " Quadrant";
-	
+		if(ships[curShip].desiredOrbitTarg)
+		{
+			actiontext=ships[curShip].status;
+		}else
+		{
+			actiontext="Exploring the " +getQuadrant(ships[curShip]) + " Quadrant";
+		}
 	}
 	if(ships[curShip].orbiting)
 	{
@@ -351,10 +356,12 @@ function mainMenuUpdate(){
 	if(shipleftkey.check())
 	{
 		ships[curShip].adjustHeading(ships[curShip].heading-20);
+		ships[curShip].manualHelm();
 	}
 	if(shiprightkey.check())
 	{
 		ships[curShip].adjustHeading(ships[curShip].heading+20);
+		ships[curShip].manualHelm();
 	}
 	if(shipgokey.check())
 	{

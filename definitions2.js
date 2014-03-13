@@ -1,95 +1,5 @@
 //518 424 5687
-var Techs = {};
-Techs.Aeroponics=1;
-Techs.MERations=1; //start with.
-Techs.WaffleFries=1;  //increases morale
-Techs.Microbrew=1;
 
-Techs.InertialDampners=1; //you can skip this, but if you do you crew will take huge damage accelerating or decerlarting too quicky.
-Techs.Warp=1;
-Techs.TransWarp=1;
-Techs.Slipstream=1;
-
-Techs.ShittySensors=0;
-Techs.Sensors=1;
-Techs.LongRangeSensors=1;
-Techs.Astrometrics=1;
-Techs.DetectTacheons=1;
-Techs.DetectCloakythings=1;//todo.
-Techs.DetectWormholethings=1;
-
-Techs.ShittyCloak=1;
-Techs.Cloak=1;
-Techs.BestCloak=1;
-
-Techs.Lasers=1;
-Techs.Phasers=1;
-Techs.Disruptors=1;
-Techs.BestEnergyWeapon=1; //todo
-
-Techs.Torpedos=1;
-Techs.PhotonTorpedos=1;
-Techs.QuantumTorpedos=1;
-Techs.TransPhasicTorpedos=1;
-
-Techs.PowerCells=1;
-
-Techs.Grapple=1;
-Techs.TractorBeam=1;
-Techs.StructualIntegrityBeam=1;
-
-Techs.Transporter=1;
-Techs.TransportEnhancer=1;
-Techs.EmergencyTransporter=1; //from nemesis
-
-Techs.AdvTransporter=1; //penatrate some shields
-Techs.thatbullshitfromthenewmovie=1;// why bother with starships?
-
-
-Techs.EnergyShields=1;
-Techs.AdvEnergyShields=1;
-Techs.MetaPhasicShields=1;
-
-Techs.Armor=1;
-Techs.AblatativeArmor=1;
-
-Techs.MicroCircutry=1;
-Techs.BioNeuralCircutry=1;
-Techs.Nanobots=1;
-Techs.Assimilation=1;
-
-Techs.AlienMedican=1;
-Techs.AlienSurgery=1;
-Techs.Cloning=1;
-Techs.GeneticResequencing=1;//edit crew in some way, change race?
-Techs.Synthahol=1; //removes drunken events, morale down.
-
-Techs.AdvEnviromentalControls=1;
-Techs.ContainmentField=1;
-
-Techs.SubspaceTheory=1;
-Techs.ImpulseProbe=1;
-Techs.WarpProbe=1;
-
-Techs.Statis=1;
-Techs.WarpEscapePods=1;
-Techs.AdvEscapePods=1; //statis, cloak. 
-
-Techs.AI=1;
-Techs.Robotics=1;
-Techs.Androids=1;
-Techs.Cybernetics=1;
-
-Techs.PowerManagment=1;
-Techs.Replicators=1;
-Techs.PowerManagment=1;
-Techs.Capacitors=1;
-Techs.Holodecks=1;
-Techs.EMH=1;
-Techs.MobileEmiter=1;
-Techs.AdvMetallurgy=1;
-Techs.DeuteriumCollector=1;
-Techs.Deflector=1;
 
 
 var universeWidth=600000;
@@ -102,10 +12,18 @@ var spinArt=false;
 var flicker=true;
 var twinkRate=10;
 var curSystem=0;
-var numShips=8;
+var numShips=9;
 var Earth=null;
 //var things=new Array();
+var numCivilizations=10;
+var civilizations=new Array();
+for(var i=0;i<numCivilizations;i++)
+{
+	civilizations[i]=new civilization();
+}
+
 var ships=new Array();
+var stations=new Array(); //todo add to civilization
 ships[0]=new starShip();
 ships[1]=new starShip();
 ships[2]=new starShip();
