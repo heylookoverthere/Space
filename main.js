@@ -345,6 +345,10 @@ function mainMenuDraw(){
 		shipSelSpriteB.draw(canvas, -16,-16);
 	}
 	canvas.restore();
+	for(var i=0;i<numNebulas;i++)
+	{
+		nebulas[i].draw(canvas,camera);
+	}
 };
 
 function mainMenuUpdate(){

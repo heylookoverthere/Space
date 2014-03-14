@@ -459,7 +459,8 @@ function starShip(){
 				}
 		}//else
 		
-		//{
+		if(!this.orbiting)
+		{
 			//accel or decel to desired speed
 			if(this.speed<Math.floor(this.desiredSpeed))
 			{
@@ -509,7 +510,7 @@ function starShip(){
 			{
 				this.y=universeHeight;
 			}
-		//}
+		}
 		this.tillEvent-=1*gameSpeed;
 		if((this.tillEvent<1) && (this.race==0)) //todo race vs civ
 		{

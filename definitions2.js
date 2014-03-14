@@ -13,6 +13,7 @@ var flicker=true;
 var twinkRate=10;
 var curSystem=0;
 var numShips=9;
+var numNebulas=10;
 var Earth=null;
 //var things=new Array();
 var numCivilizations=10;
@@ -128,6 +129,41 @@ function planetInfo(){
 	this.richness=Math.random()*6+5;
 	this.fertility=Math.random()*6+5;
 	this.inhabited=false;
+};
+
+function cloud(dense){
+	this.type=Math.floor(Math.random()*6);
+	this.xoffset=Math.random()*dense;
+	this.yoffset=Math.random()*dense;
+	this.heading=Math.random()*360;
+	this.size=Math.random()*2+1;
+	this.alpha=0.5;
+	this.sprite=Sprite("neb"+this.type);
+};
+
+function nebula(){
+	this.x=Math.random()*universeWidth;
+	this.y=Math.random()*universeHeight;
+	this.numClouds=Math.random()*34;
+	this.clouds=new Array();
+	for(var i=0;i<this.numClouds;i++)
+	{
+		this.clouds[i]=new cloud(120);
+	}
+	
+	this.draw=function(can,cam){
+		for(var i=0;i<this.numClouds;i++)
+		{
+			can.save();
+			can.translate((this.x+this.clouds[i].xoffset+cam.x)*cam.zoom,(this.y+this.clouds[i].yoffset+cam.y)*cam.zoom);
+			can.rotate(this.clouds[i].heading*(Math.PI/180));
+			can.scale(this.clouds[i].size*cam.zoom,this.clouds[i].size*cam.zoom);
+			canvas.globalAlpha=.5;
+			this.clouds[i].sprite.draw(can, -64,-64);
+			can.restore();
+		}
+		
+	};
 };
 
 function star(){
@@ -262,7 +298,7 @@ function star(){
 
 setupOurs=function(sun)
 {
-	var obt=220;
+	var obt=440;
 	var obtw=Math.random()*35+15;
 	var qi=Math.floor(Math.random()*40);
 	for (var p=0;p<160+qi;p++)
@@ -296,7 +332,7 @@ setupOurs=function(sun)
 	{
 		var pobt=(Math.random()*44)+(p+1)*130+40;
 		
-		monsta.startPlanet(40,sun,pobt,((Math.random()*8)+1)/8,0,true,ptypes[p]);
+		monsta.startPlanet(40,sun,pobt,((Math.random()*8)+1)/16,0,true,ptypes[p]);
 	}
 	
 	for (var gop=0;gop<sun.numPlanets;gop++)
@@ -329,14 +365,14 @@ setupOurs=function(sun)
 	sun.selected=2;
 	sun.discovered=true;
 	Earth=sun.planets[2];
-	Earth.orbitSpeed=1;
+	Earth.orbitSpeed=2/16;
 	Earth.orbitTrack=0;
 	sun.planetDetails[2].inhabited=true;
 	sun.planetDetails[2].pop=6;
 };
 
 var stars=new Array();
-
+var nebulas=new Array();
 
 function initUniverse()
 {
@@ -355,6 +391,14 @@ function initUniverse()
 	camera.y=universeHeight/4;
 	setupOurs(stars[0]);
 	//monsta.startTextured(1000000,stars[0].x-48,stars[0].y-48,0,0,0,false,false,"sun"+stars[0].type);
+	
+		for(var i=0;i<numNebulas;i++)
+		{
+			nebulas[i]=new nebula();
+			//stars[i].name=names[0][Math.floor(Math.random()*10)];
+			nebulas[i].x=Math.floor(Math.random()*universeWidth);
+			nebulas[i].y=Math.floor(Math.random()*universeHeight);
+		}
 	
 	for(var i=1;i<numSystems;i++)
 	{
@@ -497,7 +541,8 @@ function drawStarfield(canv,cam){
 					s=Math.random()*2;
 				}
 			}
-			canv.fillRect(backStarsX[i]+cam.x, backStarsY[i]+cam.y, backStarsS[i]+s, backStarsS[i]+s);
+			//canv.fillRect((backStarsX[i]+cam.x)*camera.zoom, (backStarsY[i]+cam.y)*camera.zoom, backStarsS[i]+s, backStarsS[i]+s);
+			canv.fillRect((backStarsX[i]+cam.x), (backStarsY[i]+cam.y), backStarsS[i]+s, backStarsS[i]+s);
 		}
 	}
 };
