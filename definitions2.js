@@ -158,7 +158,7 @@ function nebula(){
 			can.translate((this.x+this.clouds[i].xoffset+cam.x)*cam.zoom,(this.y+this.clouds[i].yoffset+cam.y)*cam.zoom);
 			can.rotate(this.clouds[i].heading*(Math.PI/180));
 			can.scale(this.clouds[i].size*cam.zoom,this.clouds[i].size*cam.zoom);
-			canvas.globalAlpha=.5;
+			canvas.globalAlpha=.2;
 			this.clouds[i].sprite.draw(can, -64,-64);
 			can.restore();
 		}
