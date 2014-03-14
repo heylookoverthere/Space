@@ -136,6 +136,7 @@ function star(){
 	this.type=0;
 	this.race=0;
 	this.width=96;
+	this.size=1;
 	this.height=96;
 	this.alive=true;
 	this.cloaked=false;
@@ -231,8 +232,9 @@ function star(){
 		if(this.alive)
 		{
 			can.save();
-			can.translate(this.x+cam.x,this.y+cam.y);
+			can.translate((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
 			can.rotate((this.heading-90)* (Math.PI / 180));//todo negatives.
+			can.scale(this.size*cam.zoom,this.size*cam.zoom);
 			if(this.cloaked)
 			{
 				canvas.globalAlpha=0.30;
@@ -292,7 +294,7 @@ setupOurs=function(sun)
 	pmoons[8]=3;
 	for (var p=0;p<9;p++)
 	{
-		var pobt=(Math.random()*44)+(p+1)*80+10;
+		var pobt=(Math.random()*44)+(p+1)*130+40;
 		
 		monsta.startPlanet(40,sun,pobt,((Math.random()*8)+1)/8,0,true,ptypes[p]);
 	}
@@ -313,6 +315,17 @@ setupOurs=function(sun)
 	sun.planets[6].name="Uranus";
 	sun.planets[7].name="Neptune";
 	sun.planets[8].name="Pluto";
+	
+	sun.planets[0].size=1;
+	sun.planets[1].size=1;
+	sun.planets[2].size=2;
+	sun.planets[3].size=2;
+	sun.planets[4].size=5;
+	sun.planets[5].size=4;
+	sun.planets[6].size=3;
+	sun.planets[7].size=3;
+	sun.planets[8].size=.75;
+	
 	sun.selected=2;
 	sun.discovered=true;
 	Earth=sun.planets[2];

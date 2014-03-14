@@ -11,7 +11,7 @@ function particle(){
 	this.textured=false;
 	this.orbitDecay=0;
 	//this.texture=
-	this.size=6;
+	this.size=1;
 	this.speed=(Math.random()*4)+1;
 	this.orbiting=false;
 	this.orbx=0;
@@ -135,6 +135,7 @@ function particleSystem(){
 	};
 	this.draw=function(can,cam){
 		var c=1;
+		can.save();
 		for(var i=0;i<this.particles.length;i++)
 		{
 			if(this.particles[i].alive)
@@ -143,15 +144,23 @@ function particleSystem(){
 					can.fillStyle = this.particles[i].color;
 					c= this.particles[i].color;
 				}
+				can.save();
+				can.translate((this.particles[i].x+cam.x)*cam.zoom,(this.particles[i].y+cam.y)*cam.zoom);
+			
+				can.scale(this.particles[i].size*cam.zoom,this.particles[i].size*cam.zoom);
 				if(this.particles[i].textured)
 				{
-					this.particles[i].sprite.draw(can, this.particles[i].x+cam.x-this.particles[i].width/2,this.particles[i].y+cam.y-this.particles[i].height/2);
+					//this.particles[i].sprite.draw(can, this.particles[i].x+cam.x-this.particles[i].width/2,this.particles[i].y+cam.y-this.particles[i].height/2);
+					//this.particles[i].sprite.draw(can, -this.particles[i].width*cam.zoom/2,-this.particles[i].height*cam.zoom/2);
+					this.particles[i].sprite.draw(can, -this.particles[i].width/2,-this.particles[i].height/2);
 				}else
 				{
 					can.fillRect(this.particles[i].x+cam.x-this.particles[i].width/2, this.particles[i].y+cam.y-this.particles[i].height/2, this.particles[i].size*cam.zoom, this.particles[i].size*cam.zoom);
 				}
+				can.restore();
 			}
 		}
+		
 	};
 	this.update=function(){
 		for(var i=0;i<this.particles.length;i++)
@@ -221,6 +230,7 @@ function particleSystem(){
 		tod.orby=son.y;
 		tod.sun=son;
 		tod.numMoons=0;
+		tod.size=Math.floor(Math.random()*4)+1
 		tod.planet=true;
 		tod.exploader=true;
 		tod.orbiting=true;
@@ -290,7 +300,7 @@ function particleSystem(){
 		tod.exploader=true;
 		tod.orbiting=true;
 		tod.orbitDecay=decay;
-		tod.orbitDiameter=diam;
+		tod.orbitDiameter=diam*son.size;
 		tod.orbitTrack=Math.floor(Math.random()*360);
 		tod.x=son.x+Math.cos(tod.orbitTrack* (Math.PI / 180))*diam;
 		tod.y=son.y+Math.sin(tod.orbitTrack*(Math.PI / 180))*diam;

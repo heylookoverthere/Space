@@ -230,7 +230,7 @@ function mainMenuDraw(){
 	canvas.fillText("Particles: "+ monsta.particles.length,755,40);
 	canvas.fillText("Stars drawn: "+ starsDrawn,755,55);
 	canvas.fillText("Stardate: "+ Math.floor(theTime.years)+"."+Math.floor(theTime.days) ,755,70);
-	canvas.fillText("taar" ,755,85);
+	canvas.fillText("Zoom: "+camera.zoom ,755,85);
 	
 	canvas.fillText("System: "+stars[curSystem].name,25,55);
 	canvas.fillText("Planets: "+ stars[curSystem].numPlanets,25,70);
@@ -305,31 +305,46 @@ function mainMenuDraw(){
 		canvas.fillText("-",160,475);
 
 	}*/
+	
+	for(var i=0;i<numShips;i++)
+	{
+		ships[i].draw(canvas,camera);
+	}
 	for(var i=0;i<numSystems;i++)
 	{
 		stars[i].draw(canvas,camera);
 	}
 	monsta.draw(canvas,camera);
+	
+	canvas.save();
+	
 	//selected.draw(canvas,camera);
 	if((stars[curSystem].planets[stars[curSystem].selected].type==4) || (stars[curSystem].planets[stars[curSystem].selected].type==5))
 	{
-		selectedSpriteBig.draw(canvas, stars[curSystem].planets[stars[curSystem].selected].x+camera.x-32,stars[curSystem].planets[stars[curSystem].selected].y+camera.y-32);
+		canvas.translate((stars[curSystem].planets[stars[curSystem].selected].x+camera.x)*camera.zoom,(stars[curSystem].planets[stars[curSystem].selected].y+camera.y)*camera.zoom);
+		canvas.scale(stars[curSystem].planets[stars[curSystem].selected].size*camera.zoom,stars[curSystem].planets[stars[curSystem].selected].size*camera.zoom);
+		selectedSpriteBig.draw(canvas, -32,-32);
 	}else
 	{
-		selectedSprite.draw(canvas, stars[curSystem].planets[stars[curSystem].selected].x+camera.x-16,stars[curSystem].planets[stars[curSystem].selected].y+camera.y-16);
+		canvas.translate((stars[curSystem].planets[stars[curSystem].selected].x+camera.x)*camera.zoom,(stars[curSystem].planets[stars[curSystem].selected].y+camera.y)*camera.zoom);
+		canvas.scale(stars[curSystem].planets[stars[curSystem].selected].size*camera.zoom,stars[curSystem].planets[stars[curSystem].selected].size*camera.zoom);
+		selectedSprite.draw(canvas, -16,-16);
 	}
-	//canvas.fillText("Particles: "+ monsta.particles.length,460,550);
-	for(var i=0;i<numShips;i++)
-	{
-		ships[i].draw(canvas,camera);
-	}
+	canvas.restore();
+	
+	canvas.save(); 
 	if(ships[curShip].class=="Type 2 Shuttle")//.target?
 	{
-		shipSelSprite.draw(canvas, ships[curShip].x+camera.x-8,ships[curShip].y+camera.y-8);
+		canvas.translate((ships[curShip].x+camera.x)*camera.zoom,(ships[curShip].y+camera.y)*camera.zoom);
+		canvas.scale(camera.zoom,camera.zoom);
+		shipSelSprite.draw(canvas, -8,-8);
 	}else
 	{
-		shipSelSpriteB.draw(canvas, ships[curShip].x+camera.x-16,ships[curShip].y+camera.y-16);
+		canvas.translate((ships[curShip].x+camera.x)*camera.zoom,(ships[curShip].y+camera.y)*camera.zoom);
+		canvas.scale(camera.zoom,camera.zoom);
+		shipSelSpriteB.draw(canvas, -16,-16);
 	}
+	canvas.restore();
 };
 
 function mainMenuUpdate(){

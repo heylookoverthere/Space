@@ -524,7 +524,7 @@ function starShip(){
 		if(this.alive)
 		{
 			can.save();
-			can.translate(this.x+cam.x,this.y+cam.y);
+			can.translate((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
 			if(this.orbiting)
 			{
 				can.rotate((this.orbitTrack-this.leavingProgress)* (Math.PI / 180));
@@ -536,6 +536,7 @@ function starShip(){
 			{
 				canvas.globalAlpha=0.30;
 			}
+			can.scale(cam.zoom,cam.zoom);
 			this.sprite.draw(can, -this.width/2,-this.height/2);
 			if(this.shields>0)
 			{

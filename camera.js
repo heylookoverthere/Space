@@ -8,7 +8,6 @@ var camera = {  //represents the camera, aka what part of the map is on screen
 	panning: false,
 	panX: 0,
 	panY: 0,
-	zoom: 0,
 	panSpeed: 3,
 	following:null,
 	

@@ -31,7 +31,23 @@ function mouseWheel(e){
 	}
 	mX = e.pageX - canvasElement.get(0).offsetLeft;
 	mY = e.pageY - canvasElement.get(0).offsetTop;
-	//if (delta)
+	if ((delta>0) && (camera.zoom<2)){
+		camera.zoom+=.2;
+		camera.x-=CANVAS_WIDTH/2;
+		camera.y-=CANVAS_HEIGHT/2;
+		//camera.x-=450*Math.pow(2, camera.zoom-1);camera.y-=320*Math.pow(2, camera.zoom-1)
+	}else if (delta<0){
+		console.log("yar");
+		if(camera.zoom<.4)
+		{
+			camera.zoom=.2;
+		}else
+		{
+			camera.zoom-=.2;
+			camera.x+=CANVAS_WIDTH/2;
+			camera.y+=CANVAS_HEIGHT/2;
+		}
+	}
 	
 	if (e.preventDefault)
 			e.preventDefault();
