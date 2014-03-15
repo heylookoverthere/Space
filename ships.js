@@ -34,6 +34,9 @@ function dude() {
 	this.hp=100;
 	this.maxHp=100;
 	this.alive=true;
+	this.level=1;
+	this.moveSpeed=1;
+	this.xp=0;
 	this.ID=0;
 	this.race="human";
 	this.rank=0;
@@ -70,6 +73,132 @@ function energyWeapon(hip)
 	};
 }
 
+function escapePod(){
+	this.x=0;
+	this.y=0;
+	this.alive=true;
+	this.hp=10;
+	this.active=false;
+	this.capacity=1;
+	this.statis=false;
+	this.warpSpeed=false;
+	this.maxSpeed=2;
+	this.desiredSpeed=0;
+	this.speed=0;
+	this.sprite=Sprite("pod");
+	this.destination=null;
+	this.heading=0;
+	this.desiredHeading=0;
+	this.crewCapacity=1;
+	this.seatsFull=0;
+	this.seats=new Array();
+	this.cloak=false;
+	this.armor=0;
+	this.shields=0;
+	this.turning=false;
+	this.launch=function(source,dest){
+		this.x=source.x;
+		this.y=source.y;
+		this.xv=source.xv;
+		this.yv=source.yv;
+		this.destination=dest;
+		var beta=Math.atan2(this.desination.y-this.y,this.destination.x-this.x)* (180 / Math.PI);
+		
+		if (beta < 0.0)
+			beta += 360.0;
+		else if (beta > 360.0)
+			beta -= 360;
+		this.desiredHeading=beta;
+		this.active=true;
+		this.speed=0;
+		this.active=true;
+		this.desiredSpeed=this.maxSpeed;
+	};
+	
+	this.update=function(){
+		//accel or decel to desired speed
+		if(this.speed<Math.floor(this.desiredSpeed))
+		{
+			this.accelerate();
+		}else if(this.speed>Math.floor(this.desiredSpeed))
+		{
+			this.decelerate();
+		}
+		
+		//update desired heading
+		var beta=Math.atan2(this.desination.y-this.y,this.destination.x-this.x)* (180 / Math.PI);
+	
+		if (beta < 0.0)
+			beta += 360.0;
+		else if (beta > 360.0)
+			beta -= 360;
+		this.desiredHeading=beta;
+		//turn to desired heading
+		if(Math.floor(this.heading)<Math.floor(this.desiredHeading))
+		{
+			this.heading+=this.turnSpeed*gameSpeed;
+			this.turning=true;
+			if (this.heading < 0.0)
+				this.heading += 360.0;
+			else if (this.heading > 360.0)
+				this.heading -= 360;
+		}else if(Math.floor(this.heading)>Math.floor(this.desiredHeading))
+		{
+			this.heading-=this.turnSpeed*gameSpeed;
+			this.turning=true;
+			if (this.heading < 0.0)
+				this.heading += 360.0;
+			else if (this.heading > 360.0)
+				this.heading -= 360;
+		}else
+		{
+			this.turning=false;
+		}
+		this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
+		this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
+		this.x+=this.xv*gameSpeed*this.speed;
+		this.y+=this.yv*gameSpeed*this.speed;
+		if(this.x<0)
+		{
+			this.x=0;
+		}
+		if(this.y<0)
+		{
+			this.y=0;
+		}
+		if(this.x>universeWidth)
+		{
+			this.x=universeWidth;
+		}
+		if(this.y>universeHeight)
+		{
+			this.y=universeHeight;
+		}
+	};
+	this.draw=function(can,cam){
+		if((this.alive) && (this.active))
+		{
+			can.save();
+			can.translate((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
+
+			if(this.cloaked)
+			{
+				canvas.globalAlpha=0.30;
+			}
+			can.scale(cam.zoom,cam.zoom);
+			this.sprite.draw(can, -this.width/2,-this.height/2);
+			if(this.shields>0)
+			{
+				canvas.globalAlpha=this.shields/100;
+				this.shieldSprite.draw(can, -this.width,-this.height);
+			}
+			can.restore();
+			
+			//this.sprite.draw(can, this.x-cam.x-this.width/2,this.y-cam.y-this.height/2);
+		}
+	};
+};
+
 function starShip(){
 	this.race=0;
 	this.x=0;
@@ -77,6 +206,11 @@ function starShip(){
 	this.xv=0;
 	this.yv=0;
 	
+	this.NCC=0;//initial random+counter?
+	this.warpSignature=0;
+	this.commandCode=1234;
+	this.prefixCode=Math.floor(Math.random()*9999); //that bullshit from WoKhan
+	this.escapePods=new Array();
 	this.acceltick=0;
 	this.accelrate=50;
 	this.weaponsHot=0;
@@ -210,6 +344,14 @@ function starShip(){
 				console.log("The crew of the "+this.name+" have been killed.  Vessel adrift.");
 			}
 		}
+	};
+	
+	this.prepEvac=function(level){ //TODO: gets non essentail (judged by level var) personalle to escape pods.
+		this.prevacuated=level*10;
+	};
+	
+	this.Evac=function(){//TODO: shoots out pods over time, can get headstart by preping evac.
+	
 	};
 	
 	this.orderOrbit=function(targ){

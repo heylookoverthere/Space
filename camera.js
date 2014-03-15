@@ -14,13 +14,45 @@ var camera = {  //represents the camera, aka what part of the map is on screen
 	center: function(targ) {
         //if(this.zoom>1) {tx=0;ty=0;x=0;y=0;return;}
 		//mapDirty=true;
-		var tax=0-Math.floor(targ.x-CANVAS_WIDTH/2);
-		var tay=0-Math.floor(targ.y-CANVAS_HEIGHT/2);
+		if(this.zoom==1)
+		{
+			var tax=0-Math.floor(targ.x-CANVAS_WIDTH/2);
+			var tay=0-Math.floor(targ.y-CANVAS_HEIGHT/2);
+		}else if(this.zoom==.2)
+		{
+			
+		}else if(this.zoom==.4)
+		{
+			
+		}else if(this.zoom==.6)
+		{
+			
+		}else if(this.zoom==.8)
+		{
+			
+		}else if(this.zoom==1.2)
+		{
+			
+		}else if(this.zoom==1.4)
+		{	
+			
+		}else if(this.zoom==1.6)
+		{	
+			
+		}else if(this.zoom==1.8)
+		{	
+			
+		}else if(this.zoom==2)
+		{
+			
+		}
+		
 
         /*if (tax<0) {tax=0;}
         if (tay<0) {tay=0;}
         if (tax>universeWidth-this.width) {tax=universeWidth-this.width;}
         if (tay>universeHeight-this.height) {tay=universeHeight-this.height;}*/
+		
 
         this.x=tax;
         this.y=tay;

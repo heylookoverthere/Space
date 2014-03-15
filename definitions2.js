@@ -165,7 +165,7 @@ function nebula(){
 		
 	};
 };
-
+//16.075
 function star(){
 	this.x=420;
 	this.y=300;
