@@ -137,7 +137,7 @@ var shipleftkey=new akey("q");
 var shiprightkey=new akey("w");
 var shipgokey=new akey("e");
 var shipslowkey=new akey("r");
-var evackey=new akey("x");
+var evackey=new akey("esc");
 
 var unitinfokey=new akey("u");
 var cardkey=new akey("c");
@@ -282,8 +282,15 @@ function mainMenuDraw(){
 	{
 		actiontext="Adjusting Heading";
 	}
-	canvas.fillText("Ship: "+ships[curShip].prefix+" "+ships[curShip].name,755,455);
-	canvas.fillText("Crew Compliment: "+ ships[curShip].crewNum,755,470);
+	canvas.fillText("Ship: "+ships[curShip].prefix+" "+ships[curShip].name,755,425);
+	canvas.fillText("Hull Integrity: "+ships[curShip].hp+"/"+ships[curShip].maxHp,755,440);
+	if(ships[curShip].selfDestructActive)
+	{
+		canvas.fillStyle = "red";
+		canvas.fillText("SELF DESTRUCT IN " +ships[curShip].selfDestructTick,755,455);
+		canvas.fillStyle = "white";
+	}
+	canvas.fillText("Crew Compliment: "+ ships[curShip].crew.length+"/"+ships[curShip].crewMax,755,470);
 	canvas.fillText("Class: "+ ships[curShip].class,755,485);
 	canvas.fillText(actiontext,755,500);
 	canvas.fillText("Coords: "+Math.floor(ships[curShip].x)+","+Math.floor(ships[curShip].y),755,515);
@@ -307,7 +314,7 @@ function mainMenuDraw(){
 
 	}*/
 	
-	for(var i=0;i<numShips;i++)
+	for(var i=0;i<ships.length;i++)
 	{
 		ships[i].draw(canvas,camera);
 	}
@@ -346,6 +353,10 @@ function mainMenuDraw(){
 		shipSelSpriteB.draw(canvas, -16,-16);
 	}
 	canvas.restore();
+	for(var i=0;i<this.escapes.length;i++)
+	{
+		escapes[i].draw(canvas,camera);
+	}
 	for(var i=0;i<numNebulas;i++)
 	{
 		nebulas[i].draw(canvas,camera);
@@ -373,54 +384,70 @@ function mainMenuUpdate(){
 	if(upkey.check()){
 		mmcur=!mmcur;
 	}*/
-	if(evackey.check())
+	if((!ships[curShip].adrift) && (ships[curShip].crew.length>0))
 	{
-		ships[curShip].Evac(stars[0].planets[2]);
-		console.log(ships[curShip].name+ "'s crew is abandoning ship.");
-	}
-	if(shipleftkey.check())
+		if(evackey.check())
+		{
+			if((ships[curShip].evacuating) || (ships[curShip].evacDone))
+			{
+				ships[curShip].selfDestructActive=true;
+			}else
+			{
+				ships[curShip].Evac(stars[0].planets[2]);
+				console.log(ships[curShip].name+ "'s crew is abandoning ship.");
+			}
+		}
+		if(shipleftkey.check())
+		{
+			ships[curShip].adjustHeading(ships[curShip].heading-20);
+			ships[curShip].manualHelm();
+		}
+		if(shiprightkey.check())
+		{
+			ships[curShip].adjustHeading(ships[curShip].heading+20);
+			ships[curShip].manualHelm();
+		}
+		if(shipgokey.check())
+		{
+			ships[curShip].desiredSpeed++;
+		}
+		
+		if(shipslowkey.check())
+		{
+			ships[curShip].desiredSpeed--;
+		}
+		if(gokey.check())
+		{
+			/*ships[0].gotoDest=true;
+			ships[0].destx=420;
+			ships[0].desty=300;*/
+			if((ships[curShip].orbiting) && (!this.leavingProgres))
+			{
+				ships[curShip].orderLeaveOrbit();
+			}else
+			{
+				ships[curShip].orbit(stars[curSystem].planets[stars[curSystem].selected]);
+				console.log("The U.S.S. "+ships[curShip].name+" is now orbiting " +stars[curSystem].planets[stars[curSystem].selected].name);
+			}
+		}
+	}else
 	{
-		ships[curShip].adjustHeading(ships[curShip].heading-20);
-		ships[curShip].manualHelm();
-	}
-	if(shiprightkey.check())
-	{
-		ships[curShip].adjustHeading(ships[curShip].heading+20);
-		ships[curShip].manualHelm();
-	}
-	if(shipgokey.check())
-	{
-		ships[curShip].desiredSpeed++;
-	}
-	
-	if(shipslowkey.check())
-	{
-		ships[curShip].desiredSpeed--;
+		if( (gokey.check()) || (shipslowkey.check()) || (shipgokey.check()) || (shiprightkey.check()) || (shipleftkey.check()))
+		{
+			console.log("No crew aboard "+ships[curShip].name+ " to execute orders!");
+		}
 	}
 	
 	if(toggleshipkey.check())
 	{
 		curShip++;
-		if(curShip>numShips-1) {
+		if(curShip>ships.length-1) {
 			curShip=0;
 		}
 		camera.center(ships[curShip]);
 		camera.follow(ships[curShip]);
 	}
-	if(gokey.check())
-	{
-		/*ships[0].gotoDest=true;
-		ships[0].destx=420;
-		ships[0].desty=300;*/
-		if((ships[curShip].orbiting) && (!this.leavingProgres))
-		{
-			ships[curShip].orderLeaveOrbit();
-		}else
-		{
-			ships[curShip].orbit(stars[curSystem].planets[stars[curSystem].selected]);
-			console.log("The U.S.S. "+ships[curShip].name+" is now orbiting " +stars[curSystem].planets[stars[curSystem].selected].name);
-		}
-	}
+	
 	
 	if(starkey.check())
 	{
@@ -502,11 +529,19 @@ function mainMenuUpdate(){
 	{
 		spinArt=!spinArt;
 	}
-	for(var i=0;i<numShips;i++)
+	for(var i=0;i<ships.length;i++)
 	{
-		ships[i].update();
-		ships[i].nearbySystems=ships[i].inSensorRange(stars);
-		ships[i].nearbyVessels=ships[i].inSensorRange(ships);
+		if(ships[i].alive)
+		{
+			ships[i].nearbySystems=ships[i].inSensorRange(stars);	
+			ships[i].nearbyVessels=ships[i].inSensorRange(ships);
+			ships[i].update();
+
+		}
+	}
+	for(var i=0;i<this.escapes.length;i++)
+	{
+		escapes[i].update();
 	}
 	camera.update();
 	theTime.update(Earth);

@@ -195,7 +195,7 @@ function particleSystem(){
 	this.explosion=function(num,x,y,force){
 		for( var i = 0; i < num;i++) {
 			var ang = Math.random()*360;
-			var vel = Math.random() * 15 + 8;
+			var vel = 0;//Math.random() * 15 + 8;
 			this.start(700, x, y, Math.cos(ang* (Math.PI / 180))*vel, Math.sin(ang*(Math.PI / 180))*vel,bColors[Math.floor(Math.random()*8)],true);
 		}
 	};

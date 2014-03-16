@@ -10,6 +10,24 @@ shipNames[0]=["Enterprise","Hood","Voyager","Defiant","Intrepid","Akira","Excali
 shipNames[1]=["D'Kyr","D'Vahl","Tal'Kir","Ti'Mur","T'Pau","T'Vran","Ni'Var","Nyran","Seleya","Sh'Raan","Vaankara","Vahklas","Yarahla"];
 shipNames[4]=["Belak","D'Ridthau","Decius","Devoras","Dividices","Genorex","Haakona","Khazara","Makar"];
 shipNames[5]=["Amar","B'Moth","Bortas","Ch'Tang","Fek'lhr","Gr'oth","Hegh'ta","Hor'Cha","Rotarran","Par'tok","Ya'Vang",];
+
+var escapes=new Array();
+var crewPool=new Array();
+
+updateEscapes=function()
+{
+	for(var i=0;i<escapes.length;i++)
+	{
+		if(!escapes[i].active)
+		{
+			escapes.splice(i,1);
+		}else
+		{
+			escapes[i].update();
+		}
+	}
+};
+
 for (var ci=0;ci<20;ci++)
 {
 	shipNames[9][ci]=Math.floor(Math.random()*9999);
@@ -91,6 +109,7 @@ function escapePod(){
 	this.destination=null;
 	this.heading=0;
 	this.desiredHeading=0;
+	this.passenger=null;
 	this.crewCapacity=1;
 	this.seatsFull=0;
 	this.seats=new Array();
@@ -101,7 +120,6 @@ function escapePod(){
 	this.shields=0;
 	this.turning=false;
 	this.launch=function(source,dest){
-	console.log(source);
 		this.x=source.x+16;
 		this.y=source.y+16;
 		this.xv=source.xv;
@@ -118,7 +136,6 @@ function escapePod(){
 		this.speed=0;
 		this.active=true;
 		this.desiredSpeed=this.maxSpeed;
-		console.log(this);
 	};
 	
 		this.accelerate=function()
@@ -157,7 +174,8 @@ function escapePod(){
 		
 		if((Math.abs(this.x-this.destination.x)<20) && (Math.abs(this.y-this.destination.y)<20)) 
 		{
-			console.log("escape pod arrived at earth!");
+			console.log(this.passenger.title+" "+this.passenger.name+"'s escape pod arrived at earth!");
+			crewPool.push(this.passenger);
 			this.active=false;
 		}
 		
@@ -250,7 +268,9 @@ function starShip(){
 	this.y=0;
 	this.xv=0;
 	this.yv=0;
-	
+	this.maxHp=100;
+	this.selfDestructActive=false;
+	this.selfDestructTick=100;
 	this.evacRate=10;
 	this.evacTick=0;
 	this.evacTrack=0;
@@ -301,7 +321,7 @@ function starShip(){
 	this.name=shipNames[this.race][nami];
 	shipNamesUsed[this.race][nami]=true;
 	this.crewCapacity=5;
-	this.crewNum=0;
+	this.crewMax=0;
 	this.crew=new Array();
 	this.orbiting=false;
 	this.orbitDiameter=30;
@@ -362,10 +382,19 @@ function starShip(){
 		this.name=shipNames[this.race][nami];
 		shipNamesUsed[this.race][nami]=true;
 	};
+
+	this.getDamaged=function(amt){
+		this.hp-=amt;
+		if(this.hp<1)
+		{
+			killShip(this);
+		}
+		//todo randomly damage systems, kill crew.
+	};
 	
 	this.crewVessel=function(){
-		this.crewNum=Math.floor(Math.random()*4)+2;
-		for(var i=0;i<this.crewNum;i++){
+		this.crewMax=Math.floor(Math.random()*4)+4;
+		for(var i=0;i<this.crewMax;i++){
 			this.crew[i]=new dude();
 			if((Math.random()*100)<20)
 			{
@@ -377,7 +406,7 @@ function starShip(){
 	
 	this.checkCrew=function(){
 		
-		if(this.crewNum<1)
+		if(this.crew.length<1)
 		{
 			//console.log("The crew of the "+this.name+" have been killed.  Vessel adrift.");
 			return false; 
@@ -388,14 +417,15 @@ function starShip(){
 	this.killRandomCrew=function(cause){
 		if(cause==null) {cause=".";}
 		if(this.checkCrew()){
-			var vict=Math.floor(Math.random()*this.crewNum);
+			var vict=Math.floor(Math.random()*this.crew.length);
 			this.crew[vict].kill(cause);
 			this.crewLost++;
 			this.crew.splice(vict,1);
-			this.crewNum--;
-			if(this.crewNum<1)
+			//this.crewNum--;
+			if(this.crew.length<1)
 			{
 				console.log("The crew of the "+this.name+" have been killed.  Vessel adrift.");
+				this.adrift=true;
 			}
 		}
 	};
@@ -599,6 +629,15 @@ function starShip(){
 	};
 	
 	this.update=function(){
+		if(this.selfDestructActive)
+		{
+			this.selfDestructTick-=1*gameSpeed;
+			if(this.selfDestructTick <0)
+			{
+				killShip(this);
+				//explosion!
+			}
+		}	
 		if(this.orbiting)
 		{
 			
@@ -713,10 +752,7 @@ function starShip(){
 			this.generateEvent();
 			this.tillEvent=Math.random()*8000;
 		}
-		for(var i=0;i<this.numEscapePods;i++)
-		{
-			this.escapePods[i].update();
-		}
+
 		/*this.heading++;
 		if (this.heading>359) { this.heading=0;}*/
 		if((this.evacuating) && (!this.evacDone))
@@ -725,12 +761,17 @@ function starShip(){
 			if(this.evacTick>100)
 			{
 				this.evacTick=0;
+				this.escapePods[this.evacTrack].passenger=this.crew.pop();
+				//this.crewNum--;
 				this.escapePods[this.evacTrack].launch(this,this.homeworld);
+				escapes.push(this.escapePods[this.evacTrack]);
 				this.evacTrack++;
-				if(this.evacTrack>this.numEscapePods-1)
+				if((this.evacTrack>this.numEscapePods-1) || (this.crew.length<1))
 				{
 					this.evacDone=true;
 					//todo ship adrift
+					this.adrift=true;
+					console.log("The "+this.name+" has been evacuated");
 				}
 			}
 		}
@@ -767,10 +808,7 @@ function starShip(){
 			}
 
 			can.restore();
-			for(var i=0;i<this.numEscapePods;i++)
-			{
-				this.escapePods[i].draw(canvas,camera);
-			}
+
 			//this.sprite.draw(can, this.x-cam.x-this.width/2,this.y-cam.y-this.height/2);
 		}
 	};
