@@ -530,7 +530,7 @@ function drawStarfield(canv,cam){
 	starsDrawn=0;
 	for(var i=0;i<numStars;i++)
 	{
-		if((backStarsX[i]+cam.x>0) && (backStarsX[i]+cam.x<CANVAS_WIDTH)&& (backStarsY[i]+cam.y>0) && (backStarsY[i]+cam.y<CANVAS_HEIGHT))
+		if(((backStarsX[i]+cam.x)*camera.zoom>0) && ((backStarsX[i]+cam.x)*camera.zoom<CANVAS_WIDTH)&& ((backStarsY[i]+cam.y)*camera.zoom>0) && ((backStarsY[i]+cam.y)*camera.zoom<CANVAS_HEIGHT))
 		//if((backStarsX[i]>cam.x) &&(backStarsX[i]<cam.x+CANVAS_WIDTH) && (backStarsY[i]>cam.y) && (backStarsY[i]<cam.y+CANVAS_HEIGHT))
 		{
 			starsDrawn++;
@@ -541,8 +541,8 @@ function drawStarfield(canv,cam){
 					s=Math.random()*2;
 				}
 			}
-			//canv.fillRect((backStarsX[i]+cam.x)*camera.zoom, (backStarsY[i]+cam.y)*camera.zoom, backStarsS[i]+s, backStarsS[i]+s);
-			canv.fillRect((backStarsX[i]+cam.x), (backStarsY[i]+cam.y), backStarsS[i]+s, backStarsS[i]+s);
+			canv.fillRect((backStarsX[i]+cam.x)*camera.zoom, (backStarsY[i]+cam.y)*camera.zoom, backStarsS[i]+s, backStarsS[i]+s);
+			//canv.fillRect((backStarsX[i]+cam.x), (backStarsY[i]+cam.y), backStarsS[i]+s, backStarsS[i]+s);
 		}
 	}
 };

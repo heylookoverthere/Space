@@ -456,7 +456,7 @@ function mainMenuUpdate(){
 	{
 		//if(camera.x<universeWidth-CANVAS_WIDTH)
 		{
-			camera.x+=cmoverate;
+			camera.x+=cmoverate*camera.zoomMove;
 		}
 		camera.unFollow();
 	}
@@ -464,7 +464,7 @@ function mainMenuUpdate(){
 	{
 		//if(camera.x>0)
 		{
-			camera.x-=cmoverate;
+			camera.x-=cmoverate*camera.zoomMove;
 		}
 		camera.unFollow();
 	}
@@ -472,7 +472,7 @@ function mainMenuUpdate(){
 	{
 		//if(camera.y<universeHeight-CANVAS_HEIGHT)
 		{
-			camera.y+=cmoverate;
+			camera.y+=cmoverate*camera.zoomMove;
 		}
 		camera.unFollow();
 	}
@@ -480,7 +480,7 @@ function mainMenuUpdate(){
 	{
 		//if(camera.y>0)
 		{
-			camera.y-=cmoverate;
+			camera.y-=cmoverate*camera.zoomMove;
 		}
 		camera.unFollow();
 	}
@@ -489,6 +489,7 @@ function mainMenuUpdate(){
 	{
 		camera.x=0-stars[0].x+CANVAS_WIDTH/2;
 		camera.y=0-stars[0].y+CANVAS_HEIGHT/2;
+		camera.center(stars[0]);
 		curSystem=0;
 		camera.unFollow();
 	}

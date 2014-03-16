@@ -20,6 +20,17 @@ $(document).bind("contextmenu",function(e){
     return false;
 });
 
+function truncate(a)
+{
+	Math.floor(a * 100) / 100;
+	return a;
+}
+
+function truncator(numToTruncate, intDecimalPlaces) {    
+    var numPower = Math.pow(10, intDecimalPlaces); // "numPowerConverter" might be better
+    return ~~(numToTruncate * numPower)/numPower;
+}
+
 function mouseWheel(e){
 	var delta = 0;
 	if (e.wheelDelta)
@@ -31,24 +42,21 @@ function mouseWheel(e){
 	}
 	mX = e.pageX - canvasElement.get(0).offsetLeft;
 	mY = e.pageY - canvasElement.get(0).offsetTop;
-	if ((delta>0) && (camera.zoom<2)){
-		camera.zoom+=.2;
-		camera.x-=CANVAS_WIDTH/2;
-		camera.y-=CANVAS_HEIGHT/2;
+	if ((delta>0) && (camera.zoomFactor<9)){
+		camera.zoomFactor++;
 		//camera.x-=450*Math.pow(2, camera.zoom-1);camera.y-=320*Math.pow(2, camera.zoom-1)
 	}else if (delta<0){
-		console.log("yar");
-		if(camera.zoom<.4)
+		if(camera.zoomFactor<1)
 		{
-			camera.zoom=.2;
+			camera.zoomFactor=0;
 		}else
 		{
-			camera.zoom-=.2;
-			camera.x+=CANVAS_WIDTH/2;
-			camera.y+=CANVAS_HEIGHT/2;
+			camera.zoomFactor--;
 		}
 	}
-	
+	camera.zoom=zooms[camera.zoomFactor];
+	camera.zoomMove=zoomMoves[camera.zoomFactor];
+	camera.center(stars[0]);
 	if (e.preventDefault)
 			e.preventDefault();
 	e.returnValue = false;
