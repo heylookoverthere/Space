@@ -82,6 +82,8 @@ function escapePod(){
 	this.capacity=1;
 	this.statis=false;
 	this.warpSpeed=false;
+	this.width=8;
+	this.height=8;
 	this.maxSpeed=2;
 	this.desiredSpeed=0;
 	this.speed=0;
@@ -92,17 +94,20 @@ function escapePod(){
 	this.crewCapacity=1;
 	this.seatsFull=0;
 	this.seats=new Array();
+	this.acceltick=0;
+	this.acceleration=.5;
 	this.cloak=false;
 	this.armor=0;
 	this.shields=0;
 	this.turning=false;
 	this.launch=function(source,dest){
-		this.x=source.x;
-		this.y=source.y;
+	console.log(source);
+		this.x=source.x+16;
+		this.y=source.y+16;
 		this.xv=source.xv;
 		this.yv=source.yv;
 		this.destination=dest;
-		var beta=Math.atan2(this.desination.y-this.y,this.destination.x-this.x)* (180 / Math.PI);
+		var beta=Math.atan2(this.destination.y-this.y,this.destination.x-this.x)* (180 / Math.PI);
 		
 		if (beta < 0.0)
 			beta += 360.0;
@@ -113,10 +118,49 @@ function escapePod(){
 		this.speed=0;
 		this.active=true;
 		this.desiredSpeed=this.maxSpeed;
+		console.log(this);
+	};
+	
+		this.accelerate=function()
+	{
+		this.acceltick++;
+		if(this.acceltick<this.accelrate)
+		{
+			return;
+		}
+		this.acceltick=0;
+		if (this.speed<this.maxSpeed)
+		{
+			this.speed+=this.acceleration;
+		}
+	};
+	
+	this.decelerate=function()
+	{
+		this.acceltick++;
+		if(this.acceltick<this.accelrate)
+		{
+			return;
+		}
+		this.acceltick=0;
+		if (this.speed>0)
+		{
+			this.speed-=this.acceleration;
+		}
 	};
 	
 	this.update=function(){
 		//accel or decel to desired speed
+		if((!this.active) || (!this.alive)) {
+			return;
+		}
+		
+		if((Math.abs(this.x-this.destination.x)<20) && (Math.abs(this.y-this.destination.y)<20)) 
+		{
+			console.log("escape pod arrived at earth!");
+			this.active=false;
+		}
+		
 		if(this.speed<Math.floor(this.desiredSpeed))
 		{
 			this.accelerate();
@@ -126,12 +170,13 @@ function escapePod(){
 		}
 		
 		//update desired heading
-		var beta=Math.atan2(this.desination.y-this.y,this.destination.x-this.x)* (180 / Math.PI);
+		var beta=Math.atan2(this.destination.y-this.y,this.destination.x-this.x)* (180 / Math.PI);
 	
 		if (beta < 0.0)
 			beta += 360.0;
 		else if (beta > 360.0)
 			beta -= 360;
+		this.heading=beta;
 		this.desiredHeading=beta;
 		//turn to desired heading
 		if(Math.floor(this.heading)<Math.floor(this.desiredHeading))
@@ -180,7 +225,7 @@ function escapePod(){
 		{
 			can.save();
 			can.translate((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
-
+			can.rotate((this.heading-90)* (Math.PI / 180));//todo negatives.
 			if(this.cloaked)
 			{
 				canvas.globalAlpha=0.30;
@@ -206,6 +251,10 @@ function starShip(){
 	this.xv=0;
 	this.yv=0;
 	
+	this.evacRate=10;
+	this.evacTick=0;
+	this.evacTrack=0;
+	this.evacDone=false;
 	this.NCC=0;//initial random+counter?
 	this.warpSignature=0;
 	this.commandCode=1234;
@@ -260,6 +309,7 @@ function starShip(){
 	this.desiredOrbitTarg=null;
 	this.gotoDest=false;
 	this.dest=null;
+	this.homeworld=null;
 	this.destx=0;
 	this.desty=0;
 	this.orby=0;
@@ -282,7 +332,11 @@ function starShip(){
 	this.tillEvent=Math.random()*8000;
 	this.armor=0;
 	this.sheilds=0;
-	this.escapePods=0;
+	this.numEscapePods=10;
+	for(var i=0;i<this.numEscapePods;i++)
+	{
+		this.escapePods[i]=new escapePod();
+	}
 	this.transporter=0;
 	this.crewQuarters=0;
 	this.tractor=0;
@@ -350,8 +404,8 @@ function starShip(){
 		this.prevacuated=level*10;
 	};
 	
-	this.Evac=function(){//TODO: shoots out pods over time, can get headstart by preping evac.
-	
+	this.Evac=function(targ){//TODO: shoots out pods over time, can get headstart by preping evac.
+		this.evacuating=true;
 	};
 	
 	this.orderOrbit=function(targ){
@@ -659,8 +713,27 @@ function starShip(){
 			this.generateEvent();
 			this.tillEvent=Math.random()*8000;
 		}
+		for(var i=0;i<this.numEscapePods;i++)
+		{
+			this.escapePods[i].update();
+		}
 		/*this.heading++;
 		if (this.heading>359) { this.heading=0;}*/
+		if((this.evacuating) && (!this.evacDone))
+		{
+			this.evacTick+=this.evacRate*gameSpeed;
+			if(this.evacTick>100)
+			{
+				this.evacTick=0;
+				this.escapePods[this.evacTrack].launch(this,this.homeworld);
+				this.evacTrack++;
+				if(this.evacTrack>this.numEscapePods-1)
+				{
+					this.evacDone=true;
+					//todo ship adrift
+				}
+			}
+		}
 	};
 	
 	this.draw=function(can,cam){
@@ -692,8 +765,12 @@ function starShip(){
 					this.shieldSprite.draw(can, -this.width/2-14,-this.height/2-12);
 				}
 			}
+
 			can.restore();
-			
+			for(var i=0;i<this.numEscapePods;i++)
+			{
+				this.escapePods[i].draw(canvas,camera);
+			}
 			//this.sprite.draw(can, this.x-cam.x-this.width/2,this.y-cam.y-this.height/2);
 		}
 	};

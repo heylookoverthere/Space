@@ -137,6 +137,7 @@ var shipleftkey=new akey("q");
 var shiprightkey=new akey("w");
 var shipgokey=new akey("e");
 var shipslowkey=new akey("r");
+var evackey=new akey("x");
 
 var unitinfokey=new akey("u");
 var cardkey=new akey("c");
@@ -372,6 +373,11 @@ function mainMenuUpdate(){
 	if(upkey.check()){
 		mmcur=!mmcur;
 	}*/
+	if(evackey.check())
+	{
+		ships[curShip].Evac(stars[0].planets[2]);
+		console.log(ships[curShip].name+ "'s crew is abandoning ship.");
+	}
 	if(shipleftkey.check())
 	{
 		ships[curShip].adjustHeading(ships[curShip].heading-20);

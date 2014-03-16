@@ -420,6 +420,7 @@ function initUniverse()
 function initShips(){
 	for(var i=0;i<numShips;i++){
 		ships[i].crewVessel();
+		ships[i].homeworld=Earth;
 	}
 	
 	ships[curShip].orbit(stars[curSystem].planets[stars[curSystem].selected]);	
