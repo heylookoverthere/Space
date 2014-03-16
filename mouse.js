@@ -20,16 +20,6 @@ $(document).bind("contextmenu",function(e){
     return false;
 });
 
-function truncate(a)
-{
-	Math.floor(a * 100) / 100;
-	return a;
-}
-
-function truncator(numToTruncate, intDecimalPlaces) {    
-    var numPower = Math.pow(10, intDecimalPlaces); // "numPowerConverter" might be better
-    return ~~(numToTruncate * numPower)/numPower;
-}
 
 function mouseWheel(e){
 	var delta = 0;
@@ -43,8 +33,10 @@ function mouseWheel(e){
 	mX = e.pageX - canvasElement.get(0).offsetLeft;
 	mY = e.pageY - canvasElement.get(0).offsetTop;
 	if ((delta>0) && (camera.zoomFactor<9)){
+		camera.x+=zoomAdjX[camera.zoomFactor];
+		camera.y+=zoomAdjY[camera.zoomFactor];
 		camera.zoomFactor++;
-		//camera.x-=450*Math.pow(2, camera.zoom-1);camera.y-=320*Math.pow(2, camera.zoom-1)
+
 	}else if (delta<0){
 		if(camera.zoomFactor<1)
 		{
@@ -52,11 +44,14 @@ function mouseWheel(e){
 		}else
 		{
 			camera.zoomFactor--;
+			//camera.x+=zoomAdjX[camera.zoomFactor];
+			//camera.y+=zoomAdjY[camera.zoomFactor];
+			camera.adjForZoom();
 		}
 	}
 	camera.zoom=zooms[camera.zoomFactor];
 	camera.zoomMove=zoomMoves[camera.zoomFactor];
-	camera.center(stars[0]);
+	//camera.adjForZoom(stars[0]);
 	if (e.preventDefault)
 			e.preventDefault();
 	e.returnValue = false;

@@ -1,5 +1,9 @@
-var zooms=[.2,.4,.6,.8,1,1.2,1.4,1.6,1.8,2]
-var zoomMoves=[8,6,4,2,1,.8,.6,.4,.2,.1]
+var zooms=[.2,.4,.6,.8,1,1.2,1.4,1.6,1.8,2];
+var zoomMoves=[8,6,4,2,1,.8,.6,.4,.2,.1];
+
+var zoomAdjX=[-1000,-420,-210,-100,-100,-50,-40,-30,-20,230];
+var zoomAdjY=[-640,-230,-120,-80,-80,-30,-20,-10,0,157];
+
 var zoomFactor=4;
 var camera = {  //represents the camera, aka what part of the map is on screen
     x: 0,
@@ -20,8 +24,10 @@ var camera = {  //represents the camera, aka what part of the map is on screen
 		//mapDirty=true;
 		if(this.zoomFactor==4)
 		{
-			var tax=0-Math.floor(targ.x-CANVAS_WIDTH/2);
-			var tay=0-Math.floor(targ.y-CANVAS_HEIGHT/2);
+			//var tax=0-Math.floor(targ.x-CANVAS_WIDTH/2);
+			//var tay=0-Math.floor(targ.y-CANVAS_HEIGHT/2);
+			var tax=-149550;
+			var tay=-149680;
 		}else if(this.zoomFactor==0)
 		{
 			var tax=-147835;
@@ -60,16 +66,24 @@ var camera = {  //represents the camera, aka what part of the map is on screen
 			var tay=-149850;
 		}
 		
-
+		
+		var nax= (-150000-tax);
+		var nay= (-150000-tay);
         /*if (tax<0) {tax=0;}
         if (tay<0) {tay=0;}
         if (tax>universeWidth-this.width) {tax=universeWidth-this.width;}
         if (tay>universeHeight-this.height) {tay=universeHeight-this.height;}*/
 		
-
-        this.x=tax;
-        this.y=tay;
+		
+		this.x=-targ.x-nax;
+		this.y=-targ.y-nay
     },
+	
+	adjForZoom: function() {
+		this.x-=zoomAdjX[this.zoomFactor];
+		this.y-=zoomAdjY[this.zoomFactor];
+    },
+	
 	follow: function(targ){
 		this.following=targ;
 	},

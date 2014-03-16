@@ -1,7 +1,8 @@
 //518 424 5687
 
 
-
+var cuntx=-149550;
+var cunty=-149680;
 var universeWidth=600000;
 var universeHeight=600000;
 var numStars=950000;
