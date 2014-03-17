@@ -129,6 +129,8 @@ function torpedo(){
 	this.yield=15;
 	this.width=8;
 	this.speed=15;
+	this.targ=null;
+	this.homing=true;
 	this.age=0;
 	this.height=8;
 	this.active=false;
@@ -183,6 +185,16 @@ function torpedo(){
 	this.update=function(thangs){
 	//also move the thing.
 	//homing?
+		if((this.homing) && (this.targ))
+		{
+			var beta=Math.atan2(this.destination.y-this.y,this.destination.x-this.x)* (180 / Math.PI);
+		
+			if (beta < 0.0)
+				beta += 360.0;
+			else if (beta > 360.0)
+				beta -= 360;
+			this.heading=beta;
+		}
 		this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
 		this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
 		this.x+=this.xv*gameSpeed*this.speed;
@@ -610,13 +622,22 @@ function starShip(){
 	this.fireTorpedo=function(targ){
 		if(this.numTorpedos<1) {return;}
 		this.numTorpedos--;
-		var beta=Math.atan2(targ.y-this.y,targ.x-this.x)* (180 / Math.PI);
-	
-		if (beta < 0.0)
-			beta += 360.0;
-		else if (beta > 360.0)
-			beta -= 360;
 		var torpy=new torpedo();
+		if(!targ)
+		{
+			var beta=this.heading;
+		}else
+		{
+			this.targ=targ;
+			
+			var beta=Math.atan2(targ.y-this.y,targ.x-this.x)* (180 / Math.PI);
+		
+			if (beta < 0.0)
+				beta += 360.0;
+			else if (beta > 360.0)
+				beta -= 360;
+		}
+		
 		torpy.heading=beta;
 		torpy.x=this.x;
 		torpy.y=this.y;
@@ -896,7 +917,7 @@ function starShip(){
 			
 			this.orbx=this.orbitTarg.x;
 			this.orby=this.orbitTarg.y;
-				
+			this.heading=this.orbitTrack+90;//TODO
 			this.orbitTrack+=this.orbitSpeed*gameSpeed;
 			this.orbitDiameter-=this.orbitDecay*this.orbitSpeed*gameSpeed;
 			if(this.orbitDiameter<1) 

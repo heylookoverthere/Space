@@ -1,5 +1,6 @@
 
 var gameSpeed=.3;
+var snoop=new Array();
 
 document.body.addEventListener("click", mouseClick, false);
 //document.body.addEventListener("dblclick", mouseDblClick, false);
@@ -443,7 +444,7 @@ function mainMenuUpdate(){
 		}
 		if(firekey.check())
 		{
-			ships[curShip].fireTorpedo(Earth);
+			ships[curShip].fireTorpedo();
 		}
 		if(shipslowkey.check())
 		{
@@ -583,7 +584,8 @@ function mainMenuUpdate(){
 	camera.update();
 	updateEscapes();
 	updateMines(ships);
-	updateTorpedos(ships);
+	snoop=ships.concat(mines);
+	updateTorpedos(snoop);
 	theTime.update(Earth);
 	
 };
