@@ -138,6 +138,7 @@ var shiprightkey=new akey("w");
 var shipgokey=new akey("e");
 var shipslowkey=new akey("r");
 var evackey=new akey("esc");
+var minekey=new akey("m");
 
 var unitinfokey=new akey("u");
 var cardkey=new akey("c");
@@ -148,6 +149,7 @@ var newkey=new akey("n");
 var createkey=new akey("j");
 var optkey=new akey("o");
 var tamekey=new akey("t");
+var firekey=new akey("f");
 
 
 
@@ -282,8 +284,24 @@ function mainMenuDraw(){
 	{
 		actiontext="Adjusting Heading";
 	}
-	canvas.fillText("Ship: "+ships[curShip].prefix+" "+ships[curShip].name,755,425);
-	canvas.fillText("Hull Integrity: "+ships[curShip].hp+"/"+ships[curShip].maxHp,755,440);
+	canvas.fillText("Ship: "+ships[curShip].prefix+" "+ships[curShip].name,755,380);
+	canvas.fillText("Hull Integrity: "+ships[curShip].hp+"/"+ships[curShip].maxHp,755,395);
+	canvas.fillText("02: "+Math.floor(ships[curShip].oxygen/10)+"%",755,410);
+	if(ships[curShip].breaches>0)
+	{
+		if(ships[curShip].breaches<2)
+		{
+			canvas.fillStyle = "red";
+			canvas.fillText("HULL BREACH",755,425);
+			canvas.fillStyle = "white";
+		}else
+		{
+			canvas.fillStyle = "red";
+			canvas.fillText("MULTIPLE HULL BREACHES",755,425);
+			canvas.fillStyle = "white";
+		}
+	}
+	canvas.fillText("Torpedos: "+ships[curShip].numTorpedos+" Mines: "+ships[curShip].numMines,755,440);
 	if(ships[curShip].selfDestructActive)
 	{
 		canvas.fillStyle = "red";
@@ -353,9 +371,17 @@ function mainMenuDraw(){
 		shipSelSpriteB.draw(canvas, -16,-16);
 	}
 	canvas.restore();
-	for(var i=0;i<this.escapes.length;i++)
+	for(var i=0;i<escapes.length;i++)
 	{
 		escapes[i].draw(canvas,camera);
+	}
+	for(var i=0;i<mines.length;i++)
+	{
+		mines[i].draw(canvas,camera);
+	}
+	for(var i=0;i<torpedos.length;i++)
+	{
+		torpedos[i].draw(canvas,camera);
 	}
 	for(var i=0;i<numNebulas;i++)
 	{
@@ -411,7 +437,14 @@ function mainMenuUpdate(){
 		{
 			ships[curShip].desiredSpeed++;
 		}
-		
+		if(minekey.check())
+		{
+			ships[curShip].layMine();
+		}
+		if(firekey.check())
+		{
+			ships[curShip].fireTorpedo(Earth);
+		}
 		if(shipslowkey.check())
 		{
 			ships[curShip].desiredSpeed--;
@@ -539,11 +572,18 @@ function mainMenuUpdate(){
 
 		}
 	}
-	for(var i=0;i<this.escapes.length;i++)
+	/*for(var i=0;i<this.escapes.length;i++)
 	{
 		escapes[i].update();
 	}
+	for(var i=0;i<this.mines.length;i++)
+	{
+		mines[i].update(ships);
+	}*/
 	camera.update();
+	updateEscapes();
+	updateMines(ships);
+	updateTorpedos(ships);
 	theTime.update(Earth);
 	
 };

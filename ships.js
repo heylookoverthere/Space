@@ -12,6 +12,8 @@ shipNames[4]=["Belak","D'Ridthau","Decius","Devoras","Dividices","Genorex","Haak
 shipNames[5]=["Amar","B'Moth","Bortas","Ch'Tang","Fek'lhr","Gr'oth","Hegh'ta","Hor'Cha","Rotarran","Par'tok","Ya'Vang",];
 
 var escapes=new Array();
+var mines=new Array();
+var torpedos=new Array();
 var crewPool=new Array();
 
 updateEscapes=function()
@@ -24,6 +26,32 @@ updateEscapes=function()
 		}else
 		{
 			escapes[i].update();
+		}
+	}
+};
+
+updateMines=function(thangs){
+	for(var i=0;i<mines.length;i++)
+	{
+		if(!mines[i].active)
+		{
+			mines.splice(i,1);
+		}else
+		{
+			mines[i].update(thangs);
+		}
+	}
+};
+
+updateTorpedos=function(thangs){
+	for(var i=0;i<torpedos.length;i++)
+	{
+		if(!torpedos[i].active)
+		{
+			torpedos.splice(i,1);
+		}else
+		{
+			torpedos[i].update(thangs);
 		}
 	}
 };
@@ -90,6 +118,184 @@ function energyWeapon(hip)
 	//stroke?!
 	};
 }
+
+function torpedo(){
+	this.x=0;
+	this.y=0;
+	this.xv=0;
+	this.yv=0;
+	this.range=40;
+	this.delayTick=5;
+	this.yield=15;
+	this.width=8;
+	this.speed=15;
+	this.age=0;
+	this.height=8;
+	this.active=false;
+	this.sprite=Sprite("torpedo");
+	this.armedsprite=Sprite("torpedoarmed");
+	this.homing=false;//todo!
+	this.draw=function(can,cam){
+		if(this.active)
+		{
+			can.save();
+			can.translate((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
+			can.rotate((this.heading-90)* (Math.PI / 180));//todo negatives.
+			if(this.cloaked)
+			{
+				canvas.globalAlpha=0.30;
+			}
+			can.scale(cam.zoom,cam.zoom);
+			if(this.delayTick<1)
+			{
+				this.armedsprite.draw(can, -this.width/2,-this.height/2);
+			}else
+			{
+				this.sprite.draw(can, -this.width/2,-this.height/2);
+			}
+			can.restore();
+		}
+	};
+	
+	this.inSensorRange=function(thangs){
+		var thongs=new Array();
+		for(var i=0;i<thangs.length;i++){
+			if ((Math.abs(thangs[i].x-this.x)<this.sensorRange) && (Math.abs(thangs[i].y-this.y)<this.sensorRange))
+			{
+				if((thangs[i]!=this) && (!thangs[i].cloaked)){  //todo, sensors that can detect cloaked ships.
+					thongs.push(thangs[i]);	
+					if((thangs[i].discovered==false)  && (this.race==0)){
+						thangs[i].discovered=true;
+						console.log("The "+this.name+ " discoverd the "+thangs[i].name+" System");
+						
+					}
+					if((fContacted[thangs[i].race]==false) && (this.race==0)){
+						fContacted[thangs[i].race]=true;
+						console.log("The "+this.name+ " made first contact with the "+races[thangs[i].race]+"s.");
+						this.generateFContactEvent(thangs[i].race);
+					}
+				}
+			}
+		}
+		return thongs;
+	};
+	
+	this.update=function(thangs){
+	//also move the thing.
+	//homing?
+		this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
+		this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
+		this.x+=this.xv*gameSpeed*this.speed;
+		this.y+=this.yv*gameSpeed*this.speed;
+		this.age++;
+		if(this.age>2000)
+		{
+			this.active=false;
+		}
+		if(this.delayTick>0)
+		{
+			this.delayTick-=1*gameSpeed;
+		}else
+		{
+			var thongs=new Array();
+			for(var i=0;i<thangs.length;i++){
+				//if ((Math.abs(thangs[i].x-this.x)<this.range) && (Math.abs(thangs[i].y-this.y)<this.range))
+				if((this.x>thangs[i].x) && (this.x<thangs[i].x+thangs[i].width/2) && (this.y>thangs[i].y) &&(this.y<thangs[i].y+thangs[i].height/2))
+				{
+					this.detonate();
+					thangs[i].getDamaged(this.yield);
+				}
+			}
+		}
+	};
+	this.detonate=function(){
+		//do damage on ships in range
+		monsta.explosionTextured(100,this.x,this.y,2,"explosionsmall");
+		this.active=false;
+	};
+};
+
+function mine(){
+	this.x=0;
+	this.y=0;
+	this.range=40;
+	this.delayTick=50;
+	this.yield=15;
+	this.width=8;
+	this.height=8;
+	this.active=false;
+	this.sprite=Sprite("mine");
+	this.armedsprite=Sprite("minearmed");
+	this.magnetic=false//todo!
+	this.draw=function(can,cam){
+		if(this.active)
+		{
+			can.save();
+			can.translate((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
+			//can.rotate((this.heading-90)* (Math.PI / 180));//todo negatives.
+			if(this.cloaked)
+			{
+				canvas.globalAlpha=0.30;
+			}
+			can.scale(cam.zoom,cam.zoom);
+			if(this.delayTick<1)
+			{
+				this.armedsprite.draw(can, -this.width/2,-this.height/2);
+			}else
+			{
+				this.sprite.draw(can, -this.width/2,-this.height/2);
+			}
+			can.restore();
+		}
+	};
+	
+	this.inSensorRange=function(thangs){
+		var thongs=new Array();
+		for(var i=0;i<thangs.length;i++){
+			if ((Math.abs(thangs[i].x-this.x)<this.sensorRange) && (Math.abs(thangs[i].y-this.y)<this.sensorRange))
+			{
+				if((thangs[i]!=this) && (!thangs[i].cloaked)){  //todo, sensors that can detect cloaked ships.
+					thongs.push(thangs[i]);	
+					if((thangs[i].discovered==false)  && (this.race==0)){
+						thangs[i].discovered=true;
+						console.log("The "+this.name+ " discoverd the "+thangs[i].name+" System");
+						
+					}
+					if((fContacted[thangs[i].race]==false) && (this.race==0)){
+						fContacted[thangs[i].race]=true;
+						console.log("The "+this.name+ " made first contact with the "+races[thangs[i].race]+"s.");
+						this.generateFContactEvent(thangs[i].race);
+					}
+				}
+			}
+		}
+		return thongs;
+	};
+	
+	this.update=function(thangs){
+		if(this.delayTick>0)
+		{
+			this.delayTick-=1*gameSpeed;
+		}else
+		{
+			var thongs=new Array();
+			for(var i=0;i<thangs.length;i++){
+				//if ((Math.abs(thangs[i].x-this.x)<this.range) && (Math.abs(thangs[i].y-this.y)<this.range))
+				if((this.x>thangs[i].x) && (this.x<thangs[i].x+thangs[i].width/2) && (this.y>thangs[i].y) &&(this.y<thangs[i].y+thangs[i].height/2))
+				{
+					this.detonate();
+					thangs[i].getDamaged(this.yield);
+				}
+			}
+		}
+	};
+	this.detonate=function(){
+		//do damage on ships in range
+		monsta.explosionTextured(100,this.x,this.y,2,"explosionsmall");
+		console.log("boom");
+		this.active=false;
+	};
+};
 
 function escapePod(){
 	this.x=0;
@@ -268,7 +474,14 @@ function starShip(){
 	this.y=0;
 	this.xv=0;
 	this.yv=0;
+	this.transportRange=200;
+	this.maxMines=100;
+	this.maxTorpedos=100;
+	this.numTorpedos=100;
+	this.numMines=this.maxMines;
 	this.maxHp=100;
+	this.breaches=0;
+	this.oxygen=1000;
 	this.selfDestructActive=false;
 	this.selfDestructTick=100;
 	this.evacRate=10;
@@ -292,7 +505,7 @@ function starShip(){
 	this.maxShields=100;
 	this.shieldSprite=Sprite("shields1");
 	this.discovered=true;
-	this.sensorRange=5000;
+	this.sensorRange=500;
 	this.morale=70;
 	this.cloaked=false;
 	this.turnSpeed=1;
@@ -371,6 +584,17 @@ function starShip(){
 	this.lightyearsTraveled=0;
 	this.crewLost=0;
 	
+	this.layMine=function(){
+		if(this.numMines<1) {return;}
+		this.numMines--;
+		var minny=new mine();
+		minny.x=this.x+this.width/2;
+		minny.y=this.y+this.height/2;
+		minny.active=true;
+		minny.range=10;
+		mines.push(minny);
+	};
+	
 	this.christen=function(){
 		var nami=Math.floor(Math.random()*shipNames[this.race].length);
 		while(true) {
@@ -383,13 +607,41 @@ function starShip(){
 		shipNamesUsed[this.race][nami]=true;
 	};
 
+	this.fireTorpedo=function(targ){
+		if(this.numTorpedos<1) {return;}
+		this.numTorpedos--;
+		var beta=Math.atan2(targ.y-this.y,targ.x-this.x)* (180 / Math.PI);
+	
+		if (beta < 0.0)
+			beta += 360.0;
+		else if (beta > 360.0)
+			beta -= 360;
+		var torpy=new torpedo();
+		torpy.heading=beta;
+		torpy.x=this.x;
+		torpy.y=this.y;
+		torpy.active=true;
+		torpedos.push(torpy);
+	};
+	
 	this.getDamaged=function(amt){
-		this.hp-=amt;
+		this.shields-=amt;
+		
+		if(this.shields<0){this.hp+=this.shields; this.shields=0;}
 		if(this.hp<1)
 		{
 			killShip(this);
 		}
 		//todo randomly damage systems, kill crew.
+		if(this.shields<1)
+		{
+			var pete=Math.floor(Math.random()*100);
+			if(pete<50)
+			{
+				this.breaches++;
+				console.log("The " +this.name+"'s hull was breached!");
+			}
+		}
 	};
 	
 	this.crewVessel=function(){
@@ -402,6 +654,7 @@ function starShip(){
 			}
 		}
 		this.crew[0].title="Captain";
+		this.crew[1].title="Lt. Commander";
 	};
 	
 	this.checkCrew=function(){
@@ -775,6 +1028,14 @@ function starShip(){
 				}
 			}
 		}
+		if(this.oxygen>0)
+		{
+			this.oxygen-=Math.floor(this.breaches*2*gameSpeed);
+		}else
+		{
+			this.killRandomCrew(" of suffocation.");
+		}
+		
 	};
 	
 	this.draw=function(can,cam){
