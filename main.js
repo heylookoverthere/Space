@@ -140,6 +140,7 @@ var shipgokey=new akey("e");
 var shipslowkey=new akey("r");
 var evackey=new akey("esc");
 var minekey=new akey("m");
+var crewscreenkey=new akey("c");
 
 var unitinfokey=new akey("u");
 var cardkey=new akey("c");
@@ -162,8 +163,8 @@ requestAnimationFrame(merp,canvas);
 		mainMenuUpdate();
 		mainMenuDraw();
 	}else if(mode==1){
-		worldMapUpdate();
-		worldMapDraw();
+		crewScreenUpdate();
+		crewScreenDraw();
 	}else if(mode==2){
 		mainUpdate();
 		mainDraw();
@@ -223,7 +224,7 @@ function mainMenuDraw(){
 	//canvas.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
 	//titlesprite.draw(canvas,0,0);
 	//canvas.fillStyle = "white";
-	//canvas.font = "16pt Calibri";
+	canvas.font = "8pt Calibri";
 	//canvas.fillText("Press Enter",200,500);
 	//canvas.fillText("  New Game",175,450);
 	//canvas.fillStyle = "grey";
@@ -397,6 +398,10 @@ function mainMenuUpdate(){
     milliseconds = timestamp.getTime();
     tick++;
 	monsta.update();
+	if(crewscreenkey.check())
+	{
+		mode=1;
+	}
 	 if(debugkey.check()) {
 		MUSIC_ON=!MUSIC_ON;
 		document.getElementById("titleAudio").pause();
@@ -436,7 +441,10 @@ function mainMenuUpdate(){
 		}
 		if(shipgokey.check())
 		{
-			ships[curShip].desiredSpeed++;
+			if(ships[curShip].desiredSpeed<ships[curShip].maxSpeed)
+			{
+				ships[curShip].desiredSpeed++;
+			}
 		}
 		if(minekey.check())
 		{
@@ -448,7 +456,10 @@ function mainMenuUpdate(){
 		}
 		if(shipslowkey.check())
 		{
-			ships[curShip].desiredSpeed--;
+			if(ships[curShip].desiredSpeed>0)
+			{
+				ships[curShip].desiredSpeed--;
+			}
 		}
 		if(gokey.check())
 		{
@@ -590,99 +601,36 @@ function mainMenuUpdate(){
 	
 };
 
+ed=new textbox();
 
-
-function worldMapDraw(){
-//worldmapsprite.draw(canvas,0,0);
-	if(starting) {
-		canvas.font = "16pt Calibri";
-		canvas.fillStyle = "white";
-		canvas.fillText("LOADING....", 740, 627);
-	}
-	var prevPoint=maps[0];
-	canvas.beginPath();
-	canvas.lineWidth = 7;
-	canvas.moveTo(maps[0].x+14,maps[0].y+17);
-	for(var i=0;i<numMapPoints;i++)
-	{
-		if((i==0) || (reqsMet(i)))
-		{
-			canvas.lineTo(maps[i].x+14,maps[i].y+17);
-			prevPoint=maps[i];
-		}
-	}
-	
-	canvas.stroke();
-	canvas.closePath();//todo multiple lines?
-	for(var i=0;i<numMapPoints;i++)
-	{
-
-		
-		if(maps[i].team==0)
-		{
-			bluelocationsprite.draw(canvas,maps[i].x,maps[i].y);
-			
-		}else
-		{
-			if((i==0) || (reqsMet(i)))
-				{
-
-					//canvas.moveTo(prevPoint.x+14,prevPoint.y+17);
-
-					redlocationsprite.draw(canvas,maps[i].x,maps[i].y);
-
-				}
-				
-
-		}
-
-		
-	}
-
-	
-	canvas.font = "19pt Algerian";
+function crewScreenDraw(){
+	ed.draw(canvas,camera);
+	canvas.font = "16pt Calibri";
 	canvas.textAlign = "center";
 	canvas.textBaseline = "middle";
 	canvas.fillStyle = "black";
-	canvas.fillText(maps[mapSelected].name,600,100);
-	canvas.font = "16pt Calibri";
+	canvas.fillText("Crew Pool",80,20);
 	
-	if(((reqsMet(mapSelected)))&&(startkey.check())){
-		canvas.font = "16pt Calibri";
-		canvas.fillStyle = "white";
-		canvas.fillText("LOADING....", 740, 627);
-		starting=true;
-		return;
-	}
 };
 
 
 
 
-function worldMapUpdate(){
-	var tick=0;
-	lasttime=milliseconds;
-    timestamp = new Date();
-    milliseconds = timestamp.getTime();
-    tick++;
-	
-	//check for clicks on maps, move there or close as possible.
-	//check for key for menu
-	if(debugkey.check()){
-		for(var i=0;i<numMapPoints;i++)
-		{
-			maps[i].team=0;
-		}
-	}
-	if(tabkey.check()){
-		//if(maps(mapSelected+1).team==0){ todo
-		if((true/*mapSelected<1*/) && (reqsMet(mapSelected+1)))
-		{
-			mapSelected++;
-		}	
-		if(mapSelected>numMapPoints-1){mapSelected=0;}
+function crewScreenUpdate(){
+	ed.x=20;
+	ed.y=20;
+	ed.width=700;
+	ed.height=600;
+	ed.msg[0]="Crew: "
+	for(var i=0;i<crewPool.length;i++)
+	{
+		ed.msg[0]+=crewPool[i].title+" "+crewPool[i].name+" ";
 	}
 
+	if((escapekey.check()) || (crewscreenkey.check()))
+	{
+		mode=0;
+	}
 	if(starting)
 	{
 		

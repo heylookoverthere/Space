@@ -540,7 +540,7 @@ function initShips(){
 		ships[8].sprite=Sprite("ship6");
 		ships[8].maxSpeed=7;
 		ships[8].speed=3;
-	
+	crewPool.push(new dude());
 };
 
 function drawStarfield(canv,cam){

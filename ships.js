@@ -15,6 +15,7 @@ var escapes=new Array();
 var mines=new Array();
 var torpedos=new Array();
 var crewPool=new Array();
+var looseCrew=new Array(); //crew stranded on a planet or in the mirror universe
 
 updateEscapes=function()
 {
@@ -212,7 +213,10 @@ function torpedo(){
 			var thongs=new Array();
 			for(var i=0;i<thangs.length;i++){
 				//if ((Math.abs(thangs[i].x-this.x)<this.range) && (Math.abs(thangs[i].y-this.y)<this.range))
-				if((this.x>thangs[i].x) && (this.x<thangs[i].x+thangs[i].width/2) && (this.y>thangs[i].y) &&(this.y<thangs[i].y+thangs[i].height/2))
+				var centerx=thangs[i].x-thangs[i].width/2;
+				var centery=thangs[i].y-thangs[i].height/2;
+				
+				if((this.x>centerx) && (this.x<centerx+thangs[i].width) && (this.y>centery) &&(this.y<centery+thangs[i].height))
 				{
 					this.detonate();
 					thangs[i].getDamaged(this.yield);
@@ -261,6 +265,11 @@ function mine(){
 		}
 	};
 	
+	this.getDamaged=function()
+	{
+		this.detonate();
+	};
+	
 	this.inSensorRange=function(thangs){
 		var thongs=new Array();
 		for(var i=0;i<thangs.length;i++){
@@ -293,7 +302,11 @@ function mine(){
 			var thongs=new Array();
 			for(var i=0;i<thangs.length;i++){
 				//if ((Math.abs(thangs[i].x-this.x)<this.range) && (Math.abs(thangs[i].y-this.y)<this.range))
-				if((this.x>thangs[i].x) && (this.x<thangs[i].x+thangs[i].width/2) && (this.y>thangs[i].y) &&(this.y<thangs[i].y+thangs[i].height/2))
+				var centerx=thangs[i].x-thangs[i].width/2;
+				var centery=thangs[i].y-thangs[i].height/2;
+				var ourx=this.x;//+this.width/2;
+				var oury=this.y;//+this.height/2;
+				if((ourx>centerx) && (ourx<centerx+thangs[i].width) && (oury>centery) &&(oury<centery+thangs[i].height))
 				{
 					this.detonate();
 					thangs[i].getDamaged(this.yield);
@@ -1062,6 +1075,8 @@ function starShip(){
 	this.draw=function(can,cam){
 		if(this.alive)
 		{
+			can.fillRect(this.x+cam.x-this.width/2, this.y+cam.y-this.height/2, this.width, this.height);
+			//can.fillRect(this.x+cam.x, this.y+cam.y, this.width, this.height);
 			can.save();
 			can.translate((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
 			if(this.orbiting)
@@ -1076,6 +1091,8 @@ function starShip(){
 				canvas.globalAlpha=0.30;
 			}
 			can.scale(cam.zoom,cam.zoom);
+			canvas.fillStyle = "red";
+			can.fillRect(0-this.width/2, 0-this.height/2, this.width, this.height);
 			this.sprite.draw(can, -this.width/2,-this.height/2);
 			if(this.shields>0)
 			{
