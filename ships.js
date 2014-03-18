@@ -613,8 +613,8 @@ function starShip(){
 		if(this.numMines<1) {return;}
 		this.numMines--;
 		var minny=new mine();
-		minny.x=this.x+this.width/2;
-		minny.y=this.y+this.height/2;
+		minny.x=this.x-minny.width/2
+		minny.y=this.y-minny.height/2;
 		minny.active=true;
 		minny.range=10;
 		mines.push(minny);
@@ -652,8 +652,8 @@ function starShip(){
 		}
 		
 		torpy.heading=beta;
-		torpy.x=this.x;
-		torpy.y=this.y;
+		torpy.x=this.x-torpy.width/2;
+		torpy.y=this.y-torpy.height/2;
 		torpy.active=true;
 		torpedos.push(torpy);
 	};
@@ -1075,8 +1075,7 @@ function starShip(){
 	this.draw=function(can,cam){
 		if(this.alive)
 		{
-			can.fillRect(this.x+cam.x-this.width/2, this.y+cam.y-this.height/2, this.width, this.height);
-			//can.fillRect(this.x+cam.x, this.y+cam.y, this.width, this.height);
+			//can.fillRect(this.x+cam.x-this.width/2, this.y+cam.y-this.height/2, this.width, this.height);
 			can.save();
 			can.translate((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
 			if(this.orbiting)
@@ -1092,7 +1091,7 @@ function starShip(){
 			}
 			can.scale(cam.zoom,cam.zoom);
 			canvas.fillStyle = "red";
-			can.fillRect(0-this.width/2, 0-this.height/2, this.width, this.height);
+			//can.fillRect(0-this.width/2, 0-this.height/2, this.width, this.height);
 			this.sprite.draw(can, -this.width/2,-this.height/2);
 			if(this.shields>0)
 			{
