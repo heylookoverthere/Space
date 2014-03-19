@@ -65,15 +65,13 @@ for (var ci=0;ci<20;ci++)
 var numShipNames=38;
 var races=new Array(40);
 races= ["Human","Vulcan","Andorian","Tellerite","Romulan","Klingon","Betazoid","Trill","Cardassian","Borg","Vidian","Telaxian","Ferengi","Pakled","Bajoran","Binar","Hirogen","Gorn"];
-var fContacted=new Array();
+
 var numRaces=18;
 var shipNamesUsed=new Array();
 
 for(var ipk=0;ipk<numRaces;ipk++){
-	fContacted[ipk]=false;
 	shipNamesUsed[ipk]=new Array();
 }
-fContacted[0]=true;
 
 function dude() {
 	this.gender=0;
@@ -91,6 +89,7 @@ function dude() {
 	this.AIDS=false;
 	this.kill=function(cause){
 		console.log(this.title+" "+this.name+ " has died"+cause);
+		this.alive=false;
 	};
 };
 
@@ -160,7 +159,7 @@ function torpedo(){
 		}
 	};
 	
-	this.inSensorRange=function(thangs){
+	this.inSensorRange=function(thangs){  //torpedos should not be discovering planets and making first contact with species.
 		var thongs=new Array();
 		for(var i=0;i<thangs.length;i++){
 			if ((Math.abs(thangs[i].x-this.x)<this.sensorRange) && (Math.abs(thangs[i].y-this.y)<this.sensorRange))
@@ -172,8 +171,8 @@ function torpedo(){
 						console.log("The "+this.name+ " discoverd the "+thangs[i].name+" System");
 						
 					}
-					if((fContacted[thangs[i].race]==false) && (this.race==0)){
-						fContacted[thangs[i].race]=true;
+					if((this.civ.fContacted[thangs[i].race]==false) && (this.race==0)){
+						this.civ.fContacted[thangs[i].race]=true;
 						console.log("The "+this.name+ " made first contact with the "+races[thangs[i].race]+"s.");
 						this.generateFContactEvent(thangs[i].race);
 					}
@@ -188,7 +187,7 @@ function torpedo(){
 	//homing?
 		if((this.homing) && (this.targ))
 		{
-			var beta=Math.atan2(this.destination.y-this.y,this.destination.x-this.x)* (180 / Math.PI);
+			var beta=Math.atan2(this.targ.y-this.y,this.targ.x-this.x)* (180 / Math.PI);
 		
 			if (beta < 0.0)
 				beta += 360.0;
@@ -282,8 +281,8 @@ function mine(){
 						console.log("The "+this.name+ " discoverd the "+thangs[i].name+" System");
 						
 					}
-					if((fContacted[thangs[i].race]==false) && (this.race==0)){
-						fContacted[thangs[i].race]=true;
+					if((this.civ.fContacted[thangs[i].race]==false) && (this.race==0)){
+						this.civ.fContacted[thangs[i].race]=true;
 						console.log("The "+this.name+ " made first contact with the "+races[thangs[i].race]+"s.");
 						this.generateFContactEvent(thangs[i].race);
 					}
@@ -369,6 +368,16 @@ function escapePod(){
 		this.desiredSpeed=this.maxSpeed;
 	};
 	
+	this.getDamaged=function()
+	{
+		if(this.passenger)
+		{
+			this.passenger.kill();
+		}
+		this.active=false;
+		//todo small explosion
+	};
+	
 		this.accelerate=function()
 	{
 		this.acceltick++;
@@ -379,14 +388,14 @@ function escapePod(){
 		this.acceltick=0;
 		if (this.speed<this.maxSpeed)
 		{
-			this.speed+=this.acceleration;
+			this.speed+=this.acceleration*gameSpeed;
 		}
 	};
 	
 	this.decelerate=function()
 	{
 		this.acceltick++;
-		if(this.acceltick<this.accelrate)
+		if(this.acceltick<this.accelrate*gameSpeed)
 		{
 			return;
 		}
@@ -405,8 +414,14 @@ function escapePod(){
 		
 		if((Math.abs(this.x-this.destination.x)<20) && (Math.abs(this.y-this.destination.y)<20)) 
 		{
-			console.log(this.passenger.title+" "+this.passenger.name+"'s escape pod arrived at earth!");
-			crewPool.push(this.passenger);
+			if(this.passenger)
+			{
+				console.log(this.passenger.title+" "+this.passenger.name+"'s escape pod arrived at earth!");
+				crewPool.push(this.passenger);	
+			}else
+			{
+			console.log("An empty escape pod arrived at earth!");
+			}
 			this.active=false;
 		}
 		
@@ -499,6 +514,7 @@ function starShip(){
 	this.y=0;
 	this.xv=0;
 	this.yv=0;
+	this.destination=null;
 	this.transportRange=200;
 	this.maxMines=100;
 	this.maxTorpedos=100;
@@ -534,7 +550,7 @@ function starShip(){
 	this.morale=70;
 	this.cloaked=false;
 	this.turnSpeed=1;
-	this.acceleration=.5;
+	this.acceleration=2;
 	this.hp=100;
 	this.prefix="U.S.S.";
 	this.class="Type-2 Shuttle";
@@ -568,10 +584,12 @@ function starShip(){
 	this.gotoDest=false;
 	this.dest=null;
 	this.homeworld=null;
+	this.civ=null;
 	this.destx=0;
 	this.desty=0;
 	this.orby=0;
 	this.orbx=0;
+	this.inFormation=false;
 	this.orbitTrack=Math.floor(Math.random()*359);;
 	this.orbitDecay=0;
 	this.orbitSpeed=2;
@@ -742,7 +760,7 @@ function starShip(){
 		this.orbitTarg=null;
 		this.heading=this.orbitTrack;
 		this.desiredHeading=this.heading;
-		this.speed=1;
+		//this.speed=1;
 	};
 	
 	this.orderLeaveOrbit=function(){
@@ -772,7 +790,7 @@ function starShip(){
 			}else if(who==9) 
 			{
 				console.log("They seems pretty friendly, and offer to come show you their nanoprobes. Hilarity ensues.");
-				this.kill();
+				//killShip(this);
 			} else
 			{
 				console.log("Unsuprisingly they appear to be huminoids with bumps on their heads.");
@@ -783,7 +801,7 @@ function starShip(){
 		var j=Math.floor(Math.random()*9);
 		var aRace=races[Math.floor(Math.random()*numRaces)];
 		if(j==0){
-			if((aRace=="Vulcan") && (fContacted[1]))
+			if((aRace=="Vulcan") && (this.civ.fContacted[1]))
 			{
 				console.log("You can tell the enemy crew is sodomizing you with their eyes, but in the end they abide by the treaty.");
 			}else
@@ -872,9 +890,11 @@ function starShip(){
 			return;
 		}
 		this.acceltick=0;
-		if (this.speed<this.maxSpeed)
+		
+		this.speed+=this.acceleration*gameSpeed;
+		if (this.speed>this.maxSpeed)
 		{
-			this.speed+=this.acceleration;
+			this.speed=this.maxSpeed;
 		}
 	};
 	
@@ -886,9 +906,10 @@ function starShip(){
 			return;
 		}
 		this.acceltick=0;
-		if (this.speed>0)
+		this.speed-=this.acceleration*gameSpeed;
+		if (this.speed<1)
 		{
-			this.speed-=this.acceleration;
+			this.speed=0;
 		}
 	};
 	
@@ -904,8 +925,8 @@ function starShip(){
 						console.log("The "+this.name+ " discoverd the "+thangs[i].name+" System");
 						
 					}
-					if((fContacted[thangs[i].race]==false) && (this.race==0)){
-						fContacted[thangs[i].race]=true;
+					if((this.civ.fContacted[thangs[i].race]==false) && (this.race==0)){
+						this.civ.fContacted[thangs[i].race]=true;
 						console.log("The "+this.name+ " made first contact with the "+races[thangs[i].race]+"s.");
 						this.generateFContactEvent(thangs[i].race);
 					}
@@ -925,39 +946,101 @@ function starShip(){
 				//explosion!
 			}
 		}	
-		if(this.orbiting)
+		if((this.destination) && (this.destination!=this))//TODO change to if destination, then if goal orbit or park.
 		{
-			
-			this.orbx=this.orbitTarg.x;
-			this.orby=this.orbitTarg.y;
-			this.heading=this.orbitTrack+90;//TODO
-			this.orbitTrack+=this.orbitSpeed*gameSpeed;
-			this.orbitDiameter-=this.orbitDecay*this.orbitSpeed*gameSpeed;
-			if(this.orbitDiameter<1) 
-			{
-				this.alive=false;
-				console.log("You flew into the sun moron.");
-			}
-			//if((this.shrinking) && (this.orbitDiameter>1)) {this.orbitDiameter--;}
-			if(this.leavingProgress!=null) 
-			{
-				this.leavingProgress+=1*gameSpeed;
-				this.status="Breaking Orbit";
-				if(this.leavingProgress>90)
-				{
-					this.leaveOrbit();
-					this.leavingProgress=0;
-				}
+				this.orbiting=false;
+				this.status="Enroute to meet with the fleet";
+				//console.log("yaaaar");
+				var beta=Math.atan2(this.destination.y-this.y,this.destination.x-this.x)* (180 / Math.PI);
 				
+				if (beta < 0.0)
+					beta += 360.0;
+				else if (beta > 360.0)
+					beta -= 360;
+				this.desiredHeading=beta;
+				this.desiredSpeed=this.maxSpeed;
+				
+				//todo why do I have do copy this.
+			if(this.speed<Math.floor(this.desiredSpeed))
+			{
+				this.accelerate();
+			}else if(this.speed>Math.floor(this.desiredSpeed))
+			{
+				this.decelerate();
+			}
+			//turn to desired heading
+			if(Math.floor(this.heading)<Math.floor(this.desiredHeading))
+			{
+				this.heading+=this.turnSpeed*gameSpeed;
+				this.turning=true;
+				if (this.heading < 0.0)
+					this.heading += 360.0;
+				else if (this.heading > 360.0)
+					this.heading -= 360;
+			}else if(Math.floor(this.heading)>Math.floor(this.desiredHeading))
+			{
+				this.heading-=this.turnSpeed*gameSpeed;
+				this.turning=true;
+				if (this.heading < 0.0)
+					this.heading += 360.0;
+				else if (this.heading > 360.0)
+					this.heading -= 360;
 			}else
 			{
-				this.status="Orbiting";
+				this.turning=false;
+			}	
+				//***
+				this.heading=beta;
+				this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
+				this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
+				this.x+=this.xv*gameSpeed*this.speed;
+				this.y+=this.yv*gameSpeed*this.speed;
+
+				if((Math.abs(this.x-this.destination.x)<50) && (Math.abs(this.y-this.destination.y)<50) && (this.destination!=this)) 
+				{
+					//console.log(this.name+ " met with fleet.");
+					this.destination=null;
+					//this.desiredSpeed=0;
+					this.inFormation=true;
+					this.speed=0;
+				}
+		}else if(this.orbiting)
+		{
+				if((this.destination) && (this.destination!=this.orbitTarg))
+				{
+					this.orbiting=false;
+				}else
+				{
+				this.orbx=this.orbitTarg.x;
+				this.orby=this.orbitTarg.y;
+				this.heading=this.orbitTrack+90;//TODO
+				this.orbitTrack+=this.orbitSpeed*gameSpeed;
+				this.orbitDiameter-=this.orbitDecay*this.orbitSpeed*gameSpeed;
+				if(this.orbitDiameter<1) 
+				{
+					this.alive=false;
+					console.log("You flew into the sun moron.");
+				}
+				//if((this.shrinking) && (this.orbitDiameter>1)) {this.orbitDiameter--;}
+				if(this.leavingProgress!=null) 
+				{
+					this.leavingProgress+=1*gameSpeed;
+					this.status="Breaking Orbit";
+					if(this.leavingProgress>90)
+					{
+						this.leaveOrbit();
+						this.leavingProgress=0;
+					}
+					
+				}else
+				{
+					this.status="Orbiting";
+				}
+				if (this.orbitTrack>360){ this.orbitTrack=0;}
+				this.x=this.orbx+Math.cos(this.orbitTrack* (Math.PI / 180))*this.orbitDiameter;
+				this.y=this.orby+Math.sin(this.orbitTrack*(Math.PI / 180))*this.orbitDiameter;
+				this.y+=this.yv;
 			}
-			if (this.orbitTrack>360){ this.orbitTrack=0;}
-			this.x=this.orbx+Math.cos(this.orbitTrack* (Math.PI / 180))*this.orbitDiameter;
-			this.y=this.orby+Math.sin(this.orbitTrack*(Math.PI / 180))*this.orbitDiameter;
-			this.y+=this.yv;
-			
 		}else if(this.desiredOrbitTarg)//TODO
 		{
 				this.status="Enroute to "+this.desiredOrbitTarg.name;
@@ -979,7 +1062,7 @@ function starShip(){
 					this.orbit(this.desiredOrbitTarg);
 					this.desiredOrbitTarg=null;
 				}
-		}//else
+		}
 		
 		if(!this.orbiting)
 		{
@@ -1109,5 +1192,71 @@ function starShip(){
 
 			//this.sprite.draw(can, this.x-cam.x-this.width/2,this.y-cam.y-this.height/2);
 		}
+	};
+};
+
+function fleet(){
+	this.ships=new Array();
+	this.x=0;
+	this.y=0;
+	this.xv=0;
+	this.yv=0;
+	this.addShip=function(shoap)
+	{
+		if(this.ships){
+			shoap.destination=this.ships[0];
+		}
+		
+		if(shoap.destination)
+		{
+			var beta=Math.atan2(shoap.destination.y-shoap.y,shoap.x-shoap.x)* (180 / Math.PI);
+			if (beta < 0.0)
+				beta += 360.0;
+				else if (beta > 360.0)
+					beta -= 360;
+				shoap.desiredHeading=beta;
+				shoap.desiredSpeed=this.maxSpeed;
+		}
+		this.ships.push(shoap);
+
+	}
+	this.orderShips=function()
+	{
+		for(var i=0;i<this.ships.length;i++)
+		{
+			if(!this.ships[i].alive)
+			{
+				this.ships.splice(i,1);
+			}else
+			{
+				this.ships[i].inFormation=false;
+				if(!this.ships[i].destination)
+				{
+					this.ships[i].destination=this.ships[0];
+				}
+				if((Math.abs(this.ships[i].x-this.ships[i].destination.x)<50) && (Math.abs(this.ships[i].y-this.ships[i].destination.y)<50)) 
+				{
+					this.ships[i].inFormation=true;
+				}
+			
+				if(this.ships[i].inFormation)
+				{
+					this.ships[i].desiredSpeed=this.ships[0].desiredSpeed;
+					this.ships[i].desiredHeading=this.ships[0].desiredHeading;
+				}else
+				{
+					this.ships[i].destination=this.ships[0];
+				}
+			}
+			//todo if lead vessel is attacking something, join in!;
+		}
+	};
+	this.countCrew=function(){
+		var persons=0;
+		for(var i=0;i<this.ships.length;i++)
+		{
+			persons+=this.ships[i].crew.length;
+		}
+		return persons;
 	};
 };

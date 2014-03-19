@@ -218,13 +218,9 @@ if(MUSIC_ON){
 	document.getElementById("titleAudio").play(); //starts music
 }
 
-function mainMenuDraw(){
-    drawStarfield(canvas,camera);
-	//canvas.fillStyle = "black";
-	//canvas.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
-	//titlesprite.draw(canvas,0,0);
-	//canvas.fillStyle = "white";
-	canvas.font = "8pt Calibri";
+function drawGUI()
+{
+canvas.font = "8pt Calibri";
 	//canvas.fillText("Press Enter",200,500);
 	//canvas.fillText("  New Game",175,450);
 	//canvas.fillStyle = "grey";
@@ -286,7 +282,11 @@ function mainMenuDraw(){
 	{
 		actiontext="Adjusting Heading";
 	}
-	canvas.fillText("Ship: "+ships[curShip].prefix+" "+ships[curShip].name,755,380);
+	canvas.fillText("Ship: "+ships[curShip].prefix+" "+ships[curShip].name,755,365);
+	if(ships[curShip].destination)
+	{
+		canvas.fillText("Ship: "+ships[curShip].prefix+" "+ships[curShip].destination.name,755,380);
+	}//else if ships[curShip].
 	canvas.fillText("Hull Integrity: "+ships[curShip].hp+"/"+ships[curShip].maxHp,755,395);
 	canvas.fillText("02: "+Math.floor(ships[curShip].oxygen/10)+"%",755,410);
 	if(ships[curShip].breaches>0)
@@ -327,6 +327,16 @@ function mainMenuDraw(){
 	canvas.fillText("OrbitTrack: "+ ships[curShip].orbitTrack,755,605);
 	canvas.fillText("Ships Detected Nearby: "+ ships[curShip].nearbyVessels.length,755,620)
 	canvas.fillText("Systems Detected Nearby: "+ ships[curShip].nearbySystems.length,755,635)
+};
+
+function mainMenuDraw(){
+    drawStarfield(canvas,camera);
+	monsta.draw(canvas,camera);
+	//canvas.fillStyle = "black";
+	//canvas.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
+	//titlesprite.draw(canvas,0,0);
+	//canvas.fillStyle = "white";
+	
 	/*if(mmcur){
 		canvas.fillText("-",160,450);
 	}else	{
@@ -342,7 +352,7 @@ function mainMenuDraw(){
 	{
 		stars[i].draw(canvas,camera);
 	}
-	monsta.draw(canvas,camera);
+
 	
 	canvas.save();
 	
@@ -389,6 +399,7 @@ function mainMenuDraw(){
 	{
 		nebulas[i].draw(canvas,camera);
 	}
+	drawGUI();
 };
 
 function mainMenuUpdate(){
@@ -452,7 +463,7 @@ function mainMenuUpdate(){
 		}
 		if(firekey.check())
 		{
-			ships[curShip].fireTorpedo();
+			ships[curShip].fireTorpedo(Earth);
 		}
 		if(shipslowkey.check())
 		{
@@ -483,7 +494,7 @@ function mainMenuUpdate(){
 		}
 	}
 	
-	if(toggleshipkey.check())
+	if(toggleshipkey.check()) //todo!
 	{
 		curShip++;
 		if(curShip>ships.length-1) {
@@ -569,10 +580,27 @@ function mainMenuUpdate(){
 		camera.center(stars[0]);
 		curSystem=0;
 		camera.unFollow();
+		/*for(var i=0;i<ships.length;i++)
+		{
+			ships[i].Evac();
+		}*/
 	}
+	var neddard=false;
 	if(pausekey.check())
 	{
-		spinArt=!spinArt;
+			//spinArt=!spinArt;
+		if(!neddard){
+			neddard=true;
+			civs[0].fleets.push(new fleet());
+			for(var i=0;i<ships.length;i++)
+			{
+				civs[0].fleets[0].addShip(ships[i]);
+				if(ships[i].orbiting){
+					//ships[i].orderLeaveOrbit();
+				}
+			}
+			console.log("First Fleet established");
+		}
 	}
 	for(var i=0;i<ships.length;i++)
 	{
@@ -594,10 +622,20 @@ function mainMenuUpdate(){
 	}*/
 	camera.update();
 	updateEscapes();
-	updateMines(ships);
+	snoop=ships.concat(torpedos);
+	snoop=snoop.concat(escapes);
+	updateMines(snoop);
 	snoop=ships.concat(mines);
+	snoop=snoop.concat(escapes);
 	updateTorpedos(snoop);
 	theTime.update(Earth);
+	for(var i=0;i<civs.length;i++)
+	{
+		for(var j=0;j<civs[i].fleets.length;j++)
+		{
+			civs[i].fleets[j].orderShips();
+		}
+	}
 	
 };
 

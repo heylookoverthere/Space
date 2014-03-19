@@ -42,6 +42,9 @@ var planetTypes = ["Earthy","Rocky","Hot","Ice","Gas Giant","Ringed Gas Giant","
 var numSystems=20;
 var starsDrawn=0;
 
+var civs=new Array();
+civs.push(new civilization());
+
 var selectedSprite =Sprite("selected");
 var selectedSpriteBig =Sprite("selectedbig");
 
@@ -114,6 +117,15 @@ function romanize(num) {
 	}else if(num==10)
 	{
 		str=" X ";
+	}else if(num==11)
+	{
+		str=" XI ";
+	}else if(num==12)
+	{
+		str=" XII ";
+	}else if(num==13)
+	{
+		str=" XIII ";
 	}else
 	{
 		str=" Omega ";
@@ -441,12 +453,14 @@ function initShips(){
 	for(var i=0;i<numShips;i++){
 		ships[i].crewVessel();
 		ships[i].homeworld=Earth;
+		ships[i].civ=civs[0];
 	}
 	
 	ships[curShip].orbit(stars[curSystem].planets[stars[curSystem].selected]);	
 	ships[0].christen();
 	ships[0].prefix="U.S.S.";
 	ships[0].width=16;
+	ships[0].civ=civs[0];
 	ships[0].height=16;
 	ships[0].shieldSprite=Sprite("shields");
 	console.log(ships[0].prefix+ships[curShip].name+" is now orbiting " +stars[curSystem].planets[stars[curSystem].selected].name);

@@ -129,8 +129,12 @@ function civilization()
 	this.homeStar=0;
 	this.homePlanet=2;
 	this.greeting="Greetings.";
-	this.greetnig="sup."; //typo orinigally I swear.
 	this.threat="Jockamo fee nané";
 	this.ships=new Array();
 	this.worlds=new Array();
+	this.fleets=new Array();
+	this.fContacted=new Array();
+	for(var ipk=0;ipk<numRaces;ipk++){
+		this.fContacted[ipk]=false;
+	}
 };
