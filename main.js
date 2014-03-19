@@ -108,10 +108,7 @@ var escapekey=new akey("esc");
 var pageupkey=new akey("o");
 var pagedownkey=new akey("l");
 var homekey=new akey("home");
-var radarkey=new akey("y");
-var escapekey=new akey("q");
-var serversavekey=new akey("i");
-var serverloadkey=new akey("k");
+
 var upkey=new akey("up");
 var rightkey=new akey("right");
 var downkey=new akey("down");
@@ -119,17 +116,9 @@ var leftkey=new akey("left");
 var tabkey=new akey("capslock");
 var camspeedkey=new akey("shift");
 var zoomkey=new akey("z");
-var helpkey=new akey("h");
-var speedkey=new akey("x");
-var statuskey=new akey("s");
-var rowkey=new akey("r");
-var enterkey=new akey("space");
-var startkey=new akey("return");
-var menukey=new akey("esc");
-var fleekey=new akey("f");
-var aikey=new akey("a");
-var addkey=aikey;
 var plkey=new akey("p");
+var startkey=new akey("return");
+
 var dkey=new akey("d");
 var starkey=new akey("s");
 var gokey=new akey("g");
@@ -141,16 +130,7 @@ var shipslowkey=new akey("r");
 var evackey=new akey("esc");
 var minekey=new akey("m");
 var crewscreenkey=new akey("c");
-
-var unitinfokey=new akey("u");
-var cardkey=new akey("c");
-var cardcyclekey=new akey("v");
-var deploykey=new akey("d");
-var removekey=new akey("r");
-var newkey=new akey("n");
-var createkey=new akey("j");
-var optkey=new akey("o");
-var tamekey=new akey("t");
+var targetkey=new akey("t");
 var firekey=new akey("f");
 
 
@@ -282,10 +262,14 @@ canvas.font = "8pt Calibri";
 	{
 		actiontext="Adjusting Heading";
 	}
-	canvas.fillText("Ship: "+ships[curShip].prefix+" "+ships[curShip].name,755,365);
+	canvas.fillText("Ship: "+ships[curShip].prefix+" "+ships[curShip].name,755,350);
 	if(ships[curShip].destination)
 	{
-		canvas.fillText("Ship: "+ships[curShip].prefix+" "+ships[curShip].destination.name,755,380);
+		canvas.fillText("Ship: "+ships[curShip].destination.prefix+" "+ships[curShip].destination.name,755,365);
+	}
+	if(ships[curShip].torpedoTarget)
+	{
+		canvas.fillText("Ship: "+ships[curShip].torpedoTarget.prefix+" "+ships[curShip].torpedoTarget.name,755,380);
 	}//else if ships[curShip].
 	canvas.fillText("Hull Integrity: "+ships[curShip].hp+"/"+ships[curShip].maxHp,755,395);
 	canvas.fillText("02: "+Math.floor(ships[curShip].oxygen/10)+"%",755,410);
@@ -421,12 +405,7 @@ function mainMenuUpdate(){
 	if(startkey.check()){
 		//mode=1;
 	}
-	/*if(downkey.check()){
-		mmcur=!mmcur;
-	}
-	if(upkey.check()){
-		mmcur=!mmcur;
-	}*/
+	
 	if((!ships[curShip].adrift) && (ships[curShip].crew.length>0))
 	{
 		if(evackey.check())
@@ -440,6 +419,7 @@ function mainMenuUpdate(){
 				console.log(ships[curShip].name+ "'s crew is abandoning ship.");
 			}
 		}
+
 		if(shipleftkey.check())
 		{
 			ships[curShip].adjustHeading(ships[curShip].heading-20);
@@ -463,7 +443,7 @@ function mainMenuUpdate(){
 		}
 		if(firekey.check())
 		{
-			ships[curShip].fireTorpedo(Earth);
+			ships[curShip].fireTorpedo();
 		}
 		if(shipslowkey.check())
 		{
@@ -608,9 +588,25 @@ function mainMenuUpdate(){
 		{
 			ships[i].nearbySystems=ships[i].inSensorRange(stars);	
 			ships[i].nearbyVessels=ships[i].inSensorRange(ships);
+			if(ships[i].nearbyVessels==null)
+			{
+				ships[i].torpedoTarget=null;
+			}
+			if(true)//i!=curShip)
+			{
+				ships[i].drawTarget=false;
+			}else
+			{
+				ships[i].drawTarget=true;
+			}
 			ships[i].update();
 
 		}
+	}
+	
+	if(targetkey.check())
+	{
+		ships[curShip].cycleTarget();
 	}
 	/*for(var i=0;i<this.escapes.length;i++)
 	{

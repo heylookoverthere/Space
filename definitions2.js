@@ -439,7 +439,6 @@ function killShip(targ)
 			targ.alive=false;
 			console.log("The " +targ.name+" was destroyed. "+ targ.crew.length+ " crew were lost. ");
 			monsta.explosionTextured(200,targ.x,targ.y,1,"explosion0");
-			//monsta.startTextured(1000000,targ.x-16,targ.y-16,0,0,0,false,false,"sun"+stars[i].type);
 			if(curShip==i)
 			{
 				curShip=0;

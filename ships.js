@@ -17,6 +17,8 @@ var torpedos=new Array();
 var crewPool=new Array();
 var looseCrew=new Array(); //crew stranded on a planet or in the mirror universe
 
+var targetSprite=Sprite("shiptargetedbig");
+
 updateEscapes=function()
 {
 	for(var i=0;i<escapes.length;i++)
@@ -128,7 +130,7 @@ function torpedo(){
 	this.delayTick=5;
 	this.yield=15;
 	this.width=8;
-	this.speed=15;
+	this.speed=25;
 	this.targ=null;
 	this.homing=true;
 	this.age=0;
@@ -136,7 +138,7 @@ function torpedo(){
 	this.active=false;
 	this.sprite=Sprite("torpedo");
 	this.armedsprite=Sprite("torpedoarmed");
-	this.homing=false;//todo!
+	//this.homing=false;//todo!
 	this.draw=function(can,cam){
 		if(this.active)
 		{
@@ -194,6 +196,10 @@ function torpedo(){
 			else if (beta > 360.0)
 				beta -= 360;
 			this.heading=beta;
+			if(!this.targ.alive)
+			{
+				this.targ=null;
+			}
 		}
 		this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
 		this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
@@ -520,9 +526,11 @@ function starShip(){
 	this.maxTorpedos=100;
 	this.numTorpedos=100;
 	this.numMines=this.maxMines;
+	this.torpedoTarget=null;
 	this.maxHp=100;
 	this.breaches=0;
 	this.oxygen=1000;
+	this.homing=true;//todo
 	this.selfDestructActive=false;
 	this.selfDestructTick=100;
 	this.evacRate=10;
@@ -546,7 +554,7 @@ function starShip(){
 	this.maxShields=100;
 	this.shieldSprite=Sprite("shields1");
 	this.discovered=true;
-	this.sensorRange=500;
+	this.sensorRange=5000;
 	this.morale=70;
 	this.cloaked=false;
 	this.turnSpeed=1;
@@ -649,19 +657,50 @@ function starShip(){
 		this.name=shipNames[this.race][nami];
 		shipNamesUsed[this.race][nami]=true;
 	};
+	
+	this.cycleTarget=function()
+	{
+		if(!this.nearbyVessels) {return;}
+		
+		if(this.torpedoTarget==null)
+		{
+			//console.log("targeting selfyar?");
+			this.torpedoTarget=this.nearbyVessels[0];
+			return;
+		}
+		for(var i=0;i<this.nearbyVessels.length;i++)
+		{
+			if(this.nearbyVessels[i]==this.torpedoTarget)
+			{
+				if(i==this.nearbyVessels.length)
+				{
+					console.log("targeting self?");
+					this.torpedoTarget=this.nearbyVessels[0];
+					return;
+				}else
+				{
+					
+					this.torpedoTarget=this.nearbyVessels[i+1];
+					return;
+				}
+			}
+		}
+	};
 
-	this.fireTorpedo=function(targ){
+	this.fireTorpedo=function(){
 		if(this.numTorpedos<1) {return;}
 		this.numTorpedos--;
 		var torpy=new torpedo();
-		if(!targ)
+		if(!this.torpedoTarget)
 		{
 			var beta=this.heading;
 		}else
-		{
-			this.targ=targ;
-			
-			var beta=Math.atan2(targ.y-this.y,targ.x-this.x)* (180 / Math.PI);
+		{			
+			if(this.homing)
+			{
+				torpy.targ=this.torpedoTarget;
+			}
+			var beta=Math.atan2(this.torpedoTarget.y-this.y,this.torpedoTarget.x-this.x)* (180 / Math.PI);
 		
 			if (beta < 0.0)
 				beta += 360.0;
@@ -674,6 +713,7 @@ function starShip(){
 		torpy.y=this.y-torpy.height/2;
 		torpy.active=true;
 		torpedos.push(torpy);
+		//console.log(torpy);
 	};
 	
 	this.getDamaged=function(amt){
@@ -918,7 +958,7 @@ function starShip(){
 		for(var i=0;i<thangs.length;i++){
 			if ((Math.abs(thangs[i].x-this.x)<this.sensorRange) && (Math.abs(thangs[i].y-this.y)<this.sensorRange))
 			{
-				if((thangs[i]!=this) && (!thangs[i].cloaked)){  //todo, sensors that can detect cloaked ships.
+				if((thangs[i]!=this) && (!thangs[i].cloaked) && (thangs[i].alive)){  //todo, sensors that can detect cloaked ships.
 					thongs.push(thangs[i]);	
 					if((thangs[i].discovered==false)  && (this.race==0)){
 						thangs[i].discovered=true;
@@ -946,6 +986,10 @@ function starShip(){
 				//explosion!
 			}
 		}	
+		if((this.torpedoTarget) &&(!this.torpedoTarget.alive))
+		{
+			this.torpedoTarget=null;
+		}
 		if((this.destination) && (this.destination!=this))//TODO change to if destination, then if goal orbit or park.
 		{
 				this.orbiting=false;
@@ -1189,6 +1233,21 @@ function starShip(){
 			}
 
 			can.restore();
+			if(this.torpedoTarget)
+			{
+				can.save();
+				can.translate((this.torpedoTarget.x+cam.x)*cam.zoom,(this.torpedoTarget.y+cam.y)*cam.zoom);
+				if(this.torpedoTarget.orbiting)
+				{
+					can.rotate((this.torpedoTarget.orbitTrack-this.torpedoTarget.leavingProgress)* (Math.PI / 180));
+				}else
+				{
+					can.rotate((this.torpedoTarget.heading-90)* (Math.PI / 180));//todo negatives.
+				}
+				can.scale(cam.zoom,cam.zoom);
+				targetSprite.draw(can, -this.torpedoTarget.width/2,-this.torpedoTarget.height/2);
+				can.restore();
+			}
 
 			//this.sprite.draw(can, this.x-cam.x-this.width/2,this.y-cam.y-this.height/2);
 		}
