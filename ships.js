@@ -161,7 +161,7 @@ function torpedo(){
 		}
 	};
 	
-	this.inSensorRange=function(thangs){  //torpedos should not be discovering planets and making first contact with species.
+	/*this.inSensorRange=function(thangs){  //torpedos should not be discovering planets and making first contact with species.
 		var thongs=new Array();
 		for(var i=0;i<thangs.length;i++){
 			if ((Math.abs(thangs[i].x-this.x)<this.sensorRange) && (Math.abs(thangs[i].y-this.y)<this.sensorRange))
@@ -182,7 +182,7 @@ function torpedo(){
 			}
 		}
 		return thongs;
-	};
+	};*/
 	
 	this.update=function(thangs){
 	//also move the thing.
@@ -275,7 +275,7 @@ function mine(){
 		this.detonate();
 	};
 	
-	this.inSensorRange=function(thangs){
+	/*this.inSensorRange=function(thangs){
 		var thongs=new Array();
 		for(var i=0;i<thangs.length;i++){
 			if ((Math.abs(thangs[i].x-this.x)<this.sensorRange) && (Math.abs(thangs[i].y-this.y)<this.sensorRange))
@@ -296,7 +296,7 @@ function mine(){
 			}
 		}
 		return thongs;
-	};
+	};*/
 	
 	this.update=function(thangs){
 		if(this.delayTick>0)
@@ -387,14 +387,14 @@ function escapePod(){
 		this.accelerate=function()
 	{
 		this.acceltick++;
-		if(this.acceltick<this.accelrate)
+		if(this.acceltick<this.accelrate*gameSpeed)
 		{
 			return;
 		}
 		this.acceltick=0;
 		if (this.speed<this.maxSpeed)
 		{
-			this.speed+=this.acceleration*gameSpeed;
+			this.speed+=this.acceleration;
 		}
 	};
 	
@@ -545,7 +545,7 @@ function starShip(){
 	this.prefixCode=Math.floor(Math.random()*9999); //that bullshit from WoKhan
 	this.escapePods=new Array();
 	this.acceltick=0;
-	this.accelrate=50;
+	this.accelrate=10;
 	this.weaponsHot=0;
 	this.phaserBanks=new Array();
 	this.numPhasers=1;
@@ -560,7 +560,7 @@ function starShip(){
 	this.morale=70;
 	this.cloaked=false;
 	this.turnSpeed=1;
-	this.acceleration=2;
+	this.acceleration=.5;
 	this.hp=100;
 	this.prefix="U.S.S.";
 	this.class="Type-2 Shuttle";
@@ -605,6 +605,9 @@ function starShip(){
 	this.orby=0;
 	this.orbx=0;
 	this.inFormation=false;
+	this.formationCoords=[];
+	this.formationCoords.x=0;
+	this.formationCoords.y=0;
 	this.orbitTrack=Math.floor(Math.random()*359);;
 	this.orbitDecay=0;
 	this.orbitSpeed=2;
@@ -847,7 +850,7 @@ function starShip(){
 				console.log("The introductions did not go well.  Ship lost with all hands.");
 			}else if(who==9) 
 			{
-				console.log("They seems pretty friendly, and offer to come show you their nanoprobes. Hilarity ensues.");
+				console.log("WE ARE THE BORG. RESISTANCE IS FUTILE.");
 				//killShip(this);
 			} else
 			{
@@ -948,9 +951,10 @@ function starShip(){
 			return;
 		}
 		this.acceltick=0;
-		
-		this.speed+=this.acceleration*gameSpeed;
-		if (this.speed>this.maxSpeed)
+		if ((this.speed<this.maxSpeed)) //&& ((!this.destination) || (this.speed<this.destination.maxSpeed)))//don't go faster than lead ship!
+		{
+			this.speed+=this.acceleration*gameSpeed;
+		}else
 		{
 			this.speed=this.maxSpeed;
 		}
@@ -1073,19 +1077,22 @@ function starShip(){
 				this.turning=false;
 			}	
 				//***
-				this.heading=beta;
-				this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
-				this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
-				this.x+=this.xv*gameSpeed*this.speed;
-				this.y+=this.yv*gameSpeed*this.speed;
 
-				if((Math.abs(this.x-this.destination.x)<50) && (Math.abs(this.y-this.destination.y)<50) && (this.destination!=this)) 
+
+				if((Math.abs(this.x-this.destination.x)<100) && (Math.abs(this.y-this.destination.y)<100) && (this.destination!=this)) 
 				{
 					//console.log(this.name+ " met with fleet.");
 					this.destination=null;
 					//this.desiredSpeed=0;
 					this.inFormation=true;
-					this.speed=0;
+					this.desiredSpeed=0;
+				}else
+				{
+					this.heading=beta;
+					this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
+					this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
+					this.x+=this.xv*gameSpeed*this.speed;
+					this.y+=this.yv*gameSpeed*this.speed;
 				}
 		}else if(this.orbiting)
 		{
@@ -1137,7 +1144,7 @@ function starShip(){
 				this.desiredHeading=beta;
 				if(this.speed<1)
 				{
-					this.speed=this.maxSpeed;
+					this.desiredSpeed=this.maxSpeed;
 				}
 				if((Math.abs(this.x-this.desiredOrbitTarg.x)<50) && (Math.abs(this.y-this.desiredOrbitTarg.y)<50)) 
 				{
@@ -1150,10 +1157,10 @@ function starShip(){
 		if(!this.orbiting)
 		{
 			//accel or decel to desired speed
-			if(this.speed<Math.floor(this.desiredSpeed))
+			if(this.speed<this.desiredSpeed)
 			{
 				this.accelerate();
-			}else if(this.speed>Math.floor(this.desiredSpeed))
+			}else if(this.speed>this.desiredSpeed)
 			{
 				this.decelerate();
 			}
@@ -1243,6 +1250,29 @@ function starShip(){
 				this.oxygen=1000;
 			}
 		}
+	
+		for(var i=0;i<this.nearbyVessels.length;i++)
+		{
+			//if(this.civ.autoHostile[this.nearbyVessels[i].civ])
+			if(this.civ.autoHostile.indexOf(this.nearbyVessels[i].civ)>-1)
+			{
+				this.torpedoTarget=this.nearbyVessels[i];
+				this.attacking=true;
+			}
+		}
+		if(!this.torpedoTarget)
+		{
+			this.attacking=false;
+		}
+		if(this.attacking)
+		{
+			this.autoFireTick+=1*gameSpeed;
+			if(this.autoFireTick>this.autoFireRate)
+			{
+				this.autoFireTick=0;
+				this.fireTorpedo();
+			}
+		}
 	};
 	
 	this.draw=function(can,cam){
@@ -1330,6 +1360,27 @@ function fleet(){
 	this.orderAttack=function(){
 		
 	};
+	
+	this.getFormationCoords=function(){
+		//if(this.formation==0){
+		for(var i=0;i<this.ships.length;i++)
+		{
+			if(this.i==0){
+				this.ships[i].formationCoords.x=0;
+				this.ships[i].formationCoords.y=0;
+			}else if(this.i==1){
+				this.ships[i].formationCoords.x=-40;
+				this.ships[i].formationCoords.y=32;
+			}else if(this.i==2){
+				this.ships[i].formationCoords.x=40;
+				this.ships[i].formationCoords.y=32;
+			}else
+			{
+				this.ships[i].formationCoords.x=0;
+				this.ships[i].formationCoords.y=40*i+20;
+			}
+		}
+	};
 	this.orderShips=function()
 	{
 		for(var i=0;i<this.ships.length;i++)
@@ -1344,7 +1395,7 @@ function fleet(){
 				{
 					this.ships[i].destination=this.ships[0];
 				}
-				if((Math.abs(this.ships[i].x-this.ships[i].destination.x)<50) && (Math.abs(this.ships[i].y-this.ships[i].destination.y)<50)) 
+				if((Math.abs(this.ships[i].x-this.ships[i].destination.x+this.ships[i].formationCoords.x)<50) && (Math.abs(this.ships[i].y-this.ships[i].destination.y+this.ships[i].formationCoords.y)<50)) 
 				{
 					this.ships[i].inFormation=true;
 				}
@@ -1359,11 +1410,11 @@ function fleet(){
 					}
 				}else
 				{
-					this.ships[i].destination=this.ships[0];
+					//this.ships[i].destination=this.ships[0];
 				}
 				if(this.attacking)
 				{
-					if(this.ships[i].torpedoTarget)
+					/*if(this.ships[i].torpedoTarget)
 					{
 						this.ships[i].autoFireTick+=1*gameSpeed;
 						if(this.ships[i].autoFireTick>this.ships[i].autoFireRate)
@@ -1372,7 +1423,8 @@ function fleet(){
 							this.ships[i].fireTorpedo();
 						}
 						
-					}
+					}*/
+					ships[i].attacking=true;
 				}
 			}
 			//todo if lead vessel is attacking something, join in!;

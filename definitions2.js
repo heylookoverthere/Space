@@ -37,7 +37,7 @@ ships[7]=new starShip();
 ships[8]=new starShip();
 
 var curShip=0;
-var planetTypes = ["Earthy","Rocky","Hot","Ice","Gas Giant","Ringed Gas Giant","WTF"];
+var planetTypes = ["Class M","Class L","Class N","Class F","Class J","Class T","Demon Class"];
 
 var numSystems=20;
 var starsDrawn=0;
@@ -48,6 +48,13 @@ var others=new civilization();
 others.name="others";
 //homeworld
 civs.push(others);
+
+var borg=new civilization();
+borg.name="The Borg";
+//homeworld
+borg.autoHostile.push(civs[0]);//borg hate everybody.
+borg.autoHostile.push(civs[1]);
+civs.push(borg);
 
 var selectedSprite =Sprite("selected");
 var selectedSpriteBig =Sprite("selectedbig");
@@ -548,12 +555,20 @@ function initShips(){
 		ships[6].y=Math.random()*universeHeight/4+universeHeight/2;
 		ships[6].prefix="Cube";
 		ships[6].race=9;
+		ships[6].civ=civs[2];
 		ships[6].christen();
+		ships[6].hp=1000;
+		ships[6].shields=200;
+		
+		ships[6].oxygen=10000;
 		ships[6].class="Cube";
 		ships[6].sprite=Sprite("ship3");
 		ships[6].maxSpeed=10;
-		ships[6].adjustHeading(270);
+		ships[6].desiredSpeed=10;
+		//ships[6].adjustHeading(270);
 		ships[6].speed=9;
+		ships[6].orderOrbit(Earth);
+		Cube=ships[6];
 		
 		ships[7].x=Math.random()*universeWidth/4;
 		ships[7].y=Math.random()*universeHeight/4;

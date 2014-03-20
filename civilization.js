@@ -134,6 +134,7 @@ function civilization()
 	this.worlds=new Array();
 	this.fleets=new Array();
 	this.fContacted=new Array();
+	this.autoHostile=new Array();
 	for(var ipk=0;ipk<numRaces;ipk++){
 		this.fContacted[ipk]=false;
 	}
