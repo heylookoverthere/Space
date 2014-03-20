@@ -596,6 +596,8 @@ function starShip(){
 	this.dest=null;
 	this.homeworld=null;
 	this.baseRepair=.25;
+	this.autoFireTick=0;
+	this.autoFireRate=10;
 	this.fixCount=0;
 	this.civ=null;
 	this.destx=0;
@@ -667,6 +669,17 @@ function starShip(){
 	{
 		if(!this.nearbyVessels) {return;}
 		
+		//var bearbyVessels=this.nearbyVessels;
+		for(var i=0;i<this.nearbyVessels.length;i++)
+		{
+			if(this.nearbyVessels[i].civ==this.civ)
+			{
+				//console.log("same team!");
+				this.nearbyVessels.splice(i,1);
+			}
+		}
+		
+		//if(!this.bearbyVessels) {return;}
 		if(this.torpedoTarget==null)
 		{
 			//console.log("targeting selfyar?");
@@ -1293,6 +1306,7 @@ function fleet(){
 	this.y=0;
 	this.xv=0;
 	this.yv=0;
+	this.attacking=false;
 	this.addShip=function(shoap)
 	{
 		if(this.ships){
@@ -1312,6 +1326,10 @@ function fleet(){
 		this.ships.push(shoap);
 
 	}
+	
+	this.orderAttack=function(){
+		
+	};
 	this.orderShips=function()
 	{
 		for(var i=0;i<this.ships.length;i++)
@@ -1342,6 +1360,19 @@ function fleet(){
 				}else
 				{
 					this.ships[i].destination=this.ships[0];
+				}
+				if(this.attacking)
+				{
+					if(this.ships[i].torpedoTarget)
+					{
+						this.ships[i].autoFireTick+=1*gameSpeed;
+						if(this.ships[i].autoFireTick>this.ships[i].autoFireRate)
+						{
+							this.ships[i].autoFireTick=0;
+							this.ships[i].fireTorpedo();
+						}
+						
+					}
 				}
 			}
 			//todo if lead vessel is attacking something, join in!;

@@ -44,6 +44,10 @@ var starsDrawn=0;
 
 var civs=new Array();
 civs.push(new civilization());
+var others=new civilization();
+others.name="others";
+//homeworld
+civs.push(others);
 
 var selectedSprite =Sprite("selected");
 var selectedSpriteBig =Sprite("selectedbig");
@@ -455,7 +459,7 @@ function initShips(){
 	for(var i=0;i<numShips;i++){
 		ships[i].crewVessel();
 		ships[i].homeworld=Earth;
-		ships[i].civ=civs[0];
+		ships[i].civ=civs[1];
 	}
 	
 	ships[curShip].orbit(stars[curSystem].planets[stars[curSystem].selected]);	
@@ -464,6 +468,7 @@ function initShips(){
 	ships[0].width=16;
 	ships[0].civ=civs[0];
 	ships[0].height=16;
+	ships[0].civ=civs[0];
 	ships[0].shieldSprite=Sprite("shields");
 	console.log(ships[0].prefix+ships[curShip].name+" is now orbiting " +stars[curSystem].planets[stars[curSystem].selected].name);
 	ships[curShip].acceleration=1;
@@ -475,6 +480,7 @@ function initShips(){
 	ships[1].class="Galaxy Class";
 	ships[1].race=0;
 	ships[1].christen();
+	ships[1].civ=civs[0];
 	ships[1].sprite=Sprite("ship2");
 	ships[1].maxSpeed=9;
 	ships[1].maxShields=70;
@@ -504,16 +510,17 @@ function initShips(){
 	ships[2].maxSpeed=9;
 	ships[2].maxShields=70;
 	ships[2].shields=70;
+	ships[2].civ=civs[0];
 	
 	
 	for(var p=3;p<numShips-3;p++)
 	{
-		if(Math.random()*10<5)
+		if(Math.random()*7<5)
 		{
-			var blah=Math.floor(Math.random()*numSystems);
+			var blah=0;//Math.floor(Math.random()*numSystems);
 			var gah=Math.floor(Math.random()*stars[blah].numPlanets);
 			
-			ships[p].orbit(stars[blah].planets[stars[blah].selected]);
+			ships[p].orbit(stars[blah].planets[Math.floor(Math.random()*stars[blah].planets.length)]);
 			ships[p].class="Bird of Prey";
 			ships[p].prefix="I.K.S";
 			ships[p].race=5;

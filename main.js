@@ -132,6 +132,7 @@ var minekey=new akey("m");
 var crewscreenkey=new akey("c");
 var targetkey=new akey("t");
 var firekey=new akey("f");
+var fleetattackkey=new akey("j");
 
 
 
@@ -410,6 +411,11 @@ function mainMenuUpdate(){
 	{
 		console.log("No more ships!!!");
 		return;
+	}
+	
+	if(fleetattackkey.check())
+	{
+		civs[0].fleets[0].attacking=!civs[0].fleets[0].attacking;
 	}
 	
 	if((!ships[curShip].adrift) && (ships[curShip].crew.length>0))
