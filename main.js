@@ -103,7 +103,7 @@ var gamestart=false;
 var radar=true;
 
 var pausekey=new akey("space");
-var debugkey=new akey("l");
+var debugkey=new akey("k");
 var escapekey=new akey("esc");
 var pageupkey=new akey("o");
 var pagedownkey=new akey("l");
@@ -387,6 +387,8 @@ function mainMenuDraw(){
 	drawGUI();
 };
 
+var neddard=false;
+
 function mainMenuUpdate(){
 	var tick=0;
 	lasttime=milliseconds;
@@ -399,12 +401,29 @@ function mainMenuUpdate(){
 		mode=1;
 	}
 	 if(debugkey.check()) {
-		MUSIC_ON=!MUSIC_ON;
-		document.getElementById("titleAudio").pause();
-		//monsta.startOrbit(40000,Math.floor(Math.random()*CANVAS_WIDTH),Math.floor(Math.random()*CANVAS_HEIGHT),60);
+		/*MUSIC_ON=!MUSIC_ON;
+		document.getElementById("titleAudio").pause();*/
+		if(!neddard){
+			neddard=true;
+			civs[0].fleets.push(new fleet());
+			for(var i=0;i<3;i++)
+			{
+				civs[0].fleets[0].addShip(ships[i]);
+				if(ships[i].orbiting){
+					//ships[i].orderLeaveOrbit();
+				}
+			}
+			console.log("First Fleet established");
+		}
 	 }
 	if(startkey.check()){
 		//mode=1;
+		for(var i=3;i<ships.length;i++)
+		{
+			ships[i].orderOrbit(stars[0].planets[Math.floor(Math.random()*stars[0].planets.length)]);
+			
+		}
+		console.log("All allied ships coming to help defend the Sol System.");
 	}
 	
 	if(ships.length<1)
@@ -577,22 +596,10 @@ function mainMenuUpdate(){
 			ships[i].Evac();
 		}*/
 	}
-	var neddard=false;
 	if(pausekey.check())
 	{
 			//spinArt=!spinArt;
-		if(!neddard){
-			neddard=true;
-			civs[0].fleets.push(new fleet());
-			for(var i=0;i<3;i++)
-			{
-				civs[0].fleets[0].addShip(ships[i]);
-				if(ships[i].orbiting){
-					//ships[i].orderLeaveOrbit();
-				}
-			}
-			console.log("First Fleet established");
-		}
+			gameSpeed=0;
 	}
 	for(var i=0;i<ships.length;i++)
 	{

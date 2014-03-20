@@ -26,7 +26,7 @@ updateEscapes=function()
 		if(!escapes[i].active)
 		{
 			escapes.splice(i,1);
-			i--;
+			//i--;
 		}else
 		{
 			escapes[i].update();
@@ -40,7 +40,7 @@ updateMines=function(thangs){
 		if(!mines[i].active)
 		{
 			mines.splice(i,1);
-			i--;
+			//i--;
 		}else
 		{
 			mines[i].update(thangs);
@@ -54,7 +54,7 @@ updateTorpedos=function(thangs){
 		if(!torpedos[i].active)
 		{
 			torpedos.splice(i,1);
-			i--;
+			//i--;
 		}else
 		{
 			torpedos[i].update(thangs);
@@ -682,7 +682,7 @@ function starShip(){
 			{
 				//console.log("same team!");
 				this.nearbyVessels.splice(i,1);
-				i--;
+				//i--;
 			}
 		}
 		
@@ -734,7 +734,7 @@ function starShip(){
 			if(this.torpedoTarget.civ.autoHostile.indexOf(this.civ)==-1)
 			{
 					this.torpedoTarget.civ.autoHostile.push(this.civ);
-					console.log(this.civ.name + " have pissed off " +this.torpedoTarget.civ.name+ "by firing on one of their ships");
+					console.log(this.civ.name + " have pissed off " +this.torpedoTarget.civ.name+ " by firing on one of their ships");
 			}
 			
 		}
@@ -1158,7 +1158,7 @@ function starShip(){
 				}
 				if((Math.abs(this.x-this.desiredOrbitTarg.x)<50) && (Math.abs(this.y-this.desiredOrbitTarg.y)<50)) 
 				{
-					console.log("arrived!");
+					console.log(this.name+ " has arrived in orbit of "+this.desiredOrbitTarg.name);
 					this.orbit(this.desiredOrbitTarg);
 					this.desiredOrbitTarg=null;
 				}
@@ -1219,7 +1219,7 @@ function starShip(){
 		this.tillEvent-=1*gameSpeed;
 		if((this.tillEvent<1) && (this.race==0)) //todo race vs civ
 		{
-			this.generateEvent();
+			//this.generateEvent();
 			this.tillEvent=Math.random()*8000;
 		}
 
@@ -1398,7 +1398,7 @@ function fleet(){
 			if(!this.ships[i].alive)
 			{
 				this.ships.splice(i,1);
-				i--;
+				//i--;
 			}else
 			{
 				this.ships[i].inFormation=false;
