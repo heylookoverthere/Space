@@ -442,9 +442,12 @@ function killShip(targ)
 			if(curShip==i)
 			{
 				curShip=0;
+				//after delay
+				
 			}
 		}
 	}
+	camera.center(ships[curShip]);
 };
 
 

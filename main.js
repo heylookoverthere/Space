@@ -406,6 +406,12 @@ function mainMenuUpdate(){
 		//mode=1;
 	}
 	
+	if(ships.length<1)
+	{
+		console.log("No more ships!!!");
+		return;
+	}
+	
 	if((!ships[curShip].adrift) && (ships[curShip].crew.length>0))
 	{
 		if(evackey.check())
