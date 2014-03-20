@@ -26,6 +26,7 @@ updateEscapes=function()
 		if(!escapes[i].active)
 		{
 			escapes.splice(i,1);
+			i--;
 		}else
 		{
 			escapes[i].update();
@@ -39,6 +40,7 @@ updateMines=function(thangs){
 		if(!mines[i].active)
 		{
 			mines.splice(i,1);
+			i--;
 		}else
 		{
 			mines[i].update(thangs);
@@ -52,6 +54,7 @@ updateTorpedos=function(thangs){
 		if(!torpedos[i].active)
 		{
 			torpedos.splice(i,1);
+			i--;
 		}else
 		{
 			torpedos[i].update(thangs);
@@ -679,6 +682,7 @@ function starShip(){
 			{
 				//console.log("same team!");
 				this.nearbyVessels.splice(i,1);
+				i--;
 			}
 		}
 		
@@ -727,6 +731,12 @@ function starShip(){
 				beta += 360.0;
 			else if (beta > 360.0)
 				beta -= 360;
+			if(this.torpedoTarget.civ.autoHostile.indexOf(this.civ)==-1)
+			{
+					this.torpedoTarget.civ.autoHostile.push(this.civ);
+					console.log(this.civ.name + " have pissed off " +this.torpedoTarget.civ.name+ "by firing on one of their ships");
+			}
+			
 		}
 		
 		torpy.heading=beta;
@@ -1388,6 +1398,7 @@ function fleet(){
 			if(!this.ships[i].alive)
 			{
 				this.ships.splice(i,1);
+				i--;
 			}else
 			{
 				this.ships[i].inFormation=false;

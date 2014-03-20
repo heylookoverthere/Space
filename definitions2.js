@@ -447,6 +447,7 @@ function killShip(targ)
 		if (targ==ships[i])
 		{
 			ships.splice(i,1);
+			i--;
 			targ.alive=false;
 			console.log("The " +targ.name+" was destroyed. "+ targ.crew.length+ " crew were lost. ");
 			monsta.explosionTextured(200,targ.x,targ.y,1,"explosion0");
@@ -559,7 +560,8 @@ function initShips(){
 		ships[6].civ=civs[2];
 		ships[6].christen();
 		ships[6].hp=1000;
-		ships[6].shields=200;
+		ships[6].maxHp=1000;
+		ships[6].shields=100;
 		
 		ships[6].oxygen=10000;
 		ships[6].class="Cube";
