@@ -1260,7 +1260,7 @@ function starShip(){
 				this.attacking=true;
 			}
 		}
-		if(!this.torpedoTarget)
+		if((!this.torpedoTarget) || (!this.torpedoTarget.alive))
 		{
 			this.attacking=false;
 		}
@@ -1425,6 +1425,10 @@ function fleet(){
 						
 					}*/
 					ships[i].attacking=true;
+					if(!ships[0].torpedoTarget)
+					{
+						this.attacking=false;
+					}
 				}
 			}
 			//todo if lead vessel is attacking something, join in!;

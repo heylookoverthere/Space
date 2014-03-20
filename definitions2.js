@@ -507,7 +507,7 @@ function initShips(){
 	ships[2].maxShields=70;
 	ships[2].shields=0;*/
 	
-		ships[2].x=Math.random()*universeWidth/2;
+	ships[2].x=Math.random()*universeWidth/2;
 	ships[2].y=Math.random()*universeHeight/2;
 	ships[2].prefix="";
 	ships[2].class="Galaxy Class";
@@ -522,10 +522,11 @@ function initShips(){
 	
 	for(var p=3;p<numShips-3;p++)
 	{
-		if(Math.random()*7<5)
+		if(Math.random()*20<5)
 		{
 			var blah=0;//Math.floor(Math.random()*numSystems);
 			var gah=Math.floor(Math.random()*stars[blah].numPlanets);
+			//civs[1].homeworld=stars[blah].planets[gah];
 			
 			ships[p].orbit(stars[blah].planets[Math.floor(Math.random()*stars[blah].planets.length)]);
 			ships[p].class="Bird of Prey";
