@@ -522,6 +522,8 @@ function starShip(){
 	this.yv=0;
 	this.destination=null;
 	this.transportRange=200;
+	this.lifeSupport=true;
+	this.lifeSupportRate=.25;
 	this.maxMines=100;
 	this.maxTorpedos=100;
 	this.numTorpedos=100;
@@ -590,8 +592,11 @@ function starShip(){
 	this.orbitTarg=null;
 	this.desiredOrbitTarg=null;
 	this.gotoDest=false;
+	this.drawTarget=false;
 	this.dest=null;
 	this.homeworld=null;
+	this.baseRepair=.25;
+	this.fixCount=0;
 	this.civ=null;
 	this.destx=0;
 	this.desty=0;
@@ -976,6 +981,12 @@ function starShip(){
 		return thongs;
 	};
 	
+	this.getRepairRate=function()
+	{
+		//todo only engineering crew.
+		return this.crew.length*this.baseRepair;
+	};
+	
 	this.update=function(){
 		if(this.selfDestructActive)
 		{
@@ -990,6 +1001,21 @@ function starShip(){
 		{
 			this.torpedoTarget=null;
 		}
+		
+		if(this.breaches>0)//repairs!
+		{
+			var fixrate=this.getRepairRate();
+			this.fixCount+=fixrate*gameSpeed;
+			if(this.fixCount>100)
+			{
+				this.fixCount=0;
+				if(this.breaches>0)
+				{
+					this.breaches--;
+				}
+			}
+		}
+		
 		if((this.destination) && (this.destination!=this))//TODO change to if destination, then if goal orbit or park.
 		{
 				this.orbiting=false;
@@ -1196,7 +1222,14 @@ function starShip(){
 		{
 			this.killRandomCrew(" of suffocation.");
 		}
-		
+		if((this.lifeSupport) && (this.oxygen<1000))
+		{
+			this.oxygen+=this.lifeSupportRate*gameSpeed;
+			if(this.oxygen>1000)
+			{
+				this.oxygen=1000;
+			}
+		}
 	};
 	
 	this.draw=function(can,cam){
@@ -1233,7 +1266,7 @@ function starShip(){
 			}
 
 			can.restore();
-			if(this.torpedoTarget)
+			if((this.torpedoTarget) &&(this.drawTarget))
 			{
 				can.save();
 				can.translate((this.torpedoTarget.x+cam.x)*cam.zoom,(this.torpedoTarget.y+cam.y)*cam.zoom);
@@ -1302,6 +1335,10 @@ function fleet(){
 				{
 					this.ships[i].desiredSpeed=this.ships[0].desiredSpeed;
 					this.ships[i].desiredHeading=this.ships[0].desiredHeading;
+					if(this.ships[0].torpedoTarget)
+					{
+						this.ships[i].torpedoTarget=this.ships[0].torpedoTarget;
+					}
 				}else
 				{
 					this.ships[i].destination=this.ships[0];

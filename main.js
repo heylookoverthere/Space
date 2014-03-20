@@ -265,11 +265,11 @@ canvas.font = "8pt Calibri";
 	canvas.fillText("Ship: "+ships[curShip].prefix+" "+ships[curShip].name,755,350);
 	if(ships[curShip].destination)
 	{
-		canvas.fillText("Ship: "+ships[curShip].destination.prefix+" "+ships[curShip].destination.name,755,365);
+		canvas.fillText("Following: "+ships[curShip].destination.prefix+" "+ships[curShip].destination.name,755,365);
 	}
 	if(ships[curShip].torpedoTarget)
 	{
-		canvas.fillText("Ship: "+ships[curShip].torpedoTarget.prefix+" "+ships[curShip].torpedoTarget.name,755,380);
+		canvas.fillText("Targeting: "+ships[curShip].torpedoTarget.prefix+" "+ships[curShip].torpedoTarget.name,755,380);
 	}//else if ships[curShip].
 	canvas.fillText("Hull Integrity: "+ships[curShip].hp+"/"+ships[curShip].maxHp,755,395);
 	canvas.fillText("02: "+Math.floor(ships[curShip].oxygen/10)+"%",755,410);
@@ -572,7 +572,7 @@ function mainMenuUpdate(){
 		if(!neddard){
 			neddard=true;
 			civs[0].fleets.push(new fleet());
-			for(var i=0;i<ships.length;i++)
+			for(var i=0;i<3;i++)
 			{
 				civs[0].fleets[0].addShip(ships[i]);
 				if(ships[i].orbiting){
@@ -592,7 +592,7 @@ function mainMenuUpdate(){
 			{
 				ships[i].torpedoTarget=null;
 			}
-			if(true)//i!=curShip)
+			if(i!=curShip)
 			{
 				ships[i].drawTarget=false;
 			}else

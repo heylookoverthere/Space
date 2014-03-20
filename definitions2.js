@@ -477,7 +477,7 @@ function initShips(){
 	ships[1].maxShields=70;
 	ships[1].shields=70;
 	
-	ships[2].x=Math.random()*universeWidth/2;
+	/*ships[2].x=Math.random()*universeWidth/2;
 	ships[2].y=Math.random()*universeHeight/2;
 	ships[2].prefix="";
 	ships[2].class="Cardassian Station";
@@ -489,7 +489,18 @@ function initShips(){
 	ships[2].heading=90;
 	ships[2].desiredHeading=90;
 	ships[2].maxShields=70;
-	ships[2].shields=0;
+	ships[2].shields=0;*/
+	
+		ships[2].x=Math.random()*universeWidth/2;
+	ships[2].y=Math.random()*universeHeight/2;
+	ships[2].prefix="";
+	ships[2].class="Galaxy Class";
+	ships[2].race=0;
+	ships[2].name="Enterprise";
+	ships[2].sprite=Sprite("ship2");
+	ships[2].maxSpeed=9;
+	ships[2].maxShields=70;
+	ships[2].shields=70;
 	
 	
 	for(var p=3;p<numShips-3;p++)
