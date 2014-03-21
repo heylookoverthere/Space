@@ -537,10 +537,37 @@ function escapePod(){
 			}
 		}
 		
-		this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
-		this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
-		this.x+=this.xv*gameSpeed*this.speed;
-		this.y+=this.yv*gameSpeed*this.speed;
+		if(this.tractorHost)
+		{
+			if((Math.abs(this.x-this.tractorHost.x)<20) && (Math.abs(this.y-this.tractorHost.y)<20)) 
+			{
+				if(this.passenger)
+				{
+					console.log(this.tractorHost.name+" recovered "+this.passenger.title+" "+this.passenger.name+"'s escape pod.");
+					this.tractorHost.crew.push(this.passenger);	
+				}else
+				{
+					console.log(this.tractorHost.name+" pulled in an empty escape pod.");
+				}
+			this.active=false;
+			this.alive=false;
+			}else
+			{
+				var peta=Math.atan2(this.tractorHost.y-this.y,this.tractorHost.x-this.x)* (180 / Math.PI);
+				this.xv=Math.cos((Math.PI / 180)*Math.floor(peta));
+				this.yv=Math.sin((Math.PI / 180)*Math.floor(peta));
+				this.x+=this.xv*gameSpeed*(this.speed+1);
+				this.y+=this.yv*gameSpeed*(this.speed+1);
+			}
+		}else
+		{
+			this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
+			this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
+			this.x+=this.xv*gameSpeed*this.speed;
+			this.y+=this.yv*gameSpeed*this.speed;
+			
+		}
+
 		if(this.x<0)
 		{
 			this.x=0;
@@ -1190,6 +1217,12 @@ function starShip(){
 			{
 				this.energyWeapons[i].target=null;
 			}
+		}
+		
+		if((this.tractorTarget) &&(!this.tractorTarget.alive))
+		{
+			this.tractorTarget=null;
+			this.tractorClient=null;
 		}
 		
 		if(this.breaches>0)//repairs!
