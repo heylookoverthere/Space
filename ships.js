@@ -104,25 +104,80 @@ function crew() {
 
 function energyWeapon(hip)
 {
-	this.x=hip.width/2;
-	this.y=hip.height/2;
+	this.x=hip.x;
+	this.y=hip.y;
 	this.target=null;
-	this.strength=5;
+	this.strength=1;
 	this.pierce=0;
+	this.damageRate=1;
+	this.range=hip.phaserRange;
 	this.charge=1;
+	this.firing=false;
 	this.type=0;
-	this.update=function(){
-	
+	this.colorTrack=0;
+	this.damageTrack=0;
+
+	this.update=function(hip){
+		this.x=hip.x;
+		this.y=hip.y;
+		if(hip.torpedoTarget)
+		{
+			target=hip.torpedoTarget;
+		}
+		if((!this.target) || (!this.target.alive))
+		{
+			this.firing=false;
+			return;
+		}
+		if((Math.abs(this.x-this.target.x)>this.range) || (Math.abs(this.y-this.target.y)>this.range))//todo dist formula
+		{
+			this.firing=false;
+			return;
+		}
+		this.colorTrack+=1*gameSpeed*2;
+		if(this.colorTrack>10)
+		{
+			this.colorTrack=0;
+		}
+		
+		this.damageTrack+=this.damageRate*gameSpeed;
+		if(this.damageTrack>10)
+		{
+			this.damageTrack=0;
+			this.target.getDamaged(this.strength,true);
+		}
+		
+		//console.log(this.firing);
 	};
 	
-	this.fire=function(){
-	
+	this.fire=function(hip){
+		this.target=hip.torpedoTarget;
+		if(!this.target) 
+		{
+			return;
+		}
+		this.firing=true;
+		
 	};
 	
 	this.draw=function(can,cam){
-	//stroke?!
+		if(!this.firing){
+			return;
+		}
+		//todo, hit things
+		can.save();
+		can.strokeStyle = bColors[Math.floor(this.colorTrack)];
+		can.beginPath();
+		can.lineWidth = 4*cam.zoom;
+
+		can.moveTo((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
+		can.lineTo((this.target.x+cam.x)*cam.zoom,(this.target.y+cam.y)*cam.zoom)
+		
+		can.closePath();
+		can.stroke();
+		can.restore();
 	};
-}
+};
 
 function torpedo(){
 	this.x=0;
@@ -227,7 +282,7 @@ function torpedo(){
 				if((this.x>centerx) && (this.x<centerx+thangs[i].width) && (this.y>centery) &&(this.y<centery+thangs[i].height))
 				{
 					this.detonate();
-					thangs[i].getDamaged(this.yield);
+					thangs[i].getDamaged(this.yield,false);
 				}
 			}
 		}
@@ -317,7 +372,7 @@ function mine(){
 				if((ourx>centerx) && (ourx<centerx+thangs[i].width) && (oury>centery) &&(oury<centery+thangs[i].height))
 				{
 					this.detonate();
-					thangs[i].getDamaged(this.yield);
+					thangs[i].getDamaged(this.yield,false);
 				}
 			}
 		}
@@ -342,6 +397,7 @@ function escapePod(){
 	this.width=8;
 	this.height=8;
 	this.maxSpeed=2;
+	this.armor=0;
 	this.desiredSpeed=0;
 	this.speed=0;
 	this.sprite=Sprite("pod");
@@ -355,7 +411,6 @@ function escapePod(){
 	this.acceltick=0;
 	this.acceleration=.5;
 	this.cloak=false;
-	this.armor=0;
 	this.shields=0;
 	this.turning=false;
 	this.launch=function(source,dest){
@@ -523,6 +578,7 @@ function starShip(){
 	this.y=0;
 	this.xv=0;
 	this.yv=0;
+	this.phaserRange=500;
 	this.destination=null;
 	this.transportRange=200;
 	this.lifeSupport=true;
@@ -554,7 +610,7 @@ function starShip(){
 	this.numPhasers=1;
 	this.torpedoBays=new Array();
 	this.numTorpedoBays=0;
-	this.phaserBanks[0]=new energyWeapon(this);
+	this.phaserBanks.push(new energyWeapon(this));
 	this.shields=0;
 	this.maxShields=100;
 	this.shieldSprite=Sprite("shields1");
@@ -617,12 +673,9 @@ function starShip(){
 	this.turning=false;
 	this.sensors=0;
 	this.energyWeapons=new Array();
-	this.phaserBanks=2;
 	this.torpedoTubes=2;
 	this.sprite=Sprite("ship1");
 	this.artilery=new Array();
-	this.energyWeapons[0]=0;
-	this.energyWeapons[1]=0;
 	this.artilery[0]=0;
 	this.artilery[1]=0;
 	this.impulseEngine=0;
@@ -644,7 +697,7 @@ function starShip(){
 	this.cafe=0;
 	this.nearbySystems=new Array();
 	this.nearbyVessels=new Array();
-	
+	this.nearbyPods=new Array();
 	this.lightyearsTraveled=0;
 	this.crewLost=0;
 	
@@ -657,6 +710,23 @@ function starShip(){
 		minny.active=true;
 		minny.range=10;
 		mines.push(minny);
+	};
+	
+	this.inPhaserRange=function(hip){
+		if((Math.abs(hip.x-this.x)<this.phaserRange) && (Math.abs(hip.y-this.y)<this.phaserRange)) 
+		{
+			return true;
+		}
+		return false;
+	};
+	
+	this.firePhasers=function(){
+		for(var i=0;i<this.phaserBanks.length;i++)
+		{
+			
+			this.phaserBanks[i].fire(this);
+			
+		}
 	};
 	
 	this.christen=function(){
@@ -747,19 +817,21 @@ function starShip(){
 		//console.log(torpy);
 	};
 	
-	this.getDamaged=function(amt){
+	this.getDamaged=function(amt,phaser){
 		this.shields-=amt;
-		
-		if(this.shields<0){this.hp+=this.shields; this.shields=0;}
+		var wound=0;
+		if(this.shields<0){wound+=this.shields; this.shields=0;}
+		wound-=this.armor;
+		this.hp+=wound;
 		if(this.hp<1)
 		{
 			killShip(this);
 		}
 		//todo randomly damage systems, kill crew.
-		if(this.shields<1)
+		if((this.shields<1) && (!phaser))
 		{
 			var pete=Math.floor(Math.random()*100);
-			if(pete<50)
+			if(pete<20)
 			{
 				this.breaches++;
 				console.log("The " +this.name+"'s hull was breached!");
@@ -1027,6 +1099,10 @@ function starShip(){
 		if((this.torpedoTarget) &&(!this.torpedoTarget.alive))
 		{
 			this.torpedoTarget=null;
+			for(var i=0;i<this.energyWeapons.length;i++)
+			{
+				this.energyWeapons[i].target=null;
+			}
 		}
 		
 		if(this.breaches>0)//repairs!
@@ -1268,6 +1344,10 @@ function starShip(){
 			{
 				this.torpedoTarget=this.nearbyVessels[i];
 				this.attacking=true;
+				if(this.inPhaserRange(this.torpedoTarget))
+				{
+						this.firePhasers();
+				}
 			}
 		}
 		if((!this.torpedoTarget) || (!this.torpedoTarget.alive))
@@ -1282,6 +1362,10 @@ function starShip(){
 				this.autoFireTick=0;
 				this.fireTorpedo();
 			}
+		}
+		for(var i=0;i<this.phaserBanks.length;i++)
+		{
+			this.phaserBanks[i].update(this);
 		}
 	};
 	
@@ -1333,6 +1417,11 @@ function starShip(){
 				can.scale(cam.zoom,cam.zoom);
 				targetSprite.draw(can, -this.torpedoTarget.width/2,-this.torpedoTarget.height/2);
 				can.restore();
+			}
+			
+			for(var i=0;i<this.phaserBanks.length;i++)
+			{
+				this.phaserBanks[i].draw(can,cam);
 			}
 
 			//this.sprite.draw(can, this.x-cam.x-this.width/2,this.y-cam.y-this.height/2);
@@ -1439,6 +1528,13 @@ function fleet(){
 					if(!ships[0].torpedoTarget)
 					{
 						this.attacking=false;
+					}else
+					{
+						if(ships[i].inPhaserRange(ships[0].torpedoTarget))
+						{
+							ships[i].torpedoTarget=ships[0].torpedoTarget;
+							ships[i].firePhasers();
+						}
 					}
 				}
 			}

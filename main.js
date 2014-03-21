@@ -118,6 +118,7 @@ var camspeedkey=new akey("shift");
 var zoomkey=new akey("z");
 var plkey=new akey("p");
 var startkey=new akey("return");
+var phaserkey=new akey("u");
 
 var dkey=new akey("d");
 var starkey=new akey("s");
@@ -250,6 +251,18 @@ canvas.font = "8pt Calibri";
 			actiontext="Exploring the " +getQuadrant(ships[curShip]) + " Quadrant";
 		}
 	}
+	if(ships[curShip].nearbyPods.length>0)
+	{
+			canvas.fillStyle = "red";
+			if(ships[curShip].nearbyPods.length>1)
+			{
+				canvas.fillText(ships[curShip].nearbyPods.length+ " escape pods detected nearby",755,315);
+			}else
+			{
+				canvas.fillText(ships[curShip].nearbyPods.length+ " escape pod detected nearby",755,315);
+			}
+			canvas.fillStyle = "white";
+	}
 	if(ships[curShip].orbiting)
 	{
 		if(ships[curShip].leavingProgress)
@@ -312,6 +325,90 @@ canvas.font = "8pt Calibri";
 	canvas.fillText("OrbitTrack: "+ ships[curShip].orbitTrack,755,605);
 	canvas.fillText("Ships Detected Nearby: "+ ships[curShip].nearbyVessels.length,755,620)
 	canvas.fillText("Systems Detected Nearby: "+ ships[curShip].nearbySystems.length,755,635)
+	
+	
+	//-===========/
+	if(ships[curShip].torpedoTarget)
+	{
+	var actiontext="Full Stop";
+	if((Math.abs(ships[curShip].torpedoTarget.x-ships[curShip].x)<ships[curShip].phaserRange) && (Math.abs(ships[curShip].torpedoTarget.y-ships[curShip].y)<ships[curShip].phaserRange)) //todo distance!
+	{
+		canvas.fillStyle="red";
+		canvas.fillText("IN PHASER RANGE!",55,330);
+		canvas.fillStyle="white";
+	}
+	if(ships[curShip].torpedoTarget.speed>0){
+		if(ships[curShip].torpedoTarget.desiredOrbitTarg)
+		{
+			actiontext=ships[curShip].torpedoTarget.status;
+		}else
+		{
+			actiontext="Exploring the " +getQuadrant(ships[curShip]) + " Quadrant";
+		}
+	}
+	if(ships[curShip].torpedoTarget.orbiting)
+	{
+		if(ships[curShip].torpedoTarget.leavingProgress)
+		{
+			actiontext="Breaking Orbit";
+		}else
+		{
+			actiontext="Orbiting "+ships[curShip].torpedoTarget.orbitTarg.name;
+		}
+	}else if(ships[curShip].torpedoTarget.turning)
+	{
+		actiontext="Adjusting Heading";
+	}
+	canvas.fillText("Ship: "+ships[curShip].torpedoTarget.prefix+" "+ships[curShip].torpedoTarget.name,55,350);
+	if(ships[curShip].torpedoTarget.destination)
+	{
+		canvas.fillText("Following: "+ships[curShip].torpedoTarget.destination.prefix+" "+ships[curShip].torpedoTarget.destination.name,55,365);
+	}
+	if(ships[curShip].torpedoTarget.torpedoTarget)
+	{
+		canvas.fillText("Targeting: "+ships[curShip].torpedoTarget.torpedoTarget.prefix+" "+ships[curShip].torpedoTarget.torpedoTarget.name,55,380);
+	}//else if ships[curShip].torpedoTarget.
+	canvas.fillText("Hull Integrity: "+ships[curShip].torpedoTarget.hp+"/"+ships[curShip].torpedoTarget.maxHp,55,395);
+	canvas.fillText("02: "+Math.floor(ships[curShip].torpedoTarget.oxygen/10)+"%",55,410);
+	if(ships[curShip].torpedoTarget.breaches>0)
+	{
+		if(ships[curShip].torpedoTarget.breaches<2)
+		{
+			canvas.fillStyle = "red";
+			canvas.fillText("HULL BREACH",55,425);
+			canvas.fillStyle = "white";
+		}else
+		{
+			canvas.fillStyle = "red";
+			canvas.fillText("MULTIPLE HULL BREACHES",55,425);
+			canvas.fillStyle = "white";
+		}
+	}
+	canvas.fillText("Torpedos: "+ships[curShip].torpedoTarget.numTorpedos+" Mines: "+ships[curShip].torpedoTarget.numMines,55,440);
+	if(ships[curShip].torpedoTarget.selfDestructActive)
+	{
+		canvas.fillStyle = "red";
+		canvas.fillText("SELF DESTRUCT IN " +ships[curShip].torpedoTarget.selfDestructTick,55,455);
+		canvas.fillStyle = "white";
+	}
+	canvas.fillText("Crew Compliment: "+ ships[curShip].torpedoTarget.crew.length+"/"+ships[curShip].torpedoTarget.crewMax,55,470);
+	canvas.fillText("Class: "+ ships[curShip].torpedoTarget.class,55,485);
+	canvas.fillText(actiontext,55,500);
+	canvas.fillText("Coords: "+Math.floor(ships[curShip].torpedoTarget.x)+","+Math.floor(ships[curShip].torpedoTarget.y),55,515);
+	canvas.fillText("Heading: "+ Math.floor(ships[curShip].torpedoTarget.heading),55,530);
+	canvas.fillText("Desired Heading: "+ ships[curShip].torpedoTarget.desiredHeading,55,545);
+	canvas.fillText("Speed: "+ ships[curShip].torpedoTarget.speed+" / "+ships[curShip].torpedoTarget.desiredSpeed+" / "+ships[curShip].torpedoTarget.maxSpeed,55,560);
+	var ghjk="";
+	if(ships[curShip].torpedoTarget.cloaked) {ghjk+="Cloaked ";}
+	if(ships[curShip].torpedoTarget.shields>0) {ghjk+="Shields: "+ships[curShip].torpedoTarget.shields;}
+	canvas.fillText(ghjk,55,575);
+	//if(ships[curShip].torpedoTarget.cloaked) {canvas.fillText("Cloaked",55,575);}
+
+	canvas.fillText("Crew Lost: "+ ships[curShip].torpedoTarget.crewLost,55,590);
+	canvas.fillText("OrbitTrack: "+ ships[curShip].torpedoTarget.orbitTrack,55,605);
+	canvas.fillText("Ships Detected Nearby: "+ ships[curShip].torpedoTarget.nearbyVessels.length,55,620)
+	canvas.fillText("Systems Detected Nearby: "+ ships[curShip].torpedoTarget.nearbySystems.length,55,635)
+	}
 };
 
 function mainMenuDraw(){
@@ -385,6 +482,17 @@ function mainMenuDraw(){
 		nebulas[i].draw(canvas,camera);
 	}
 	drawGUI();
+	/*canvas.save();
+		canvas.strokeStyle = "red";
+		canvas.beginPath();
+		canvas.lineWidth = 8;
+
+		canvas.moveTo((20),(20));
+		canvas.lineTo((200),200);
+		
+		canvas.closePath();
+		canvas.stroke();
+		canvas.restore();*/
 };
 
 var neddard=false;
@@ -475,6 +583,10 @@ function mainMenuUpdate(){
 		if(firekey.check())
 		{
 			ships[curShip].fireTorpedo();
+		}
+		if(phaserkey.check())
+		{
+			ships[curShip].firePhasers();
 		}
 		if(shipslowkey.check())
 		{
@@ -607,6 +719,7 @@ function mainMenuUpdate(){
 		{
 			ships[i].nearbySystems=ships[i].inSensorRange(stars);	
 			ships[i].nearbyVessels=ships[i].inSensorRange(ships);
+			ships[i].nearbyPods=ships[i].inSensorRange(escapes);
 			if(ships[i].nearbyVessels==null)
 			{
 				ships[i].torpedoTarget=null;
