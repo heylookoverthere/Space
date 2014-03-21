@@ -245,8 +245,6 @@ function torpedo(){
 	};*/
 	
 	this.update=function(thangs){
-	//also move the thing.
-	//homing?
 		if((this.homing) && (this.targ))
 		{
 			var beta=Math.atan2(this.targ.y-this.y,this.targ.x-this.x)* (180 / Math.PI);
@@ -810,6 +808,7 @@ function starShip(){
 	};
 	
 	this.firePhasers=function(){
+		if((!this.torpedoTarget) || (!this.inPhaserRange(this.torpedoTarget))) {return;}
 		for(var i=0;i<this.phaserBanks.length;i++)
 		{
 			
