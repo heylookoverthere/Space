@@ -398,6 +398,7 @@ function escapePod(){
 	this.width=8;
 	this.height=8;
 	this.maxSpeed=2;
+	this.tractorHost=null;
 	this.armor=0;
 	this.desiredSpeed=0;
 	this.speed=0;
@@ -489,45 +490,53 @@ function escapePod(){
 			}
 			this.active=false;
 		}
-		
-		if(this.speed<Math.floor(this.desiredSpeed))
+		if(this.tractorHost)
 		{
-			this.accelerate();
-		}else if(this.speed>Math.floor(this.desiredSpeed))
-		{
-			this.decelerate();
-		}
-		
-		//update desired heading
-		var beta=Math.atan2(this.destination.y-this.y,this.destination.x-this.x)* (180 / Math.PI);
-	
-		if (beta < 0.0)
-			beta += 360.0;
-		else if (beta > 360.0)
-			beta -= 360;
-		this.heading=beta;
-		this.desiredHeading=beta;
-		//turn to desired heading
-		if(Math.floor(this.heading)<Math.floor(this.desiredHeading))
-		{
-			this.heading+=this.turnSpeed*gameSpeed;
-			this.turning=true;
-			if (this.heading < 0.0)
-				this.heading += 360.0;
-			else if (this.heading > 360.0)
-				this.heading -= 360;
-		}else if(Math.floor(this.heading)>Math.floor(this.desiredHeading))
-		{
-			this.heading-=this.turnSpeed*gameSpeed;
-			this.turning=true;
-			if (this.heading < 0.0)
-				this.heading += 360.0;
-			else if (this.heading > 360.0)
-				this.heading -= 360;
+			this.heading=this.tractorHost.heading;
+			this.speed=this.tractorHost.speed
+			//this.yv=this.tractorHost.yv;
 		}else
 		{
-			this.turning=false;
+			if(this.speed<Math.floor(this.desiredSpeed))
+			{
+				this.accelerate();
+			}else if(this.speed>Math.floor(this.desiredSpeed))
+			{
+				this.decelerate();
+			}
+			
+			//update desired heading
+			var beta=Math.atan2(this.destination.y-this.y,this.destination.x-this.x)* (180 / Math.PI);
+		
+			if (beta < 0.0)
+				beta += 360.0;
+			else if (beta > 360.0)
+				beta -= 360;
+			this.heading=beta;
+			this.desiredHeading=beta;
+			//turn to desired heading
+			if(Math.floor(this.heading)<Math.floor(this.desiredHeading))
+			{
+				this.heading+=this.turnSpeed*gameSpeed;
+				this.turning=true;
+				if (this.heading < 0.0)
+					this.heading += 360.0;
+				else if (this.heading > 360.0)
+					this.heading -= 360;
+			}else if(Math.floor(this.heading)>Math.floor(this.desiredHeading))
+			{
+				this.heading-=this.turnSpeed*gameSpeed;
+				this.turning=true;
+				if (this.heading < 0.0)
+					this.heading += 360.0;
+				else if (this.heading > 360.0)
+					this.heading -= 360;
+			}else
+			{
+				this.turning=false;
+			}
 		}
+		
 		this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
 		this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
 		this.x+=this.xv*gameSpeed*this.speed;
