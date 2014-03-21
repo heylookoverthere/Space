@@ -119,7 +119,7 @@ var zoomkey=new akey("z");
 var plkey=new akey("p");
 var startkey=new akey("return");
 var phaserkey=new akey("u");
-var tractorkey=new akey("m");
+var tractorkey=new akey("b");
 var tractortargetkey=new akey("n");
 
 var dkey=new akey("d");
@@ -546,10 +546,7 @@ function mainMenuUpdate(){
 	{
 		civs[0].fleets[0].attacking=!civs[0].fleets[0].attacking;
 	}
-	
-	if((!ships[curShip].adrift) && (ships[curShip].crew.length>0))
-	{
-		if(evackey.check())
+	if(evackey.check())
 		{
 			if((ships[curShip].evacuating) || (ships[curShip].evacDone))
 			{
@@ -557,9 +554,22 @@ function mainMenuUpdate(){
 			}else
 			{
 				ships[curShip].Evac(stars[0].planets[2]);
-				console.log(ships[curShip].name+ "'s crew is abandoning ship.");
+				if(ships[curShip].crew.length>1)
+				{
+					console.log(ships[curShip].name+ "'s crew is abandoning ship.");
+				}else if(ships[curShip].crew.length>0)
+				{
+					console.log(ships[curShip].name+ "'s captain is abandoning ship.");
+				}else if(ships[curShip].crew.length<0)
+				{
+					console.log(ships[curShip].name+ "Confirm self destruct?");
+				}
+				//ships[curShip].captainFlees=true;
 			}
 		}
+	if((!ships[curShip].adrift) && (ships[curShip].crew.length>0))
+	{
+		
 		
 		if(tractorkey.check())
 		{

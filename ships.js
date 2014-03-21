@@ -652,6 +652,7 @@ function starShip(){
 	this.crew=new Array();
 	this.orbiting=false;
 	this.orbitDiameter=30;
+	this.captainFlees=false;
 	this.orbitTarg=null;
 	this.desiredOrbitTarg=null;
 	this.gotoDest=false;
@@ -729,7 +730,11 @@ function starShip(){
 		//if somethign not in range return;
 		if(!this.inTractorRange(something)) 
 		{
-			console.log("out of tractor range");
+			console.log("Out of tractor range");
+			return;
+		}if(something.shields>0)
+		{
+			console.log("Cannoy tractor while their sheilds are up.");
 			return;
 		}
 
@@ -786,38 +791,28 @@ function starShip(){
 	this.cycleTractorTarget=function()
 	{
 		if(!this.nearbyVessels) {return;}
-		
-		//var bearbyVessels=this.nearbyVessels;
-		/*for(var i=0;i<this.nearbyVessels.length;i++)
-		{
-			if(this.nearbyVessels[i].civ==this.civ)
-			{
-				//console.log("same team!");
-				this.nearbyVessels.splice(i,1);
-				//i--;
-			}
-		}*/
+		var toon=this.nearbyVessels.concat(this.nearbyPods);
 		
 		//if(!this.bearbyVessels) {return;}
 		if(this.tractorTarget==null)
 		{
 			//console.log("targeting selfyar?");
-			this.tractorTarget=this.nearbyVessels[0];
+			this.tractorTarget=toon[0];
 			return;
 		}
-		for(var i=0;i<this.nearbyVessels.length;i++)
+		for(var i=0;i<toon.length;i++)
 		{
-			if(this.nearbyVessels[i]==this.tractorTarget)
+			if(toon[i]==this.tractorTarget)
 			{
-				if(i==this.nearbyVessels.length)
+				if(i==toon.length)
 				{
 					console.log("targeting self?");
-					this.tractorTarget=this.nearbyVessels[0];
+					this.tractorTarget=toon[0];
 					return;
 				}else
 				{
 					
-					this.tractorTarget=this.nearbyVessels[i+1];
+					this.tractorTarget=toon[i+1];
 					return;
 				}
 			}
@@ -1392,23 +1387,47 @@ function starShip(){
 
 		/*this.heading++;
 		if (this.heading>359) { this.heading=0;}*/
-		if((this.evacuating) && (!this.evacDone))
+		if((this.evacuating)) //&& (!this.evacDone))
 		{
 			this.evacTick+=this.evacRate*gameSpeed;
 			if(this.evacTick>100)
 			{
 				this.evacTick=0;
+				if(this.crew.length<1) 
+				{
+					this.evacuating=false;
+					this.evacDone=true;
+					this.adrift=true;
+					return;
+				}
 				this.escapePods[this.evacTrack].passenger=this.crew.pop();
 				//this.crewNum--;
 				this.escapePods[this.evacTrack].launch(this,this.homeworld);
 				escapes.push(this.escapePods[this.evacTrack]);
 				this.evacTrack++;
-				if((this.evacTrack>this.numEscapePods-1) || (this.crew.length<1))
+				var turp=2;
+				if(this.captainFlees)
 				{
-					this.evacDone=true;
-					//todo ship adrift
-					this.adrift=true;
-					console.log("The "+this.name+" has been evacuated");
+					turp=1;
+				}
+				if((this.evacTrack>this.numEscapePods-1) || (this.crew.length<2))//todo escape again for captian to flee.
+				{
+					/*if(this.captainFlees){
+						this.evacDone=true;
+						this.adrift=true;
+						console.log("The "+this.name+" has been evacuated");
+						this.evacuating=false;
+					}else
+					{*/
+						this.evacuating=false;
+						//todo ship adrift
+						if(this.crew.length<1)
+						{
+							console.log("The "+this.name+" has been evacuated");
+						}else if(this.crew.length<2){
+							console.log("The "+this.name+" has been evacuated, except for the captain.");
+						}
+					//}
 				}
 			}
 		}
