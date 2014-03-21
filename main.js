@@ -119,6 +119,8 @@ var zoomkey=new akey("z");
 var plkey=new akey("p");
 var startkey=new akey("return");
 var phaserkey=new akey("u");
+var tractorkey=new akey("m");
+var tractortargetkey=new akey("n");
 
 var dkey=new akey("d");
 var starkey=new akey("s");
@@ -558,7 +560,18 @@ function mainMenuUpdate(){
 				console.log(ships[curShip].name+ "'s crew is abandoning ship.");
 			}
 		}
-
+		
+		if(tractorkey.check())
+		{
+			if(ships[curShip].tractorClient)
+			{
+				ships[curShip].unTractorSomething();
+			}else if(ships[curShip].tractorTarget)
+			{
+				ships[curShip].tractorSomething(ships[curShip].tractorTarget);
+			}
+		}
+		
 		if(shipleftkey.check())
 		{
 			ships[curShip].adjustHeading(ships[curShip].heading-20);
@@ -739,6 +752,10 @@ function mainMenuUpdate(){
 	if(targetkey.check())
 	{
 		ships[curShip].cycleTarget();
+	}
+	if(tractortargetkey.check())
+	{
+		ships[curShip].cycleTractorTarget();
 	}
 	/*for(var i=0;i<this.escapes.length;i++)
 	{

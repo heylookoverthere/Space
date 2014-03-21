@@ -19,6 +19,7 @@ var looseCrew=new Array(); //crew stranded on a planet or in the mirror universe
 
 var targetSprite=Sprite("shiptargetedbig");
 
+var tractorTargetSprite=Sprite("tractortargetedbig");
 updateEscapes=function()
 {
 	for(var i=0;i<escapes.length;i++)
@@ -588,6 +589,8 @@ function starShip(){
 	this.numTorpedos=100;
 	this.numMines=this.maxMines;
 	this.torpedoTarget=null;
+	this.tractorHost=null;
+	this.tractorClient=null;
 	this.maxHp=100;
 	this.breaches=0;
 	this.oxygen=1000;
@@ -616,6 +619,7 @@ function starShip(){
 	this.shieldSprite=Sprite("shields1");
 	this.discovered=true;
 	this.sensorRange=5000;
+	this.tractorRange=200;
 	this.morale=70;
 	this.cloaked=false;
 	this.turnSpeed=1;
@@ -667,6 +671,7 @@ function starShip(){
 	this.formationCoords=[];
 	this.formationCoords.x=0;
 	this.formationCoords.y=0;
+	this.torpedoTarget=null;
 	this.orbitTrack=Math.floor(Math.random()*359);;
 	this.orbitDecay=0;
 	this.orbitSpeed=2;
@@ -712,8 +717,40 @@ function starShip(){
 		mines.push(minny);
 	};
 	
+	this.unTractorSomething=function(){
+		//if somethign not in range return;
+		
+		this.tractorClient.tractorHost=null;
+		this.tractorClient=null;	
+	
+	};
+	
+	this.tractorSomething=function(something){
+		//if somethign not in range return;
+		if(!this.inTractorRange(something)) 
+		{
+			console.log("out of tractor range");
+			return;
+		}
+
+		if(!something.alive){ return;}
+		
+		something.beingTractored=true;  //not needed?
+		something.tractorHost=this;
+		this.tractorClient=something;	
+	
+	};
+	
 	this.inPhaserRange=function(hip){
 		if((Math.abs(hip.x-this.x)<this.phaserRange) && (Math.abs(hip.y-this.y)<this.phaserRange)) 
+		{
+			return true;
+		}
+		return false;
+	};
+	
+	this.inTractorRange=function(hip){
+		if((Math.abs(hip.x-this.x)<this.tractorRange) && (Math.abs(hip.y-this.y)<this.tractorRange)) 
 		{
 			return true;
 		}
@@ -727,6 +764,11 @@ function starShip(){
 			this.phaserBanks[i].fire(this);
 			
 		}
+		if(this.torpedoTarget.civ.autoHostile.indexOf(this.civ)==-1)
+		{
+			this.torpedoTarget.civ.autoHostile.push(this.civ);
+			console.log(this.civ.name + " have pissed off " +this.torpedoTarget.civ.name+ " by firing on one of their ships");
+		}
 	};
 	
 	this.christen=function(){
@@ -739,6 +781,47 @@ function starShip(){
 		}
 		this.name=shipNames[this.race][nami];
 		shipNamesUsed[this.race][nami]=true;
+	};
+	
+	this.cycleTractorTarget=function()
+	{
+		if(!this.nearbyVessels) {return;}
+		
+		//var bearbyVessels=this.nearbyVessels;
+		/*for(var i=0;i<this.nearbyVessels.length;i++)
+		{
+			if(this.nearbyVessels[i].civ==this.civ)
+			{
+				//console.log("same team!");
+				this.nearbyVessels.splice(i,1);
+				//i--;
+			}
+		}*/
+		
+		//if(!this.bearbyVessels) {return;}
+		if(this.tractorTarget==null)
+		{
+			//console.log("targeting selfyar?");
+			this.tractorTarget=this.nearbyVessels[0];
+			return;
+		}
+		for(var i=0;i<this.nearbyVessels.length;i++)
+		{
+			if(this.nearbyVessels[i]==this.tractorTarget)
+			{
+				if(i==this.nearbyVessels.length)
+				{
+					console.log("targeting self?");
+					this.tractorTarget=this.nearbyVessels[0];
+					return;
+				}else
+				{
+					
+					this.tractorTarget=this.nearbyVessels[i+1];
+					return;
+				}
+			}
+		}
 	};
 	
 	this.cycleTarget=function()
@@ -1242,34 +1325,42 @@ function starShip(){
 		
 		if(!this.orbiting)
 		{
-			//accel or decel to desired speed
-			if(this.speed<this.desiredSpeed)
+			if(this.tractorHost)
 			{
-				this.accelerate();
-			}else if(this.speed>this.desiredSpeed)
-			{
-				this.decelerate();
-			}
-			//turn to desired heading
-			if(Math.floor(this.heading)<Math.floor(this.desiredHeading))
-			{
-				this.heading+=this.turnSpeed*gameSpeed;
-				this.turning=true;
-				if (this.heading < 0.0)
-					this.heading += 360.0;
-				else if (this.heading > 360.0)
-					this.heading -= 360;
-			}else if(Math.floor(this.heading)>Math.floor(this.desiredHeading))
-			{
-				this.heading-=this.turnSpeed*gameSpeed;
-				this.turning=true;
-				if (this.heading < 0.0)
-					this.heading += 360.0;
-				else if (this.heading > 360.0)
-					this.heading -= 360;
+				this.heading=this.tractorHost.heading;
+				this.speed=this.tractorHost.speed
+				//this.yv=this.tractorHost.yv;
 			}else
 			{
-				this.turning=false;
+				//accel or decel to desired speed
+				if(this.speed<this.desiredSpeed)
+				{
+					this.accelerate();
+				}else if(this.speed>this.desiredSpeed)
+				{
+					this.decelerate();
+				}
+				//turn to desired heading
+				if(Math.floor(this.heading)<Math.floor(this.desiredHeading))
+				{
+					this.heading+=this.turnSpeed*gameSpeed;
+					this.turning=true;
+					if (this.heading < 0.0)
+						this.heading += 360.0;
+					else if (this.heading > 360.0)
+						this.heading -= 360;
+				}else if(Math.floor(this.heading)>Math.floor(this.desiredHeading))
+				{
+					this.heading-=this.turnSpeed*gameSpeed;
+					this.turning=true;
+					if (this.heading < 0.0)
+						this.heading += 360.0;
+					else if (this.heading > 360.0)
+						this.heading -= 360;
+				}else
+				{
+					this.turning=false;
+				}
 			}
 			this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
 			this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
@@ -1418,12 +1509,41 @@ function starShip(){
 				targetSprite.draw(can, -this.torpedoTarget.width/2,-this.torpedoTarget.height/2);
 				can.restore();
 			}
+			if((this.tractorTarget) &&(this.drawTarget))
+			{
+				can.save();
+				can.translate((this.tractorTarget.x+cam.x)*cam.zoom,(this.tractorTarget.y+cam.y)*cam.zoom);
+				if(this.tractorTarget.orbiting)
+				{
+					can.rotate((this.tractorTarget.orbitTrack-this.tractorTarget.leavingProgress)* (Math.PI / 180));
+				}else
+				{
+					can.rotate((this.tractorTarget.heading-90)* (Math.PI / 180));//todo negatives.
+				}
+				can.scale(cam.zoom,cam.zoom);
+				tractorTargetSprite.draw(can, -this.tractorTarget.width/2,-this.tractorTarget.height/2);
+				can.restore();
+			}
 			
 			for(var i=0;i<this.phaserBanks.length;i++)
 			{
 				this.phaserBanks[i].draw(can,cam);
 			}
+			if(this.tractorClient)
+			{
+				can.save();
+				can.strokeStyle = "blue";
+				can.beginPath();
+				can.lineWidth = 2*cam.zoom;
 
+				can.moveTo((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
+				can.lineTo((this.tractorClient.x+cam.x)*cam.zoom,(this.tractorClient.y+cam.y)*cam.zoom)
+				
+				can.closePath();
+				can.stroke();
+				can.restore();
+			
+			}
 			//this.sprite.draw(can, this.x-cam.x-this.width/2,this.y-cam.y-this.height/2);
 		}
 	};
