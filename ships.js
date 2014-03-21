@@ -107,6 +107,7 @@ function energyWeapon(hip)
 {
 	this.x=hip.x;
 	this.y=hip.y;
+	this.xoff=0;
 	this.target=null;
 	this.strength=1;
 	this.pierce=0;
@@ -119,7 +120,7 @@ function energyWeapon(hip)
 	this.damageTrack=0;
 
 	this.update=function(hip){
-		this.x=hip.x;
+		this.x=hip.x+this.xoff;
 		this.y=hip.y;
 		if(hip.torpedoTarget)
 		{
@@ -714,7 +715,6 @@ function starShip(){
 	this.orbitSpeed=2;
 	this.turning=false;
 	this.sensors=0;
-	this.energyWeapons=new Array();
 	this.torpedoTubes=2;
 	this.sprite=Sprite("ship1");
 	this.artilery=new Array();
@@ -757,8 +757,11 @@ function starShip(){
 	this.unTractorSomething=function(){
 		//if somethign not in range return;
 		
-		this.tractorClient.tractorHost=null;
-		this.tractorClient=null;	
+		if(this.tractorClient)
+		{
+			this.tractorClient.tractorHost=null;
+			this.tractorClient=null;	
+		}
 	
 	};
 	
@@ -775,11 +778,19 @@ function starShip(){
 		}
 
 		if(!something.alive){ return;}
-		
-		something.beingTractored=true;  //not needed?
+
 		something.tractorHost=this;
 		this.tractorClient=something;	
 	
+	};
+	
+	this.addPhaser=function()
+	{
+		var pim=new energyWeapon(this);
+		console.log(pim.x);
+		pim.xoff=12*this.phaserBanks.length;
+		console.log(pim.x);
+		this.phaserBanks.push(pim);
 	};
 	
 	this.inPhaserRange=function(hip){
@@ -827,8 +838,17 @@ function starShip(){
 	this.cycleTractorTarget=function()
 	{
 		if(!this.nearbyVessels) {return;}
+		this.unTractorSomething();
 		var toon=this.nearbyVessels.concat(this.nearbyPods);
-		
+		//go through toon and remove ones out of tractor range!
+		for(var i=0;i<toon.length;i++)
+		{
+			if(!this.inTractorRange(toon[i]))
+			{
+				toon.splice(i,1);
+				i--;
+			}
+		}
 		//if(!this.bearbyVessels) {return;}
 		if(this.tractorTarget==null)
 		{
@@ -1213,13 +1233,13 @@ function starShip(){
 		if((this.torpedoTarget) &&(!this.torpedoTarget.alive))
 		{
 			this.torpedoTarget=null;
-			for(var i=0;i<this.energyWeapons.length;i++)
+			for(var i=0;i<this.phaserBanks.length;i++)
 			{
-				this.energyWeapons[i].target=null;
+				this.phaserBanks[i].target=null;
 			}
 		}
 		
-		if((this.tractorTarget) &&(!this.tractorTarget.alive))
+		if((this.tractorTarget) &&((!this.tractorTarget.alive) || (!this.inTractorRange(this.tractorTarget))))
 		{
 			this.tractorTarget=null;
 			this.tractorClient=null;
@@ -1590,7 +1610,8 @@ function starShip(){
 			{
 				this.phaserBanks[i].draw(can,cam);
 			}
-			if(this.tractorClient)
+	
+			if((this.tractorClient) && (this.tractorClient.alive))
 			{
 				can.save();
 				can.strokeStyle = "blue";
