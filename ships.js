@@ -650,6 +650,7 @@ function starShip(){
 	this.numTorpedoBays=0;
 	this.phaserBanks.push(new energyWeapon(this));
 	this.shields=0;
+	this.tractorDist=80;
 	this.maxShields=100;
 	this.shieldSprite=Sprite("shields1");
 	this.discovered=true;
@@ -708,7 +709,7 @@ function starShip(){
 	this.formationCoords.x=0;
 	this.formationCoords.y=0;
 	this.torpedoTarget=null;
-	this.orbitTrack=Math.floor(Math.random()*359);;
+	this.orbitTrack=Math.floor(Math.random()*359);
 	this.orbitDecay=0;
 	this.orbitSpeed=2;
 	this.turning=false;
@@ -776,7 +777,7 @@ function starShip(){
 		}
 
 		if(!something.alive){ return;}
-
+		something.orbiting=false;
 		something.tractorHost=this;
 		this.tractorClient=something;	
 	
@@ -1190,6 +1191,14 @@ function starShip(){
 		}
 	};
 	
+	this.isInSensorRange=function(thang){//todo
+		if ((Math.abs(thang.x-this.x)<this.sensorRange) && (Math.abs(thang.y-this.y)<this.sensorRange))
+		{
+			return true;
+		}
+		return false;
+	};
+	
 	this.inSensorRange=function(thangs){
 		var thongs=new Array();
 		for(var i=0;i<thangs.length;i++){
@@ -1229,7 +1238,7 @@ function starShip(){
 				//explosion!
 			}
 		}	
-		if((this.torpedoTarget) &&(!this.torpedoTarget.alive))
+		if((this.torpedoTarget) &&((!this.torpedoTarget.alive) || (!this.isInSensorRange(this.torpedoTarget))))
 		{
 			this.torpedoTarget=null;
 			for(var i=0;i<this.phaserBanks.length;i++)
@@ -1258,7 +1267,27 @@ function starShip(){
 			}
 		}
 		
-		if((this.destination) && (this.destination!=this))//TODO change to if destination, then if goal orbit or park.
+		if(this.tractorHost)
+		{
+			if((Math.abs(this.x-this.tractorHost.x)<this.tractorHost.tractorDist) && (Math.abs(this.y-this.tractorHost.y)<this.tractorHost.tractorDist))
+			{
+				this.heading=this.tractorHost.heading;
+				//this.speed=this.tractorHost.speed
+				this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
+				this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
+				this.x+=this.xv*gameSpeed*this.tractorHost.speed;
+				this.y+=this.yv*gameSpeed*this.tractorHost.speed;
+			}else
+			{
+				this.heading=this.tractorHost.heading;
+				var peta=Math.atan2(this.tractorHost.y-this.y,this.tractorHost.x-this.x)* (180 / Math.PI);
+				this.xv=Math.cos((Math.PI / 180)*Math.floor(peta));
+				this.yv=Math.sin((Math.PI / 180)*Math.floor(peta));
+				this.x+=this.xv*gameSpeed*(this.tractorHost.speed+1);
+				this.y+=this.yv*gameSpeed*(this.tractorHost.speed+1);
+			}
+			//this.yv=this.tractorHost.yv;
+		}else if((this.destination) && (this.destination!=this))//TODO change to if destination, then if goal orbit or park.
 		{
 				this.orbiting=false;
 				this.status="Enroute to meet with the fleet";
@@ -1377,17 +1406,9 @@ function starShip(){
 					this.orbit(this.desiredOrbitTarg);
 					this.desiredOrbitTarg=null;
 				}
-		}
-		
-		if(!this.orbiting)
+		}else if(!this.orbiting)
 		{
-			if(this.tractorHost)
-			{
-				this.heading=this.tractorHost.heading;
-				this.speed=this.tractorHost.speed
-				//this.yv=this.tractorHost.yv;
-			}else
-			{
+			
 				//accel or decel to desired speed
 				if(this.speed<this.desiredSpeed)
 				{
@@ -1417,7 +1438,7 @@ function starShip(){
 				{
 					this.turning=false;
 				}
-			}
+			
 			this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
 			this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
 			this.x+=this.xv*gameSpeed*this.speed;
