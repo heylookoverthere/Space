@@ -14,7 +14,7 @@ var flicker=true;
 var twinkRate=10;
 var curSystem=0;
 var numShips=9;
-var numNebulas=10;
+var numNebulas=80;
 var Earth=null;
 //var things=new Array();
 var numCivilizations=10;
@@ -153,6 +153,11 @@ function planetInfo(){
 	this.richness=Math.random()*6+5;
 	this.fertility=Math.random()*6+5;
 	this.inhabited=false;
+	this.update=function()
+	{
+	//todo
+	};
+	
 };
 
 function cloud(dense){
@@ -476,6 +481,7 @@ function initShips(){
 	ships[0].width=16;
 	ships[0].civ=civs[0];
 	ships[0].height=16;
+	ships[0].numTorpedos=0;
 	ships[0].civ=civs[0];
 	ships[0].shieldSprite=Sprite("shields");
 	console.log(ships[0].prefix+ships[curShip].name+" is now orbiting " +stars[curSystem].planets[stars[curSystem].selected].name);
@@ -536,6 +542,8 @@ function initShips(){
 			ships[p].christen();
 			//console.log(ships[p].prefix+ " "+ships[p].name+" is now orbiting " +stars[blah].planets[gah].name);
 			ships[p].sprite=Sprite("ship4");
+			ships[p].addPhaser();
+			//ships[p].homing=false;
 			ships[p].maxSpeed=7;
 		}else
 		{
@@ -547,6 +555,8 @@ function initShips(){
 			ships[p].race=5;
 			ships[p].christen();
 			ships[p].maxSpeed=7;
+			ships[p].addPhaser();
+			//ships[p].homing=false;
 			ships[p].speed=6;
 		}
     }
@@ -559,8 +569,8 @@ function initShips(){
 		ships[6].race=9;
 		ships[6].civ=civs[2];
 		ships[6].christen();
-		ships[6].hp=1000;
-		ships[6].maxHp=1000;
+		ships[6].hp=2000;
+		ships[6].maxHp=2000;
 		ships[6].shields=100;
 		
 		ships[6].oxygen=10000;
@@ -570,6 +580,8 @@ function initShips(){
 		ships[6].desiredSpeed=10;
 		//ships[6].adjustHeading(270);
 		ships[6].speed=9;
+		ships[6].autoFireRate=20;
+		ships[6].addPhaser();
 		ships[6].orderOrbit(Earth);
 		Cube=ships[6];
 		
@@ -593,6 +605,7 @@ function initShips(){
 		ships[8].maxSpeed=7;
 		ships[8].speed=3;
 	crewPool.push(new dude());
+
 };
 
 function drawStarfield(canv,cam){

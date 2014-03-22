@@ -168,6 +168,9 @@ function energyWeapon(hip)
 		}
 		//todo, hit things
 		can.save();
+		//for(var i=0;i<12;i++) //todo draw better.
+		//{
+		
 		can.strokeStyle = bColors[Math.floor(this.colorTrack)];
 		can.beginPath();
 		can.lineWidth = 4*cam.zoom;
@@ -175,6 +178,7 @@ function energyWeapon(hip)
 		can.moveTo((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
 		can.lineTo((this.target.x+cam.x)*cam.zoom,(this.target.y+cam.y)*cam.zoom)
 		
+		//}
 		can.closePath();
 		can.stroke();
 		can.restore();
@@ -697,7 +701,7 @@ function starShip(){
 	this.homeworld=null;
 	this.baseRepair=.25;
 	this.autoFireTick=0;
-	this.autoFireRate=10;
+	this.autoFireRate=40;
 	this.fixCount=0;
 	this.civ=null;
 	this.destx=0;
@@ -1350,11 +1354,11 @@ function starShip(){
 				}
 		}else if(this.orbiting)
 		{
-				if((this.destination) && (this.destination!=this.orbitTarg))
-				{
-					this.orbiting=false;
-				}else
-				{
+			if((this.destination) && (this.destination!=this.orbitTarg))
+			{
+				this.orbiting=false;
+			}else
+			{
 				this.orbx=this.orbitTarg.x;
 				this.orby=this.orbitTarg.y;
 				this.heading=this.orbitTrack+90;//TODO
@@ -1370,6 +1374,7 @@ function starShip(){
 				{
 					this.leavingProgress+=1*gameSpeed;
 					this.status="Breaking Orbit";
+					//if(Math.floor(this.leavingProgress)==Math.floor(this.desiredHeading))
 					if(this.leavingProgress>90)
 					{
 						this.leaveOrbit();
@@ -1396,6 +1401,30 @@ function starShip(){
 				else if (beta > 360.0)
 					beta -= 360;
 				this.desiredHeading=beta;
+				if(Math.floor(this.heading)<Math.floor(this.desiredHeading))
+				{
+					this.heading+=this.turnSpeed*gameSpeed;
+					this.turning=true;
+					if (this.heading < 0.0)
+						this.heading += 360.0;
+					else if (this.heading > 360.0)
+						this.heading -= 360;
+				}else if(Math.floor(this.heading)>Math.floor(this.desiredHeading))
+				{
+					this.heading-=this.turnSpeed*gameSpeed;
+					this.turning=true;
+					if (this.heading < 0.0)
+						this.heading += 360.0;
+					else if (this.heading > 360.0)
+						this.heading -= 360;
+				}else
+				{
+					this.turning=false;
+				}	
+				this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
+				this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
+				this.x+=this.xv*gameSpeed*this.speed;
+				this.y+=this.yv*gameSpeed*this.speed;
 				if(this.speed<1)
 				{
 					this.desiredSpeed=this.maxSpeed;
@@ -1406,6 +1435,7 @@ function starShip(){
 					this.orbit(this.desiredOrbitTarg);
 					this.desiredOrbitTarg=null;
 				}
+				
 		}else if(!this.orbiting)
 		{
 			
