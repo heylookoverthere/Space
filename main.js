@@ -243,6 +243,7 @@ canvas.font = "8pt Calibri";
 		
 		}
 	}
+	//ship info
 	var actiontext="Full Stop";
 	if(ships[curShip].speed>0){
 		if(ships[curShip].desiredOrbitTarg)
@@ -278,7 +279,8 @@ canvas.font = "8pt Calibri";
 	{
 		actiontext="Adjusting Heading";
 	}
-	canvas.fillText("Ship: "+ships[curShip].prefix+" "+ships[curShip].name,755,350);
+	canvas.fillText("Ship: "+ships[curShip].prefix+" "+ships[curShip].name,755,250);
+	canvas.fillText("Class: "+ ships[curShip].class,755,265);
 	if(ships[curShip].destination)
 	{
 		canvas.fillText("Following: "+ships[curShip].destination.prefix+" "+ships[curShip].destination.name,755,365);
@@ -311,7 +313,14 @@ canvas.font = "8pt Calibri";
 		canvas.fillStyle = "white";
 	}
 	canvas.fillText("Crew Compliment: "+ ships[curShip].crew.length+"/"+ships[curShip].crewMax,755,470);
-	canvas.fillText("Class: "+ ships[curShip].class,755,485);
+	if(ships[curShip].awayTeamAt==null)
+	{
+		canvas.fillText("Away Team Ready: "+ ships[curShip].awayTeam.length,755,485);	
+	}else
+	{
+		canvas.fillText("Away Team on: "+ ships[curShip].awayTeamAt.name,755,485);
+	}
+	
 	canvas.fillText(actiontext,755,500);
 	canvas.fillText("Coords: "+Math.floor(ships[curShip].x)+","+Math.floor(ships[curShip].y),755,515);
 	canvas.fillText("Heading: "+ Math.floor(ships[curShip].heading),755,530);
