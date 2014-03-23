@@ -1,3 +1,4 @@
+var tractorColors=["#01A9DB","#0080FF","#2E9AFE","#2E9AFE","#81BEF7","#81F7F3","#A9E2F3","#58D3F7"];
 
 function starShip(){
 	this.race=0;
@@ -49,7 +50,7 @@ function starShip(){
 	this.tractorRange=200;
 	this.morale=70;
 	this.cloaked=false;
-	this.turnSpeed=1;
+	this.turnSpeed=2;
 	this.acceleration=.5;
 	this.hp=100;
 	this.prefix="U.S.S.";
@@ -191,7 +192,7 @@ function starShip(){
 		this.awayTeamAt=target;
 	};
 	
-	this.beamUp=function(){
+	this.beamUpAwayTeam=function(){
 		if(this.shields>0)
 		{
 			console.log("Cannot beam away team back with shields up.");
@@ -205,6 +206,21 @@ function starShip(){
 		console.log("Away team beamed back to the ship");
 		this.awayTeamAt=null;
 		this.recallAwayTeam();
+	};
+	
+	this.beamUp=function(unt){
+		if(this.shields>0)
+		{
+			console.log("Cannot beam away team back with shields up.");
+			return;
+		}
+		if(this.awayTeamAt.shields>0)
+		{
+			console.log("Cannot beam through enemy shields.");
+			return;
+		}
+		console.log(unt.name+" was beamed back to the ship");
+		this.crew.push(unt);
 	};
 	
 	this.unTractorSomething=function(){
@@ -690,6 +706,19 @@ function starShip(){
 				//explosion!
 			}
 		}	
+		if(this.awayTeamAt)
+		{
+			if ((Math.abs(this.AwayTeamAt.x-this.x)>this.sensorRange) || (Math.abs(this.AwayTeamAt.y-this.y)>this.sensorRange)) //should that be sensor range?
+			{
+				console.log(this.name+ "is now out of range of their away team!");
+				var t=this.awayTeam.length;
+				for(var i=0;i<t;i++)
+				{
+					looseCrew.push(this.awayTeam.pop());
+				}
+				this.awayTeamAt=null;
+			}
+		}
 		if((this.torpedoTarget) &&((!this.torpedoTarget.alive) || (!this.isInSensorRange(this.torpedoTarget))))
 		{
 			this.torpedoTarget=null;
@@ -701,7 +730,7 @@ function starShip(){
 		
 		if((this.tractorTarget) &&((!this.tractorTarget.alive) || (!this.inTractorRange(this.tractorTarget))))
 		{
-			this.tractorTarget=null;
+			this.tractorTarget.tractorHost=null;
 			this.tractorClient=null;
 		}
 		
@@ -1108,21 +1137,26 @@ function starShip(){
 			{
 				this.phaserBanks[i].draw(can,cam);
 			}
-	
+
 			if((this.tractorClient) && (this.tractorClient.alive))
 			{
 				can.save();
-				can.strokeStyle = "blue";
-				can.beginPath();
-				can.lineWidth = 2*cam.zoom;
-
-				can.moveTo((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
-				can.lineTo((this.tractorClient.x+cam.x)*cam.zoom,(this.tractorClient.y+cam.y)*cam.zoom)
-				
-				can.closePath();
-				can.stroke();
-				can.restore();
+				for(var i=0;i<12;i++) //todo draw better.
+				{
 			
+					can.strokeStyle = tractorColors[Math.floor(Math.random()*7)];
+					can.globalAlpha=.50;
+					can.beginPath();
+					can.lineWidth = (Math.random()*3)*cam.zoom;
+					var xoffs=(Math.random()*this.tractorClient.width)-this.tractorClient.width/2;
+					var yoffs=(Math.random()*this.tractorClient.height)-this.tractorClient.height/2;
+					can.moveTo((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
+					can.lineTo((this.tractorClient.x+xoffs+cam.x)*cam.zoom,(this.tractorClient.y+yoffs+cam.y)*cam.zoom)
+					
+					can.closePath();
+					can.stroke();
+				}
+				can.restore();
 			}
 			//this.sprite.draw(can, this.x-cam.x-this.width/2,this.y-cam.y-this.height/2);
 		}

@@ -168,17 +168,17 @@ function energyWeapon(hip)
 		}
 		//todo, hit things
 		can.save();
-		//for(var i=0;i<12;i++) //todo draw better.
-		//{
+		for(var i=0;i<12;i++) //todo draw better.
+		{
 		
-		can.strokeStyle = bColors[Math.floor(this.colorTrack)];
-		can.beginPath();
-		can.lineWidth = 4*cam.zoom;
+			can.strokeStyle = bColors[Math.floor(this.colorTrack)];
+			can.beginPath();
+			can.lineWidth = 4*cam.zoom;
 
-		can.moveTo((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
-		can.lineTo((this.target.x+cam.x)*cam.zoom,(this.target.y+cam.y)*cam.zoom)
+			can.moveTo((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
+			can.lineTo((this.target.x+cam.x)*cam.zoom,(this.target.y+cam.y)*cam.zoom)
 		
-		//}
+		}
 		can.closePath();
 		can.stroke();
 		can.restore();

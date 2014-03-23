@@ -447,12 +447,20 @@ function initUniverse()
 
 function killShip(targ)
 {
+	if(targ.tractorClient)
+	{
+		targ.tractorClient.tractorHost=null;
+	}
+	if(targ.tractorHost)
+	{
+		targ.tractorHost.tractorClient=null;
+	}
 	for(var i=0;i<ships.length;i++)
 	{
 		if (targ==ships[i])
 		{
 			ships.splice(i,1);
-			//i--;
+			i--;
 			targ.alive=false;
 			console.log("The " +targ.name+" was destroyed. "+ targ.crew.length+ " crew were lost. ");
 			monsta.explosionTextured(200,targ.x,targ.y,1,"explosion0");
