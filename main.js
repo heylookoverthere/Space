@@ -493,6 +493,14 @@ function mainMenuDraw(){
 		nebulas[i].draw(canvas,camera);
 	}
 	drawGUI();
+	//draw messages
+	//for (var i=0;i<civs[0].messages.length;i++)
+	
+	if(civs[0].messages.length>0)
+	{
+		civs[0].messages[0].draw(canvas,camera);
+	}
+	
 	/*canvas.save();
 		canvas.strokeStyle = "red";
 		canvas.beginPath();

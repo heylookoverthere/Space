@@ -132,8 +132,8 @@ function civilization()
 	this.researchTick=0;
 	this.nextResearch=100;
 	this.updateRate=100;
+	this.messages=new Array();
 	this.greeting="Greetings.";
-	this.threat="Jockamo fee nané";
 	this.ships=new Array();
 	this.worlds=new Array();
 	this.fleets=new Array();

@@ -7,47 +7,76 @@ function textbox()
 	this.exists=false;
 	this.x=140;
 	this.y=370;
-	this.lines=1;
 	this.scroll=0;
 	this.width=600;
 	this.height=55;
-	this.colors=new Array(5);
-	this.msg=new Array(5);
-	this.msg[0]="Msg";
-	this.msg[1]="msg";
-	this.colors[0]="white";
-	this.colors[1]="white";
-	this.colors[2]="white";
-	this.colors[3]="white";
+	this.options=2;
+	this.optionTrack=0;//draw the liitle -
+	this.colors=new Array();
+	this.msg=new Array();
+	
+	this.addText=function(text)
+	{
+		this.msg.push(text);
+		this.colors.push("white");
+	};
+	
+	this.setup=function(firsttext,x,y)
+	{
+		this.msg.push(firsttext);
+		this.colors.push("white");
+		this.x=x;
+		this.y=y;
+	};
 	this.draw=function(can)
 	{
 		can.save();
 		can.globalAlpha=0.80;
 		can.fillStyle = "#DCDCDC";
-		can.fillRect(this.x-10,this.y-10,this.width+10,this.height+10);
+		var hight=this.msg.length*16;
+		can.fillRect(this.x-10,this.y-10,this.width+10,this.height+10+hight);
 		
 		can.fillStyle = "#483D8B ";
-		can.fillRect(this.x,this.y,this.width-10,this.height-10);
+		can.fillRect(this.x,this.y,this.width-10,this.height-10+hight);
 		
 		can.font = "16pt Calibri";
 		can.textAlign = "left";
 		can.textBaseline = "middle";
 		can.fillStyle = "white";
-		if(this.lines==1){
+	/*(	if(this.lines==1){
 			can.fillStyle=this.colors[i];
 			can.fillText(this.msg[0], this.x+10,this.y+8+(14));
-		}else
+			if((this.options>0) && (this.optionTrack==1))
+			{
+				can.fillText("-",this.x+5,this.y+8);
+			}
+		}else*/
+		//todo if text is too long put it on next line
+		for(var i=0;i<this.msg.length;i++)
 		{
-			for(var i=0;i<this.lines;i++){
-				//if (i>bConsoleStr.length) {break;}
-				can.fillStyle=this.colors[i];
-				can.fillText(this.msg[i], this.x+10,this.y+4+(15*(i+1)));
-			}	
-		}
+			//if (i>bConsoleStr.length) {break;}
+			can.fillStyle=this.colors[i];
+			can.fillText(this.msg[i], this.x+10,this.y+8+(16*(i+1)));
+			if((this.options>0) && (this.optionTrack==i))
+			{
+				can.fillText("-", this.x+5,this.y+8+(16*(i+1)));
+			}
+		}	
+		
 		can.restore();
 	};
 };
-
+var ned=new textbox();
+function timesaver()
+{
+	ned.setup("Hello, we are the Ferengi.  We have heard about you troubles.",150,370);
+	ned.addText("We would be happy to help defend your planet.  For a modest.");
+	ned.addText ("fee of course.");
+	ned.addText("   Hire them for $100");
+	ned.addText("   Tell them to fuck off.");
+	ned.optionTrack=3;
+	civs[0].messages.push(ned);
+};
 
 var monsta= new particleSystem();
 
