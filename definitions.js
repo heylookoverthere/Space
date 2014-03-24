@@ -1,6 +1,10 @@
 
 var starting=false;
-var bColors = ["#008000","#006400", "#FF4500", "#000080", "#696969", "#800080", "#808000", "#A52A2A", "#8B4513", "#FFDEAD", "#FFFF40","#000080" , "#FFFF80"]; //list of colors for radar/a few other things
+var bColors = ["#008000","#006400", "#FF4500", "#000080", "#696969", "#800080", "#808000", "#A52A2A", "#8B4513", "#FFDEAD", "#FFFF40","#000080" , "#FFFF80"]; //list of colors for radar/a few 
+var yellowColors=["#F4FA58","#F7FE2E","#FFFF00","#D7DF01","#AEB404"];
+
+
+
 
 function textbox() 
  {  //draws a text box
@@ -11,10 +15,11 @@ function textbox()
 	this.width=600;
 	this.height=55;
 	this.options=2;
+	this.choicesStart=3;
 	this.optionTrack=0;//draw the liitle -
 	this.colors=new Array();
 	this.msg=new Array();
-	
+	this.response=null;
 	this.addText=function(text)
 	{
 		this.msg.push(text);
@@ -27,6 +32,22 @@ function textbox()
 		this.colors.push("white");
 		this.x=x;
 		this.y=y;
+	};
+	this.update=function()
+	{
+		if(upkey.check())
+		{
+			if(this.optionTrack>this.choicesStart)
+			{
+				this.optionTrack--;
+			}
+		}else if(downkey.check())
+		{
+			if(this.optionTrack<this.msg.length)
+			{
+				this.optionTrack++;
+			}
+		}
 	};
 	this.draw=function(can)
 	{
@@ -70,7 +91,7 @@ var ned=new textbox();
 function timesaver()
 {
 	ned.setup("Hello, we are the Ferengi.  We have heard about you troubles.",150,370);
-	ned.addText("We would be happy to help defend your planet.  For a modest.");
+	ned.addText("We would be happy to help defend your planet.  For a modest");
 	ned.addText ("fee of course.");
 	ned.addText("   Hire them for $100");
 	ned.addText("   Tell them to fuck off.");

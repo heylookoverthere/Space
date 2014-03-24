@@ -151,6 +151,10 @@ function civilization()
 	this.techs[Techs.Phasers]=true;
 	this.update=function()
 	{
+		if(this.messages[0])
+		{
+			this.messages[0].update();
+		}
 		this.updateTick+=1*gameSpeed;
 		if(this.updateTick>this.updateRate)
 		{

@@ -20,6 +20,51 @@ var looseCrew=new Array(); //crew stranded on a planet or in the mirror universe
 var targetSprite=Sprite("shiptargetedbig");
 
 var tractorTargetSprite=Sprite("tractortargetedbig");
+
+function shipWindow()
+{
+	this.alive=true;
+	this.x=0;
+	this.y=0;
+	this.blinkRate=10;
+	this.blinkTrack=0;
+	this.colorTrack=0;
+	this.alpha=1;
+	this.colors=yellowColors;
+	this.blinkRate=Math.random()*100;
+	this.colorTrack=Math.floor(Math.random()*this.colors.length);
+	this.size=1
+	this.update=function()
+	{
+		this.blinkTrack+=1*gameSpeed;
+		if(this.blinkTrack>this.blinkRate)
+		{
+			this.blinkTrack=0;
+			this.colorTrack++;
+			if(this.colorTrack>this.colors.length)
+			{
+				this.colorTrack=0;
+			}
+		}
+	};
+	this.draw=function(can,cam)
+	{
+		can.save();
+		can.fillStyle=this.colors[this.colorTrack];
+		can.fillRect(this.x, this.y, this.size, this.size);
+		can.restore();
+	};
+	/*
+		this.draw=function(can,cam)
+	{
+		can.save();
+		can.globalAlpha=this.alpha;
+		can.fillStyle=this.colors[this.colorTrack];
+		can.fillRect((this.x+cam.x)*camera.zoom, (this.y+cam.y)*camera.zoom, this.x+this.size, this.y+this.size);
+		can.restore();
+	};*/
+};
+
 updateEscapes=function()
 {
 	for(var i=0;i<escapes.length;i++)

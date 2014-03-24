@@ -136,6 +136,8 @@ function starShip(){
 	this.crewLost=0;
 	this.maxTeamSize=4;
 	this.awayTeamAt=null;
+	this.windows=new Array();
+
 	
 	this.layMine=function(){
 		if(this.numMines<1) {return;}
@@ -706,6 +708,7 @@ function starShip(){
 				//explosion!
 			}
 		}	
+
 		if(this.awayTeamAt)
 		{
 			if ((Math.abs(this.AwayTeamAt.x-this.x)>this.sensorRange) || (Math.abs(this.AwayTeamAt.y-this.y)>this.sensorRange)) //should that be sensor range?
@@ -1066,6 +1069,10 @@ function starShip(){
 		{
 			this.phaserBanks[i].update(this);
 		}
+		for(var i=0;i<this.windows.length;i++)
+		{
+			this.windows[i].update();
+		}
 	};
 	
 	this.draw=function(can,cam){
@@ -1089,6 +1096,10 @@ function starShip(){
 			canvas.fillStyle = "red";
 			//can.fillRect(0-this.width/2, 0-this.height/2, this.width, this.height);
 			this.sprite.draw(can, -this.width/2,-this.height/2);
+			for(var i=0;i<this.windows.length;i++)
+			{
+				this.windows[i].draw(can,cam);
+			}
 			if(this.shields>0)
 			{
 				canvas.globalAlpha=this.shields/100;

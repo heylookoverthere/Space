@@ -803,6 +803,7 @@ function mainMenuUpdate(){
 	theTime.update(Earth);
 	for(var i=0;i<civs.length;i++)
 	{
+		civs[i].update();
 		for(var j=0;j<civs[i].fleets.length;j++)
 		{
 			civs[i].fleets[j].orderShips();

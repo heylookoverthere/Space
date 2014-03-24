@@ -507,6 +507,15 @@ function initShips(){
 	ships[1].maxSpeed=9;
 	ships[1].maxShields=70;
 	ships[1].shields=70;
+	ships[1].windows.push(new shipWindow());
+	ships[1].windows[0].x=-1;
+	ships[1].windows[0].y=8;
+	ships[1].windows.push(new shipWindow());
+	ships[1].windows[1].x=-2;
+	ships[1].windows[1].y=11;
+	ships[1].windows.push(new shipWindow());
+	ships[1].windows[2].x=2;
+	ships[1].windows[2].y=9;
 	
 	/*ships[2].x=Math.random()*universeWidth/2;
 	ships[2].y=Math.random()*universeHeight/2;
@@ -527,6 +536,15 @@ function initShips(){
 	ships[2].prefix="";
 	ships[2].class="Galaxy Class";
 	ships[2].race=0;
+	ships[2].windows.push(new shipWindow());
+	ships[2].windows[0].x=-1;
+	ships[2].windows[0].y=8;
+	ships[2].windows.push(new shipWindow());
+	ships[2].windows[1].x=-2;
+	ships[2].windows[1].y=11;
+	ships[2].windows.push(new shipWindow());
+	ships[2].windows[2].x=2;
+	ships[2].windows[2].y=9;
 	ships[2].name="Enterprise";
 	ships[2].sprite=Sprite("ship2");
 	ships[2].maxSpeed=9;
