@@ -154,7 +154,11 @@ function civilization()
 		if(this.messages[0])
 		{
 			this.messages[0].update();
+			if(!this.messages[0].exists){
+				this.messages.pop();
+			}
 		}
+		if(holdInput) {return;}
 		this.updateTick+=1*gameSpeed;
 		if(this.updateTick>this.updateRate)
 		{
@@ -169,5 +173,9 @@ function civilization()
 				
 			}
 		}
+	};
+	this.generateMessage=function(other) //run on contact with other ships (with month or so break in between)
+	{
+	
 	};
 };

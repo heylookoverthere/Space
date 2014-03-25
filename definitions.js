@@ -1,8 +1,8 @@
 
 var starting=false;
 var bColors = ["#008000","#006400", "#FF4500", "#000080", "#696969", "#800080", "#808000", "#A52A2A", "#8B4513", "#FFDEAD", "#FFFF40","#000080" , "#FFFF80"]; //list of colors for radar/a few 
-var yellowColors=["#F4FA58","#F7FE2E","#FFFF00","#D7DF01","#AEB404"];
-
+var yellowColors=["#F3F781","#F2F5A9","#FFFF00","#D7DF01","#AEB404"];
+var holdInput=false;
 
 
 
@@ -19,7 +19,10 @@ function textbox()
 	this.optionTrack=0;//draw the liitle -
 	this.colors=new Array();
 	this.msg=new Array();
-	this.response=null;
+	this.response=function()
+	{
+		console.log("CONSEQUENCES HAVE HAPPENED");
+	};
 	this.addText=function(text)
 	{
 		this.msg.push(text);
@@ -29,6 +32,8 @@ function textbox()
 	this.setup=function(firsttext,x,y)
 	{
 		this.msg.push(firsttext);
+		this.exists=true;
+		holdInput=true;
 		this.colors.push("white");
 		this.x=x;
 		this.y=y;
@@ -47,6 +52,11 @@ function textbox()
 			{
 				this.optionTrack++;
 			}
+		}else if(startkey.check())
+		{
+			this.response();
+			this.exists=false;
+			holdInput=false;
 		}
 	};
 	this.draw=function(can)
@@ -90,7 +100,7 @@ function textbox()
 var ned=new textbox();
 function timesaver()
 {
-	ned.setup("Hello, we are the Ferengi.  We have heard about you troubles.",150,370);
+	ned.setup("Hello, we are the Ferengi.  We have heard about your troubles.",150,370);
 	ned.addText("We would be happy to help defend your planet.  For a modest");
 	ned.addText ("fee of course.");
 	ned.addText("   Hire them for $100");

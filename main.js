@@ -136,6 +136,7 @@ var crewscreenkey=new akey("c");
 var targetkey=new akey("t");
 var firekey=new akey("f");
 var fleetattackkey=new akey("j");
+var enterkey=startkey;
 
 
 
@@ -522,6 +523,11 @@ function mainMenuUpdate(){
     timestamp = new Date();
     milliseconds = timestamp.getTime();
     tick++;
+	for(var i=0;i<civs.length;i++)
+	{
+		civs[i].update();
+	}
+	if(this.holdInput) {return;}
 	monsta.update();
 	if(crewscreenkey.check())
 	{
