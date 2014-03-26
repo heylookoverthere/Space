@@ -459,13 +459,19 @@ function killShip(targ)
 			targ.alive=false;
 			console.log("The " +targ.name+" was destroyed. "+ targ.crew.length+ " crew were lost. ");
 			monsta.explosionTextured(200,targ.x,targ.y,1,"explosion0");
-			/*if(curShip==i)
+			if(curShip==i)
 			{
+				camera.unFollow();
 				curShip=0;
 				//after delay
 				
-			}*/
+			}
 		}
+	}
+	if(selectedShip==targ)
+	{
+		camera.unFollow();
+		civs[0].cycleShips();
 	}
 };
 
@@ -492,6 +498,7 @@ function newInitShips()
 				james.maxSpeed=9;
 				james.maxShields=70;
 				james.shields=70;
+				james.alive=true;
 				if(j>0)
 				{
 					james.windows.push(new shipWindow());
@@ -524,24 +531,26 @@ function newInitShips()
 				james.civ=civs[raceIDs.Vulcan];
 				james.crewVessel();
 				james.civ=civs[i];
+				james.alive=true;
 				civs[i].ships.push(james);
 			}else if(i==raceIDs.Klingon)
 			{
 				var james=new starShip();
-				james.homeworld=Earth;
 				if(Math.random()*20<5)
 				{
 					var blah=Math.floor(Math.random()*(numSystems-1))+1;
 					var gah=Math.floor(Math.random()*stars[blah].numPlanets);
+					james.x=Math.random()*universeWidth/2;
+					james.y=Math.random()*universeHeight/2;	
+					james.orbit(stars[blah].planets[gah]);
 					civs[i].homeworld=stars[blah].planets[gah];
 					civs[i].worlds.push(stars[blah].planets[gah]);
 					james.race=5;
 					james.civ=civs[raceIDs.Klingon];
-					james.christen();
-					james.orbit(stars[blah].planets[Math.floor(Math.random()*stars[blah].planets.length)]);
 					james.class="Bird of Prey";
 					james.prefix="I.K.S";
-					james.homeworld=civs[i].homeworld;
+					james.christen();
+					//james.homeworld=civs[i].homeworld;
 					//console.log(james.prefix+ " "+james.name+" is now orbiting " +stars[blah].planets[gah].name);
 					james.sprite=Sprite("ship4");
 					james.addPhaser();
@@ -549,8 +558,10 @@ function newInitShips()
 					james.maxSpeed=7;
 					james.desiredSpeed=6;
 					james.crewVessel();
-					james.civ=civs[i];
+
+					james.alive=true;
 					civs[i].ships.push(james);
+					
 				}else
 				{
 					james.x=Math.random()*universeWidth/2;
@@ -568,6 +579,7 @@ function newInitShips()
 					james.desiredSpeed=6;
 					james.crewVessel();
 					james.civ=civs[i];
+					james.alive=true;
 					civs[i].ships.push(james);
 				}
 			}else if(i==raceIDs.Romulan)
@@ -588,6 +600,7 @@ function newInitShips()
 				
 				james.crewVessel();
 				james.civ=civs[i];
+				james.alive=true;
 				civs[i].ships.push(james);
 			}else if(i==raceIDs.Ferengi)
 			{
@@ -607,6 +620,7 @@ function newInitShips()
 							
 				james.crewVessel();
 				james.civ=civs[i];
+				james.alive=true;
 				civs[i].ships.push(james);
 			}else if(i==raceIDs.Borg)
 			{
@@ -626,15 +640,16 @@ function newInitShips()
 				james.class="Cube";
 				james.sprite=Sprite("ship3");
 				james.maxSpeed=10;
-				james.desiredSpeed=10;
+				james.desiredSpeed=5;
 				//james.adjustHeading(270);
-				james.speed=9;
+				james.speed=5;
 				james.autoFireRate=20;
 				james.addPhaser();
 				
 				james.orderOrbit(Earth);
 				james.crewVessel();
 				james.civ=civs[i];
+				james.alive=true;
 				civs[i].ships.push(james);
 			}
 

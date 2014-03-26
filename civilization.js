@@ -184,6 +184,25 @@ function civilization()
 				this.messages.splice(0,1);
 			}
 		}
+		
+		for(var i=0;i<this.ships.length;i++)
+		{
+			if (!this.ships[i].alive)
+			{
+				this.ships.splice(i,1);
+				i--;
+			}
+		}
+		
+		for(var i=0;i<this.worlds.length;i++)
+		{
+			if (!this.worlds[i].alive)
+			{
+				this.worlds.splice(i,1);
+				i--;
+			}
+		}
+		
 		if(holdInput) {return;}
 		this.updateTick+=1*gameSpeed;
 		if(this.updateTick>this.updateRate)

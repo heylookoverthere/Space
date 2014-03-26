@@ -246,6 +246,7 @@ canvas.font = "8pt Calibri";
 		}
 	}
 	//ship info
+	if(!selectedShip) {return;}
 	var actiontext="Full Stop";
 	if(selectedShip.speed>0){
 		if(selectedShip.desiredOrbitTarg)
@@ -466,12 +467,12 @@ function mainMenuDraw(){
 	canvas.restore();
 	
 	canvas.save(); 
-	if(selectedShip.class=="Type 2 Shuttle")//.target?
+	if((selectedShip) && (selectedShip.class=="Type 2 Shuttle"))//.target?
 	{
 		canvas.translate((selectedShip.x+camera.x)*camera.zoom,(selectedShip.y+camera.y)*camera.zoom);
 		canvas.scale(camera.zoom,camera.zoom);
 		shipSelSprite.draw(canvas, -8,-8);
-	}else
+	}else if(selectedShip)
 	{
 		canvas.translate((selectedShip.x+camera.x)*camera.zoom,(selectedShip.y+camera.y)*camera.zoom);
 		canvas.scale(camera.zoom,camera.zoom);
@@ -594,7 +595,7 @@ function mainMenuUpdate(){
 				//selectedShip.captainFlees=true;
 			}
 		}
-	if((!selectedShip.adrift) && (selectedShip.crew.length>0))
+	if((selectedShip) &&(!selectedShip.adrift) && (selectedShip.crew.length>0))
 	{
 		
 		
@@ -787,7 +788,10 @@ function mainMenuUpdate(){
 			{
 				ships[i].drawTarget=true;
 			}
-			selectedShip.drawTarget=true;
+			if(selectedShip)
+			{
+				selectedShip.drawTarget=true;
+			}
 			ships[i].update();
 
 		}

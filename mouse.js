@@ -71,7 +71,7 @@ function mouseClick(e) {  //represents the mouse
 		{
 			case 1:
 				//screenfull.request(canvasElement);
-				if(!this.adrift)
+				if((selectedShip) && (!selectedShip.adrift))
 				{
 					var mTY=mY+Math.abs(camera.y);
 					var mTX=mX+Math.abs(camera.x);

@@ -46,7 +46,7 @@ function starShip(){
 	this.maxShields=100;
 	this.shieldSprite=Sprite("shields1");
 	this.discovered=true;
-	this.sensorRange=5000;
+	this.sensorRange=500;
 	this.tractorRange=200;
 	this.morale=70;
 	this.cloaked=false;
@@ -64,7 +64,7 @@ function starShip(){
 	this.type=0;
 	this.width=32;
 	this.height=32;
-	this.alive=true;
+	this.alive=false;
 	this.name="Tim.";
 	
 	if(shipNamesTrack[this.race]>shipNames[this.race].length)
@@ -659,9 +659,10 @@ function starShip(){
 					}
 					if((this.civ.fContacted[thangs[i].race]==false) && (this.race==0)){
 						this.civ.fContacted[thangs[i].race]=true;
-						if(thangs[i].race>0)
+						if((thangs[i].race>0) && (thangs[i].alive))
 						{
 							console.log("The "+this.name+ " made first contact with the "+races[thangs[i].race]+"s.");
+							console.log(thangs[i]);
 							civs[thangs[i].race].generateMessage(this.civ);
 						}
 					}
@@ -678,6 +679,7 @@ function starShip(){
 	};
 	
 	this.update=function(){
+		if(!this.alive){return;}
 		if(this.selfDestructActive)
 		{
 			this.selfDestructTick-=1*gameSpeed;
@@ -765,10 +767,10 @@ function starShip(){
 				this.desiredSpeed=this.maxSpeed;
 				
 				//todo why do I have do copy this.
-			if(this.speed<Math.floor(this.desiredSpeed))
+			if(this.speed<this.desiredSpeed)
 			{
 				this.accelerate();
-			}else if(this.speed>Math.floor(this.desiredSpeed))
+			}else if(this.speed>this.desiredSpeed)
 			{
 				this.decelerate();
 			}
@@ -879,7 +881,14 @@ function starShip(){
 				}else
 				{
 					this.turning=false;
-				}	
+				}
+				if(this.speed<this.desiredSpeed)
+				{
+					this.accelerate();
+				}else if(this.speed>this.desiredSpeed)
+				{
+					this.decelerate();
+				}				
 				this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
 				this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
 				this.x+=this.xv*gameSpeed*this.speed;
