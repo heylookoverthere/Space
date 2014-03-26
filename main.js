@@ -69,7 +69,7 @@ function akey(k) {  //represents a keyboard button
 	//curMap = new Map();
 //INITSDONKEY
 initUniverse();
-initShips();
+newInitShips();
 
 	
 
@@ -668,12 +668,14 @@ function mainMenuUpdate(){
 	
 	if(toggleshipkey.check()) //todo!
 	{
-		curShip++;
+		/*curShip++;
 		if(curShip>ships.length-1) {
 			curShip=0;
 		}
 		camera.center(ships[curShip]);
-		camera.follow(ships[curShip]);
+		camera.follow(ships[curShip]);*/
+		
+		civs[0].cycleShips(camera);
 	}
 	
 	

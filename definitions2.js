@@ -35,18 +35,14 @@ for(var i=0;i<numCivilizations;i++)
 			}
 			civs[j].autoHostile.push(civs[raceIDs.Borg]);
 		}
-
+civs[raceIDs.Borg].numShipsStart=1;
+civs[raceIDs.Human].numShipsStart=2;
+civs[raceIDs.Klingon].numShipsStart=3;
+civs[raceIDs.Romulan].numShipsStart=2;
+civs[raceIDs.Ferengi].numShipsStart=2;
+civs[raceIDs.Vulcan].numShipsStart=2;
 var ships=new Array();
 var stations=new Array(); //todo add to civilization
-ships[0]=new starShip();
-ships[1]=new starShip();
-ships[2]=new starShip();
-ships[3]=new starShip();
-ships[4]=new starShip();
-ships[5]=new starShip();
-ships[6]=new starShip();
-ships[7]=new starShip();
-ships[8]=new starShip();
 
 var curShip=0;
 var planetTypes = ["Class M","Class L","Class N","Class F","Class J","Class T","Demon Class"];
@@ -637,6 +633,189 @@ function initShips(){
 
 };
 
+function newInitShips()
+{
+	
+	for(var i=0;i<civs.length;i++)
+	{
+		console.log("yaart");
+		for(var j=0;j<civs[i].numShipsStart;j++)
+		{
+			console.log("yaarp");
+			var james=new starShip();
+			james.homeworld=Earth;
+			if(i==raceIDs.Human)
+			{
+				var bah=Math.floor(Math.random()*7);
+				james.orbit(stars[0].planets[bah]);
+				james.prefix="U.S.S.";
+				console.log(james.prefix+" "+james.name+" is now orbiting " +stars[0].planets[bah].name);
+				james.class="Galaxy Class";
+				james.race=0;
+				james.christen();
+				james.civ=civs[0];
+				james.sprite=Sprite("ship2");
+				james.maxSpeed=9;
+				james.maxShields=70;
+				james.shields=70;
+				james.windows.push(new shipWindow());
+				james.windows[0].x=-1;
+				james.windows[0].y=8;
+				james.windows.push(new shipWindow());
+				james.windows[1].x=-2;
+				james.windows[1].y=11;
+				james.windows.push(new shipWindow());
+				james.windows[2].x=2;
+				james.windows[2].y=9;
+				james.crewVessel();
+				james.civ=civs[i];
+				civs[i].ships.push(james);
+			}else if(i==raceIDs.Vulcan)
+			{
+				james.x=Math.random()*universeWidth/4;
+				james.y=Math.random()*universeHeight/4;
+				james.prefix="Vulcan";
+				james.class="Capitol Ship";
+				james.race=1;
+				james.christen();
+				james.sprite=Sprite("ship5");
+				james.maxSpeed=7;
+				james.speed=3;
+				james.civ=civs[raceIDs.Vulcan];
+				james.crewVessel();
+				james.civ=civs[i];
+				civs[i].ships.push(james);
+			}else if(i==raceIDs.Klingon)
+			{
+				if(Math.random()*20<5)
+				{
+					var blah=0;//Math.floor(Math.random()*numSystems);
+					var gah=Math.floor(Math.random()*stars[blah].numPlanets);
+					civs[i].homeworld=stars[blah].planets[gah];
+					civs[i].worlds.push(stars[blah].planets[gah]);
+					
+					james.orbit(stars[blah].planets[Math.floor(Math.random()*stars[blah].planets.length)]);
+					james.class="Bird of Prey";
+					james.prefix="I.K.S";
+					james.homeworld=civs[i].homeworld;
+					james.race=5;
+					james.civ=civs[raceIDs.Klingon];
+					james.christen();
+					//console.log(james.prefix+ " "+james.name+" is now orbiting " +stars[blah].planets[gah].name);
+					james.sprite=Sprite("ship4");
+					james.addPhaser();
+					//james.homing=false;
+					james.maxSpeed=7;
+					
+					james.crewVessel();
+					james.civ=civs[i];
+					civs[i].ships.push(james);
+				}else
+				{
+					james.x=Math.random()*universeWidth/2;
+					james.y=Math.random()*universeHeight/2;
+					james.class="Bird of Prey";
+					james.prefix="I.K.S";
+					james.sprite=Sprite("ship4");
+					james.civ=civs[raceIDs.Klingon];
+					james.race=5;
+					james.christen();
+					james.maxSpeed=7;
+					james.addPhaser();
+					//james.homing=false;
+					james.speed=6;
+					
+					james.crewVessel();
+					james.civ=civs[i];
+					civs[i].ships.push(james);
+				}
+			}else if(i==raceIDs.Romulan)
+			{
+				james.x=Math.random()*universeWidth/2;
+				james.y=Math.random()*universeHeight/4;
+				james.prefix="IRW";
+				james.class="Warbird";
+				james.race=4;
+				james.christen();
+				james.sprite=Sprite("ship6");
+				james.maxSpeed=7;
+				james.speed=3;
+				james.civ=civs[raceIDs.Romulan];
+				
+				james.crewVessel();
+				james.civ=civs[i];
+				civs[i].ships.push(james);
+			}else if(i==raceIDs.Ferengi)
+			{
+				james.x=Math.random()*universeWidth/2;
+				james.y=Math.random()*universeHeight/4;
+				james.prefix="FAS";
+				james.class="Merchant";
+				james.race=raceIDs.Ferengi;
+				james.christen();
+				james.sprite=Sprite("ship7");
+				james.maxSpeed=7;
+				james.speed=3;
+				james.civ=civs[raceIDs.Ferengi];
+							
+				james.crewVessel();
+				james.civ=civs[i];
+				civs[i].ships.push(james);
+			}else if(i==raceIDs.Borg)
+			{
+				james.x=Math.random()*universeWidth/4;
+				james.y=Math.random()*universeHeight/4+universeHeight/2;
+				james.prefix="Cube";
+				james.race=9;
+				james.civ=civs[raceIDs.Borg];
+				james.christen();
+				james.hp=1500;
+				james.maxHp=1500;
+				james.shields=100;
+				
+				james.oxygen=10000;
+				james.class="Cube";
+				james.sprite=Sprite("ship3");
+				james.maxSpeed=10;
+				james.desiredSpeed=10;
+				//james.adjustHeading(270);
+				james.speed=9;
+				james.autoFireRate=20;
+				james.addPhaser();
+				
+				james.orderOrbit(Earth);
+				james.crewVessel();
+				james.civ=civs[i];
+				civs[i].ships.push(james);
+			}
+
+		}
+	}
+	
+	
+	civs[0].ships[0].width=16;
+	civs[0].ships[0].height=16;
+	civs[0].ships[0].numTorpedos=0;
+	civs[0].ships[0].shieldSprite=Sprite("shields");
+	civs[0].ships[0].class="Shuttlecraft";
+	civs[0].ships[0].shields=0;
+	civs[0].ships[0].sprite=Sprite("ship1");
+	civs[0].ships[0].maxSpeed=7;
+	civs[0].ships[0].maxShields=0;
+
+	ships=new Array();
+	for(var i=0;i<civs.length;i++)
+	{
+		//ships.concat(civs[i].ships);
+		for(var j=0;j<civs[i].ships.length;j++)
+		{
+			
+			ships.push(civs[i].ships[j]);
+		}
+	}
+	
+	crewPool.push(new dude());
+};
 function drawStarfield(canv,cam){
 	if(spinArt) {return;}
 	//fill

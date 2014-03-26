@@ -2,7 +2,7 @@
 oshipNames= ["Enterprise","Hood","Voyager","Defiant","Intrepid","Akira","Excalibur","Lexington","Ohio","Rhode Island","Raven","Gandhi","Exter","Horatio","Yamaguchi","Valdemar","Summit","Dakota","Devore","Drake","Hermes","Agamemnon","Apollo","Ajax","Prokofiev","Constellation","Gettysburg","Magellen","Hathaway", "Stargazer", "Constitution", "Yorktown","Potemkin","Pegasus","Farragut","Valiant","Kelvin","Bozeman"];*/
 
 var shipNames=new Array(40);
-for (var q=0;q<10;q++)
+for (var q=0;q<18;q++)
 {
 	shipNames[q]=["one","two","three","four","five","six","seven","eight","nine","ten","Testicles"];
 }

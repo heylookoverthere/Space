@@ -141,12 +141,15 @@ function civilization()
 	this.encounterTrack=0;
 	this.money=1000;
 	this.allied=false;
+	this.numShipsStart=0;
 	this.researchProgress=0;
 	this.researchTick=0;
 	this.nextResearch=100;
 	this.updateRate=100;
 	this.messages=new Array();
 	this.greeting="Greetings.";
+	this.curShip=0;
+	
 	this.ships=new Array();
 	this.worlds=new Array();
 	this.fleets=new Array();
@@ -162,6 +165,15 @@ function civilization()
 	}
 	this.techs[Techs.Sensors]=true;
 	this.techs[Techs.Phasers]=true;
+	this.cycleShips=function(cam)
+	{
+		this.curShip++;
+		if(this.curShip>this.ships.length-1) {
+			this.curShip=0;
+		}
+		cam.center(this.ships[this.curShip]);
+		cam.follow(this.ships[this.curShip]);
+	};
 	this.update=function()
 	{
 		if(this.messages[0])
