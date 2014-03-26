@@ -171,6 +171,7 @@ function civilization()
 		if(this.curShip>this.ships.length-1) {
 			this.curShip=0;
 		}
+		selectedShip=this.ships[this.curShip];
 		cam.center(this.ships[this.curShip]);
 		cam.follow(this.ships[this.curShip]);
 	};

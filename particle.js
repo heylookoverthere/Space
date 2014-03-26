@@ -135,29 +135,33 @@ function particleSystem(){
 	};
 	this.draw=function(can,cam){
 		var c=1;
+	
 		can.save();
 		for(var i=0;i<this.particles.length;i++)
 		{
-			if(this.particles[i].alive)
+			if(cam.isNear(this.particles[i]))
 			{
-				if (true){//this.particles[i].color!=c){
-					can.fillStyle = this.particles[i].color;
-					c= this.particles[i].color;
-				}
-				can.save();
-				can.translate((this.particles[i].x+cam.x)*cam.zoom,(this.particles[i].y+cam.y)*cam.zoom);
-			
-				can.scale(this.particles[i].size*cam.zoom,this.particles[i].size*cam.zoom);
-				if(this.particles[i].textured)
+				if(this.particles[i].alive)
 				{
-					//this.particles[i].sprite.draw(can, this.particles[i].x+cam.x-this.particles[i].width/2,this.particles[i].y+cam.y-this.particles[i].height/2);
-					//this.particles[i].sprite.draw(can, -this.particles[i].width*cam.zoom/2,-this.particles[i].height*cam.zoom/2);
-					this.particles[i].sprite.draw(can, -this.particles[i].width/2,-this.particles[i].height/2);
-				}else
-				{
-					can.fillRect(this.particles[i].x+cam.x-this.particles[i].width/2, this.particles[i].y+cam.y-this.particles[i].height/2, this.particles[i].size*cam.zoom, this.particles[i].size*cam.zoom);
+					if (true){//this.particles[i].color!=c){
+						can.fillStyle = this.particles[i].color;
+						c= this.particles[i].color;
+					}
+					can.save();
+					can.translate((this.particles[i].x+cam.x)*cam.zoom,(this.particles[i].y+cam.y)*cam.zoom);
+				
+					can.scale(this.particles[i].size*cam.zoom,this.particles[i].size*cam.zoom);
+					if(this.particles[i].textured)
+					{
+						//this.particles[i].sprite.draw(can, this.particles[i].x+cam.x-this.particles[i].width/2,this.particles[i].y+cam.y-this.particles[i].height/2);
+						//this.particles[i].sprite.draw(can, -this.particles[i].width*cam.zoom/2,-this.particles[i].height*cam.zoom/2);
+						this.particles[i].sprite.draw(can, -this.particles[i].width/2,-this.particles[i].height/2);
+					}else
+					{
+						can.fillRect(this.particles[i].x+cam.x-this.particles[i].width/2, this.particles[i].y+cam.y-this.particles[i].height/2, this.particles[i].size*cam.zoom, this.particles[i].size*cam.zoom);
+					}
+					can.restore();
 				}
-				can.restore();
 			}
 		}
 		

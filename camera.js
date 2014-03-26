@@ -95,5 +95,22 @@ var camera = {  //represents the camera, aka what part of the map is on screen
 		{
 			camera.center(this.following);
 		}
+	},
+	isOn: function(thing)
+	{
+		if(((thing.x+this.x)*this.zoom>0) && ((thing.x+this.x)*this.zoom<CANVAS_WIDTH)&& ((thing.y+this.y)*this.zoom>0) && ((thing.y+this.y)*this.zoom<CANVAS_HEIGHT))
+		{
+			return true;
+		}
+		return false;
+	},
+	
+	isNear: function(thing)
+	{
+		if(((thing.x+this.x)*this.zoom>-400) && ((thing.x+this.x)*this.zoom<CANVAS_WIDTH+400)&& ((thing.y+this.y)*this.zoom>-400) && ((thing.y+this.y)*this.zoom<CANVAS_HEIGHT+400))
+		{
+			return true;
+		}
+		return false;
 	}
 };

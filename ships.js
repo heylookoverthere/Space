@@ -66,15 +66,11 @@ function starShip(){
 	this.height=32;
 	this.alive=true;
 	this.name="Tim.";
-	var nami=Math.floor(Math.random()*shipNames[this.race].length);
-	while(true) {
-        if(shipNamesUsed[this.race][nami]) 
-        {
-            nami=Math.floor(Math.random()*shipNames[this.race].length);
-        }else {break;}
-    }
-	this.name=shipNames[this.race][nami];
-	shipNamesUsed[this.race][nami]=true;
+	
+	if(shipNamesTrack[this.race]>shipNames[this.race].length)
+	{
+		shipNamesTrack[this.race]=0;
+	}
 	this.crewCapacity=5;
 	this.crewMax=0;
 	this.crew=new Array();
@@ -602,7 +598,7 @@ function starShip(){
 	
 	this.manualHelm=function()
 	{
-		ships[curShip].desiredOrbitTarg=null;
+		selectedShip.desiredOrbitTarg=null;
 	};
 	
 	this.orderSpeed=function(spd){
@@ -1059,7 +1055,7 @@ function starShip(){
 	};
 	
 	this.draw=function(can,cam){
-		if(this.alive)
+		if((this.alive) &&(cam.isNear(this)))
 		{
 			//can.fillRect(this.x+cam.x-this.width/2, this.y+cam.y-this.height/2, this.width, this.height);
 			can.save();

@@ -13,9 +13,9 @@ var spinArt=false;
 var flicker=true;
 var twinkRate=10;
 var curSystem=0;
-var numShips=9;
 var numNebulas=80;
 var Earth=null;
+var selectedShip=null;
 //var things=new Array();
 var numCivilizations=18;
 var civs=new Array();
@@ -37,17 +37,17 @@ for(var i=0;i<numCivilizations;i++)
 		}
 civs[raceIDs.Borg].numShipsStart=1;
 civs[raceIDs.Human].numShipsStart=2;
-civs[raceIDs.Klingon].numShipsStart=3;
-civs[raceIDs.Romulan].numShipsStart=2;
+civs[raceIDs.Klingon].numShipsStart=6;
+civs[raceIDs.Romulan].numShipsStart=5;
 civs[raceIDs.Ferengi].numShipsStart=2;
-civs[raceIDs.Vulcan].numShipsStart=2;
+civs[raceIDs.Vulcan].numShipsStart=3;
 var ships=new Array();
 var stations=new Array(); //todo add to civilization
 
 var curShip=0;
 var planetTypes = ["Class M","Class L","Class N","Class F","Class J","Class T","Demon Class"];
 
-var numSystems=20;
+var numSystems=80;
 var starsDrawn=0;
 
 
@@ -57,8 +57,8 @@ var selectedSpriteBig =Sprite("selectedbig");
 var shipSelSpriteB =Sprite("shipselectedbig");
 var shipSelSprite =Sprite("shipselected");
 
-var starNames=new Array(40);
-starNames= ["Eridani","Cygnus","Ceti-Alpha","Omicron Ceti","Monac","Bringold","Alnitak", "Deneb", "Acamar","Rigel","Polaris","Praxillus","Proxima Centauri", "Omicron Persei","Canopus", "Romii", "Sirius","Tahal", "Mintaka", "Vega", "Wolf", "Tau-Ceti","Eminiar","Canaris","Hydra", "Questar", "Arneb", "Amargosa", "Altiar","Draconis","Theloni","Gezid","Indi","Canaris","Sigma", "Cassius","Melona","Minara","Cat's Anus"];
+var starNames=new Array(90);
+starNames= ["Eridani","Cygnus","Ceti-Alpha","Omicron Ceti","Monac","Bringold","Alnitak", "Deneb", "Acamar","Rigel","Polaris","Praxillus","Proxima Centauri", "Omicron Persei","Canopus", "Romii", "Sirius","Tahal", "Mintaka", "Vega", "Wolf", "Tau-Ceti","Eminiar","Canaris","Hydra", "Questar", "Arneb", "Amargosa", "Altiar","Draconis","Theloni","Gezid","Indi","Canaris","Sigma", "Cassius","Melona","Minara","Cat's Anus","Detroit","Chicago","Miami","Albany","Providence","Augusta","Washington","Lexington","Moscow","Yemen","Tokyo","St. Petersburg","Berlin","New York","Patterson","Springfield","Great Neck","Manhaset","Port Washington","Honalulu","Vermont","New Hampshire","Kentucky","North Carolina","South Carolina","Florida","Texas","Huston","Oregon","Idaho","Kansas","Georgia","Arkansas","Louisiana","Ukraine","England","France","Goat land","Canada","Perth","India","Indiana","Oklahoma","Arizona","Nevada","Californa"];
 var starNamesUsed=new Array();
 
 var planetNames=new Array(40);
@@ -459,219 +459,58 @@ function killShip(targ)
 			targ.alive=false;
 			console.log("The " +targ.name+" was destroyed. "+ targ.crew.length+ " crew were lost. ");
 			monsta.explosionTextured(200,targ.x,targ.y,1,"explosion0");
-			if(curShip==i)
+			/*if(curShip==i)
 			{
 				curShip=0;
 				//after delay
 				
-			}
+			}*/
 		}
 	}
-	camera.center(ships[curShip]);
 };
 
-
-function initShips(){
-	for(var i=0;i<numShips;i++){
-		ships[i].crewVessel();
-		ships[i].homeworld=Earth;
-		ships[i].civ=civs[1];
-	}
-	
-	ships[curShip].orbit(stars[curSystem].planets[stars[curSystem].selected]);	
-	ships[0].christen();
-	ships[0].prefix="U.S.S.";
-	ships[0].width=16;
-	ships[0].civ=civs[0];
-	ships[0].height=16;
-	ships[0].numTorpedos=0;
-	ships[0].civ=civs[0];
-	ships[0].shieldSprite=Sprite("shields");
-	console.log(ships[0].prefix+ships[curShip].name+" is now orbiting " +stars[curSystem].planets[stars[curSystem].selected].name);
-	ships[curShip].acceleration=1;
-
-	
-	ships[1].orbit(stars[0].planets[3]);
-	ships[1].prefix="U.S.S.";
-	console.log(ships[1].prefix+" "+ships[1].name+" is now orbiting " +stars[0].planets[3].name);
-	ships[1].class="Galaxy Class";
-	ships[1].race=0;
-	ships[1].christen();
-	ships[1].civ=civs[0];
-	ships[1].sprite=Sprite("ship2");
-	ships[1].maxSpeed=9;
-	ships[1].maxShields=70;
-	ships[1].shields=70;
-	ships[1].windows.push(new shipWindow());
-	ships[1].windows[0].x=-1;
-	ships[1].windows[0].y=8;
-	ships[1].windows.push(new shipWindow());
-	ships[1].windows[1].x=-2;
-	ships[1].windows[1].y=11;
-	ships[1].windows.push(new shipWindow());
-	ships[1].windows[2].x=2;
-	ships[1].windows[2].y=9;
-	
-	/*ships[2].x=Math.random()*universeWidth/2;
-	ships[2].y=Math.random()*universeHeight/2;
-	ships[2].prefix="";
-	ships[2].class="Cardassian Station";
-	ships[2].race=0;
-	ships[2].name="Deep Space Nine";
-	ships[2].sprite=Sprite("ds9");
-	ships[2].maxSpeed=0;
-	ships[2].speed=0;
-	ships[2].heading=90;
-	ships[2].desiredHeading=90;
-	ships[2].maxShields=70;
-	ships[2].shields=0;*/
-	
-	ships[2].x=Math.random()*universeWidth/2;
-	ships[2].y=Math.random()*universeHeight/2;
-	ships[2].prefix="";
-	ships[2].class="Galaxy Class";
-	ships[2].race=0;
-	ships[2].windows.push(new shipWindow());
-	ships[2].windows[0].x=-1;
-	ships[2].windows[0].y=8;
-	ships[2].windows.push(new shipWindow());
-	ships[2].windows[1].x=-2;
-	ships[2].windows[1].y=11;
-	ships[2].windows.push(new shipWindow());
-	ships[2].windows[2].x=2;
-	ships[2].windows[2].y=9;
-	ships[2].name="Enterprise";
-	ships[2].sprite=Sprite("ship2");
-	ships[2].maxSpeed=9;
-	ships[2].maxShields=70;
-	ships[2].shields=70;
-	ships[2].civ=civs[0];
-	
-	
-	for(var p=3;p<numShips-3;p++)
-	{
-		if(Math.random()*20<5)
-		{
-			var blah=0;//Math.floor(Math.random()*numSystems);
-			var gah=Math.floor(Math.random()*stars[blah].numPlanets);
-			//civs[1].homeworld=stars[blah].planets[gah];
-			
-			ships[p].orbit(stars[blah].planets[Math.floor(Math.random()*stars[blah].planets.length)]);
-			ships[p].class="Bird of Prey";
-			ships[p].prefix="I.K.S";
-			ships[p].race=5;
-			ships[p].civ=civs[raceIDs.Klingon];
-			ships[p].christen();
-			//console.log(ships[p].prefix+ " "+ships[p].name+" is now orbiting " +stars[blah].planets[gah].name);
-			ships[p].sprite=Sprite("ship4");
-			ships[p].addPhaser();
-			//ships[p].homing=false;
-			ships[p].maxSpeed=7;
-		}else
-		{
-			ships[p].x=Math.random()*universeWidth/2;
-			ships[p].y=Math.random()*universeHeight/2;
-			ships[p].class="Bird of Prey";
-			ships[p].prefix="I.K.S";
-			ships[p].sprite=Sprite("ship4");
-			ships[p].civ=civs[raceIDs.Klingon];
-			ships[p].race=5;
-			ships[p].christen();
-			ships[p].maxSpeed=7;
-			ships[p].addPhaser();
-			//ships[p].homing=false;
-			ships[p].speed=6;
-		}
-    }
-	
-
-		
-		ships[6].x=Math.random()*universeWidth/4;
-		ships[6].y=Math.random()*universeHeight/4+universeHeight/2;
-		ships[6].prefix="Cube";
-		ships[6].race=9;
-		ships[6].civ=civs[raceIDs.Borg];
-		ships[6].christen();
-		ships[6].hp=2000;
-		ships[6].maxHp=2000;
-		ships[6].shields=100;
-		
-		ships[6].oxygen=10000;
-		ships[6].class="Cube";
-		ships[6].sprite=Sprite("ship3");
-		ships[6].maxSpeed=10;
-		ships[6].desiredSpeed=10;
-		//ships[6].adjustHeading(270);
-		ships[6].speed=9;
-		ships[6].autoFireRate=20;
-		ships[6].addPhaser();
-		ships[6].orderOrbit(Earth);
-		Cube=ships[6];
-		
-		ships[7].x=Math.random()*universeWidth/4;
-		ships[7].y=Math.random()*universeHeight/4;
-		ships[7].prefix="Vulcan";
-		ships[7].class="Capitol Ship";
-		ships[7].race=1;
-		ships[7].christen();
-		ships[7].sprite=Sprite("ship5");
-		ships[7].maxSpeed=7;
-		ships[7].speed=3;
-		ships[7].civ=civs[raceIDs.Vulcan];
-		
-		ships[8].x=Math.random()*universeWidth/2;
-		ships[8].y=Math.random()*universeHeight/4;
-		ships[8].prefix="IRW";
-		ships[8].class="Warbird";
-		ships[8].race=4;
-		ships[8].christen();
-		ships[8].sprite=Sprite("ship6");
-		ships[8].maxSpeed=7;
-		ships[8].speed=3;
-		ships[8].civ=civs[raceIDs.Romulan];
-	crewPool.push(new dude());
-
-};
 
 function newInitShips()
 {
-	
 	for(var i=0;i<civs.length;i++)
 	{
-		console.log("yaart");
 		for(var j=0;j<civs[i].numShipsStart;j++)
 		{
-			console.log("yaarp");
-			var james=new starShip();
-			james.homeworld=Earth;
 			if(i==raceIDs.Human)
 			{
+				var james=new starShip();
+				james.homeworld=Earth;
 				var bah=Math.floor(Math.random()*7);
 				james.orbit(stars[0].planets[bah]);
 				james.prefix="U.S.S.";
+				james.christen();
 				console.log(james.prefix+" "+james.name+" is now orbiting " +stars[0].planets[bah].name);
 				james.class="Galaxy Class";
 				james.race=0;
-				james.christen();
 				james.civ=civs[0];
 				james.sprite=Sprite("ship2");
 				james.maxSpeed=9;
 				james.maxShields=70;
 				james.shields=70;
-				james.windows.push(new shipWindow());
-				james.windows[0].x=-1;
-				james.windows[0].y=8;
-				james.windows.push(new shipWindow());
-				james.windows[1].x=-2;
-				james.windows[1].y=11;
-				james.windows.push(new shipWindow());
-				james.windows[2].x=2;
-				james.windows[2].y=9;
+				if(j>0)
+				{
+					james.windows.push(new shipWindow());
+					james.windows[0].x=-1;
+					james.windows[0].y=8;
+					james.windows.push(new shipWindow());
+					james.windows[1].x=-2;
+					james.windows[1].y=11;
+					james.windows.push(new shipWindow());
+					james.windows[2].x=2;
+					james.windows[2].y=9;
+				}
 				james.crewVessel();
 				james.civ=civs[i];
 				civs[i].ships.push(james);
 			}else if(i==raceIDs.Vulcan)
 			{
+				var james=new starShip();
+				james.homeworld=Earth;
 				james.x=Math.random()*universeWidth/4;
 				james.y=Math.random()*universeHeight/4;
 				james.prefix="Vulcan";
@@ -681,32 +520,34 @@ function newInitShips()
 				james.sprite=Sprite("ship5");
 				james.maxSpeed=7;
 				james.speed=3;
+				james.desiredSpeed=4;
 				james.civ=civs[raceIDs.Vulcan];
 				james.crewVessel();
 				james.civ=civs[i];
 				civs[i].ships.push(james);
 			}else if(i==raceIDs.Klingon)
 			{
+				var james=new starShip();
+				james.homeworld=Earth;
 				if(Math.random()*20<5)
 				{
-					var blah=0;//Math.floor(Math.random()*numSystems);
+					var blah=Math.floor(Math.random()*(numSystems-1))+1;
 					var gah=Math.floor(Math.random()*stars[blah].numPlanets);
 					civs[i].homeworld=stars[blah].planets[gah];
 					civs[i].worlds.push(stars[blah].planets[gah]);
-					
+					james.race=5;
+					james.civ=civs[raceIDs.Klingon];
+					james.christen();
 					james.orbit(stars[blah].planets[Math.floor(Math.random()*stars[blah].planets.length)]);
 					james.class="Bird of Prey";
 					james.prefix="I.K.S";
 					james.homeworld=civs[i].homeworld;
-					james.race=5;
-					james.civ=civs[raceIDs.Klingon];
-					james.christen();
 					//console.log(james.prefix+ " "+james.name+" is now orbiting " +stars[blah].planets[gah].name);
 					james.sprite=Sprite("ship4");
 					james.addPhaser();
 					//james.homing=false;
 					james.maxSpeed=7;
-					
+					james.desiredSpeed=6;
 					james.crewVessel();
 					james.civ=civs[i];
 					civs[i].ships.push(james);
@@ -724,13 +565,15 @@ function newInitShips()
 					james.addPhaser();
 					//james.homing=false;
 					james.speed=6;
-					
+					james.desiredSpeed=6;
 					james.crewVessel();
 					james.civ=civs[i];
 					civs[i].ships.push(james);
 				}
 			}else if(i==raceIDs.Romulan)
 			{
+				var james=new starShip();
+				james.homeworld=Earth;
 				james.x=Math.random()*universeWidth/2;
 				james.y=Math.random()*universeHeight/4;
 				james.prefix="IRW";
@@ -740,6 +583,7 @@ function newInitShips()
 				james.sprite=Sprite("ship6");
 				james.maxSpeed=7;
 				james.speed=3;
+				james.desiredSpeed=5;
 				james.civ=civs[raceIDs.Romulan];
 				
 				james.crewVessel();
@@ -747,6 +591,8 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==raceIDs.Ferengi)
 			{
+				var james=new starShip();
+				james.homeworld=Earth;
 				james.x=Math.random()*universeWidth/2;
 				james.y=Math.random()*universeHeight/4;
 				james.prefix="FAS";
@@ -756,6 +602,7 @@ function newInitShips()
 				james.sprite=Sprite("ship7");
 				james.maxSpeed=7;
 				james.speed=3;
+				james.desiredSpeed=5;
 				james.civ=civs[raceIDs.Ferengi];
 							
 				james.crewVessel();
@@ -763,6 +610,8 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==raceIDs.Borg)
 			{
+				var james=new starShip();
+				james.homeworld=Earth;
 				james.x=Math.random()*universeWidth/4;
 				james.y=Math.random()*universeHeight/4+universeHeight/2;
 				james.prefix="Cube";
@@ -813,7 +662,7 @@ function newInitShips()
 			ships.push(civs[i].ships[j]);
 		}
 	}
-	
+	selectedShip=ships[0];
 	crewPool.push(new dude());
 };
 function drawStarfield(canv,cam){

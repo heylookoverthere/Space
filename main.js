@@ -126,6 +126,7 @@ var dkey=new akey("d");
 var starkey=new akey("s");
 var gokey=new akey("g");
 var toggleshipkey=new akey("h");
+var toggleallshipskey=new akey("v");
 var shipleftkey=new akey("q");
 var shiprightkey=new akey("w");
 var shipgokey=new akey("e");
@@ -246,55 +247,55 @@ canvas.font = "8pt Calibri";
 	}
 	//ship info
 	var actiontext="Full Stop";
-	if(ships[curShip].speed>0){
-		if(ships[curShip].desiredOrbitTarg)
+	if(selectedShip.speed>0){
+		if(selectedShip.desiredOrbitTarg)
 		{
-			actiontext=ships[curShip].status;
+			actiontext=selectedShip.status;
 		}else
 		{
-			actiontext="Exploring the " +getQuadrant(ships[curShip]) + " Quadrant";
+			actiontext="Exploring the " +getQuadrant(selectedShip) + " Quadrant";
 		}
 	}
-	if(ships[curShip].nearbyPods.length>0)
+	if(selectedShip.nearbyPods.length>0)
 	{
 			canvas.fillStyle = "red";
-			if(ships[curShip].nearbyPods.length>1)
+			if(selectedShip.nearbyPods.length>1)
 			{
-				canvas.fillText(ships[curShip].nearbyPods.length+ " escape pods detected nearby",755,315);
+				canvas.fillText(selectedShip.nearbyPods.length+ " escape pods detected nearby",755,315);
 			}else
 			{
-				canvas.fillText(ships[curShip].nearbyPods.length+ " escape pod detected nearby",755,315);
+				canvas.fillText(selectedShip.nearbyPods.length+ " escape pod detected nearby",755,315);
 			}
 			canvas.fillStyle = "white";
 	}
-	if(ships[curShip].orbiting)
+	if(selectedShip.orbiting)
 	{
-		if(ships[curShip].leavingProgress)
+		if(selectedShip.leavingProgress)
 		{
 			actiontext="Breaking Orbit";
 		}else
 		{
-			actiontext="Orbiting "+ships[curShip].orbitTarg.name;
+			actiontext="Orbiting "+selectedShip.orbitTarg.name;
 		}
-	}else if(ships[curShip].turning)
+	}else if(selectedShip.turning)
 	{
 		actiontext="Adjusting Heading";
 	}
-	canvas.fillText("Ship: "+ships[curShip].prefix+" "+ships[curShip].name,755,250);
-	canvas.fillText("Class: "+ ships[curShip].class,755,265);
-	if(ships[curShip].destination)
+	canvas.fillText("Ship: "+selectedShip.prefix+" "+selectedShip.name,755,250);
+	canvas.fillText("Class: "+ selectedShip.class,755,265);
+	if(selectedShip.destination)
 	{
-		canvas.fillText("Following: "+ships[curShip].destination.prefix+" "+ships[curShip].destination.name,755,365);
+		canvas.fillText("Following: "+selectedShip.destination.prefix+" "+selectedShip.destination.name,755,365);
 	}
-	if(ships[curShip].torpedoTarget)
+	if(selectedShip.torpedoTarget)
 	{
-		canvas.fillText("Targeting: "+ships[curShip].torpedoTarget.prefix+" "+ships[curShip].torpedoTarget.name,755,380);
-	}//else if ships[curShip].
-	canvas.fillText("Hull Integrity: "+ships[curShip].hp+"/"+ships[curShip].maxHp,755,395);
-	canvas.fillText("02: "+Math.floor(ships[curShip].oxygen/10)+"%",755,410);
-	if(ships[curShip].breaches>0)
+		canvas.fillText("Targeting: "+selectedShip.torpedoTarget.prefix+" "+selectedShip.torpedoTarget.name,755,380);
+	}//else if selectedShip.
+	canvas.fillText("Hull Integrity: "+selectedShip.hp+"/"+selectedShip.maxHp,755,395);
+	canvas.fillText("02: "+Math.floor(selectedShip.oxygen/10)+"%",755,410);
+	if(selectedShip.breaches>0)
 	{
-		if(ships[curShip].breaches<2)
+		if(selectedShip.breaches<2)
 		{
 			canvas.fillStyle = "red";
 			canvas.fillText("HULL BREACH",755,425);
@@ -306,85 +307,85 @@ canvas.font = "8pt Calibri";
 			canvas.fillStyle = "white";
 		}
 	}
-	canvas.fillText("Torpedos: "+ships[curShip].numTorpedos+" Mines: "+ships[curShip].numMines,755,440);
-	if(ships[curShip].selfDestructActive)
+	canvas.fillText("Torpedos: "+selectedShip.numTorpedos+" Mines: "+selectedShip.numMines,755,440);
+	if(selectedShip.selfDestructActive)
 	{
 		canvas.fillStyle = "red";
-		canvas.fillText("SELF DESTRUCT IN " +ships[curShip].selfDestructTick,755,455);
+		canvas.fillText("SELF DESTRUCT IN " +selectedShip.selfDestructTick,755,455);
 		canvas.fillStyle = "white";
 	}
-	canvas.fillText("Crew Compliment: "+ ships[curShip].crew.length+"/"+ships[curShip].crewMax,755,470);
-	if(ships[curShip].awayTeamAt==null)
+	canvas.fillText("Crew Compliment: "+ selectedShip.crew.length+"/"+selectedShip.crewMax,755,470);
+	if(selectedShip.awayTeamAt==null)
 	{
-		canvas.fillText("Away Team Ready: "+ ships[curShip].awayTeam.length,755,485);	
+		canvas.fillText("Away Team Ready: "+ selectedShip.awayTeam.length,755,485);	
 	}else
 	{
-		canvas.fillText("Away Team on: "+ ships[curShip].awayTeamAt.name,755,485);
+		canvas.fillText("Away Team on: "+ selectedShip.awayTeamAt.name,755,485);
 	}
 	
 	canvas.fillText(actiontext,755,500);
-	canvas.fillText("Coords: "+Math.floor(ships[curShip].x)+","+Math.floor(ships[curShip].y),755,515);
-	canvas.fillText("Heading: "+ Math.floor(ships[curShip].heading),755,530);
-	canvas.fillText("Desired Heading: "+ ships[curShip].desiredHeading,755,545);
-	canvas.fillText("Speed: "+ ships[curShip].speed+" / "+ships[curShip].desiredSpeed+" / "+ships[curShip].maxSpeed,755,560);
+	canvas.fillText("Coords: "+Math.floor(selectedShip.x)+","+Math.floor(selectedShip.y),755,515);
+	canvas.fillText("Heading: "+ Math.floor(selectedShip.heading),755,530);
+	canvas.fillText("Desired Heading: "+ selectedShip.desiredHeading,755,545);
+	canvas.fillText("Speed: "+ selectedShip.speed+" / "+selectedShip.desiredSpeed+" / "+selectedShip.maxSpeed,755,560);
 	var ghjk="";
-	if(ships[curShip].cloaked) {ghjk+="Cloaked ";}
-	if(ships[curShip].shields>0) {ghjk+="Shields: "+ships[curShip].shields;}
+	if(selectedShip.cloaked) {ghjk+="Cloaked ";}
+	if(selectedShip.shields>0) {ghjk+="Shields: "+selectedShip.shields;}
 	canvas.fillText(ghjk,755,575);
-	//if(ships[curShip].cloaked) {canvas.fillText("Cloaked",755,575);}
+	//if(selectedShip.cloaked) {canvas.fillText("Cloaked",755,575);}
 
-	canvas.fillText("Crew Lost: "+ ships[curShip].crewLost,755,590);
-	canvas.fillText("OrbitTrack: "+ ships[curShip].orbitTrack,755,605);
-	canvas.fillText("Ships Detected Nearby: "+ ships[curShip].nearbyVessels.length,755,620)
-	canvas.fillText("Systems Detected Nearby: "+ ships[curShip].nearbySystems.length,755,635)
+	canvas.fillText("Crew Lost: "+ selectedShip.crewLost,755,590);
+	canvas.fillText("OrbitTrack: "+ selectedShip.orbitTrack,755,605);
+	canvas.fillText("Ships Detected Nearby: "+ selectedShip.nearbyVessels.length,755,620)
+	canvas.fillText("Systems Detected Nearby: "+ selectedShip.nearbySystems.length,755,635)
 	
 	
 	//-===========/
-	if(ships[curShip].torpedoTarget)
+	if(selectedShip.torpedoTarget)
 	{
 	var actiontext="Full Stop";
-	if((Math.abs(ships[curShip].torpedoTarget.x-ships[curShip].x)<ships[curShip].phaserRange) && (Math.abs(ships[curShip].torpedoTarget.y-ships[curShip].y)<ships[curShip].phaserRange)) //todo distance!
+	if((Math.abs(selectedShip.torpedoTarget.x-selectedShip.x)<selectedShip.phaserRange) && (Math.abs(selectedShip.torpedoTarget.y-selectedShip.y)<selectedShip.phaserRange)) //todo distance!
 	{
 		canvas.fillStyle="red";
 		canvas.fillText("IN PHASER RANGE!",55,330);
 		canvas.fillStyle="white";
 	}
-	if(ships[curShip].torpedoTarget.speed>0){
-		if(ships[curShip].torpedoTarget.desiredOrbitTarg)
+	if(selectedShip.torpedoTarget.speed>0){
+		if(selectedShip.torpedoTarget.desiredOrbitTarg)
 		{
-			actiontext=ships[curShip].torpedoTarget.status;
+			actiontext=selectedShip.torpedoTarget.status;
 		}else
 		{
-			actiontext="Exploring the " +getQuadrant(ships[curShip]) + " Quadrant";
+			actiontext="Exploring the " +getQuadrant(selectedShip) + " Quadrant";
 		}
 	}
-	if(ships[curShip].torpedoTarget.orbiting)
+	if(selectedShip.torpedoTarget.orbiting)
 	{
-		if(ships[curShip].torpedoTarget.leavingProgress)
+		if(selectedShip.torpedoTarget.leavingProgress)
 		{
 			actiontext="Breaking Orbit";
 		}else
 		{
-			actiontext="Orbiting "+ships[curShip].torpedoTarget.orbitTarg.name;
+			actiontext="Orbiting "+selectedShip.torpedoTarget.orbitTarg.name;
 		}
-	}else if(ships[curShip].torpedoTarget.turning)
+	}else if(selectedShip.torpedoTarget.turning)
 	{
 		actiontext="Adjusting Heading";
 	}
-	canvas.fillText("Ship: "+ships[curShip].torpedoTarget.prefix+" "+ships[curShip].torpedoTarget.name,55,350);
-	if(ships[curShip].torpedoTarget.destination)
+	canvas.fillText("Ship: "+selectedShip.torpedoTarget.prefix+" "+selectedShip.torpedoTarget.name,55,350);
+	if(selectedShip.torpedoTarget.destination)
 	{
-		canvas.fillText("Following: "+ships[curShip].torpedoTarget.destination.prefix+" "+ships[curShip].torpedoTarget.destination.name,55,365);
+		canvas.fillText("Following: "+selectedShip.torpedoTarget.destination.prefix+" "+selectedShip.torpedoTarget.destination.name,55,365);
 	}
-	if(ships[curShip].torpedoTarget.torpedoTarget)
+	if(selectedShip.torpedoTarget.torpedoTarget)
 	{
-		canvas.fillText("Targeting: "+ships[curShip].torpedoTarget.torpedoTarget.prefix+" "+ships[curShip].torpedoTarget.torpedoTarget.name,55,380);
-	}//else if ships[curShip].torpedoTarget.
-	canvas.fillText("Hull Integrity: "+ships[curShip].torpedoTarget.hp+"/"+ships[curShip].torpedoTarget.maxHp,55,395);
-	canvas.fillText("02: "+Math.floor(ships[curShip].torpedoTarget.oxygen/10)+"%",55,410);
-	if(ships[curShip].torpedoTarget.breaches>0)
+		canvas.fillText("Targeting: "+selectedShip.torpedoTarget.torpedoTarget.prefix+" "+selectedShip.torpedoTarget.torpedoTarget.name,55,380);
+	}//else if selectedShip.torpedoTarget.
+	canvas.fillText("Hull Integrity: "+selectedShip.torpedoTarget.hp+"/"+selectedShip.torpedoTarget.maxHp,55,395);
+	canvas.fillText("02: "+Math.floor(selectedShip.torpedoTarget.oxygen/10)+"%",55,410);
+	if(selectedShip.torpedoTarget.breaches>0)
 	{
-		if(ships[curShip].torpedoTarget.breaches<2)
+		if(selectedShip.torpedoTarget.breaches<2)
 		{
 			canvas.fillStyle = "red";
 			canvas.fillText("HULL BREACH",55,425);
@@ -396,30 +397,30 @@ canvas.font = "8pt Calibri";
 			canvas.fillStyle = "white";
 		}
 	}
-	canvas.fillText("Torpedos: "+ships[curShip].torpedoTarget.numTorpedos+" Mines: "+ships[curShip].torpedoTarget.numMines,55,440);
-	if(ships[curShip].torpedoTarget.selfDestructActive)
+	canvas.fillText("Torpedos: "+selectedShip.torpedoTarget.numTorpedos+" Mines: "+selectedShip.torpedoTarget.numMines,55,440);
+	if(selectedShip.torpedoTarget.selfDestructActive)
 	{
 		canvas.fillStyle = "red";
-		canvas.fillText("SELF DESTRUCT IN " +ships[curShip].torpedoTarget.selfDestructTick,55,455);
+		canvas.fillText("SELF DESTRUCT IN " +selectedShip.torpedoTarget.selfDestructTick,55,455);
 		canvas.fillStyle = "white";
 	}
-	canvas.fillText("Crew Compliment: "+ ships[curShip].torpedoTarget.crew.length+"/"+ships[curShip].torpedoTarget.crewMax,55,470);
-	canvas.fillText("Class: "+ ships[curShip].torpedoTarget.class,55,485);
+	canvas.fillText("Crew Compliment: "+ selectedShip.torpedoTarget.crew.length+"/"+selectedShip.torpedoTarget.crewMax,55,470);
+	canvas.fillText("Class: "+ selectedShip.torpedoTarget.class,55,485);
 	canvas.fillText(actiontext,55,500);
-	canvas.fillText("Coords: "+Math.floor(ships[curShip].torpedoTarget.x)+","+Math.floor(ships[curShip].torpedoTarget.y),55,515);
-	canvas.fillText("Heading: "+ Math.floor(ships[curShip].torpedoTarget.heading),55,530);
-	canvas.fillText("Desired Heading: "+ ships[curShip].torpedoTarget.desiredHeading,55,545);
-	canvas.fillText("Speed: "+ ships[curShip].torpedoTarget.speed+" / "+ships[curShip].torpedoTarget.desiredSpeed+" / "+ships[curShip].torpedoTarget.maxSpeed,55,560);
+	canvas.fillText("Coords: "+Math.floor(selectedShip.torpedoTarget.x)+","+Math.floor(selectedShip.torpedoTarget.y),55,515);
+	canvas.fillText("Heading: "+ Math.floor(selectedShip.torpedoTarget.heading),55,530);
+	canvas.fillText("Desired Heading: "+ selectedShip.torpedoTarget.desiredHeading,55,545);
+	canvas.fillText("Speed: "+ selectedShip.torpedoTarget.speed+" / "+selectedShip.torpedoTarget.desiredSpeed+" / "+selectedShip.torpedoTarget.maxSpeed,55,560);
 	var ghjk="";
-	if(ships[curShip].torpedoTarget.cloaked) {ghjk+="Cloaked ";}
-	if(ships[curShip].torpedoTarget.shields>0) {ghjk+="Shields: "+ships[curShip].torpedoTarget.shields;}
+	if(selectedShip.torpedoTarget.cloaked) {ghjk+="Cloaked ";}
+	if(selectedShip.torpedoTarget.shields>0) {ghjk+="Shields: "+selectedShip.torpedoTarget.shields;}
 	canvas.fillText(ghjk,55,575);
-	//if(ships[curShip].torpedoTarget.cloaked) {canvas.fillText("Cloaked",55,575);}
+	//if(selectedShip.torpedoTarget.cloaked) {canvas.fillText("Cloaked",55,575);}
 
-	canvas.fillText("Crew Lost: "+ ships[curShip].torpedoTarget.crewLost,55,590);
-	canvas.fillText("OrbitTrack: "+ ships[curShip].torpedoTarget.orbitTrack,55,605);
-	canvas.fillText("Ships Detected Nearby: "+ ships[curShip].torpedoTarget.nearbyVessels.length,55,620)
-	canvas.fillText("Systems Detected Nearby: "+ ships[curShip].torpedoTarget.nearbySystems.length,55,635)
+	canvas.fillText("Crew Lost: "+ selectedShip.torpedoTarget.crewLost,55,590);
+	canvas.fillText("OrbitTrack: "+ selectedShip.torpedoTarget.orbitTrack,55,605);
+	canvas.fillText("Ships Detected Nearby: "+ selectedShip.torpedoTarget.nearbyVessels.length,55,620)
+	canvas.fillText("Systems Detected Nearby: "+ selectedShip.torpedoTarget.nearbySystems.length,55,635)
 	}
 };
 
@@ -465,14 +466,14 @@ function mainMenuDraw(){
 	canvas.restore();
 	
 	canvas.save(); 
-	if(ships[curShip].class=="Type 2 Shuttle")//.target?
+	if(selectedShip.class=="Type 2 Shuttle")//.target?
 	{
-		canvas.translate((ships[curShip].x+camera.x)*camera.zoom,(ships[curShip].y+camera.y)*camera.zoom);
+		canvas.translate((selectedShip.x+camera.x)*camera.zoom,(selectedShip.y+camera.y)*camera.zoom);
 		canvas.scale(camera.zoom,camera.zoom);
 		shipSelSprite.draw(canvas, -8,-8);
 	}else
 	{
-		canvas.translate((ships[curShip].x+camera.x)*camera.zoom,(ships[curShip].y+camera.y)*camera.zoom);
+		canvas.translate((selectedShip.x+camera.x)*camera.zoom,(selectedShip.y+camera.y)*camera.zoom);
 		canvas.scale(camera.zoom,camera.zoom);
 		shipSelSpriteB.draw(canvas, -16,-16);
 	}
@@ -574,74 +575,74 @@ function mainMenuUpdate(){
 	}
 	if(evackey.check())
 		{
-			if((ships[curShip].evacuating) || (ships[curShip].evacDone))
+			if((selectedShip.evacuating) || (selectedShip.evacDone))
 			{
-				ships[curShip].selfDestructActive=true;
+				selectedShip.selfDestructActive=true;
 			}else
 			{
-				ships[curShip].Evac(stars[0].planets[2]);
-				if(ships[curShip].crew.length>1)
+				selectedShip.Evac(stars[0].planets[2]);
+				if(selectedShip.crew.length>1)
 				{
-					console.log(ships[curShip].name+ "'s crew is abandoning ship.");
-				}else if(ships[curShip].crew.length>0)
+					console.log(selectedShip.name+ "'s crew is abandoning ship.");
+				}else if(selectedShip.crew.length>0)
 				{
-					console.log(ships[curShip].name+ "'s captain is abandoning ship.");
-				}else if(ships[curShip].crew.length<0)
+					console.log(selectedShip.name+ "'s captain is abandoning ship.");
+				}else if(selectedShip.crew.length<0)
 				{
-					console.log(ships[curShip].name+ "Confirm self destruct?");
+					console.log(selectedShip.name+ "Confirm self destruct?");
 				}
-				//ships[curShip].captainFlees=true;
+				//selectedShip.captainFlees=true;
 			}
 		}
-	if((!ships[curShip].adrift) && (ships[curShip].crew.length>0))
+	if((!selectedShip.adrift) && (selectedShip.crew.length>0))
 	{
 		
 		
 		if(tractorkey.check())
 		{
-			if(ships[curShip].tractorClient)
+			if(selectedShip.tractorClient)
 			{
-				ships[curShip].unTractorSomething();
-			}else if(ships[curShip].tractorTarget)
+				selectedShip.unTractorSomething();
+			}else if(selectedShip.tractorTarget)
 			{
-				ships[curShip].tractorSomething(ships[curShip].tractorTarget);
+				selectedShip.tractorSomething(selectedShip.tractorTarget);
 			}
 		}
 		
 		if(shipleftkey.check())
 		{
-			ships[curShip].adjustHeading(ships[curShip].heading-20);
-			ships[curShip].manualHelm();
+			selectedShip.adjustHeading(selectedShip.heading-20);
+			selectedShip.manualHelm();
 		}
 		if(shiprightkey.check())
 		{
-			ships[curShip].adjustHeading(ships[curShip].heading+20);
-			ships[curShip].manualHelm();
+			selectedShip.adjustHeading(selectedShip.heading+20);
+			selectedShip.manualHelm();
 		}
 		if(shipgokey.check())
 		{
-			if(ships[curShip].desiredSpeed<ships[curShip].maxSpeed)
+			if(selectedShip.desiredSpeed<selectedShip.maxSpeed)
 			{
-				ships[curShip].desiredSpeed++;
+				selectedShip.desiredSpeed++;
 			}
 		}
 		if(minekey.check())
 		{
-			ships[curShip].layMine();
+			selectedShip.layMine();
 		}
 		if(firekey.check())
 		{
-			ships[curShip].fireTorpedo();
+			selectedShip.fireTorpedo();
 		}
 		if(phaserkey.check())
 		{
-			ships[curShip].firePhasers();
+			selectedShip.firePhasers();
 		}
 		if(shipslowkey.check())
 		{
-			if(ships[curShip].desiredSpeed>0)
+			if(selectedShip.desiredSpeed>0)
 			{
-				ships[curShip].desiredSpeed--;
+				selectedShip.desiredSpeed--;
 			}
 		}
 		if(gokey.check())
@@ -649,35 +650,39 @@ function mainMenuUpdate(){
 			/*ships[0].gotoDest=true;
 			ships[0].destx=420;
 			ships[0].desty=300;*/
-			if((ships[curShip].orbiting) && (!this.leavingProgres))
+			if((selectedShip.orbiting) && (!this.leavingProgres))
 			{
-				ships[curShip].orderLeaveOrbit();
+				selectedShip.orderLeaveOrbit();
 			}else
 			{
-				ships[curShip].orbit(stars[curSystem].planets[stars[curSystem].selected]);
-				console.log("The U.S.S. "+ships[curShip].name+" is now orbiting " +stars[curSystem].planets[stars[curSystem].selected].name);
+				selectedShip.orbit(stars[curSystem].planets[stars[curSystem].selected]);
+				console.log("The U.S.S. "+selectedShip.name+" is now orbiting " +stars[curSystem].planets[stars[curSystem].selected].name);
 			}
 		}
 	}else
 	{
 		if( (gokey.check()) || (shipslowkey.check()) || (shipgokey.check()) || (shiprightkey.check()) || (shipleftkey.check()))
 		{
-			console.log("No crew aboard "+ships[curShip].name+ " to execute orders!");
+			console.log("No crew aboard "+selectedShip.name+ " to execute orders!");
 		}
 	}
 	
 	if(toggleshipkey.check()) //todo!
 	{
-		/*curShip++;
-		if(curShip>ships.length-1) {
-			curShip=0;
-		}
-		camera.center(ships[curShip]);
-		camera.follow(ships[curShip]);*/
-		
 		civs[0].cycleShips(camera);
 	}
 	
+	if(toggleallshipskey.check()) //todo!
+	{
+		curShip++;
+		if(curShip>ships.length-1) {
+			curShip=0;
+		}
+		selectedShip=ships[curShip];
+		camera.center(selectedShip);
+		camera.follow(selectedShip);
+		
+	}
 	
 	if(starkey.check())
 	{
@@ -782,6 +787,7 @@ function mainMenuUpdate(){
 			{
 				ships[i].drawTarget=true;
 			}
+			selectedShip.drawTarget=true;
 			ships[i].update();
 
 		}
@@ -789,11 +795,11 @@ function mainMenuUpdate(){
 	
 	if(targetkey.check())
 	{
-		ships[curShip].cycleTarget();
+		selectedShip.cycleTarget();
 	}
 	if(tractortargetkey.check())
 	{
-		ships[curShip].cycleTractorTarget();
+		selectedShip.cycleTractorTarget();
 	}
 	/*for(var i=0;i<this.escapes.length;i++)
 	{

@@ -75,12 +75,12 @@ function mouseClick(e) {  //represents the mouse
 				{
 					var mTY=mY+Math.abs(camera.y);
 					var mTX=mX+Math.abs(camera.x);
-					var mouseHeading=Math.atan2(mTY-ships[curShip].y, mTX-ships[curShip].x)* (180 / Math.PI);
+					var mouseHeading=Math.atan2(mTY-selectedShip.y, mTX-selectedShip.x)* (180 / Math.PI);
 					if (mouseHeading < 0.0)
 						mouseHeading += 360.0;
 					else if (mouseHeading > 360.0)
 						mouseHeading -= 360;
-					ships[curShip].adjustHeading(Math.abs(mouseHeading));
+					selectedShip.adjustHeading(Math.abs(mouseHeading));
 				}
 			    break;
 			case 2:
