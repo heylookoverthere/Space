@@ -553,7 +553,10 @@ function mainMenuUpdate(){
 		//mode=1;
 		for(var i=3;i<ships.length;i++)
 		{
-			ships[i].orderOrbit(stars[0].planets[Math.floor(Math.random()*stars[0].planets.length)]);
+			if(ships[i].civ.allied)
+			{
+				ships[i].orderOrbit(stars[0].planets[Math.floor(Math.random()*stars[0].planets.length)]);
+			}
 			
 		}
 		console.log("All allied ships coming to help defend the Sol System.");

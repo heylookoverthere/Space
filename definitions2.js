@@ -17,12 +17,24 @@ var numShips=9;
 var numNebulas=80;
 var Earth=null;
 //var things=new Array();
-var numCivilizations=10;
-var civilizations=new Array();
+var numCivilizations=18;
+var civs=new Array();
 for(var i=0;i<numCivilizations;i++)
 {
-	civilizations[i]=new civilization();
+	civs[i]=new civilization();
+	civs[i].race=i;
+	civs[i].name=races[i];
+	
 }
+
+		for(var j=0;j<civs.length;j++)
+		{
+			if(j!=raceIDs.Borg)
+			{
+				civs[raceIDs.Borg].autoHostile.push(civs[j]);
+			}
+			civs[j].autoHostile.push(civs[raceIDs.Borg]);
+		}
 
 var ships=new Array();
 var stations=new Array(); //todo add to civilization
@@ -42,19 +54,6 @@ var planetTypes = ["Class M","Class L","Class N","Class F","Class J","Class T","
 var numSystems=20;
 var starsDrawn=0;
 
-var civs=new Array();
-civs.push(new civilization());
-var others=new civilization();
-others.name="others";
-//homeworld
-civs.push(others);
-
-var borg=new civilization();
-borg.name="The Borg";
-//homeworld
-borg.autoHostile.push(civs[0]);//borg hate everybody.
-borg.autoHostile.push(civs[1]);
-civs.push(borg);
 
 var selectedSprite =Sprite("selected");
 var selectedSpriteBig =Sprite("selectedbig");
@@ -565,6 +564,7 @@ function initShips(){
 			ships[p].class="Bird of Prey";
 			ships[p].prefix="I.K.S";
 			ships[p].race=5;
+			ships[p].civ=civs[raceIDs.Klingon];
 			ships[p].christen();
 			//console.log(ships[p].prefix+ " "+ships[p].name+" is now orbiting " +stars[blah].planets[gah].name);
 			ships[p].sprite=Sprite("ship4");
@@ -578,6 +578,7 @@ function initShips(){
 			ships[p].class="Bird of Prey";
 			ships[p].prefix="I.K.S";
 			ships[p].sprite=Sprite("ship4");
+			ships[p].civ=civs[raceIDs.Klingon];
 			ships[p].race=5;
 			ships[p].christen();
 			ships[p].maxSpeed=7;
@@ -593,7 +594,7 @@ function initShips(){
 		ships[6].y=Math.random()*universeHeight/4+universeHeight/2;
 		ships[6].prefix="Cube";
 		ships[6].race=9;
-		ships[6].civ=civs[2];
+		ships[6].civ=civs[raceIDs.Borg];
 		ships[6].christen();
 		ships[6].hp=2000;
 		ships[6].maxHp=2000;
@@ -620,6 +621,7 @@ function initShips(){
 		ships[7].sprite=Sprite("ship5");
 		ships[7].maxSpeed=7;
 		ships[7].speed=3;
+		ships[7].civ=civs[raceIDs.Vulcan];
 		
 		ships[8].x=Math.random()*universeWidth/2;
 		ships[8].y=Math.random()*universeHeight/4;
@@ -630,6 +632,7 @@ function initShips(){
 		ships[8].sprite=Sprite("ship6");
 		ships[8].maxSpeed=7;
 		ships[8].speed=3;
+		ships[8].civ=civs[raceIDs.Romulan];
 	crewPool.push(new dude());
 
 };

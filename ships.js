@@ -523,26 +523,6 @@ function starShip(){
 		this.desiredHeading=Math.floor(targ);
 	};
 	
-	this.generateFContactEvent=function(who){
-		var j=Math.floor(Math.random()*2);
-			if(who==1) 
-			{
-				console.log("Just like the movie! Together you draft the First Khitomer Accord, outlawing sodomy in space.");
-			}else if(who==4) 
-			{	
-				console.log("Motherfuckers will only communicate with audio.");
-			}else if(who==5) 
-			{
-				console.log("The introductions did not go well.  Ship lost with all hands.");
-			}else if(who==9) 
-			{
-				console.log("WE ARE THE BORG. RESISTANCE IS FUTILE.");
-				//killShip(this);
-			} else
-			{
-				console.log("Unsuprisingly they appear to be huminoids with bumps on their heads.");
-			}
-		};
 	
 	this.generateEvent=function(){
 		var j=Math.floor(Math.random()*9);
@@ -683,8 +663,11 @@ function starShip(){
 					}
 					if((this.civ.fContacted[thangs[i].race]==false) && (this.race==0)){
 						this.civ.fContacted[thangs[i].race]=true;
-						console.log("The "+this.name+ " made first contact with the "+races[thangs[i].race]+"s.");
-						this.generateFContactEvent(thangs[i].race);
+						if(thangs[i].race>0)
+						{
+							console.log("The "+this.name+ " made first contact with the "+races[thangs[i].race]+"s.");
+							civs[thangs[i].race].generateMessage(this.civ);
+						}
 					}
 				}
 			}

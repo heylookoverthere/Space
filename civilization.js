@@ -1,4 +1,14 @@
 var techNames=["Aeroponics","Emergency Rations","Waffle Fries","Microbrewed Beer","Printers That Dont Need Paper With Those Holes On Each Side","Sneakers With Lights On Them","Captioning Pictures Of Cats","Inertial Dampners","Warp Drive","TransWarp","Slipstream","Shitty Sensors","Sensors","Long Range Sensors","Astrometrics","DetectTacheons","DetectCloakythings","DetectWormholethings","ShittyCloak","Cloak","BestCloak","Lasers","Phasers","Disruptors","BestEnergyWeapon","Torpedos","PhotonTorpedos","QuantumTorpedos","TransPhasicTorpedos","PowerCells","Grapple","TractorBeam","StructualIntegrityBeam","Transporter","TransportEnhancer","EmergencyTransporter","AdvTransporter","thatbullshitfromthenewmovie","Energy Shields","AdvEnergyShields","MetaPhasicShields","Armor","AblatativeArmor","MicroCircutry","BioNeuralCircutry","Nanobots","Assimilation","AlienMedican","AlienSurgery","Cloning","GeneticResequencing","Synthahol","AdvEnviromentalControls","ContainmentField","SubspaceTheory","ImpulseProbe","WarpProbe","Statis","WarpEscapePods","AdvEscapePods","AI","Robotics","Androids","Cybernetics","PowerManagment","Replicators","PowerManagment","Capacitors","Holodecks","EMH","MobileEmiter","AdvMetallurgy","DeuteriumCollector","Deflector"];
+var hasItem=new Array();
+var numItems=1;
+var Items={};
+Items.RomulanPrisoner=0;
+
+for(var i=0;i<numItems;i++)
+{
+	hasItem.push(false);
+}
+
 var Techs = {};
 Techs.Aeroponics=1;
 Techs.MERations=2; //start with.
@@ -128,6 +138,9 @@ function civilization()
 	this.homeStar=0;
 	this.homePlanet=2;
 	this.researchRate=1;
+	this.encounterTrack=0;
+	this.money=1000;
+	this.allied=false;
 	this.researchProgress=0;
 	this.researchTick=0;
 	this.nextResearch=100;
@@ -155,7 +168,7 @@ function civilization()
 		{
 			this.messages[0].update();
 			if(!this.messages[0].exists){
-				this.messages.pop();
+				this.messages.splice(0,1);
 			}
 		}
 		if(holdInput) {return;}
@@ -176,6 +189,180 @@ function civilization()
 	};
 	this.generateMessage=function(other) //run on contact with other ships (with month or so break in between)
 	{
-	
+		
+		if(this.race==raceIDs.Vulcan)
+		{
+			var ned=new textbox();
+			ned.setup("Greetings, we are the Vulcan Confederacy.  How May we help you?",150,370);
+			ned.civil=this;
+			ned.choicesStart=1;
+			ned.addText("   Explain the Borg threat");
+			ned.addText("   Demand their surrender");
+			ned.optionOne=function(civil1,civil2)
+			{
+				console.log(civil2);
+				var ped=new textbox();
+				ped.setup("Hm.  It seems logical to offer you our aid, as they will" ,150,370);
+				ped.civil=civil1;
+				ped.addText("surely come for us once they are done with you.");
+				ped.optionTrack=0;
+				ped.options=0;
+				console.log("The Vulcans have agreed to help!");
+				console.log(ped);
+				civil1.allied=true;
+				civil2.messages.push(ped);
+				holdInput=true;
+			};
+			ned.optionTwo=function(civil1,civil2)
+			{
+				var ped=new textbox();
+				ped.setup("We will not surrender, we can defend ourselves!" ,150,370);
+				ped.civil=civil1;
+				ped.optionTrack=0;
+				ped.options=0;
+				civil1.autoHostile.push(civil2);
+				console.log(civil2.name + " have pissed off " +civil1.name+ " by demanding their surrender!");
+				civil2.messages.push(ped);
+				holdInput=true;
+			};
+			ned.optionTrack=1;
+			other.messages.push(ned);
+		}else if(this.race==raceIDs.Ferengi)
+		{
+			var ned=new textbox();
+			ned.setup("Hello, we are the Ferengi.  We have heard about your troubles.",150,370);
+			ned.addText("We would be happy to help defend your planet.  For a modest");
+			ned.addText ("fee of course.");
+			ned.civil=this;
+			ned.choicesStart=3;
+			ned.addText("   Hire them for $100");
+			ned.addText("   Tell them to fuck off.");
+			ned.optionTrack=3;
+			ned.optionOne=function(civil1,civil2)
+			{
+				var ped=new textbox();
+				ped.setup("Pleasure doing buisness with you.  Call us when you need our help." ,150,370);
+				ped.civil=civil1;
+				ped.optionTrack=0;
+				ped.options=0;
+				civil2.money-=100;
+				console.log("The Ferengi have agreed to help!");
+				civil1.allied=true;
+				civil2.messages.push(ped);
+				holdInput=true;
+			};
+			ned.optionTwo=function(civil1,civil2)
+			{
+				var ped=new textbox();
+				ped.setup("Very well, your loss.  Good luck with the Borg." ,150,370);
+				ped.civil=civil1;
+				ped.optionTrack=0;
+				ped.options=0;
+				civil2.messages.push(ped);
+				holdInput=true;
+			};
+			other.messages.push(ned);
+		}else if(this.race==raceIDs.Borg)
+		{
+			var ned=new textbox();
+			ned.setup("We are Borg. You will be assimilated.  Resistance is futile.",150,370);
+			ned.options=0;
+			ned.civil=this;
+			other.messages.push(ned);
+		}else if(this.race==raceIDs.Klingon)
+		{
+			var ned=new textbox();
+			ned.setup("Filthy humans, once we are done with the Romulans we may just",150,370);
+			ned.addText(" come for you.");
+			if(hasItem[Items.RomulanPrisoner])
+			{
+				ned.options=2;
+				ned.addText("    Alright then.  Have a good day...");
+				ned.addText("    Hey we have this Romulan dude in stasis, wanna probe him?");
+				ned.optionTrack=2;
+				ned.choicesStart=2;
+				ned.optionOne=function(civil1,civil2)
+				{
+
+				};
+				ned.optionTwo=function(civil1,civil2)
+				{
+					hasItem[Items.RomulanPrisoner]=false;
+					var ped=new textbox();
+					ped.setup("Hm.  Yes we could learn much from him.  We will help" ,150,370);
+					ped.addText("You in glorious battle against the Borg in exchange for");
+					ped.addText("the Romulan officer.");
+					ped.civil=civil1;
+					ped.optionTrack=0;
+					civil2.allied=true;
+					ped.options=0;
+					civil2.messages.push(ped);
+					holdInput=true;
+				};
+			}else
+			{
+				ned.options=1;
+				ned.addText("    Alright then.  Have a good day...");
+				ned.optionTrack=2;
+				ned.choicesStart=2;
+				ned.options=1;
+				ned.optionOne=function(civil1,civil2)
+				{
+
+				};
+			}
+			ned.civil=this;
+			other.messages.push(ned);
+		}else if(this.race==raceIDs.Romulan)
+		{
+			var ned=new textbox();
+			ned.setup("We are the Romulan Star Empire.  You will not violate our Space.",150,370);
+			ned.options=0;
+			if(hasItem[Items.RomulanPrisoner])
+			{
+				ned.options=2;
+				ned.addText("    Alright then.");
+				ned.addText("    We found one of your officers in an escape pod.");
+				ned.optionTrack=1;
+				ned.choicesStart=1;
+				ned.optionOne=function(civil1,civil2)
+				{
+
+				};
+				ned.optionTwo=function(civil1,civil2)
+				{
+					hasItem[Items.RomulanPrisoner]=false;
+					var ped=new textbox();
+					ped.setup("Thank you for returning our officer.  Prehaps this will be the" ,150,370);
+					ped.addText("begging of improved relations between our people.");
+					ped.civil=civil1;
+					ped.optionTrack=0;
+					civil2.allied=true;
+					ped.options=0;
+					civil2.messages.push(ped);
+					holdInput=true;
+				};
+			}else
+			{
+				ned.options=1;
+				ned.addText("    Alright then.");
+				ned.optionTrack=1;
+				ned.choicesStart=1;
+				ned.options=1;
+				ned.optionOne=function(civil1,civil2)
+				{
+
+				};
+			}
+			ned.civil=this;
+			other.messages.push(ned);
+		}else
+		{
+			var ned=new textbox();
+			ned.setup("Generic message!",150,370);
+			ned.options=0;
+			ned.civil=this;
+			other.messages.push(ned);
+		}
 	};
 };
