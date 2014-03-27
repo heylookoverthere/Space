@@ -188,9 +188,43 @@ function civilization()
 			return;
 		}
 		//check for free colony ship, if not add one to build queue
+		var bob=this.freeColonyShip();
+		if(bob)
+		{
+			bob.orbitTarg=world;
+			bob.orders=Orders.Colonize;
+		}else
+		{
+			this.produceShip(1,this.homeworld,world);//(ShipClass[this.race].colony);
+		}
 		//set its destination, crew it
 	};
 	
+	this.freeColonyShip=function() //todo find closest to world.
+	{
+		for (var i=0;i<this.ships.length;i++)
+		{
+			if(this.ships[i].colony)
+			{
+				return this.ships[i];
+			}
+		}
+		return null;
+	};
+	
+	this.produceShip=function(lass,worldstart,worldgo)//todo make worldstart do something
+	{
+		var jimmy=newShip(this);
+		if(lass==1)
+		{
+			jimmy.colony=true;
+			if(worldgo)
+			{
+				jimmy.desiredOrbitTarg=worldgo;
+			}
+		}
+		this.productionQueue.push(jimmy);
+	};
 	
 	this.colonize=function(world){
 		if(world.colonized)
@@ -200,6 +234,7 @@ function civilization()
 		}
 		this.worlds.push(world);
 		world.race=this.race;
+		world.civ=this;
 		world.colonized=true;
 		console.log("The planet "+world.name+" has been successfully colonized by the "+this.name);
 	};
@@ -260,7 +295,18 @@ function civilization()
 					this.productionTick=0;
 					if(this.name=="Human")
 					{
-						console.log("Humanity produced some shit.");
+						
+						var jerry=this.productionQueue.pop();
+						if(jerry.ship)
+						{
+							console.log("Humanity produced the starship "+jerry.name);
+							this.ships.push(jerry);
+							ships.push(jerry);
+						}else if(jerry.building)
+						{
+							//create building
+							console.log("Humanity produced some shit.");
+						}
 					}
 				}
 			}

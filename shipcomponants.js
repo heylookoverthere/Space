@@ -8,10 +8,11 @@ for (var q=0;q<18;q++)
 	shipNames[q]=["one","two","three","four","five","six","seven","eight","nine","ten","Testicles"];
 	shipNamesTrack[q]=0;
 }
-shipNames[0]=["Enterprise","Hood","Voyager","Defiant","Intrepid","Akira","Excalibur","Lexington","Ohio","Rhode Island","Raven","Gandhi","Exter","Horatio","Yamaguchi","Summit","Dakota"];
+shipNames[0]=["Enterprise","Hood","Voyager","Defiant","Intrepid","Akira","Excalibur","Lexington","Ohio","Rhode Island","Raven","Gandhi","Exter","Horatio","Yamaguchi","Summit","Dakota","Snook","Jucovy","Balls","Potemkin","Goatfucker","Obama","Bastile"];
 shipNames[1]=["D'Kyr","D'Vahl","Tal'Kir","Ti'Mur","T'Pau","T'Vran","Ni'Var","Nyran","Seleya","Sh'Raan","Vaankara","Vahklas","Yarahla"];
 shipNames[4]=["Belak","D'Ridthau","Decius","Devoras","Dividices","Genorex","Haakona","Khazara","Makar"];
 shipNames[5]=["Amar","B'Moth","Bortas","Ch'Tang","Fek'lhr","Gr'oth","Hegh'ta","Hor'Cha","Rotarran","Par'tok","Ya'Vang",];
+shipNames[8]=["Aldara","Barkano","Bok'Nor","Groumall","Koranak","Kornaire","Kraxon","Prakesh","Rabol","Ravinok","Reklar","Trager","Vetar"];
 
 var escapes=new Array();
 var mines=new Array();

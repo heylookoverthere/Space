@@ -1,6 +1,18 @@
 var tractorColors=["#01A9DB","#0080FF","#2E9AFE","#2E9AFE","#81BEF7","#81F7F3","#A9E2F3","#58D3F7"];
 
+var Orders={};
+Orders.whatever=0;
+Orders.Explore=1;
+Orders.Colonize=2;
+Orders.Escort=3;
+Orders.Fleet=4
+Orders.LeadFleet=5;
+Orders.Attack=6;
+Orders.Tractor=7;
+
 function starShip(){
+	this.ship=true;
+	this.orders=0;
 	this.race=0;
 	this.x=0;
 	this.y=0;
@@ -1030,6 +1042,12 @@ function starShip(){
 				if((Math.abs(this.x-this.desiredOrbitTarg.x)<50) && (Math.abs(this.y-this.desiredOrbitTarg.y)<50)) 
 				{
 					console.log(this.name+ " has arrived in orbit of "+this.desiredOrbitTarg.name);
+					if((this.colony) && (this.orders=Orders.Colonize))
+					{
+						this.civ.colonize(this.desiredOrbitTarg);
+						console.log(this.name+ " successfully colonized "+this.desiredOrbitTarg.name);
+						//this.alive=false;
+					}
 					this.orbit(this.desiredOrbitTarg);
 					this.desiredOrbitTarg=null;
 					if(this.refitOrdered)
