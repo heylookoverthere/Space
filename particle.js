@@ -1,3 +1,14 @@
+Buildings={};
+Buildings.Lab=0;
+Buildings.MilitaryBase=1;
+Buildings.Mine=2;
+Buildings.Library=3;
+Buildings.Shipyard=4;
+Buildings.OrbitalDefense=5;
+Buildings.ShieldGrid=6;
+Buildings.DaveAndBusters=7;
+
+
 function particle(){
 	this.alive=false;
 	this.x=0;
@@ -8,6 +19,7 @@ function particle(){
 	this.gravity=false;
 	this.xv=0;
 	this.yv=0;
+	this.shieldSprite=null;//Sprite("planetshields");
 	this.textured=false;
 	this.orbitDecay=0;
 	//this.texture=
@@ -25,6 +37,15 @@ function particle(){
 	this.civ=null;
 	this.numMoons=0;
 	this.moons=new Array();
+	this.buildings=new Array();
+	this.maxBuildings=6;
+	this.population=5;
+	this.hasShipyard=false;
+	this.healTick=0;
+	this.hp=100;
+	this.maxHp=100;
+	this.shields=0;
+	this.maxShields=0;
 	this.orbitDiameter=4;
 	this.orbitTrack=0;
 	this.orbitSpeed=1;
@@ -40,6 +61,62 @@ function particle(){
 	this.smoker=false;
 	this.flicker=true;
 	this.exploader=false;
+
+	this.hurt=function(amt)
+	{
+		this.shields-=amt;
+		var wound=0;
+		if(this.shields<0){wound+=this.shields; this.shields=0;}
+		this.hp+=wound;
+		if((this.hp<1) && (this.civ))
+		{
+			this.hp=100;
+			if(this.civ.name=="Human")
+			{
+				if(this==this.civ.homeworld)
+				{
+					console.log("Earth has fallen!  Well shit.");
+				}else
+				{
+					console.log("Humanity lost their colony on "+this.name);
+				}
+			}
+			for(var i=0;i<this.civ.worlds.length;i++)
+			{
+				if(this==this.civ.worlds[i])
+				{
+					this.civ.worlds.splice(i,1);
+					i--;
+				}
+			}
+			this.civ=null;
+		}
+		
+	};
+	this.getResearch=function()
+	{
+		var rate=1;
+		for(var i=0;i<this.buildings.length;i++)
+		{
+			if(this.buildings[i].type==Buildings.Lab)
+			{
+				rate+=.5;
+			}
+		}
+		return rate;
+	};
+	this.getProduction=function()
+	{
+		var rate=1;
+		for(var i=0;i<this.buildings.length;i++)
+		{
+			if(this.buildings[i].type==Buildings.Mine)
+			{
+				rate+=.5;
+			}
+		}
+		return rate;
+	};
 	//this.startTime=
 	//this.curTime=
 	//this.durTime=2;
@@ -91,6 +168,18 @@ function particle(){
 		//this.counter--;
 		//time stuff
 		//if (this.counter<1) this.alive=false;
+		if(this.planet)
+		{
+			this.healTick+=1*gameSpeed;
+			if(this.healTick>1000)
+			{
+				this.healTick=0;
+				if(this.hp<this.maxHp)
+				{
+					this.hp++;
+				}
+			}
+		}
 
 
 	};
@@ -159,6 +248,14 @@ function particleSystem(){
 						//this.particles[i].sprite.draw(can, this.particles[i].x+cam.x-this.particles[i].width/2,this.particles[i].y+cam.y-this.particles[i].height/2);
 						//this.particles[i].sprite.draw(can, -this.particles[i].width*cam.zoom/2,-this.particles[i].height*cam.zoom/2);
 						this.particles[i].sprite.draw(can, -this.particles[i].width/2,-this.particles[i].height/2);
+						if(this.particles[i].shields>0)
+						{
+							can.save();
+							can.globalAlpha=this.shields/100;
+							//can.scale(this.particles[i].size*cam.zoom,this.particles[i].size*cam.zoom);
+							this.particles[i].shieldSprite.draw(can, -this.particles[i].width/2,-this.particles[i].height/2);
+							can.restore();
+						}
 					}else
 					{
 						can.fillRect(this.particles[i].x+cam.x-this.particles[i].width/2, this.particles[i].y+cam.y-this.particles[i].height/2, this.particles[i].size*cam.zoom, this.particles[i].size*cam.zoom);
@@ -235,6 +332,7 @@ function particleSystem(){
 		tod.gameSped=true;
 		tod.orbx=son.x;
 		tod.orby=son.y;
+		tod.shieldSprite=Sprite("planetshields");
 		tod.sun=son;
 		tod.numMoons=0;
 		tod.size=Math.floor(Math.random()*4)+1
@@ -265,8 +363,8 @@ function particleSystem(){
 		tod.height=32;
 		//tod.sprite=Sprite("earthsmall");
 		var twitch=Math.floor(Math.random()*4);
-		if (tod.type==0) {tod.sprite=Sprite("earthsmall");}
-		if (tod.type==1) {tod.sprite=Sprite("planetsmall");}
+		if (tod.type==0) {tod.sprite=Sprite("earthsmall");tod.shieldSprite=Sprite("planetshieldsmall");}
+		if (tod.type==1) {tod.sprite=Sprite("planetsmall");tod.shieldSprite=Sprite("planetshieldsmall");}
 		if (tod.type==2) {tod.sprite=Sprite("hotplanetsmall");}
 		if (tod.type==3) {tod.sprite=Sprite("iceplanetsmall");}
 		if (tod.type==4) 

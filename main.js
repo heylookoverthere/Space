@@ -237,10 +237,11 @@ canvas.font = "8pt Calibri";
 	
 		canvas.fillText("Planet Name: "+ stars[curSystem].planets[stars[curSystem].selected].name,25,145);
 		canvas.fillText("Planet Type: "+ typestr,25,160);
+		canvas.fillText("Planet HP: "+stars[curSystem].planets[stars[curSystem].selected].hp,25,185);
 		if(stars[curSystem].planets[stars[curSystem].selected].orbitDecay>0)
 		{
 			canvas.fillStyle = "red";
-			canvas.fillText("WARNING: ORBIT DECAYING",25,185);
+			canvas.fillText("WARNING: ORBIT DECAYING",25,200);
 			canvas.fillStyle = "white";
 		
 		}

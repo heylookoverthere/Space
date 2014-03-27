@@ -95,6 +95,7 @@ function starShip(){
 	this.orbitDiameter=30;
 	this.captainFlees=false;
 	this.orbitTarg=null;
+	this.planetAttackTick=0;
 	this.desiredOrbitTarg=null;
 	this.gotoDest=false;
 	this.drawTarget=false;
@@ -459,17 +460,22 @@ function starShip(){
 	};
 	
 	this.orderRefit=function(){
-		this.orderOrbit(this.closestWorld());
+		this.orderOrbit(this.closestWorld(true));
 		this.refitOrdered=true;
 	};
 	
-	this.closestWorld=function(){
+	this.attackPlanet=function(plnt)
+	{
+		plnt.hurt(3);
+	};
+	
+	this.closestWorld=function(refit){
 		var answer=this.homeworld;
 		var answerDist=distance(this,this.homeworld);
 		for(var i=0;i<this.civ.worlds.length;i++)
 		{
 			var dost=distance(this,this.civ.worlds[i]);
-			if(dost<answerDist)
+			if((dost<answerDist) && ((this.civ.worlds[i].hasShipyard) || (!refit)))
 			{
 				answerDist=dost;
 				answer=this.civ.worlds[i];
@@ -1212,6 +1218,19 @@ function starShip(){
 		for(var i=0;i<this.windows.length;i++)
 		{
 			this.windows[i].update();
+		}
+		if(this.civ==civs[raceIDs.Borg])
+		{
+			if((this.orbiting) &&(this.orbitTarg==Earth) &&(!this.torpedoTarget))
+			{
+				this.planetAttackTick+=1*gameSpeed;
+				
+				if(this.planetAttackTick>50)
+				{
+					this.attackPlanet(Earth);
+					this.planetAttackTick=0;
+				}
+			}
 		}
 	};
 	

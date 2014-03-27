@@ -129,6 +129,43 @@ function culture()
 	
 };
 
+function building(typ,wrld)
+{
+	this.name="bullshit";
+	this.hp=100;
+	this.maxHp=100;
+	this.defense=1;
+	this.ship=false;
+	this.building=true;
+	this.type=typ;
+	this.world=wrld;
+	if(this.type==Buildings.Lab)
+	{
+		this.name="Research Lab";
+	}else if(this.type==Buildings.MilitaryBase)
+	{
+		this.name="Military Base";
+		this.defense=3;
+	}else if(this.type==Buildings.Mine)
+	{
+		this.name="mine";
+	}else if(this.type==Buildings.Shipyard)
+	{
+		this.name="Shipyard";
+		this.defense=2;
+	}else if(this.type==Buildings.ShieldGrid)
+	{
+		this.name="Planetary Shield Grid";
+		this.defense=2;
+	}else if(this.type==Buildings.Library)
+	{
+		this.name="Library";
+	}else if(this.type==Buildings.DaveAndBusters)
+	{
+		this.name="Dave & Busters";
+	}
+};
+
 function civilization()
 {
 	this.race=0;
@@ -199,6 +236,27 @@ function civilization()
 		}
 		//set its destination, crew it
 	};
+	this.getProductionRate=function()
+	{
+		var rate=0;
+		for(var i=0;i<this.worlds.length;i++)
+		{
+			rate+=this.worlds[i].getProduction();
+		}
+		this.productionRate=rate;
+		return rate;
+	};
+	
+	this.getResearchRate=function()
+	{
+		var rate=0;
+		for(var i=0;i<this.worlds.length;i++)
+		{
+			rate+=this.worlds[i].getResearch();
+		}
+		this.researchRate=rate;
+		return rate;
+	};
 	
 	this.freeColonyShip=function() //todo find closest to world.
 	{
@@ -224,6 +282,18 @@ function civilization()
 			}
 		}
 		this.productionQueue.push(jimmy);
+	};
+	
+	this.produceBuilding=function(type,wrld){
+		if(wrld.buildings.length<wrld.maxBuildings)
+		{
+			var timmy=new building(type,wrld);
+			this.productionQueue.push(timmy);
+			console.log("Began contructing a new "+timmy.name+" on " +wrld.name);
+		}else
+		{
+			console.log("Can't fit any more buildings on " +wrld.name);
+		}
 	};
 	
 	this.colonize=function(world){
@@ -305,7 +375,16 @@ function civilization()
 						}else if(jerry.building)
 						{
 							//create building
-							console.log("Humanity produced some shit.");
+							jerry.world.buildings.push(jerry);
+							if(jerry.type==Buildings.ShieldGrid)
+							{
+								jerry.world.maxShields=100;
+								jerry.world.shields=100;
+							}else if(jerry.type==Buildings.Shipyard)
+							{
+								jerry.world.hasShipyard=true;
+							}
+							console.log("Humanity produced a "+jerry.name+ " on "+jerry.world.name);
 						}
 					}
 				}
