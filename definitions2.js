@@ -38,6 +38,7 @@ for(var i=0;i<numCivilizations;i++)
 civs[raceIDs.Borg].numShipsStart=1;
 civs[raceIDs.Human].numShipsStart=2;
 civs[raceIDs.Klingon].numShipsStart=6;
+civs[raceIDs.Klingon].targetPods=true;
 civs[raceIDs.Romulan].numShipsStart=5;
 civs[raceIDs.Ferengi].numShipsStart=2;
 civs[raceIDs.Vulcan].numShipsStart=3;
@@ -178,13 +179,16 @@ function nebula(){
 	this.draw=function(can,cam){
 		for(var i=0;i<this.numClouds;i++)
 		{
-			can.save();
-			can.translate((this.x+this.clouds[i].xoffset+cam.x)*cam.zoom,(this.y+this.clouds[i].yoffset+cam.y)*cam.zoom);
-			can.rotate(this.clouds[i].heading*(Math.PI/180));
-			can.scale(this.clouds[i].size*cam.zoom,this.clouds[i].size*cam.zoom);
-			canvas.globalAlpha=.2;
-			this.clouds[i].sprite.draw(can, -64,-64);
-			can.restore();
+			if(cam.isNear(this))
+			{
+				can.save();
+				can.translate((this.x+this.clouds[i].xoffset+cam.x)*cam.zoom,(this.y+this.clouds[i].yoffset+cam.y)*cam.zoom);
+				can.rotate(this.clouds[i].heading*(Math.PI/180));
+				can.scale(this.clouds[i].size*cam.zoom,this.clouds[i].size*cam.zoom);
+				canvas.globalAlpha=.2;
+				this.clouds[i].sprite.draw(can, -64,-64);
+				can.restore();
+			}
 		}
 		
 	};
@@ -480,6 +484,24 @@ function newInitShips()
 {
 	for(var i=0;i<civs.length;i++)
 	{
+		if(i>0)
+		{
+			var blah=Math.floor(Math.random()*(numSystems-1))+1;
+			var gah=Math.floor(Math.random()*stars[blah].numPlanets);
+			civs[i].homeworld=stars[blah].planets[gah];
+			stars[blah].planets[gah].race=i;
+			stars[blah].planets[gah].colonized=true;
+			if(i==raceIDs.Vulcan) {stars[blah].planets[gah].name="Vulcan";}
+			if(i==raceIDs.Klingon) {stars[blah].planets[gah].name="Qo'nos";}
+			if(i==raceIDs.Romulan) {stars[blah].planets[gah].name="Romulus";}
+			if(i==raceIDs.Ferengi) {stars[blah].planets[gah].name="Ferenginar";}
+			if(i==raceIDs.Cardassians) {stars[blah].planets[gah].name="Cardassia";}
+			if(i==raceIDs.Bajoran) {stars[blah].planets[gah].name="Bajor";}
+			
+		}else
+		{
+			civs[i].homeworld=stars[0].planets[2];
+		}
 		for(var j=0;j<civs[i].numShipsStart;j++)
 		{
 			if(i==raceIDs.Human)
@@ -517,7 +539,7 @@ function newInitShips()
 			}else if(i==raceIDs.Vulcan)
 			{
 				var james=new starShip();
-				james.homeworld=Earth;
+				james.homeworld=civs[i].homeworld;
 				james.x=Math.random()*universeWidth/4;
 				james.y=Math.random()*universeHeight/4;
 				james.prefix="Vulcan";
@@ -542,11 +564,15 @@ function newInitShips()
 					var gah=Math.floor(Math.random()*stars[blah].numPlanets);
 					james.x=Math.random()*universeWidth/2;
 					james.y=Math.random()*universeHeight/2;	
-					james.orbit(stars[blah].planets[gah]);
-					civs[i].homeworld=stars[blah].planets[gah];
-					civs[i].worlds.push(stars[blah].planets[gah]);
+					
+					if(!civs[i].worlds.colonized)
+					{
+						james.orbit(stars[blah].planets[gah]);
+						civs[i].worlds.push(stars[blah].planets[gah]);
+					}
 					james.race=5;
 					james.civ=civs[raceIDs.Klingon];
+					james.homeworld=civs[i].homeworld;
 					james.class="Bird of Prey";
 					james.prefix="I.K.S";
 					james.christen();
@@ -566,6 +592,7 @@ function newInitShips()
 				{
 					james.x=Math.random()*universeWidth/2;
 					james.y=Math.random()*universeHeight/2;
+					james.homeworld=civs[i].homeworld;
 					james.class="Bird of Prey";
 					james.prefix="I.K.S";
 					james.sprite=Sprite("ship4");
@@ -585,9 +612,9 @@ function newInitShips()
 			}else if(i==raceIDs.Romulan)
 			{
 				var james=new starShip();
-				james.homeworld=Earth;
 				james.x=Math.random()*universeWidth/2;
 				james.y=Math.random()*universeHeight/4;
+				james.homeworld=civs[i].homeworld;
 				james.prefix="IRW";
 				james.class="Warbird";
 				james.race=4;
@@ -605,7 +632,7 @@ function newInitShips()
 			}else if(i==raceIDs.Ferengi)
 			{
 				var james=new starShip();
-				james.homeworld=Earth;
+				james.homeworld=civs[i].homeworld;
 				james.x=Math.random()*universeWidth/2;
 				james.y=Math.random()*universeHeight/4;
 				james.prefix="FAS";
@@ -625,7 +652,7 @@ function newInitShips()
 			}else if(i==raceIDs.Borg)
 			{
 				var james=new starShip();
-				james.homeworld=Earth;
+				james.homeworld=civs[i].homeworld;
 				james.x=Math.random()*universeWidth/4;
 				james.y=Math.random()*universeHeight/4+universeHeight/2;
 				james.prefix="Cube";

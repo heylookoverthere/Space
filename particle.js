@@ -20,6 +20,8 @@ function particle(){
 	this.moon=false;
 	this.astroid=false;
 	this.meteor=false;
+	this.colonized=false;
+	this.race=-1;
 	this.numMoons=0;
 	this.moons=new Array();
 	this.orbitDiameter=4;

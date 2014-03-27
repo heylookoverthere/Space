@@ -465,7 +465,8 @@ function escapePod(){
 	this.warpSpeed=false;
 	this.width=8;
 	this.height=8;
-	this.maxSpeed=2;
+	this.maxSpeed=3;
+	this.civ=null;
 	this.tractorHost=null;
 	this.armor=0;
 	this.desiredSpeed=0;
@@ -487,6 +488,7 @@ function escapePod(){
 		this.x=source.x+16;
 		this.y=source.y+16;
 		this.xv=source.xv;
+		this.civ=source.civ;
 		this.yv=source.yv;
 		this.destination=dest;
 		var beta=Math.atan2(this.destination.y-this.y,this.destination.x-this.x)* (180 / Math.PI);
@@ -506,9 +508,10 @@ function escapePod(){
 	{
 		if(this.passenger)
 		{
-			this.passenger.kill();
+			this.passenger.kill(" when their escape pod was destroyed");
 		}
 		this.active=false;
+		this.alive=false;
 		//todo small explosion
 	};
 	
@@ -550,11 +553,11 @@ function escapePod(){
 		{
 			if(this.passenger)
 			{
-				console.log(this.passenger.title+" "+this.passenger.name+"'s escape pod arrived at earth!");
+				console.log(this.passenger.title+" "+this.passenger.name+"'s escape pod arrived at "+this.destination.name);
 				crewPool.push(this.passenger);	
 			}else
 			{
-			console.log("An empty escape pod arrived at earth!");
+			console.log("An empty escape pod arrived at "+this.destination.name);
 			}
 			this.active=false;
 		}

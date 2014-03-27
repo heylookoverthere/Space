@@ -93,6 +93,7 @@ function starShip(){
 	this.desty=0;
 	this.orby=0;
 	this.orbx=0;
+	this.escorting=null;
 	this.inFormation=false;
 	this.formationCoords=[];
 	this.formationCoords.x=0;
@@ -122,7 +123,6 @@ function starShip(){
 	this.tractor=0;
 	this.warpCore=0;
 	this.warpEngine=0;
-	this.homeWorld="Earph.";
 	this.stores=0;
 	this.cafe=0;
 	this.nearbySystems=new Array();
@@ -345,13 +345,19 @@ function starShip(){
 	{
 		if(!this.nearbyVessels) {return;}
 		
-		//var bearbyVessels=this.nearbyVessels;
-		for(var i=0;i<this.nearbyVessels.length;i++)
+		if(this.civ.targetPods)
 		{
-			if(this.nearbyVessels[i].civ==this.civ)
+			var bearbyVessels=this.nearbyVessels.concat(this.nearbyPods);
+		}else
+		{
+			var bearbyVessels=this.nearbyVessels
+		}
+		for(var i=0;i<bearbyVessels.length;i++)
+		{
+			if(bearbyVessels[i].civ==this.civ)
 			{
 				//console.log("same team!");
-				this.nearbyVessels.splice(i,1);
+				bearbyVessels.splice(i,1);
 				//i--;
 			}
 		}
@@ -360,22 +366,22 @@ function starShip(){
 		if(this.torpedoTarget==null)
 		{
 			//console.log("targeting selfyar?");
-			this.torpedoTarget=this.nearbyVessels[0];
+			this.torpedoTarget=bearbyVessels[0];
 			return;
 		}
-		for(var i=0;i<this.nearbyVessels.length;i++)
+		for(var i=0;i<bearbyVessels.length;i++)
 		{
-			if(this.nearbyVessels[i]==this.torpedoTarget)
+			if(bearbyVessels[i]==this.torpedoTarget)
 			{
-				if(i==this.nearbyVessels.length)
+				if(i==bearbyVessels.length)
 				{
 					console.log("targeting self?");
-					this.torpedoTarget=this.nearbyVessels[0];
+					this.torpedoTarget=bearbyVessels[0];
 					return;
 				}else
 				{
 					
-					this.torpedoTarget=this.nearbyVessels[i+1];
+					this.torpedoTarget=bearbyVessels[i+1];
 					return;
 				}
 			}
@@ -678,6 +684,14 @@ function starShip(){
 		return this.crew.length*this.baseRepair;
 	};
 	
+	this.escort=function(hip){
+		this.escorting=hip;
+	};
+	
+	this.cancelEscort=function(){
+		this.escorting=null
+	}
+	
 	this.update=function(){
 		if(!this.alive){return;}
 		if(this.selfDestructActive)
@@ -752,6 +766,69 @@ function starShip(){
 				this.y+=this.yv*gameSpeed*(this.tractorHost.speed+1);
 			}
 			//this.yv=this.tractorHost.yv;
+		}else if(this.escorting) 
+		{
+			if(!this.escorting.alive)
+			{
+				this.escorting=null;
+				return;
+			}
+			this.orbiting=false;
+			this.status="Escorting the "+this.escorting.prefix+" "+this.escorting.name+".";
+			var beta=Math.atan2(this.escorting.y-this.y,this.escorting.x-this.x)* (180 / Math.PI);
+			
+			if (beta < 0.0)
+				beta += 360.0;
+			else if (beta > 360.0)
+				beta -= 360;
+			this.desiredHeading=beta;
+			this.desiredSpeed=this.maxSpeed;
+			
+				//todo why do I have do copy this.
+			if(this.speed<this.desiredSpeed)
+			{
+				this.accelerate();
+			}else if(this.speed>this.desiredSpeed)
+			{
+				this.decelerate();
+			}
+			//turn to desired heading
+			if(Math.floor(this.heading)<Math.floor(this.desiredHeading))
+			{
+				this.heading+=this.turnSpeed*gameSpeed;
+				this.turning=true;
+				if (this.heading < 0.0)
+					this.heading += 360.0;
+				else if (this.heading > 360.0)
+					this.heading -= 360;
+			}else if(Math.floor(this.heading)>Math.floor(this.desiredHeading))
+			{
+				this.heading-=this.turnSpeed*gameSpeed;
+				this.turning=true;
+				if (this.heading < 0.0)
+					this.heading += 360.0;
+				else if (this.heading > 360.0)
+					this.heading -= 360;
+			}else
+			{
+				this.turning=false;
+			}	
+
+			if((Math.abs(this.x-this.escorting.x)<100) && (Math.abs(this.y-this.escorting.y)<100) && (this.escorting!=this)) 
+			{
+				//console.log(this.name+ " met with fleet.");
+				//this.destination=null;
+				//this.desiredSpeed=0;
+				//this.inFormation=true;
+				//this.desiredSpeed=0;
+			}else
+			{
+				this.heading=beta;
+				this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
+				this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
+				this.x+=this.xv*gameSpeed*this.speed;
+				this.y+=this.yv*gameSpeed*this.speed;
+			}
 		}else if((this.destination) && (this.destination!=this))//TODO change to if destination, then if goal orbit or park.
 		{
 				this.orbiting=false;

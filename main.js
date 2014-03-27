@@ -115,7 +115,6 @@ var downkey=new akey("down");
 var leftkey=new akey("left");
 var tabkey=new akey("capslock");
 var camspeedkey=new akey("shift");
-var zoomkey=new akey("z");
 var plkey=new akey("p");
 var startkey=new akey("return");
 var phaserkey=new akey("u");
@@ -138,6 +137,7 @@ var targetkey=new akey("t");
 var firekey=new akey("f");
 var fleetattackkey=new akey("j");
 var enterkey=startkey;
+var colonizekey=new akey("z");
 
 
 
@@ -249,7 +249,7 @@ canvas.font = "8pt Calibri";
 	if(!selectedShip) {return;}
 	var actiontext="Full Stop";
 	if(selectedShip.speed>0){
-		if(selectedShip.desiredOrbitTarg)
+		if((selectedShip.desiredOrbitTarg) || (selectedShip.destination) || (selectedShip.escorting))
 		{
 			actiontext=selectedShip.status;
 		}else
@@ -342,7 +342,7 @@ canvas.font = "8pt Calibri";
 	
 	
 	//-===========/
-	if(selectedShip.torpedoTarget)
+	if((selectedShip.torpedoTarget) && (false))
 	{
 	var actiontext="Full Stop";
 	if((Math.abs(selectedShip.torpedoTarget.x-selectedShip.x)<selectedShip.phaserRange) && (Math.abs(selectedShip.torpedoTarget.y-selectedShip.y)<selectedShip.phaserRange)) //todo distance!
@@ -700,6 +700,10 @@ function mainMenuUpdate(){
 	if(plkey.check())
 	{
 		stars[curSystem].cyclePlanets();
+	}
+	if(colonizekey.check())
+	{
+		civs[0].orderColonize(stars[curSystem].planets[stars[curSystem].selected]);
 	}
 	
 	if(pageupkey.checkDown())

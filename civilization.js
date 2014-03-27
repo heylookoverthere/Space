@@ -141,6 +141,7 @@ function civilization()
 	this.encounterTrack=0;
 	this.money=1000;
 	this.allied=false;
+	this.targetPods=false;
 	this.numShipsStart=0;
 	this.researchProgress=0;
 	this.researchTick=0;
@@ -174,6 +175,26 @@ function civilization()
 		selectedShip=this.ships[this.curShip];
 		cam.center(this.ships[this.curShip]);
 		cam.follow(this.ships[this.curShip]);
+	};
+	this.orderColonize=function(world){
+		if(world.colonized)
+		{
+			console.log("The planet "+world.name+" has already been colonized by the "+races[world.race]);
+			return;
+		}
+		//check for free colony ship, if not add one to build queue
+		//set its destination, crew it
+	};
+	this.colonize=function(world){
+		if(world.colonized)
+		{
+			console.log("The planet "+world.name+" has already been colonized by the "+races[world.race]);
+			return;
+		}
+		this.worlds.push(world);
+		world.race=this.race;
+		world.colonized=true;
+		console.log("The planet "+world.name+" has been successfully colonized by the "+this.name);
 	};
 	this.update=function()
 	{
