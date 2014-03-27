@@ -102,20 +102,36 @@ mouseXY= function(e) {
 };
 
 function drawmousetext(can,targ,cam) { //draws unit status info
-	if((!targ.alive) || (!targ.deployed)) {return;}
-    can.font = "14pt Calibri";
+	if(!targ.alive) {return;}
+	can.save();
+    can.font = "12pt Calibri";
     can.textAlign = "center";
     can.textBaseline = "middle";
-    can.fillStyle = "blue";
-    if(targ.team==1) {  canvas.fillStyle = "red";}
+    if(targ.civ)
+	{
 
+		if(targ.civ==civs[0]) 
+		{  
+			can.fillStyle = "blue";
+		}else
+		{
+			canvas.fillStyle = "green";
+			if(targ.civ.autoHostile.indexOf(civs[0])>-1)
+			{
+				canvas.fillStyle = "red";
+			}
+		}
+	}else
+	{
+		canvas.fillStyle="white";
+	}
     tempstr = targ.name;
-    can.fillText(tempstr, (targ.x-cam.x)*16/cam.zoom+(targ.width/2), (targ.y-cam.y)*16/cam.zoom+targ.height+8);
+    can.fillText(tempstr, (targ.x+cam.x)*cam.zoom, (targ.y+cam.y)*cam.zoom+targ.height+8);
     
-    can.fillStyle = "#5F9EA0";
+    can.restore();
 };
 
 isOver= function(targ,cam){ //is the mouse over the player/object 
-    if((mX>(targ.x-cam.x)*16/cam.zoom) && (mX<((targ.x-cam.x)*16+targ.width*cam.zoom)/cam.zoom) &&(mY>((targ.y-cam.y)*16)/cam.zoom) &&(mY<((targ.y-cam.y)*16+targ.height)/cam.zoom)) {return true;}
+    if((mX>((targ.x-targ.width/2)+cam.x)*cam.zoom) && (mX<(((targ.x-targ.width/2)+cam.x)+targ.width*cam.zoom)*cam.zoom) &&(mY>(((targ.y-targ.height/2)+cam.y))*cam.zoom) &&(mY<(((targ.y-targ.height/2)+cam.y)+targ.height)*cam.zoom)) {return true;}
     return false;
 };

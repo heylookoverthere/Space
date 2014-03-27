@@ -152,6 +152,7 @@ function dude() {
 	this.alive=true;
 	this.level=1;
 	this.moveSpeed=1;
+	this.civ=null;
 	this.xp=0;
 	this.ID=0;
 	this.race="human";
@@ -161,6 +162,10 @@ function dude() {
 	this.kill=function(cause){
 		console.log(this.title+" "+this.name+ " has died"+cause);
 		this.alive=false;
+	};
+	this.grantXP=function()
+	{
+	
 	};
 };
 
@@ -614,8 +619,21 @@ function escapePod(){
 			{
 				if(this.passenger)
 				{
-					console.log(this.tractorHost.name+" recovered "+this.passenger.title+" "+this.passenger.name+"'s escape pod.");
-					this.tractorHost.crew.push(this.passenger);	
+					if(this.tractorHost.civ==this.passenger.civ){
+						console.log(this.tractorHost.name+" recovered "+this.passenger.title+" "+this.passenger.name+"'s escape pod.");
+						this.tractorHost.crew.push(this.passenger);	
+					}else
+					{
+						if(this.tractorHost.civ.autoHostile.indexOf(this.passenger.civ)>-1)
+						{
+							console.log(this.tractorHost.name+" captured a "+this.passenger.civ.name+" officer");
+							this.tractorHost.civ.prisoners.push(this.passenger);
+						}else
+						{
+							console.log(this.tractorHost.name+" saved a "+this.passenger.civ.name+" officer");
+							this.tractorHost.passengers.push(this.passenger);
+						}
+					}
 				}else
 				{
 					console.log(this.tractorHost.name+" pulled in an empty escape pod.");

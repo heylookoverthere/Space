@@ -142,15 +142,20 @@ function civilization()
 	this.money=1000;
 	this.allied=false;
 	this.targetPods=false;
+	this.prisoners=new Array();
 	this.numShipsStart=0;
 	this.researchProgress=0;
 	this.researchTick=0;
 	this.nextResearch=100;
+	this.productionQueue=new Array();
+	this.productionTick=0;
+	this.productionRate=1;
+	this.nextProduction=100;
 	this.updateRate=100;
 	this.messages=new Array();
 	this.greeting="Greetings.";
 	this.curShip=0;
-	
+	this.updateTick=0;
 	this.ships=new Array();
 	this.worlds=new Array();
 	this.fleets=new Array();
@@ -185,6 +190,8 @@ function civilization()
 		//check for free colony ship, if not add one to build queue
 		//set its destination, crew it
 	};
+	
+	
 	this.colonize=function(world){
 		if(world.colonized)
 		{
@@ -223,7 +230,6 @@ function civilization()
 				i--;
 			}
 		}
-		
 		if(holdInput) {return;}
 		this.updateTick+=1*gameSpeed;
 		if(this.updateTick>this.updateRate)
@@ -234,9 +240,29 @@ function civilization()
 			{
 				//finished researching somthing!
 				this.techs[this.researchProgress]=true;
-				console.log(this.name+ " discovered "+techNames[this.researchProgress]);
-				this.researchProgress++;
+				if(this.name=="Human")
+				{
+					console.log(this.name+ "s have discovered "+techNames[this.researchProgress]);
+				}
+				if(this.researchProgress<this.techs.length)
+				{
+					this.researchProgress++;
+				}
+				this.researchTick=0;
+				this.nextResearch+=100;
 				
+			}
+			if(this.productionQueue.length>0)
+			{
+				this.productionTick+=this.productionRate*gameSpeed;
+				if(this.productionTick>this.nextProduction)
+				{
+					this.productionTick=0;
+					if(this.name=="Human")
+					{
+						console.log("Humanity produced some shit.");
+					}
+				}
 			}
 		}
 	};

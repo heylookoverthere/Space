@@ -6,7 +6,11 @@ function starShip(){
 	this.y=0;
 	this.xv=0;
 	this.yv=0;
+	this.colony=false;
+	this.canHasShields=true;
+	this.frieghter=false;
 	this.phaserRange=500;
+	this.passengers=new Array();
 	this.destination=null;
 	this.transportRange=200;
 	this.lifeSupport=true;
@@ -84,6 +88,7 @@ function starShip(){
 	this.drawTarget=false;
 	this.dest=null;
 	this.homeworld=null;
+	this.refitOrdered=false;
 	this.baseRepair=.25;
 	this.autoFireTick=0;
 	this.autoFireRate=40;
@@ -423,6 +428,44 @@ function starShip(){
 		//console.log(torpy);
 	};
 	
+	this.refit=function(){
+	//calculate and subtract cost
+		console.log("The "+this.name+" has been refit and repaired");
+		if((this.canHasShields) && (this.maxShields<1) &&(this.civ.techs[Techs.EnergyShields]))
+		{
+			this.maxShields=100;
+		}
+		this.repair();
+		this.refitOrdered=false;
+	};
+	
+	this.repair=function(){
+		this.shields=this.maxShields;
+		this.hp=this.maxHp;
+		this.breaches=0;
+		this.oxygen=100;
+	};
+	
+	this.orderRefit=function(){
+		this.orderOrbit(this.closestWorld());
+		this.refitOrdered=true;
+	};
+	
+	this.closestWorld=function(){
+		var answer=this.homeworld;
+		var answerDist=distance(this,this.homeworld);
+		for(var i=0;i<this.civ.worlds.length;i++)
+		{
+			var dost=distance(this,this.civ.worlds[i]);
+			if(dost<answerDist)
+			{
+				answerDist=dost;
+				answer=this.civ.worlds[i];
+			}
+		}
+		return answer;
+	};
+	
 	this.getDamaged=function(amt,phaser){
 		this.shields-=amt;
 		var wound=0;
@@ -449,9 +492,10 @@ function starShip(){
 		this.crewMax=Math.floor(Math.random()*4)+4;
 		for(var i=0;i<this.crewMax;i++){
 			this.crew[i]=new dude();
+			this.crew[i].civ=this.civ;
 			if((Math.random()*100)<20)
 			{
-				this.crew[i].race="vulcan";
+				//this.crew[i].race="vulcan";
 			}
 		}
 		this.crew[0].title="Captain";
@@ -509,6 +553,7 @@ function starShip(){
 		this.orbitTarg=null;
 		this.heading=this.orbitTrack;
 		this.desiredHeading=this.heading;
+		this.desiredSpeed=2;
 		//this.speed=1;
 	};
 	
@@ -694,6 +739,14 @@ function starShip(){
 	
 	this.update=function(){
 		if(!this.alive){return;}
+		if((this.torpedoTarget) && (!this.torpedoTarget.alive))
+		{
+			this.torpedoTarget=null;
+		}
+		if((this.tractorTarget) && (!this.tractorTarget.alive))
+		{
+			this.tractorTarget=null;
+		}
 		if(this.selfDestructActive)
 		{
 			this.selfDestructTick-=1*gameSpeed;
@@ -979,6 +1032,10 @@ function starShip(){
 					console.log(this.name+ " has arrived in orbit of "+this.desiredOrbitTarg.name);
 					this.orbit(this.desiredOrbitTarg);
 					this.desiredOrbitTarg=null;
+					if(this.refitOrdered)
+					{
+						this.refit();
+					}
 				}
 				
 		}else if(!this.orbiting)

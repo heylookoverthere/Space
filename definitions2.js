@@ -491,16 +491,18 @@ function newInitShips()
 			civs[i].homeworld=stars[blah].planets[gah];
 			stars[blah].planets[gah].race=i;
 			stars[blah].planets[gah].colonized=true;
-			if(i==raceIDs.Vulcan) {stars[blah].planets[gah].name="Vulcan";}
-			if(i==raceIDs.Klingon) {stars[blah].planets[gah].name="Qo'nos";}
-			if(i==raceIDs.Romulan) {stars[blah].planets[gah].name="Romulus";}
-			if(i==raceIDs.Ferengi) {stars[blah].planets[gah].name="Ferenginar";}
-			if(i==raceIDs.Cardassians) {stars[blah].planets[gah].name="Cardassia";}
-			if(i==raceIDs.Bajoran) {stars[blah].planets[gah].name="Bajor";}
+			
+			if(i==raceIDs.Vulcan) {stars[blah].planets[gah].name="Vulcan"; stars[blah].planets[gah].civ=civs[raceIDs.Vulcan];}
+			if(i==raceIDs.Klingon) {stars[blah].planets[gah].name="Qo'nos"; stars[blah].planets[gah].civ=civs[raceIDs.Klingon];}
+			if(i==raceIDs.Romulan) {stars[blah].planets[gah].name="Romulus"; stars[blah].planets[gah].civ=civs[raceIDs.Romulan];}
+			if(i==raceIDs.Ferengi) {stars[blah].planets[gah].name="Ferenginar"; stars[blah].planets[gah].civ=civs[raceIDs.Ferengi];}
+			if(i==raceIDs.Cardassian) {stars[blah].planets[gah].name="Cardassia"; stars[blah].planets[gah].civ=civs[raceIDs.Cardassian];}
+			if(i==raceIDs.Bajoran) {stars[blah].planets[gah].name="Bajor"; stars[blah].planets[gah].civ=civs[raceIDs.Bajoran];}
 			
 		}else
 		{
 			civs[i].homeworld=stars[0].planets[2];
+			stars[0].planets[2].civ=civs[0];
 		}
 		for(var j=0;j<civs[i].numShipsStart;j++)
 		{
@@ -605,7 +607,6 @@ function newInitShips()
 					james.speed=6;
 					james.desiredSpeed=6;
 					james.crewVessel();
-					james.civ=civs[i];
 					james.alive=true;
 					civs[i].ships.push(james);
 				}

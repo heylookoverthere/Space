@@ -443,10 +443,30 @@ function mainMenuDraw(){
 	for(var i=0;i<ships.length;i++)
 	{
 		ships[i].draw(canvas,camera);
+		if(isOver(ships[i],camera))
+		{
+			drawmousetext(canvas,ships[i],camera);
+		}
 	}
+	blamera={};
+	blamera.x=-camera.x;
+	blamera.y=-camera.y;
+	blamera.zoom=camera.zoom;
+	
 	for(var i=0;i<numSystems;i++)
 	{
 		stars[i].draw(canvas,camera);
+		if(isOver(stars[i],camera))
+		{
+			drawmousetext(canvas,stars[i],camera);
+		}
+		for(var j=0;j<stars[i].planets.length;j++)
+		{
+			if(isOver(stars[i].planets[j],camera))
+			{
+				drawmousetext(canvas,stars[i].planets[j],camera);
+			}
+		}
 	}
 
 	
@@ -503,6 +523,8 @@ function mainMenuDraw(){
 	{
 		civs[0].messages[0].draw(canvas,camera);
 	}
+	
+	
 	
 	/*canvas.save();
 		canvas.strokeStyle = "red";
