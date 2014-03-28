@@ -1251,13 +1251,16 @@ function starShip(){
 					{
 						borgTrack++;
 					}
-					this.orderOrbit(civs[borgTrack].homeworld);
-					this.desiredSpeed=7;
-					this.planetTarget=civs[borgTrack].homeworld;
+
 					
-					if(borgTrack>18)
+					if(borgTrack>17)
 					{
-						console.log("The Borg have assimilated all other species.  Oh well.");
+						console.log("The Borg have assimilated all inhabited planets.  Oh well.");
+					}else
+					{
+						this.orderOrbit(civs[borgTrack].homeworld);
+						this.desiredSpeed=7;
+						this.planetTarget=civs[borgTrack].homeworld;
 					}
 				}
 			}else

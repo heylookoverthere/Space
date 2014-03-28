@@ -118,7 +118,7 @@ for (var ci=0;ci<20;ci++)
 
 var numShipNames=38;
 var races=new Array(40);
-races= ["Human","Vulcan","Andorian","Tellerite","Romulan","Klingon","Betazoid","Trill","Cardassian","Borg","Vidian","Telaxian","Ferengi","Pakled","Bajoran","Binar","Hirogen","Gorn"];
+races= ["Human","Vulcan","Andorian","Tellerite","Romulan","Klingon","Betazed","Vidiian","Cardassian","Borg","Orion","Telaxian","Ferengi","Pakled","Bajoran","Breen","Hirogen","Dominion"];
 var raceIDs={};
 raceIDs.Human=0;
 raceIDs.Vulcan=1;
@@ -130,7 +130,7 @@ raceIDs.Betazoid=6;
 raceIDs.Vidiian=7;
 raceIDs.Cardassian=8;
 raceIDs.Borg=9;
-raceIDs.Vidian=10;
+raceIDs.Orion=10;
 raceIDs.Telaxian=11;
 raceIDs.Ferengi=12;
 raceIDs.Pakled=13;
