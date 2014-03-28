@@ -1247,6 +1247,10 @@ function starShip(){
 				{
 					this.leaveOrbit();
 					borgTrack++;
+					if(borgTrack==raceIDs.Borg)
+					{
+						borgTrack++;
+					}
 					this.orderOrbit(civs[borgTrack].homeworld);
 					this.desiredSpeed=7;
 					this.planetTarget=civs[borgTrack].homeworld;
