@@ -5,7 +5,7 @@ var shipNames=new Array(40);
 var shipNamesTrack=new Array(40);
 for (var q=0;q<18;q++)
 {
-	shipNames[q]=["one","two","three","four","five","six","seven","eight","nine","ten","Testicles"];
+	shipNames[q]=["one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","Testicles"];
 	shipNamesTrack[q]=0;
 }
 shipNames[0]=["Enterprise","Hood","Voyager","Defiant","Intrepid","Akira","Excalibur","Lexington","Ohio","Rhode Island","Raven","Gandhi","Exter","Horatio","Yamaguchi","Summit","Dakota","Snook","Jucovy","Balls","Potemkin","Goatfucker","Obama","Bastile"];
@@ -113,7 +113,7 @@ updateTorpedos=function(thangs){
 
 for (var ci=0;ci<20;ci++)
 {
-	shipNames[9][ci]=Math.floor(Math.random()*9999);
+	shipNames[9][ci]="Cube #"+Math.floor(Math.random()*9999);
 }
 
 var numShipNames=38;
@@ -137,7 +137,7 @@ raceIDs.Pakled=13;
 raceIDs.Bajoran=14;
 raceIDs.Binar=15;
 raceIDs.Hirogen=16
-raceIDs.Gorn=17;
+raceIDs.Dominion=17;
 var numRaces=18;
 var shipNamesUsed=new Array();
 

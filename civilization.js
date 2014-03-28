@@ -169,6 +169,7 @@ function building(typ,wrld)
 function civilization()
 {
 	this.race=0;
+	this.alive=true;
 	this.name="Humanity";
 	this.content=100;  //clf: they are happy.  They do not have 100 contents.
 	this.techs=new Array();
@@ -198,6 +199,18 @@ function civilization()
 	this.fleets=new Array();
 	this.fContacted=new Array();
 	this.autoHostile=new Array();
+	this.checkDeath=function()
+	{
+		var live=false;
+		if(this.worlds.length+this.ships.length>0)
+		{
+			live=true;
+		}else
+		{
+			this.alive=false;
+			console.log("The last "+this.name+" has died.");
+		}
+	};
 	for(var ipk=0;ipk<numRaces;ipk++){
 		this.fContacted[ipk]=false;
 	}
@@ -281,6 +294,10 @@ function civilization()
 				jimmy.desiredOrbitTarg=worldgo;
 			}
 		}
+		if(this.name=="Human")
+		{
+			console.log("Began contructing on the starship "+jimmy.name);
+		}
 		this.productionQueue.push(jimmy);
 	};
 	
@@ -289,10 +306,16 @@ function civilization()
 		{
 			var timmy=new building(type,wrld);
 			this.productionQueue.push(timmy);
-			console.log("Began contructing a new "+timmy.name+" on " +wrld.name);
+			if(this.name=="Human")
+			{
+				console.log("Began contructing a new "+timmy.name+" on " +wrld.name);
+			}
 		}else
 		{
-			console.log("Can't fit any more buildings on " +wrld.name);
+			if(this.name=="Human")
+			{
+				console.log("Can't fit any more buildings on " +wrld.name);
+			}
 		}
 	};
 	
@@ -310,6 +333,9 @@ function civilization()
 	};
 	this.update=function()
 	{
+		
+		if(!this.alive) {return;}
+		this.checkDeath();
 		if(this.messages[0])
 		{
 			this.messages[0].update();
@@ -340,7 +366,8 @@ function civilization()
 		if(this.updateTick>this.updateRate)
 		{
 			this.updateTick=0;
-			this.researchTick+=this.researchRate*gameSpeed;
+			this.getResearchRate();
+			this.researchTick+=this.getResearchRate()*gameSpeed;
 			if(this.researchTick>this.nextResearch)
 			{
 				//finished researching somthing!
@@ -359,7 +386,7 @@ function civilization()
 			}
 			if(this.productionQueue.length>0)
 			{
-				this.productionTick+=this.productionRate*gameSpeed;
+				this.productionTick+=this.getProductionRate()*gameSpeed;
 				if(this.productionTick>this.nextProduction)
 				{
 					this.productionTick=0;

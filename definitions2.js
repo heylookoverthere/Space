@@ -16,6 +16,7 @@ var curSystem=0;
 var numNebulas=80;
 var Earth=null;
 var selectedShip=null;
+var Cube=null;
 //var things=new Array();
 var numCivilizations=18;
 var civs=new Array();
@@ -43,6 +44,8 @@ civs[raceIDs.Romulan].numShipsStart=5;
 civs[raceIDs.Ferengi].numShipsStart=2;
 civs[raceIDs.Vulcan].numShipsStart=3;
 civs[raceIDs.Cardassian].numShipsStart=3;
+civs[raceIDs.Dominion].numShipsStart=10;
+civs[raceIDs.Hirogen].numShipsStart=5;
 var ships=new Array();
 var stations=new Array(); //todo add to civilization
 
@@ -163,6 +166,60 @@ function newShip(iv)
 				james.alive=true;
 				return james;;
 			}
+		}else if(iv.race==raceIDs.Dominion)
+		{
+			var james=new starShip();
+			if(Math.random()*20<5)
+			{
+				var blah=Math.floor(Math.random()*(numSystems-1))+1;
+				var gah=Math.floor(Math.random()*stars[blah].numPlanets);
+				james.x=Math.random()*universeWidth/2;
+				james.y=Math.random()*universeHeight/2;	
+				
+				if(!iv.worlds.colonized)
+				{
+					james.orbit(stars[blah].planets[gah]);
+					iv.worlds.push(stars[blah].planets[gah]);
+					stars[blah].planets[gah].civ=iv;
+				}
+				james.race=5;
+				james.civ=iv;
+				james.homeworld=iv.homeworld;
+				james.class="Dominion Battle Cruiser";
+				james.prefix="Dominion";
+				james.christen();
+				//james.homeworld=iv.homeworld;
+				//console.log(james.prefix+ " "+james.name+" is now orbiting " +stars[blah].planets[gah].name);
+				james.sprite=Sprite("ship9");
+				james.addPhaser();
+				//james.homing=false;
+				james.maxSpeed=7;
+				james.desiredSpeed=6;
+				james.crewVessel();
+
+				james.alive=true;
+				return james;;
+				
+			}else
+			{
+				james.x=Math.random()*universeWidth/2;
+				james.y=Math.random()*universeHeight/2;
+				james.homeworld=iv.homeworld;
+				james.class="Dominion Battle Cruiser";
+				james.prefix="Dominion";
+				james.sprite=Sprite("ship9");
+				james.civ=iv;
+				james.race=raceIDs.Dominion;
+				james.christen();
+				james.maxSpeed=7;
+				james.addPhaser();
+				//james.homing=false;
+				james.speed=6;
+				james.desiredSpeed=6;
+				james.crewVessel();
+				james.alive=true;
+				return james;
+			}
 		}else if(iv.race==raceIDs.Cardassian)
 		{
 			var james=new starShip();
@@ -236,6 +293,25 @@ function newShip(iv)
 			james.crewVessel();
 			james.alive=true;
 			return james;;
+		}else if(iv.race==raceIDs.Hirogen)
+		{
+			var james=new starShip();
+			james.x=Math.random()*universeWidth/2;
+			james.y=Math.random()*universeHeight/4;
+			james.homeworld=iv.homeworld;
+			james.prefix="Hunter";
+			james.class="Hunter";
+			james.race=raceIDs.Hirogen;
+			james.christen();
+			james.sprite=Sprite("ship10");
+			james.maxSpeed=7;
+			james.speed=3;
+			james.desiredSpeed=5;
+			james.civ=iv;
+			
+			james.crewVessel();
+			james.alive=true;
+			return james;;
 		}else if(iv.race==raceIDs.Ferengi)
 		{
 			var james=new starShip();
@@ -280,11 +356,12 @@ function newShip(iv)
 			james.autoFireRate=20;
 			james.addPhaser();
 			
-			james.orderOrbit(Earth);
+			james.planetTarget=Earth;
+			james.orderOrbit(james.planetTarget);
 			james.crewVessel();
 			james.civ=iv;
 			james.alive=true;
-			return james;;
+			return james;
 		}
 		
 };
@@ -746,6 +823,8 @@ function newInitShips()
 			var gah=Math.floor(Math.random()*stars[blah].numPlanets);
 			civs[i].homeworld=stars[blah].planets[gah];
 			stars[blah].planets[gah].race=i;
+			stars[blah].planets[gah].civ=civs[i];
+			civs[i].worlds.push(stars[blah].planets[gah]);
 			stars[blah].planets[gah].colonized=true;
 			
 			if(i==raceIDs.Vulcan) 
@@ -894,6 +973,60 @@ function newInitShips()
 					james.alive=true;
 					civs[i].ships.push(james);
 				}
+			}else if(i==raceIDs.Dominion)
+			{
+				var james=new starShip();
+				if(Math.random()*20<5)
+				{
+					var blah=Math.floor(Math.random()*(numSystems-1))+1;
+					var gah=Math.floor(Math.random()*stars[blah].numPlanets);
+					james.x=Math.random()*universeWidth/2;
+					james.y=Math.random()*universeHeight/2;	
+					
+					if(!civs[i].worlds.colonized)
+					{
+						james.orbit(stars[blah].planets[gah]);
+						civs[i].worlds.push(stars[blah].planets[gah]);
+						stars[blah].planets[gah].civ=civs[i];
+					}
+					james.race=5;
+					james.civ=civs[raceIDs.Dominion];
+					james.homeworld=civs[i].homeworld;
+					james.class="Dominion Battle Cruiser";
+					james.prefix="Dominion";
+					james.christen();
+					//james.homeworld=civs[i].homeworld;
+					//console.log(james.prefix+ " "+james.name+" is now orbiting " +stars[blah].planets[gah].name);
+					james.sprite=Sprite("ship9");
+					james.addPhaser();
+					//james.homing=false;
+					james.maxSpeed=7;
+					james.desiredSpeed=6;
+					james.crewVessel();
+
+					james.alive=true;
+					civs[i].ships.push(james);
+					
+				}else
+				{
+					james.x=Math.random()*universeWidth/2;
+					james.y=Math.random()*universeHeight/2;
+					james.homeworld=civs[i].homeworld;
+					james.class="Dominion Battle Cruiser";
+					james.prefix="Dominion";
+					james.sprite=Sprite("ship9");
+					james.civ=civs[raceIDs.Dominion];
+					james.race=raceIDs.Dominion;
+					james.christen();
+					james.maxSpeed=7;
+					james.addPhaser();
+					//james.homing=false;
+					james.speed=6;
+					james.desiredSpeed=6;
+					james.crewVessel();
+					james.alive=true;
+					civs[i].ships.push(james);
+				}
 			}else if(i==raceIDs.Cardassian)
 			{
 				var james=new starShip();
@@ -968,6 +1101,26 @@ function newInitShips()
 				james.civ=civs[i];
 				james.alive=true;
 				civs[i].ships.push(james);
+			}else if(i==raceIDs.Hirogen)
+			{
+				var james=new starShip();
+				james.x=Math.random()*universeWidth/2;
+				james.y=Math.random()*universeHeight/4;
+				james.homeworld=civs[i].homeworld;
+				james.prefix="Hunter ";
+				james.class="Hunter";
+				james.race=raceIDs.Hirogen;
+				james.christen();
+				james.sprite=Sprite("ship10");
+				james.maxSpeed=7;
+				james.speed=3;
+				james.desiredSpeed=5;
+				james.civ=civs[raceIDs.Hirogen];
+				
+				james.crewVessel();
+				james.civ=civs[i];
+				james.alive=true;
+				civs[i].ships.push(james);
 			}else if(i==raceIDs.Ferengi)
 			{
 				var james=new starShip();
@@ -1011,12 +1164,13 @@ function newInitShips()
 				james.speed=5;
 				james.autoFireRate=20;
 				james.addPhaser();
-				
-				james.orderOrbit(Earth);
+				james.planetTarget=Earth;
+				james.orderOrbit(james.planetTarget);
 				james.crewVessel();
 				james.civ=civs[i];
 				james.alive=true;
 				civs[i].ships.push(james);
+				Cube=james;
 			}
 
 		}

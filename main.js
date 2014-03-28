@@ -237,11 +237,14 @@ canvas.font = "8pt Calibri";
 	
 		canvas.fillText("Planet Name: "+ stars[curSystem].planets[stars[curSystem].selected].name,25,145);
 		canvas.fillText("Planet Type: "+ typestr,25,160);
-		canvas.fillText("Planet HP: "+stars[curSystem].planets[stars[curSystem].selected].hp,25,185);
+		canvas.fillText("Planet HP: "+stars[curSystem].planets[stars[curSystem].selected].hp,25,175);
+		if(Cube){
+		canvas.fillText("Distance of Borg Cube: "+Math.floor(distance(Cube.planetTarget,Cube)),25,190);
+		}
 		if(stars[curSystem].planets[stars[curSystem].selected].orbitDecay>0)
 		{
 			canvas.fillStyle = "red";
-			canvas.fillText("WARNING: ORBIT DECAYING",25,200);
+			canvas.fillText("WARNING: ORBIT DECAYING",25,205);
 			canvas.fillStyle = "white";
 		
 		}
@@ -604,7 +607,7 @@ function mainMenuUpdate(){
 				selectedShip.selfDestructActive=true;
 			}else
 			{
-				selectedShip.Evac(stars[0].planets[2]);
+				selectedShip.Evac(selectedShip.civ.homeworld);
 				if(selectedShip.crew.length>1)
 				{
 					console.log(selectedShip.name+ "'s crew is abandoning ship.");

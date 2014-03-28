@@ -1,4 +1,5 @@
 var tractorColors=["#01A9DB","#0080FF","#2E9AFE","#2E9AFE","#81BEF7","#81F7F3","#A9E2F3","#58D3F7"];
+var assimilationColors=["#9FF781","#58FA58","#2EFE2E","#04B404","#088A08","#088A08","#0B3B0B","#088A29"];
 
 var Orders={};
 Orders.whatever=0;
@@ -9,6 +10,8 @@ Orders.Fleet=4
 Orders.LeadFleet=5;
 Orders.Attack=6;
 Orders.Tractor=7;
+
+var borgTrack=0;
 
 function starShip(){
 	this.ship=true;
@@ -34,6 +37,7 @@ function starShip(){
 	this.torpedoTarget=null;
 	this.tractorHost=null;
 	this.tractorClient=null;
+	this.autoEvac=true;
 	this.maxHp=100;
 	this.breaches=0;
 	this.oxygen=1000;
@@ -81,6 +85,7 @@ function starShip(){
 	this.width=32;
 	this.height=32;
 	this.alive=false;
+	this.attackingPlanet=null;
 	this.name="Tim.";
 	
 	if(shipNamesTrack[this.race]>shipNames[this.race].length)
@@ -92,7 +97,7 @@ function starShip(){
 	this.crew=new Array();
 	this.awayTeam=new Array();
 	this.orbiting=false;
-	this.orbitDiameter=30;
+	this.orbitDiameter=50;
 	this.captainFlees=false;
 	this.orbitTarg=null;
 	this.planetAttackTick=0;
@@ -1219,17 +1224,41 @@ function starShip(){
 		{
 			this.windows[i].update();
 		}
+		
+		if((this.hp<15) && (this.autoEvac) && (!this.evacuating) && (!this.evacDone))
+		{
+			this.Evac(this.civ.homeworld);
+			console.log(this.name+ "'s crew is abandoning ship.");
+		}
+		
 		if(this.civ==civs[raceIDs.Borg])
 		{
-			if((this.orbiting) &&(this.orbitTarg==Earth) &&(!this.torpedoTarget))
+			if((this.orbiting) &&(this.orbitTarg==this.planetTarget) &&(!this.torpedoTarget))
 			{
+				this.attackingPlanet=this.planetTarget;
 				this.planetAttackTick+=1*gameSpeed;
 				
 				if(this.planetAttackTick>50)
 				{
-					this.attackPlanet(Earth);
+					this.attackPlanet(this.planetTarget);
 					this.planetAttackTick=0;
 				}
+				if(this.planetTarget.civ==null)
+				{
+					this.leaveOrbit();
+					borgTrack++;
+					this.orderOrbit(civs[borgTrack].homeworld);
+					this.desiredSpeed=7;
+					this.planetTarget=civs[borgTrack].homeworld;
+					
+					if(borgTrack>18)
+					{
+						console.log("The Borg have assimilated all other species.  Oh well.");
+					}
+				}
+			}else
+			{
+				this.attackingPlanet=null;
 			}
 		}
 	};
@@ -1322,6 +1351,26 @@ function starShip(){
 					var yoffs=(Math.random()*this.tractorClient.height)-this.tractorClient.height/2;
 					can.moveTo((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
 					can.lineTo((this.tractorClient.x+xoffs+cam.x)*cam.zoom,(this.tractorClient.y+yoffs+cam.y)*cam.zoom)
+					
+					can.closePath();
+					can.stroke();
+				}
+				can.restore();
+			}
+			if(this.attackingPlanet)
+			{
+				can.save();
+				for(var i=0;i<12;i++) //todo draw better.
+				{
+			
+					can.strokeStyle = assimilationColors[Math.floor(Math.random()*7)];
+					can.globalAlpha=.50;
+					can.beginPath();
+					can.lineWidth = (Math.random()*3)*cam.zoom;
+					var xoffs=(Math.random()*this.attackingPlanet.width)-this.attackingPlanet.width/2;
+					var yoffs=(Math.random()*this.attackingPlanet.height)-this.attackingPlanet.height/2;
+					can.moveTo((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
+					can.lineTo((this.attackingPlanet.x+xoffs+cam.x)*cam.zoom,(this.attackingPlanet.y+yoffs+cam.y)*cam.zoom)
 					
 					can.closePath();
 					can.stroke();
