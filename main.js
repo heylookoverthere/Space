@@ -294,6 +294,23 @@ canvas.font = "8pt Calibri";
 	{
 		actiontext="Adjusting Heading";
 	}
+	if(selectedShip.destination)
+	{
+		if(selectedShip.destination.planet)
+		{
+			actiontext="Enroute to "+selectedShip.destination.name;
+		}else if(selectedShip.destination.ship)
+		{
+			if(selectedShip.orders=Orders.Attack)
+			{
+				actiontext="Enroute to attack "+selectedShip.destination.name;
+			}else
+			{
+				actiontext="Enroute to "+selectedShip.destination.name;
+			}
+			
+		}
+	}
 	canvas.fillText("Ship: "+selectedShip.prefix+" "+selectedShip.name,755,250);
 	canvas.fillText("Class: "+ selectedShip.class,755,265);
 	if(selectedShip.destination)
@@ -363,13 +380,16 @@ canvas.font = "8pt Calibri";
 		canvas.fillText("IN PHASER RANGE!",55,330);
 		canvas.fillStyle="white";
 	}
-	if(selectedShip.torpedoTarget.speed>0){
-		if(selectedShip.torpedoTarget.desiredOrbitTarg)
-		{
-			actiontext=selectedShip.torpedoTarget.status;
-		}else
-		{
-			actiontext="Exploring the " +getQuadrant(selectedShip) + " Quadrant";
+	if((selectedShip.destination) && (selectedShip.orders==Orders.Attack))
+	{
+		if(selectedShip.torpedoTarget.speed>0){
+			if(selectedShip.torpedoTarget.desiredOrbitTarg)
+			{
+				actiontext=selectedShip.torpedoTarget.status;
+			}else
+			{
+				actiontext="Exploring the " +getQuadrant(selectedShip) + " Quadrant";
+			}
 		}
 	}
 	if(selectedShip.torpedoTarget.orbiting)

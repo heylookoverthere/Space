@@ -9,6 +9,16 @@ for(var i=0;i<numItems;i++)
 	hasItem.push(false);
 }
 
+var AIModes={};
+AIModes.Normal=0;
+AIModes.Agressive=6;
+AIModes.Expansion=1;
+AIModes.Defense=2;
+AIModes.Explore=3;
+AIModes.AgressiveDefense=4;
+AIModes.Genocidal=5;
+
+
 var Techs = {};
 Techs.Aeroponics=1;
 Techs.MERations=2; //start with.
@@ -175,9 +185,11 @@ function civilization()
 	this.techs=new Array();
 	this.homeStar=0;
 	this.homePlanet=2;
+	this.AI=true;
 	this.researchRate=1;
 	this.encounterTrack=0;
 	this.money=1000;
+	this.mode=AIModes.Agressive;
 	this.allied=false;
 	this.targetPods=false;
 	this.fallingBack=false;
@@ -237,19 +249,60 @@ function civilization()
 			}
 			console.log("all ships returning to "+this.homeworld+" to aid in its defense");
 		}
-		if(this.nature==Natures.Genociadal)
+		if(this.mode==AIModes.Genociadal)
 		{
 			//select a race and attack them till they die planet and take it
-		}else if(this.nature==Natures.Agressive)
+		}else if(this.mode==AIModes.Agressive)
 		{
-			//duunno
-		}else if(this.nature==Natures.Expanding)
+			if(this.autoHostile.length<1)
+			{
+				this.mode=AIModes.Expanding;
+				return;
+			}
+			
+			var enemyCiv=this.autoHostile[0];
+			for(var i=0;i<this.ships.length;i++)
+			{
+				//
+				if(enemyCiv.ships.length>0)
+				{
+					var bobert = this.ships[i].nearestSpecificShip(enemyCiv);
+					if(bobert)
+					{
+						this.destination=bobert;
+						this.orbiting=false;
+						this.orders=Orders.Attack;
+						if(this.race==raceIDs.Klingon){
+						console.log(this.name +"ships now attacking the "+enemyCiv.name+" ship "+ bobert.name);
+						}
+					}
+				}else
+				{
+					this.ships[i].orderOrbit(enemyCiv.homeworld); //orderattack?
+					console.log("The "+this.name+" have eliminated all "+enemyCiv.name+ " ships and are headed to " +enemyCiv.homeworld.name);
+				}
+			}
+		}else if(this.mode==AIModes.Expanding)
 		{
 			//select the closest empty planet and colonize;
-		}else if(this.nature==Natures.Defense)
+		}else if(this.mode==AIModes.Defense)
 		{
 			//move at least one ship to each system
-		}else if(this.nature==Natures.AgressiveDefense)
+			var whichWorld=0;
+			for(var i=0;i<this.ships.length;i++)
+			{
+				this.ships[i].orderOrbit(this.worlds[whichWorld]);
+				if((this.ships[i].colony) || (this.ships[i].freighter))
+				{
+					break;
+				}
+				wichWorld++;
+				if(hichWorld>this.worlds.length)
+				{
+					whichWorld=0;
+				}
+			}
+		}else if(this.mode==Mode.AgressiveDefense)
 		{
 			//attack anyone in your space
 		}
@@ -421,6 +474,12 @@ function civilization()
 		this.updateTick+=1*gameSpeed;
 		if(this.updateTick>this.updateRate)
 		{
+			
+			if(this.AI)
+			{
+				this.masterAI();
+			}
+			
 			this.updateTick=0;
 			this.getResearchRate();
 			this.researchTick+=this.getResearchRate()*gameSpeed;

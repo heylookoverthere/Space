@@ -313,6 +313,20 @@ function starShip(){
 		}
 	};
 	
+	this.nearestSpecificShip=function(enemyCiv)//todo range?
+	{
+		var closest=enemyCiv.ships[0];
+		for(var i=1;i<enemyCiv.ships.length;i++)
+		{
+			if(distance(enemyCiv.ships[i],this)<distance(closest,this))
+			{
+				closest=enemyCiv.ships[i];
+			}
+		
+		}
+		return closest;
+	};
+	
 	this.christen=function(){
 		var nami=Math.floor(Math.random()*shipNames[this.race].length);
 		while(true) {
@@ -910,8 +924,17 @@ function starShip(){
 		}else if((this.destination) && (this.destination!=this))//TODO change to if destination, then if goal orbit or park.
 		{
 				this.orbiting=false;
-				this.status="Enroute to meet with the fleet";
-				//console.log("yaaaar");
+				if(this.orders==Orders.MeetFleet)
+				{
+					this.status="Enroute to meet with the fleet";
+				}else if(this.orders==Orders.Attack)
+				{
+					this.status="Enroute to attack "+this.destination.name;
+				}
+				if(this.destination.ship)
+				{
+					console.logt(this.name +" " +this.destination.name);
+				}
 				var beta=Math.atan2(this.destination.y-this.y,this.destination.x-this.x)* (180 / Math.PI);
 				
 				if (beta < 0.0)

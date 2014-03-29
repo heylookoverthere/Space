@@ -51,12 +51,13 @@ for(var j=0;j<civs.length;j++)
 }
 civs[0].autoHostile.push(civs[raceIDs.Borg]);
 civs[raceIDs.Klingon].autoHostile.push(civs[raceIDs.Romulan]);
+civs[raceIDs.Romulan].autoHostile.push(civs[raceIDs.Klingon]);
 civs[raceIDs.Cardassian].autoHostile.push(civs[raceIDs.Bajoran]);
 civs[raceIDs.Borg].numShipsStart=1;
 civs[raceIDs.Human].numShipsStart=2;
 civs[raceIDs.Klingon].numShipsStart=6;
 civs[raceIDs.Klingon].targetPods=true;
-civs[raceIDs.Romulan].numShipsStart=5;
+civs[raceIDs.Romulan].numShipsStart=2;
 civs[raceIDs.Ferengi].numShipsStart=2;
 civs[raceIDs.Vulcan].numShipsStart=3;
 civs[raceIDs.Cardassian].numShipsStart=3;
@@ -72,6 +73,8 @@ civs[raceIDs.Breen].numShipsStart=8;
 civs[raceIDs.Pakled].numShipsStart=2;
 civs[raceIDs.Orion].numShipsStart=2;
 
+civs[0].AI=false;
+civs[raceIDs.Borg].AI=false; //for now.
 
 var ships=new Array();
 var stations=new Array(); //todo add to civilization
@@ -114,6 +117,7 @@ function howsitgoing(iv)
 	console.log("Money: "+iv.money);
 	console.log("Production Rate: "+iv.getProductionRate());
 	console.log("Resaerch Rate: "+iv.getResearchRate());
+	console.log("Number of Battles: "+totalbattles);
 	if(iv.productionQueue.length>0)
 	{
 		if(iv.productionQueue[iv.productionQueue.length-1].building)
