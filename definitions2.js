@@ -34,8 +34,23 @@ for(var j=0;j<civs.length;j++)
 	{
 		civs[raceIDs.Borg].autoHostile.push(civs[j]);
 	}
+	if(j!=raceIDs.Breen)
+	{
+		civs[raceIDs.Breen].autoHostile.push(civs[j]);
+	}
+	if(j!=raceIDs.Hirogen)
+	{
+		civs[raceIDs.Hirogen].autoHostile.push(civs[j]);
+	}
+	if(j!=raceIDs.Dominion)
+	{
+		civs[raceIDs.Dominion].autoHostile.push(civs[j]);
+	}
 	civs[j].autoHostile.push(civs[raceIDs.Borg]);
+	
 }
+civs[raceIDs.Klingon].autoHostile.push(civs[raceIDs.Romulan]);
+civs[raceIDs.Cardassians].autoHostile.push(civs[raceIDs.Bajoran]);
 civs[raceIDs.Borg].numShipsStart=1;
 civs[raceIDs.Human].numShipsStart=2;
 civs[raceIDs.Klingon].numShipsStart=6;
@@ -62,6 +77,17 @@ var stations=new Array(); //todo add to civilization
 
 var curShip=0;
 var planetTypes = ["Class M","Class L","Class N","Class F","Class J","Class T","Demon Class"];
+
+function honorDead(iv)
+{
+	if(!iv.deadShips) {return};
+	for(var i=0;i<iv.deadShips.length;i++){
+		console.log(iv.deadShips[i].prefix+iv.deadShips[i].name);
+		for(var j=0;j<iv.deadShips[i].crew.length;j++){
+			console.log("    "+iv.deadShips[i].crew[j].title+" "+iv.deadShips[i].crew[j].name);
+		}
+	}
+}
 
 function timesavertwo()
 {
@@ -1042,6 +1068,7 @@ function initUniverse()
 
 function killShip(targ)
 {
+	targ.civ.deadShips.push(targ);
 	if(targ.tractorClient)
 	{
 		targ.tractorClient.tractorHost=null;

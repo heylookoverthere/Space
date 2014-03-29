@@ -145,7 +145,8 @@ for(var ipk=0;ipk<numRaces;ipk++){
 	shipNamesUsed[ipk]=new Array();
 }
 
-function dude() {
+function dude() 
+{
 	this.gender=0;
 	this.name=names[this.gender][Math.floor(Math.random()*40)];
 	this.hp=100;
@@ -155,23 +156,45 @@ function dude() {
 	this.moveSpeed=1;
 	this.civ=null;
 	this.xp=0;
+	this.nextLevel=100;
 	this.ID=0;
 	this.race="human";
 	this.rank=0;
 	this.title="Crewman";
 	this.AIDS=false;
-	this.kill=function(cause){
+	this.hurt=function(amt,because)
+	{
+		this.hp-=amt;
+		if(this.hp<1)
+		{
+			this.kill(because);
+		}
+	};
+	this.kill=function(cause)
+	{
+		if(!cause)
+		{
+			cause=" of unkown causes";
+		}
 		console.log(this.title+" "+this.name+ " has died"+cause);
 		this.alive=false;
 	};
-	this.grantXP=function()
+	
+	this.grantXp=function(amt)
 	{
+		this.xp+-amt;
+		if(this.xp>this.nextLevel)
+		{
+			this.xp=0;
+			this.level++;
+			if(this.civ.name=="Humans")
+			{
+				console.log(this.name+" has gained a level!");
+				this.maxHp++;
+			}
+		}
 	
 	};
-};
-
-function crew() {
-
 };
 
 function energyWeapon(hip)

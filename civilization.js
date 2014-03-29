@@ -180,6 +180,7 @@ function civilization()
 	this.money=1000;
 	this.allied=false;
 	this.targetPods=false;
+	this.fallingBack=false;
 	this.prisoners=new Array();
 	this.numShipsStart=0;
 	this.researchProgress=0;
@@ -199,6 +200,19 @@ function civilization()
 	this.fleets=new Array();
 	this.fContacted=new Array();
 	this.autoHostile=new Array();
+	this.deadShips=new Array();
+	
+	for(var ipk=0;ipk<numRaces;ipk++){
+		this.fContacted[ipk]=false;
+	}
+	this.techs=new Array();
+	for(var i=0;i<100;i++)
+	{
+		this.techs.push(false);
+	}
+	this.techs[Techs.Sensors]=true;
+	this.techs[Techs.Phasers]=true;
+	
 	this.checkDeath=function()
 	{
 		var live=false;
@@ -211,16 +225,40 @@ function civilization()
 			console.log("The last "+this.name+" has died.");
 		}
 	};
-	for(var ipk=0;ipk<numRaces;ipk++){
-		this.fContacted[ipk]=false;
-	}
-	this.techs=new Array();
-	for(var i=0;i<100;i++)
+	this.masterAI=function()
 	{
-		this.techs.push(false);
-	}
-	this.techs[Techs.Sensors]=true;
-	this.techs[Techs.Phasers]=true;
+		if(borgTrack==this.race)
+		{
+			//fall back to homeworld!
+			this.fallingBack=true;
+			for(var i=0;i<this.ships.length;i++)
+			{
+				this.ships[i].orderOrbit(this.homeworld);
+			}
+			console.log("all ships returning to "+this.homeworld+" to aid in its defense");
+		}
+		if(this.nature==Natures.Genociadal)
+		{
+			//select a race and attack them till they die planet and take it
+		}else if(this.nature==Natures.Agressive)
+		{
+			//duunno
+		}else if(this.nature==Natures.Expanding)
+		{
+			//select the closest empty planet and colonize;
+		}else if(this.nature==Natures.Defense)
+		{
+			//move at least one ship to each system
+		}else if(this.nature==Natures.AgressiveDefense)
+		{
+			//attack anyone in your space
+		}
+	};
+	this.declareWar=function(them)
+	{
+		console.log(this.name+" declared war on "+them.name);
+		this.autoHostile.push(them);
+	};
 	this.cycleShips=function(cam)
 	{
 		this.curShip++;
