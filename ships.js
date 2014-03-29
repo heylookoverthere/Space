@@ -125,6 +125,7 @@ function starShip(){
 	this.orbitTrack=Math.floor(Math.random()*359);
 	this.orbitDecay=0;
 	this.orbitSpeed=2;
+	this.battles=0;
 	this.turning=false;
 	this.sensors=0;
 	this.torpedoTubes=2;
@@ -800,6 +801,7 @@ function starShip(){
 			{
 				this.phaserBanks[i].target=null;
 			}
+			this.battles++;
 		}
 		
 		if((this.tractorTarget) &&((!this.tractorTarget.alive) || (!this.inTractorRange(this.tractorTarget))))
@@ -971,6 +973,9 @@ function starShip(){
 			if((this.destination) && (this.destination!=this.orbitTarg))
 			{
 				this.orbiting=false;
+			}else if((this.colony) && (this.orders=Orders.Colonize))
+			{
+				this.orbiting=false;
 			}else
 			{
 				this.orbx=this.orbitTarg.x;
@@ -1057,7 +1062,7 @@ function starShip(){
 					{
 						this.civ.colonize(this.desiredOrbitTarg);
 						console.log(this.name+ " successfully colonized "+this.desiredOrbitTarg.name);
-						//this.alive=false;
+						this.alive=false;
 					}
 					this.orbit(this.desiredOrbitTarg);
 					this.desiredOrbitTarg=null;
@@ -1245,6 +1250,7 @@ function starShip(){
 				}
 				if(this.planetTarget.civ==null)
 				{
+					this.civ.conquer(this.planetTarget);
 					this.leaveOrbit();
 					borgTrack++;
 					if(borgTrack==raceIDs.Borg)

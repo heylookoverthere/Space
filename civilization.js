@@ -254,6 +254,21 @@ function civilization()
 			//attack anyone in your space
 		}
 	};
+	
+	this.conquer=function(plan)
+	{
+		plan.civ=this;
+		plan.colonized=true;
+		this.worlds.push(plan);
+		if(this.race!=raceIDs.Borg)
+		{
+			console.log(plan.name+ " has been conquered by "+this.name);
+		}else
+		{
+			console.log(plan.name+ " has been assimilated by The Borg.");
+		}
+	};
+	
 	this.declareWar=function(them)
 	{
 		console.log(this.name+" declared war on "+them.name);
@@ -279,11 +294,13 @@ function civilization()
 		var bob=this.freeColonyShip();
 		if(bob)
 		{
-			bob.orbitTarg=world;
+			bob.desiredOrbitTarg=world;
 			bob.orders=Orders.Colonize;
+			console.log(bob.prefix+" "+bob.name+ " has been orderd to colonize "+world.name);
 		}else
 		{
 			this.produceShip(1,this.homeworld,world);//(ShipClass[this.race].colony);
+			console.log("A new colony ship is being constructed to colonize "+world.name);
 		}
 		//set its destination, crew it
 	};
@@ -330,6 +347,7 @@ function civilization()
 			if(worldgo)
 			{
 				jimmy.desiredOrbitTarg=worldgo;
+				jimmy.orders=Orders.Colonize;
 			}
 		}
 		if(this.name=="Human")
@@ -360,7 +378,7 @@ function civilization()
 	this.colonize=function(world){
 		if(world.colonized)
 		{
-			console.log("The planet "+world.name+" has already been colonized by the "+races[world.race]);
+			console.log("The planet "+world.name+" has already been colonized by the "+world.civ.name);
 			return;
 		}
 		this.worlds.push(world);

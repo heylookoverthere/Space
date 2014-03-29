@@ -144,6 +144,17 @@ var shipNamesUsed=new Array();
 for(var ipk=0;ipk<numRaces;ipk++){
 	shipNamesUsed[ipk]=new Array();
 }
+var totalItems=9;
+Item={};
+Item.RedShirt=1;
+Item.HandPhaser=0;
+Item.PhaserRifle=2;
+Item.Tricorder=3;
+Item.MedKit=4;
+Item.EmergencyTransport=5;
+Item.Bomb=6;
+Item.PersonalCloak=7; //jem'hdar
+Item.PersonalShield=8; //borg
 
 function dude() 
 {
@@ -154,6 +165,12 @@ function dude()
 	this.alive=true;
 	this.level=1;
 	this.moveSpeed=1;
+	this.hasItem=new Array();
+	for(var i=0;i<totalItems;i++)
+	{
+		this.hasItem.push(false);
+	}
+	this.hasItem[0]=true;//everyone gets a phaser!
 	this.civ=null;
 	this.xp=0;
 	this.nextLevel=100;

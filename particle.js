@@ -89,6 +89,7 @@ function particle(){
 					i--;
 				}
 			}
+			this.colonized=false;
 			this.civ=null;
 		}
 		

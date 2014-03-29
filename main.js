@@ -36,7 +36,15 @@ function playSound(name){
     }
     
 }
+var productionBar=new progressBar();
+var researchBar=new progressBar();
 
+productionBar.x=30;
+productionBar.label="Production:";
+productionBar.y=550;
+researchBar.x=30;
+researchBar.label="Research:  ";
+researchBar.y=580;
 function akey(k) {  //represents a keyboard button
     k = k || "space";
     this.key =k;
@@ -427,6 +435,12 @@ canvas.font = "8pt Calibri";
 	canvas.fillText("Ships Detected Nearby: "+ selectedShip.torpedoTarget.nearbyVessels.length,55,620)
 	canvas.fillText("Systems Detected Nearby: "+ selectedShip.torpedoTarget.nearbySystems.length,55,635)
 	}
+	productionBar.val=civs[0].productionTick;
+	productionBar.maxVal=civs[0].nextProduction;
+	productionBar.draw(canvas,camera);
+	researchBar.val=civs[0].researchTick;
+	researchBar.maxVal=civs[0].nextResearch;
+	researchBar.draw(canvas,camera);
 };
 
 function mainMenuDraw(){
