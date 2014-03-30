@@ -931,10 +931,6 @@ function starShip(){
 				{
 					this.status="Enroute to attack "+this.destination.name;
 				}
-				if(this.destination.ship)
-				{
-					console.logt(this.name +" " +this.destination.name);
-				}
 				var beta=Math.atan2(this.destination.y-this.y,this.destination.x-this.x)* (180 / Math.PI);
 				
 				if (beta < 0.0)

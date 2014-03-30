@@ -186,6 +186,7 @@ function civilization()
 	this.homeStar=0;
 	this.homePlanet=2;
 	this.AI=true;
+	this.homeworldWarning=true; //todo, allow them to recover and then get warned again later.
 	this.researchRate=1;
 	this.encounterTrack=0;
 	this.money=1000;
@@ -269,17 +270,19 @@ function civilization()
 					var bobert = this.ships[i].nearestSpecificShip(enemyCiv);
 					if(bobert)
 					{
-						this.destination=bobert;
-						this.orbiting=false;
-						this.orders=Orders.Attack;
-						if(this.race==raceIDs.Klingon){
-						console.log(this.name +"ships now attacking the "+enemyCiv.name+" ship "+ bobert.name);
-						}
+						this.ships[i].destination=bobert;
+							
+						this.ships[i].orbiting=false;
+						this.ships[i].orders=Orders.Attack;
 					}
 				}else
 				{
-					this.ships[i].orderOrbit(enemyCiv.homeworld); //orderattack?
-					console.log("The "+this.name+" have eliminated all "+enemyCiv.name+ " ships and are headed to " +enemyCiv.homeworld.name);
+					if(enemyCiv.homeworldWarning)
+					{
+						this.ships[i].orderOrbit(enemyCiv.homeworld); //orderattack?
+						console.log("The "+this.name+" have eliminated all "+enemyCiv.name+ " ships and are headed to " +enemyCiv.homeworld.name);
+						enemyCiv.homeworldWarning=false;
+					}
 				}
 			}
 		}else if(this.mode==AIModes.Expanding)

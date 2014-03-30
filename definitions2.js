@@ -1761,8 +1761,8 @@ function newInitShips()
 			{
 				var james=new starShip();
 				james.homeworld=civs[i].homeworld;
-				james.x=james.homeworld.x;
-				james.y=james.homeworld.y;
+				james.x=Math.random()*universeWidth;
+				james.y=universeHeight;//todo
 				james.desiredHeading=Math.floor(Math.random()*359);
 				james.prefix="Borg ";
 				james.race=9;
