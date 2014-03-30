@@ -480,14 +480,6 @@ function mainMenuDraw(){
 
 	}*/
 	
-	for(var i=0;i<ships.length;i++)
-	{
-		ships[i].draw(canvas,camera);
-		if(isOver(ships[i],camera))
-		{
-			drawmousetext(canvas,ships[i],camera);
-		}
-	}
 	blamera={};
 	blamera.x=-camera.x;
 	blamera.y=-camera.y;
@@ -505,6 +497,13 @@ function mainMenuDraw(){
 			if(isOver(stars[i].planets[j],camera))
 			{
 				drawmousetext(canvas,stars[i].planets[j],camera);
+			
+				var larry=new screenBox(stars[i].planets[j]);
+				larry.x=20;
+				larry.y=350;
+				larry.width=256;
+				larry.height=250;
+				larry.draw(canvas,camera);
 			}
 		}
 	}
@@ -556,6 +555,20 @@ function mainMenuDraw(){
 		nebulas[i].draw(canvas,camera);
 	}
 	drawGUI();
+	for(var i=0;i<ships.length;i++)
+	{
+		ships[i].draw(canvas,camera);
+		if(isOver(ships[i],camera))
+		{
+			drawmousetext(canvas,ships[i],camera);
+			var larry=new screenBox(ships[i]);
+			larry.x=20;
+			larry.y=350;
+			larry.width=256;
+			larry.height=250;
+			larry.draw(canvas,camera);
+		}
+	}
 	//draw messages
 	//for (var i=0;i<civs[0].messages.length;i++)
 	

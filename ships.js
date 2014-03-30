@@ -63,7 +63,9 @@ function starShip(){
 	this.phaserBanks.push(new energyWeapon(this));
 	this.shields=0;
 	this.tractorDist=80;
-	this.maxShields=100;
+	this.maxShields=0;
+	this.activeShields=false;
+	this.activeWeapons=true;
 	this.shieldSprite=Sprite("shields1");
 	this.discovered=true;
 	this.sensorRange=500;
@@ -1298,6 +1300,7 @@ function starShip(){
 					this.planetTarget=null;
 					this.attackingPlanet=null;
 					this.desiredOrbitTarg=null;
+					this.destination=null;
 					if(this.civ==civs[raceIDs.Borg])
 					{
 						borgTrack++;

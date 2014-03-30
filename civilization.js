@@ -263,6 +263,12 @@ function civilization()
 		{
 			if(this.autoHostile.length<1)
 			{
+				for(var i=0;i<this.ships.length;i++)
+				{
+					this.ships[i].desiredOrbitTarg=null;
+					this.ships[i].planetTarget=null;
+					this.ships[i].destination=null;
+				}
 				this.mode=AIModes.Exloring;
 				return;
 			}

@@ -15,7 +15,15 @@ $(document).bind("contextmenu",function(e){
 		{
 					monsta.startOrbit(40,sunx,suny,(Math.random()*50)+170,((Math.random()*8)+1)/8,true,5+Math.floor(Math.random()*1));
 		}*/
-		monsta.startMoon(40,stars[curSystem].planets[stars[curSystem].selected],Math.random()*35+15,((Math.random()*8)+1)/8,0,true,null);
+		//monsta.startMoon(40,stars[curSystem].planets[stars[curSystem].selected],Math.random()*35+15,((Math.random()*8)+1)/8,0,true,null);
+		for(var i=0;i<ships.length;i++)
+		{
+			if((isOver(ships[i],camera)) && (ships[i].alive))
+			{
+				selectedShip=ships[i];
+				camera.follow(ships[i]);
+			}
+		}
 	}
     return false;
 });
@@ -73,14 +81,53 @@ function mouseClick(e) {  //represents the mouse
 				//screenfull.request(canvasElement);
 				if((selectedShip) && (!selectedShip.adrift))
 				{
-					var mTY=mY+Math.abs(camera.y);
+					/*var mTY=mY+Math.abs(camera.y);
 					var mTX=mX+Math.abs(camera.x);
 					var mouseHeading=Math.atan2(mTY-selectedShip.y, mTX-selectedShip.x)* (180 / Math.PI);
 					if (mouseHeading < 0.0)
 						mouseHeading += 360.0;
 					else if (mouseHeading > 360.0)
 						mouseHeading -= 360;
-					selectedShip.adjustHeading(Math.abs(mouseHeading));
+					selectedShip.adjustHeading(Math.abs(mouseHeading));*/
+					for(var i=0;i<ships.length;i++)
+					{
+						if((isOver(ships[i],camera)) && (ships[i].alive))
+						{
+							selectedShip.destination=ships[i];
+							console.log(selectedShip.name+ " was sent after "+ships[i].name);
+						}
+					}
+					for(var k=0;k<civs.length;k++)
+					{
+						for(var i=0;i<civs[k].worlds.length;i++)
+						{
+							if(isOver(civs[k].worlds[i],camera))
+							{
+								selectedShip.desiredOrbitTarg=civs[k].worlds[i];
+								if (selectedShip.autoHostile(civs[k]))
+								{
+									selectedShip.attackPlanet(civs[k].worlds[i]);
+									console.log(selectedShip.name+ " sent to attack"+civs[k].worlds[i].name);
+									return;
+								}else
+								{
+									console.log(selectedShip.name+ " sent to "+civs[k].worlds[i].name);
+									return;
+								}
+							}
+						}
+					}
+					for(var k=0;k<stars.length;k++)
+					{
+						for(var i=0;i<stars[k].planets.length;i++)
+						{
+							if(isOver(stars[k].planets[i],camera))
+							{
+								selectedShip.desiredOrbitTarg=stars[k].planets[i];
+								console.log(selectedShip.name+ " sent to "+stars[k].planets[i].name);
+							}
+						}
+					}
 				}
 			    break;
 			case 2:

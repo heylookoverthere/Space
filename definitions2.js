@@ -156,6 +156,74 @@ function howsitgoing(iv)
 	
 }
 
+function screenBox(obj)
+{
+	this.object=obj;
+	this.x=0;
+	this.y=0;
+	this.scale=1;
+	this.height=150
+	this.width=100;
+	this.backColor="blue";
+	this.borderSize=4;
+	this.draw=function(can,cam)
+	{
+		can.save();
+		can.font = "12pt Calibri";
+		can.fillStyle="white";
+		can.fillRect(this.x,this.y,this.width+this.borderSize,this.height+this.borderSize);
+		can.fillStyle=this.backColor;
+		can.fillRect(this.x+this.borderSize,this.y+this.borderSize,this.width-this.borderSize,this.height-this.borderSize);
+		can.fillStyle="white";
+		if(this.object.ship)
+		{
+			can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
+			can.fillText(this.object.civ.name,this.x+10,this.y+2+32);
+			can.fillText("HP: "+this.object.hp+"/"+this.object.maxHp,this.x+10,this.y+2+48);
+			can.fillText("Shields: "+this.object.shields+"/"+this.object.maxShields,this.x+10,this.y+2+64);
+			
+			can.fillText("Torpedos: "+this.object.numTorpedos+" Mines: "+this.object.numMines,this.x+10,this.y+2+80);
+			if(this.object.torpedoTarget)
+			{
+				can.fillText("Targeting: "+this.object.torpedoTarget.name,this.x+10,this.y+2+96);
+			}else
+			{
+				can.fillText("No Weapons Lock",this.x+10,this.y+2+96);
+			}
+			can.fillText("Crew: ",this.x+10,this.y+2+112);
+			for(var i=0;i<this.object.crew.length;i++)
+			{
+				can.fillText(this.object.crew[i].title+" "+this.object.crew[i].name,this.x+10,this.y+2+128+i*16);
+			}
+		}else if(this.object.planet)
+		{
+			can.fillText(this.object.name,this.x+10,this.y+2+16);
+			if(!this.object.civ)
+			{
+				can.fillText("Unclaimed planet",this.x+10,this.y+2+32);
+			}
+			else if(this.object==this.object.civ.homeworld)
+			{
+				can.fillText(this.object.civ.name+" Homeworld",this.x+10,this.y+2+32);
+			}else
+			{
+				can.fillText(this.object.civ.name+" Colony",this.x+10,this.y+2+32);
+			}
+			can.fillText("HP: "+this.object.hp+"/"+this.object.maxHp,this.x+10,this.y+2+48);
+			can.fillText("Shields: "+this.object.shields+"/"+this.object.maxShields,this.x+10,this.y+2+64);
+			
+			can.fillText("Production: "+this.object.getProduction()+" Research: "+this.object.getResearch(),this.x+10,this.y+2+80);
+
+			can.fillText("Buildings: ",this.x+10,this.y+2+112);
+			for(var i=0;i<this.object.buildings.length;i++)
+			{
+				can.fillText(this.object.buildings[i].name,this.x+10,this.y+2+128+i*16);
+			}
+		}else 
+		can.restore();
+	};
+};
+
 function progressBar()
 {
 	this.x=0;
@@ -207,6 +275,7 @@ function newShip(iv,startworld)
 			james.civ=iv;
 			james.sprite=Sprite("ship2");
 			james.maxSpeed=9;
+			james.activeShields=true;
 			james.maxShields=70;
 			james.shields=70;
 			james.alive=true;
@@ -1323,6 +1392,7 @@ function newInitShips()
 				james.civ=civs[0];
 				james.sprite=Sprite("ship2");
 				james.maxSpeed=9;
+				james.activeShields=true;
 				james.maxShields=70;
 				james.shields=70;
 				james.alive=true;
