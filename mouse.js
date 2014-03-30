@@ -22,6 +22,37 @@ $(document).bind("contextmenu",function(e){
 			{
 				selectedShip=ships[i];
 				camera.follow(ships[i]);
+				return false;
+			}
+		}
+		for(var i=0;i<stars.length;i++)
+		{
+			for(j=0;j<stars[i].planets.length;j++)
+			{
+				if((isOver(stars[i].planets[j],camera)) && (!stars[i].planets[j].colonized))
+				{
+					var ned=new textbox();
+					ned.setup("Are you sure you want to colonize "+stars[i].planets[j].name+"?",150,370);
+					ned.civil=this;
+					ned.choicesStart=1;
+					ned.object=stars[i].planets[j];
+					ned.addText("   Confirm colnization");
+					ned.addText("   Nevermind");
+					ned.optionOne=function(civil1,civil2)
+					{
+						if(this.object.planet)
+						{
+							civs[0].orderColonize(this.object);
+							console.log("colonize!");
+						};	
+					};
+					ned.optionTwo=function(civil1,civil2)
+					{
+					
+					}
+					ned.optionTrack=1;
+					civs[0].messages.push(ned);
+				}
 			}
 		}
 	}

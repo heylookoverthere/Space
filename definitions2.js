@@ -1,5 +1,3 @@
-//518 424 5687
-
 
 var cuntx=-149550;
 var cunty=-149680;
@@ -209,11 +207,12 @@ function screenBox(obj)
 			{
 				can.fillText(this.object.civ.name+" Colony",this.x+10,this.y+2+32);
 			}
-			can.fillText("HP: "+this.object.hp+"/"+this.object.maxHp,this.x+10,this.y+2+48);
-			can.fillText("Shields: "+this.object.shields+"/"+this.object.maxShields,this.x+10,this.y+2+64);
+			can.fillText(this.object.sun.name+" system",this.x+10,this.y+2+48);
+			can.fillText("HP: "+this.object.hp+"/"+this.object.maxHp,this.x+10,this.y+2+65);
+			can.fillText("Shields: "+this.object.shields+"/"+this.object.maxShields,this.x+10,this.y+2+80);
 			
-			can.fillText("Production: "+this.object.getProduction()+" Research: "+this.object.getResearch(),this.x+10,this.y+2+80);
-
+			can.fillText("Production: "+this.object.getProduction()+" Research: "+this.object.getResearch(),this.x+10,this.y+2+96);
+			
 			can.fillText("Buildings: ",this.x+10,this.y+2+112);
 			for(var i=0;i<this.object.buildings.length;i++)
 			{

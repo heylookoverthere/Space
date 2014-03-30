@@ -14,6 +14,7 @@ function textbox()
 	this.width=600;
 	this.height=55;
 	this.options=2;
+	this.object=null;
 	this.civil=null;
 	this.choicesStart=3;
 	this.optionTrack=0;//draw the liitle -
