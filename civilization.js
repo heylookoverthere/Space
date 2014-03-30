@@ -17,7 +17,7 @@ AIModes.Defense=2;
 AIModes.Explore=3;
 AIModes.AgressiveDefense=4;
 AIModes.Genocidal=5;
-
+AIModes.Exploring=7;
 
 var Techs = {};
 Techs.Aeroponics=1;
@@ -190,8 +190,9 @@ function civilization()
 	this.researchRate=1;
 	this.encounterTrack=0;
 	this.money=1000;
-	this.mode=AIModes.Agressive;
+	this.mode=AIModes.Exploring;
 	this.allied=false;
+	this.fallenBack=false;
 	this.targetPods=false;
 	this.fallingBack=false;
 	this.prisoners=new Array();
@@ -248,7 +249,11 @@ function civilization()
 			{
 				this.ships[i].orderOrbit(this.homeworld);
 			}
-			console.log("all ships returning to "+this.homeworld+" to aid in its defense");
+			if(!this.fallenBack)
+			{
+				console.log("all ships returning to "+this.homeworld.name+" to aid in its defense");
+				this.fallenBack=true;
+			}
 		}
 		if(this.mode==AIModes.Genociadal)
 		{
@@ -257,7 +262,7 @@ function civilization()
 		{
 			if(this.autoHostile.length<1)
 			{
-				this.mode=AIModes.Expanding;
+				this.mode=AIModes.Exloring;
 				return;
 			}
 			
@@ -277,9 +282,12 @@ function civilization()
 					}
 				}else
 				{
+					this.ships[i].orderOrbit(enemyCiv.homeworld); //orderattack?
+					this.ships[i].orders=Orders.Attack;
 					if(enemyCiv.homeworldWarning)
 					{
-						this.ships[i].orderOrbit(enemyCiv.homeworld); //orderattack?
+						
+						
 						console.log("The "+this.name+" have eliminated all "+enemyCiv.name+ " ships and are headed to " +enemyCiv.homeworld.name);
 						enemyCiv.homeworldWarning=false;
 					}
@@ -287,7 +295,18 @@ function civilization()
 			}
 		}else if(this.mode==AIModes.Expanding)
 		{
-			//select the closest empty planet and colonize;
+		
+		}else if(this.mode==AIModes.Exploring)
+		{
+			for(var i=0;i<this.ships.length;i++)
+			{
+				if(!this.ships[i].desiredOrbitTarg) //todo
+				{
+					var blah=Math.floor(Math.random()*(numSystems-1))+1;
+					var gah=Math.floor(Math.random()*stars[blah].numPlanets);
+					this.ships[i].orderOrbit(stars[blah].planets[gah]);
+				}
+			}
 		}else if(this.mode==AIModes.Defense)
 		{
 			//move at least one ship to each system
@@ -305,7 +324,7 @@ function civilization()
 					whichWorld=0;
 				}
 			}
-		}else if(this.mode==Mode.AgressiveDefense)
+		}else if(this.mode==AIModes.AgressiveDefense)
 		{
 			//attack anyone in your space
 		}
@@ -315,6 +334,15 @@ function civilization()
 	{
 		plan.civ=this;
 		plan.colonized=true;
+		for(var i=0;i<this.ships.length;i++)
+		{
+			if(this.ships[i].planetTarget==plan)
+			{
+				this.ships[i].planetTarget=null;
+				this.ships[i].attackingPlanet=null;
+				this.ships[i].orders=0;
+			}
+		}
 		this.worlds.push(plan);
 		if(this.race!=raceIDs.Borg)
 		{
@@ -533,6 +561,14 @@ function civilization()
 						}
 					}
 				}
+			}
+		}
+		for(var i=0;i<this.autoHostile.length;i++)
+		{
+			if(!this.autoHostile[i].alive)
+			{
+				this.autoHostile.splice(i,1);
+				i--;
 			}
 		}
 	};

@@ -792,6 +792,16 @@ function starShip(){
 		{
 			this.torpedoTarget=null;
 		}
+		if((this.planetTarget) && (this.planetTarget.civ==this.civ))
+		{
+			if(this.desiredOrbitTarg==this.planetTarget)
+			{
+				this.desiredOrbitTarg=null;
+			}
+			this.planetTarget=null;
+			this.attackingPlanet=null;
+			
+		}
 		if((this.tractorTarget) && (!this.tractorTarget.alive))
 		{
 			this.tractorTarget=null;
@@ -1088,6 +1098,10 @@ function starShip(){
 				if((Math.abs(this.x-this.desiredOrbitTarg.x)<50) && (Math.abs(this.y-this.desiredOrbitTarg.y)<50)) 
 				{
 					console.log(this.name+ " has arrived in orbit of "+this.desiredOrbitTarg.name);
+					if(this.orders==Orders.Attack)
+					{
+						this.planetTarget=this.desiredOrbitTarg;
+					}
 					if((this.colony) && (this.orders=Orders.Colonize))
 					{
 						this.civ.colonize(this.desiredOrbitTarg);
@@ -1266,8 +1280,7 @@ function starShip(){
 			console.log(this.name+ "'s crew is abandoning ship.");
 		}
 		
-		if(this.civ==civs[raceIDs.Borg])
-		{
+		
 			if((this.orbiting) &&(this.orbitTarg==this.planetTarget) &&(!this.torpedoTarget))
 			{
 				this.attackingPlanet=this.planetTarget;
@@ -1282,28 +1295,33 @@ function starShip(){
 				{
 					this.civ.conquer(this.planetTarget);
 					this.leaveOrbit();
-					borgTrack++;
-					if(borgTrack==raceIDs.Borg)
+					this.planetTarget=null;
+					this.attackingPlanet=null;
+					this.desiredOrbitTarg=null;
+					if(this.civ==civs[raceIDs.Borg])
 					{
 						borgTrack++;
-					}
+						if(borgTrack==raceIDs.Borg)
+						{
+							borgTrack++;
+						}
 
-					
-					if(borgTrack>17)
-					{
-						console.log("The Borg have assimilated all inhabited planets.  Oh well.");
-					}else
-					{
-						this.orderOrbit(civs[borgTrack].homeworld);
-						this.desiredSpeed=7;
-						this.planetTarget=civs[borgTrack].homeworld;
+						
+						if(borgTrack>17)
+						{
+							console.log("The Borg have assimilated all inhabited planets.  Oh well.");
+						}else
+						{
+							this.orderOrbit(civs[borgTrack].homeworld);
+							this.desiredSpeed=7;
+							this.planetTarget=civs[borgTrack].homeworld;
+						}
 					}
 				}
 			}else
 			{
 				this.attackingPlanet=null;
 			}
-		}
 	};
 	
 	this.draw=function(can,cam){

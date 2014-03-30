@@ -72,6 +72,7 @@ civs[raceIDs.Bajoran].numShipsStart=2;
 civs[raceIDs.Breen].numShipsStart=8;
 civs[raceIDs.Pakled].numShipsStart=2;
 civs[raceIDs.Orion].numShipsStart=2;
+civs[raceIDs.Klingon].mode=AIModes.Agressive;
 
 civs[0].AI=false;
 civs[raceIDs.Borg].AI=false; //for now.
@@ -98,6 +99,17 @@ function timesavertwo()
 	for(var i=0;i<10;i++)
 	{
 		civs[0].produceShip(1);
+	}
+};
+
+function whoseleft()
+{
+	for(var i=0;i<civs.length;i++)
+	{
+		if(civs[i].alive)
+		{
+			console.log(civs[i].name+ " "+civs[i].worlds.length+" worlds and "+civs[i].ships.length+" ships.");
+		}
 	}
 };
 
