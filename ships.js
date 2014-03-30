@@ -553,7 +553,18 @@ function starShip(){
 	this.killRandomCrew=function(cause){
 		if(cause==null) {cause=".";}
 		if(this.checkCrew()){
-			var vict=Math.floor(Math.random()*this.crew.length);
+			var vict=null;
+			for(var i=0;i<this.crew.length;i++)
+			{
+				if(this.crew[i].hasItem[Item.RedShirt]==true)
+				{
+					vict=i;
+				}
+			}
+			if(vict==null)
+			{
+				vict=Math.floor(Math.random()*this.crew.length);	
+			}
 			this.crew[vict].kill(cause);
 			this.crewLost++;
 			this.crew.splice(vict,1);
