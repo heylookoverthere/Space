@@ -248,6 +248,7 @@ function civilization()
 			for(var i=0;i<this.ships.length;i++)
 			{
 				this.ships[i].orderOrbit(this.homeworld);
+				this.ships[i].desiredSpeed=this.ships[i].maxSpeed;
 			}
 			if(!this.fallenBack)
 			{
@@ -318,8 +319,8 @@ function civilization()
 				{
 					break;
 				}
-				wichWorld++;
-				if(hichWorld>this.worlds.length)
+				whichWorld++;
+				if(whichWorld>this.worlds.length)
 				{
 					whichWorld=0;
 				}

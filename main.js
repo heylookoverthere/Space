@@ -226,6 +226,8 @@ canvas.font = "8pt Calibri";
 	canvas.fillText("Stars drawn: "+ starsDrawn,755,55);
 	canvas.fillText("Stardate: "+ Math.floor(theTime.years)+"."+Math.floor(theTime.days) ,755,70);
 	canvas.fillText("Zoom: "+camera.zoom ,755,85);
+	canvas.fillText("Your Ships: "+civs[0].ships.length ,755,100);
+	canvas.fillText("Total Ships: "+ships.length ,755,115);
 	
 	canvas.fillText("System: "+stars[curSystem].name,25,55);
 	canvas.fillText("Planets: "+ stars[curSystem].numPlanets,25,70);

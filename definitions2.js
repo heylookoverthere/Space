@@ -76,6 +76,8 @@ civs[raceIDs.Klingon].mode=AIModes.Agressive;
 
 civs[0].AI=false;
 civs[raceIDs.Borg].AI=false; //for now.
+civs[raceIDs.Romulan].mode=AIModes.Defense;
+civs[raceIDs.Dominion].mode=AIModes.Defense;
 
 var ships=new Array();
 var stations=new Array(); //todo add to civilization
