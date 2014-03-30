@@ -20,7 +20,10 @@ function textbox()
 	this.optionTrack=0;//draw the liitle -
 	this.colors=new Array();
 	this.msg=new Array();
-	this.optionOne=null;
+	this.optionOne=function(civil1,civil2)
+	{
+		holdInput=false;
+	};
 	this.optionTwo=null;
 	this.optionThree=null;
 	this.response=function()
@@ -65,9 +68,11 @@ function textbox()
 			}else if(this.optionTrack-this.choicesStart==1)
 			{
 				this.optionTwo(this.civil,civs[0]);
+			}else{
+				holdInput=false;
 			}
 			this.exists=false;
-			holdInput=false;
+			
 		}
 	};
 	this.draw=function(can)

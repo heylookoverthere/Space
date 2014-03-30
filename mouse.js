@@ -6,16 +6,6 @@ $(document).bind("contextmenu",function(e){
 		mX = e.pageX - canvasElement.get(0).offsetLeft;
 		mY = e.pageY - canvasElement.get(0).offsetTop;
 
-		/*for (var p=0;p<4;p++)
-		{
-					monsta.startOrbit(40,sunx,suny,(Math.random()*240)+170,((Math.random()*8)+1)/8,(Math.random()*4)/100,true,null);
-		}/*
-		obt=Math.random()*240+170;
-		for (var p=0;p<160;p++)
-		{
-					monsta.startOrbit(40,sunx,suny,(Math.random()*50)+170,((Math.random()*8)+1)/8,true,5+Math.floor(Math.random()*1));
-		}*/
-		//monsta.startMoon(40,stars[curSystem].planets[stars[curSystem].selected],Math.random()*35+15,((Math.random()*8)+1)/8,0,true,null);
 		for(var i=0;i<ships.length;i++)
 		{
 			if((isOver(ships[i],camera)) && (ships[i].alive))
@@ -44,10 +34,11 @@ $(document).bind("contextmenu",function(e){
 						{
 							civs[0].orderColonize(this.object);
 						};	
+						holdInput=false;
 					};
 					ned.optionTwo=function(civil1,civil2)
 					{
-					
+						holdInput=false;
 					}
 					ned.optionTrack=1;
 					civs[0].messages.push(ned);

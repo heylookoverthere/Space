@@ -711,7 +711,7 @@ function civilization()
 				ned.options=1;
 				ned.optionOne=function(civil1,civil2)
 				{
-
+					holdInput=false;
 				};
 			}
 			ned.civil=this;
@@ -730,7 +730,7 @@ function civilization()
 				ned.choicesStart=1;
 				ned.optionOne=function(civil1,civil2)
 				{
-
+					holdInput=false;
 				};
 				ned.optionTwo=function(civil1,civil2)
 				{
@@ -754,7 +754,7 @@ function civilization()
 				ned.options=1;
 				ned.optionOne=function(civil1,civil2)
 				{
-
+					holdInput=false;
 				};
 			}
 			ned.civil=this;

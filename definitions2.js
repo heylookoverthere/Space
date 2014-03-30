@@ -1272,6 +1272,9 @@ function newPlatform(wrld)
 	jilly.x=jilly.homeworld.x;
 	jilly.y=jilly.homeworld.y;
 	jilly.orbit(wrld);
+	jilly.numTorpedos=200;
+	jilly.addPhaser();
+	jilly.addPhaser();
 	jilly.race=iv.race;
 	jilly.prefix="";
 	//jilly.christen();
