@@ -366,8 +366,8 @@ function particleSystem(){
 		var twitch=Math.floor(Math.random()*4);
 		if (tod.type==0) {tod.sprite=Sprite("earthsmall");tod.shieldSprite=Sprite("planetshieldsmall");}
 		if (tod.type==1) {tod.sprite=Sprite("planetsmall");tod.shieldSprite=Sprite("planetshieldsmall");}
-		if (tod.type==2) {tod.sprite=Sprite("hotplanetsmall");}
-		if (tod.type==3) {tod.sprite=Sprite("iceplanetsmall");}
+		if (tod.type==2) {tod.sprite=Sprite("hotplanetsmall");tod.shieldSprite=Sprite("planetshieldsmall");}
+		if (tod.type==3) {tod.sprite=Sprite("iceplanetsmall");tod.shieldSprite=Sprite("planetshieldsmall");}
 		if (tod.type==4) 
 		{
 			tod.sprite=Sprite("gasgiant"+twitch);

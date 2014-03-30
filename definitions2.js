@@ -55,7 +55,7 @@ civs[raceIDs.Borg].numShipsStart=1;
 civs[raceIDs.Human].numShipsStart=2;
 civs[raceIDs.Klingon].numShipsStart=6;
 civs[raceIDs.Klingon].targetPods=true;
-civs[raceIDs.Romulan].numShipsStart=2;
+civs[raceIDs.Romulan].numShipsStart=5;
 civs[raceIDs.Ferengi].numShipsStart=2;
 civs[raceIDs.Vulcan].numShipsStart=3;
 civs[raceIDs.Cardassian].numShipsStart=3;
@@ -439,7 +439,7 @@ function newShip(iv,startworld)
 				james.civ=iv;
 				james.homeworld=iv.homeworld;
 				james.class="Galor-Class";
-				james.prefix="C.U. ";
+				james.prefix="C.U.";
 				james.christen();
 				//james.homeworld=iv.homeworld;
 				//console.log(james.prefix+ " "+james.name+" is now orbiting " +stars[blah].planets[gah].name);
@@ -585,7 +585,7 @@ function newShip(iv,startworld)
 			james.y=startworld.y;
 			james.desiredHeading=Math.floor(Math.random()*359);
 			
-			james.prefix="";
+			james.prefix="Telaxian";
 			james.class="Telaxian";
 			james.race=raceIDs.Telaxian;
 			james.christen();
@@ -607,7 +607,7 @@ function newShip(iv,startworld)
 			james.y=startworld.y;
 			james.desiredHeading=Math.floor(Math.random()*359);
 			
-			james.prefix="";
+			james.prefix="Vidiian";
 			james.class="Vidiian Cruiser";
 			james.race=raceIDs.Vidiian;
 			james.christen();
@@ -1246,7 +1246,7 @@ function killShip(targ)
 			ships.splice(i,1);
 			i--;
 			targ.alive=false;
-			console.log("The " +targ.name+" was destroyed. "+ targ.crew.length+ " crew were lost. ");
+			console.log("The "+targ.prefix+ " " +targ.name+" was destroyed. "+ targ.crew.length+ " crew were lost. ");
 			monsta.explosionTextured(200,targ.x,targ.y,1,"explosion0");
 			if(curShip==i)
 			{
@@ -1264,6 +1264,28 @@ function killShip(targ)
 	}
 };
 
+function newPlatform(wrld)
+{
+	var iv=wrld.civ;
+	var jilly=new starShip();
+	jilly.homeworld=iv.homeworld;
+	jilly.x=jilly.homeworld.x;
+	jilly.y=jilly.homeworld.y;
+	jilly.orbit(wrld);
+	jilly.race=iv.race;
+	jilly.prefix="";
+	//jilly.christen();
+	jilly.name="Defense Platform";
+	jilly.class="orbitalDefense";
+	jilly.sprite=Sprite("platform");
+	jilly.maxSpeed=0;
+	jilly.activeShields=true;
+	jilly.maxShields=0;
+	jilly.shields=0;
+	jilly.alive=true;
+	jilly.civ=iv;
+	return jilly;
+};
 
 function newInitShips()
 {
@@ -1566,7 +1588,7 @@ function newInitShips()
 					james.race=raceIDs.Cardassian;
 					james.civ=civs[i];
 					james.class="Galor-Class";
-					james.prefix="C.U. ";
+					james.prefix="C.U.";
 					james.christen();
 					//james.homeworld=iv.homeworld;
 					//console.log(james.prefix+ " "+james.name+" is now orbiting " +stars[blah].planets[gah].name);
@@ -1654,7 +1676,7 @@ function newInitShips()
 				james.y=james.homeworld.y;
 				james.desiredHeading=Math.floor(Math.random()*359);
 				
-				james.prefix="";
+				james.prefix="Tellarite";
 				james.class="Tellarite";
 				james.race=raceIDs.Tellarite;
 				james.christen();
@@ -1698,7 +1720,7 @@ function newInitShips()
 				james.y=james.homeworld.y;
 				james.desiredHeading=Math.floor(Math.random()*359);
 				
-				james.prefix="";
+				james.prefix="Telaxian";
 				james.class="Telaxian";
 				james.race=raceIDs.Telaxian;
 				james.christen();
@@ -1720,7 +1742,7 @@ function newInitShips()
 				james.y=james.homeworld.y;
 				james.desiredHeading=Math.floor(Math.random()*359);
 				
-				james.prefix="";
+				james.prefix="Vidiian";
 				james.class="Vidiian Cruiser";
 				james.race=raceIDs.Vidiian;
 				james.christen();
@@ -1742,7 +1764,7 @@ function newInitShips()
 				james.y=james.homeworld.y;
 				james.desiredHeading=Math.floor(Math.random()*359);
 				
-				james.prefix="";
+				james.prefix="Pakled";
 				james.class="Pakled Cruiser";
 				james.race=raceIDs.Andorian;
 				james.christen();
@@ -1763,7 +1785,7 @@ function newInitShips()
 				james.x=james.homeworld.x;
 				james.y=james.homeworld.y;
 				james.desiredHeading=Math.floor(Math.random()*359);
-				james.prefix="Hunter ";
+				james.prefix="Hunter";
 				james.class="Hunter";
 				james.race=raceIDs.Hirogen;
 				james.christen();
@@ -1784,7 +1806,7 @@ function newInitShips()
 				james.x=james.homeworld.x;
 				james.y=james.homeworld.y;
 				james.desiredHeading=Math.floor(Math.random()*359);
-				james.prefix="";
+				james.prefix="Bajoran";
 				james.class="Bajoran Cruiser";
 				james.race=raceIDs.Bajoran;
 				james.christen();

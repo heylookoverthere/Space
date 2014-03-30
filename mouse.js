@@ -43,7 +43,6 @@ $(document).bind("contextmenu",function(e){
 						if(this.object.planet)
 						{
 							civs[0].orderColonize(this.object);
-							console.log("colonize!");
 						};	
 					};
 					ned.optionTwo=function(civil1,civil2)
@@ -135,7 +134,7 @@ function mouseClick(e) {  //represents the mouse
 							if(isOver(civs[k].worlds[i],camera))
 							{
 								selectedShip.desiredOrbitTarg=civs[k].worlds[i];
-								if (selectedShip.autoHostile(civs[k]))
+								if (selectedShip.civ.autoHostile.indexOf(civs[k])>-1)
 								{
 									selectedShip.attackPlanet(civs[k].worlds[i]);
 									console.log(selectedShip.name+ " sent to attack"+civs[k].worlds[i].name);
@@ -143,6 +142,11 @@ function mouseClick(e) {  //represents the mouse
 								}else
 								{
 									console.log(selectedShip.name+ " sent to "+civs[k].worlds[i].name);
+									selectedShip.desiredOrbitTarg=civs[k].worlds[i];
+									if(selectedShip.orbiting)
+									{
+										selectedShip.orderLeaveOrbit();
+									}
 									return;
 								}
 							}
@@ -156,6 +160,10 @@ function mouseClick(e) {  //represents the mouse
 							{
 								selectedShip.desiredOrbitTarg=stars[k].planets[i];
 								console.log(selectedShip.name+ " sent to "+stars[k].planets[i].name);
+								if(selectedShip.orbiting)
+								{
+									selectedShip.orderLeaveOrbit();
+								}
 							}
 						}
 					}

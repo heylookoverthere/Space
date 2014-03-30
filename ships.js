@@ -465,7 +465,7 @@ function starShip(){
 	
 	this.refit=function(){
 	//calculate and subtract cost
-		console.log("The "+this.name+" has been refit and repaired");
+		console.log("The "+this.prefix+ " "+this.name+" has been refit and repaired");
 		if((this.canHasShields) && (this.maxShields<1) &&(this.civ.techs[Techs.EnergyShields]))
 		{
 			this.maxShields=100;
@@ -523,7 +523,7 @@ function starShip(){
 			if(pete<20)
 			{
 				this.breaches++;
-				console.log("The " +this.name+"'s hull was breached!");
+				console.log("The " +this.prefix+ " "+this.name+"'s hull was breached!");
 			}
 		}
 	};
@@ -573,7 +573,7 @@ function starShip(){
 			//this.crewNum--;
 			if(this.crew.length<1)
 			{
-				console.log("The crew of the "+this.name+" have been killed.  Vessel adrift.");
+				console.log("The crew of the "+this.prefix+ " "+this.name+" have been killed.  Vessel adrift.");
 				this.adrift=true;
 			}
 		}
@@ -756,14 +756,14 @@ function starShip(){
 					thongs.push(thangs[i]);	
 					if((thangs[i].discovered==false)  && (this.race==0)){
 						thangs[i].discovered=true;
-						console.log("The "+this.name+ " discoverd the "+thangs[i].name+" System");
+						console.log("The "+this.prefix+ " "+this.name+ " discoverd the "+thangs[i].name+" System");
 						
 					}
 					if((this.civ.fContacted[thangs[i].race]==false) && (this.race==0)){
 						this.civ.fContacted[thangs[i].race]=true;
-						if((thangs[i].race>0) && (thangs[i].alive))
+						if((thangs[i].race>0) && (thangs[i].alive) && (this.civ.race==0))
 						{
-							console.log("The "+this.name+ " made first contact with the "+races[thangs[i].race]+"s.");
+							console.log("The "+this.prefix+ " "+this.name+ " made first contact with the "+races[thangs[i].race]+"s.");
 							console.log(thangs[i]);
 							civs[thangs[i].race].generateMessage(this.civ);
 						}
@@ -790,24 +790,6 @@ function starShip(){
 	
 	this.update=function(){
 		if(!this.alive){return;}
-		if((this.torpedoTarget) && (!this.torpedoTarget.alive))
-		{
-			this.torpedoTarget=null;
-		}
-		if((this.planetTarget) && (this.planetTarget.civ==this.civ))
-		{
-			if(this.desiredOrbitTarg==this.planetTarget)
-			{
-				this.desiredOrbitTarg=null;
-			}
-			this.planetTarget=null;
-			this.attackingPlanet=null;
-			
-		}
-		if((this.tractorTarget) && (!this.tractorTarget.alive))
-		{
-			this.tractorTarget=null;
-		}
 		if(this.selfDestructActive)
 		{
 			this.selfDestructTick-=1*gameSpeed;
@@ -815,14 +797,77 @@ function starShip(){
 			{
 				killShip(this);
 				//explosion!
+				this.torpedoTarget=null;
 			}
+		}
+
+		if(this.platform)
+		{
+			this.orbx=this.orbitTarg.x;
+			this.orby=this.orbitTarg.y;
+			this.heading=this.orbitTrack+90;//TODO
+			this.orbitTrack+=this.orbitSpeed*gameSpeed;
+			this.orbitDiameter-=this.orbitDecay*this.orbitSpeed*gameSpeed;
+			if(this.orbitDiameter<1) 
+			{
+				this.alive=false;
+				console.log("You flew into the sun moron.");
+			}
+
+			if (this.orbitTrack>360){ this.orbitTrack=0;}
+			this.x=this.orbx+Math.cos(this.orbitTrack* (Math.PI / 180))*this.orbitDiameter;
+			this.y=this.orby+Math.sin(this.orbitTrack*(Math.PI / 180))*this.orbitDiameter;
+			this.y+=this.yv;
+			for(var i=0;i<this.nearbyVessels.length;i++)
+			{
+				//if(this.civ.autoHostile[this.nearbyVessels[i].civ])
+				if(this.civ.autoHostile.indexOf(this.nearbyVessels[i].civ)>-1)
+				{
+					this.torpedoTarget=this.nearbyVessels[i];
+					this.attacking=true;
+					if(this.inPhaserRange(this.torpedoTarget))
+					{
+							this.firePhasers();
+					}
+				}
+			}
+			if((!this.torpedoTarget) || (!this.torpedoTarget.alive))
+			{
+				this.attacking=false;
+			}
+			if(this.attacking)
+			{
+				this.autoFireTick+=1*gameSpeed;
+				if(this.autoFireTick>this.autoFireRate)
+				{
+					this.autoFireTick=0;
+					this.fireTorpedo();
+				}
+			}
+			for(var i=0;i<this.phaserBanks.length;i++)
+			{
+				this.phaserBanks[i].update(this);
+			}
+			for(var i=0;i<this.windows.length;i++)
+			{
+				this.windows[i].update();
+			}
+				
+			
+			if((this.torpedoTarget) && (!this.torpedoTarget.alive))
+			{
+				this.torpedoTarget=null;
+			}
+			
+			return;
+
 		}	
 
 		if(this.awayTeamAt)
 		{
 			if ((Math.abs(this.AwayTeamAt.x-this.x)>this.sensorRange) || (Math.abs(this.AwayTeamAt.y-this.y)>this.sensorRange)) //should that be sensor range?
 			{
-				console.log(this.name+ "is now out of range of their away team!");
+				console.log(this.prefix+ " "+this.name+ "is now out of range of their away team!");
 				var t=this.awayTeam.length;
 				for(var i=0;i<t;i++)
 				{
@@ -1099,7 +1144,7 @@ function starShip(){
 				}
 				if((Math.abs(this.x-this.desiredOrbitTarg.x)<50) && (Math.abs(this.y-this.desiredOrbitTarg.y)<50)) 
 				{
-					console.log(this.name+ " has arrived in orbit of "+this.desiredOrbitTarg.name);
+					console.log(this.prefix+ " "+this.name+ " has arrived in orbit of "+this.desiredOrbitTarg.name);
 					if(this.orders==Orders.Attack)
 					{
 						this.planetTarget=this.desiredOrbitTarg;
@@ -1107,7 +1152,7 @@ function starShip(){
 					if((this.colony) && (this.orders=Orders.Colonize))
 					{
 						this.civ.colonize(this.desiredOrbitTarg);
-						console.log(this.name+ " successfully colonized "+this.desiredOrbitTarg.name);
+						console.log(this.prefix+ " "+this.name+ " successfully colonized "+this.desiredOrbitTarg.name);
 						this.alive=false;
 					}
 					this.orbit(this.desiredOrbitTarg);
@@ -1217,9 +1262,9 @@ function starShip(){
 						//todo ship adrift
 						if(this.crew.length<1)
 						{
-							console.log("The "+this.name+" has been evacuated");
+							console.log("The "+this.prefix+ " "+this.name+" has been evacuated");
 						}else if(this.crew.length<2){
-							console.log("The "+this.name+" has been evacuated, except for the captain.");
+							console.log("The "+this.prefix+ " "+this.name+" has been evacuated, except for the captain.");
 						}
 					//}
 				}
@@ -1276,10 +1321,10 @@ function starShip(){
 			this.windows[i].update();
 		}
 		
-		if((this.hp<15) && (this.autoEvac) && (!this.evacuating) && (!this.evacDone))
+		if((this.hp<15) && (this.autoEvac) && (!this.evacuating) && (!this.evacDone)&& (this.crew.length>0))
 		{
 			this.Evac(this.civ.homeworld);
-			console.log(this.name+ "'s crew is abandoning ship.");
+			console.log(this.prefix+ " "+this.name+ "'s crew is abandoning ship.");
 		}
 		
 		

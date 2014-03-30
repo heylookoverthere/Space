@@ -336,29 +336,6 @@ function torpedo(){
 		}
 	};
 	
-	/*this.inSensorRange=function(thangs){  //torpedos should not be discovering planets and making first contact with species.
-		var thongs=new Array();
-		for(var i=0;i<thangs.length;i++){
-			if ((Math.abs(thangs[i].x-this.x)<this.sensorRange) && (Math.abs(thangs[i].y-this.y)<this.sensorRange))
-			{
-				if((thangs[i]!=this) && (!thangs[i].cloaked)){  //todo, sensors that can detect cloaked ships.
-					thongs.push(thangs[i]);	
-					if((thangs[i].discovered==false)  && (this.race==0)){
-						thangs[i].discovered=true;
-						console.log("The "+this.name+ " discoverd the "+thangs[i].name+" System");
-						
-					}
-					if((this.civ.fContacted[thangs[i].race]==false) && (this.race==0)){
-						this.civ.fContacted[thangs[i].race]=true;
-						console.log("The "+this.name+ " made first contact with the "+races[thangs[i].race]+"s.");
-						this.generateFContactEvent(thangs[i].race);
-					}
-				}
-			}
-		}
-		return thongs;
-	};*/
-	
 	this.update=function(thangs){
 		if((this.homing) && (this.targ))
 		{
@@ -447,29 +424,7 @@ function mine(){
 	{
 		this.detonate();
 	};
-	
-	/*this.inSensorRange=function(thangs){
-		var thongs=new Array();
-		for(var i=0;i<thangs.length;i++){
-			if ((Math.abs(thangs[i].x-this.x)<this.sensorRange) && (Math.abs(thangs[i].y-this.y)<this.sensorRange))
-			{
-				if((thangs[i]!=this) && (!thangs[i].cloaked)){  //todo, sensors that can detect cloaked ships.
-					thongs.push(thangs[i]);	
-					if((thangs[i].discovered==false)  && (this.race==0)){
-						thangs[i].discovered=true;
-						console.log("The "+this.name+ " discoverd the "+thangs[i].name+" System");
-						
-					}
-					if((this.civ.fContacted[thangs[i].race]==false) && (this.race==0)){
-						this.civ.fContacted[thangs[i].race]=true;
-						console.log("The "+this.name+ " made first contact with the "+races[thangs[i].race]+"s.");
-						this.generateFContactEvent(thangs[i].race);
-					}
-				}
-			}
-		}
-		return thongs;
-	};*/
+
 	
 	this.update=function(thangs){
 		if(this.delayTick>0)

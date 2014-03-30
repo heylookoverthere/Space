@@ -173,6 +173,9 @@ function building(typ,wrld)
 	}else if(this.type==Buildings.DaveAndBusters)
 	{
 		this.name="Dave & Busters";
+	}else if(this.type==Buildings.OrbitalDefense)
+	{
+		this.name="Orbital Defense Control";
 	}
 };
 
@@ -543,30 +546,38 @@ function civilization()
 				if(this.productionTick>this.nextProduction)
 				{
 					this.productionTick=0;
-					if(this.name=="Human")
-					{
+			
 						
-						var jerry=this.productionQueue.pop();
-						if(jerry.ship)
+					var jerry=this.productionQueue.pop();
+					if(jerry.ship)
+					{
+						if(this.name=="Human")
 						{
 							console.log("Humanity produced the starship "+jerry.name);
-							this.ships.push(jerry);
-							ships.push(jerry);
-						}else if(jerry.building)
+						};
+						this.ships.push(jerry);
+						ships.push(jerry);
+					}else if(jerry.building)
+					{
+						//create building
+						jerry.world.buildings.push(jerry);
+						if(jerry.type==Buildings.ShieldGrid)
 						{
-							//create building
-							jerry.world.buildings.push(jerry);
-							if(jerry.type==Buildings.ShieldGrid)
-							{
-								jerry.world.maxShields=100;
-								jerry.world.shields=100;
-							}else if(jerry.type==Buildings.Shipyard)
-							{
-								jerry.world.hasShipyard=true;
-							}
+							jerry.world.maxShields=100;
+							jerry.world.shields=100;
+						}else if(jerry.type==Buildings.Shipyard)
+						{
+							jerry.world.hasShipyard=true;
+						}else if(jerry.type==Buildings.OrbitalDefense)
+						{
+							ships.push(newPlatform(jerry.world));
+						}
+						if(this.name=="Human")
+						{
 							console.log("Humanity produced a "+jerry.name+ " on "+jerry.world.name);
 						}
 					}
+				
 				}
 			}
 		}
