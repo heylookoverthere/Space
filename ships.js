@@ -756,7 +756,10 @@ function starShip(){
 	
 	this.manualHelm=function()
 	{
-		selectedShip.desiredOrbitTarg=null;
+		if(selectedShip)
+		{
+			selectedShip.desiredOrbitTarg=null;
+		}
 	};
 	
 	this.orderSpeed=function(spd){
@@ -832,8 +835,8 @@ function starShip(){
 	
 	this.generatePlanetEvent=function(world)
 	{
-		var numPlanetEvents=9;
-		var hich=2;//Math.floor(Math.random()*numPlanetEvents);
+		var numPlanetEvents=8;
+		var hich=Math.floor(Math.random()*numPlanetEvents);
 		while(usedEvents[hich])
 		{
 			hich=Math.floor(Math.random()*numPlanetEvents);

@@ -262,7 +262,7 @@ canvas.font = "8pt Calibri";
 		}
 	}
 	//ship info
-	if(!selectedShip) {return;}
+	if(!selectedShip) {canvas.restore(); return;}
 	var actiontext="Full Stop";
 	if(selectedShip.speed>0){
 		if((selectedShip.desiredOrbitTarg) || (selectedShip.destination) || (selectedShip.escorting))
@@ -630,7 +630,7 @@ function mainMenuUpdate(){
 	 }
 	if(startkey.check()){
 		//mode=1;
-		for(var i=3;i<ships.length;i++)
+		for(var i=0;i<ships.length;i++)
 		{
 			if(ships[i].civ.allied)
 			{
@@ -643,8 +643,8 @@ function mainMenuUpdate(){
 	
 	if(ships.length<1)
 	{
-		console.log("No more ships!!!");
-		return;
+		//console.log("No more ships!!!");
+		//return;
 	}
 	
 	if(fleetattackkey.check())
@@ -752,14 +752,18 @@ function mainMenuUpdate(){
 	
 	if(toggleallshipskey.check()) //todo!
 	{
-		curShip++;
-		if(curShip>ships.length-1) {
-			curShip=0;
+		if(ships.length<1)
+		{
+			console.log("there are no ships anywhere.");
+			}else{
+				curShip++;
+			if(curShip>ships.length-1) {
+				curShip=0;
+			}
+			selectedShip=ships[curShip];
+			camera.center(selectedShip);
+			camera.follow(selectedShip);
 		}
-		selectedShip=ships[curShip];
-		camera.center(selectedShip);
-		camera.follow(selectedShip);
-		
 	}
 	
 	if(starkey.check())

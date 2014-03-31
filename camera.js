@@ -91,9 +91,15 @@ var camera = {  //represents the camera, aka what part of the map is on screen
 		this.following=null;
 	},
 	update: function(){
-		if (this.following!=null)
+
+		if (this.following)
 		{
-			camera.center(this.following);
+			if(!this.following.alive)
+			{
+				this.following=null;
+				return;
+			}
+			this.center(this.following);
 		}
 	},
 	isOn: function(thing)

@@ -1248,10 +1248,27 @@ function killShip(targ)
 			targ.alive=false;
 			console.log("The "+targ.prefix+ " " +targ.name+" was destroyed. "+ targ.crew.length+ " crew were lost. ");
 			monsta.explosionTextured(200,targ.x,targ.y,1,"explosion0");
-			if(curShip==i)
+			if(targ==selectedShip)
 			{
 				camera.unFollow();
-				curShip=0;
+				if(civs[0].ships.length>1)
+				{
+					civs[0].cycleShips(camera);
+				}else if(ships.length>1)
+				{
+					curShip++;
+					if(curShip>ships.length-1) {
+						curShip=0;
+					}
+					selectedShip=ships[curShip];
+					camera.center(selectedShip);
+					camera.follow(selectedShip);
+				}else
+				{
+					selectedShip=null;
+					//console.log("no more ships exist!");
+					camera.follow(civs[0].homeworld);
+				}
 				//after delay
 				
 			}

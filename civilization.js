@@ -435,6 +435,11 @@ function civilization()
 	};
 	this.cycleShips=function(cam)
 	{
+		if(this.ships.length<1)
+		{
+			console.log("You have no ships!");
+			return;
+		}
 		this.curShip++;
 		if(this.curShip>this.ships.length-1) {
 			this.curShip=0;
