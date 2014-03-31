@@ -17,12 +17,13 @@ shipNames[8]=["Aldara","Barkano","Bok'Nor","Groumall","Koranak","Kornaire","Krax
 var escapes=new Array();
 var mines=new Array();
 var torpedos=new Array();
-var crewPool=new Array();
 var looseCrew=new Array(); //crew stranded on a planet or in the mirror universe
 
 var targetSprite=Sprite("shiptargetedbig");
 
 var tractorTargetSprite=Sprite("tractortargetedbig");
+
+var beamTargetSprite=Sprite("beamtargetedbig");
 
 function shipWindow()
 {
@@ -555,7 +556,7 @@ function escapePod(){
 			if(this.passenger)
 			{
 				console.log(this.passenger.title+" "+this.passenger.name+"'s escape pod arrived at "+this.destination.name);
-				crewPool.push(this.passenger);	
+				this.civ.crewPool.push(this.passenger);	
 			}else
 			{
 			console.log("An empty escape pod arrived at "+this.destination.name);

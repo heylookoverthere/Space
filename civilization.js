@@ -1,14 +1,15 @@
 var techNames=["Aeroponics","Emergency Rations","Waffle Fries","Microbrewed Beer","Printers That Dont Need Paper With Those Holes On Each Side","Sneakers With Lights On Them","Captioning Pictures Of Cats","Inertial Dampners","Warp Drive","TransWarp","Slipstream","Shitty Sensors","Sensors","Long Range Sensors","Astrometrics","DetectTacheons","DetectCloakythings","DetectWormholethings","ShittyCloak","Cloak","BestCloak","Lasers","Phasers","Disruptors","BestEnergyWeapon","Torpedos","PhotonTorpedos","QuantumTorpedos","TransPhasicTorpedos","PowerCells","Grapple","TractorBeam","StructualIntegrityBeam","Transporter","TransportEnhancer","EmergencyTransporter","AdvTransporter","thatbullshitfromthenewmovie","Energy Shields","AdvEnergyShields","MetaPhasicShields","Armor","AblatativeArmor","MicroCircutry","BioNeuralCircutry","Nanobots","Assimilation","AlienMedican","AlienSurgery","Cloning","GeneticResequencing","Synthahol","AdvEnviromentalControls","ContainmentField","SubspaceTheory","ImpulseProbe","WarpProbe","Statis","WarpEscapePods","AdvEscapePods","AI","Robotics","Androids","Cybernetics","PowerManagment","Replicators","PowerManagment","Capacitors","Holodecks","EMH","MobileEmiter","AdvMetallurgy","DeuteriumCollector","Deflector"];
 var hasItem=new Array();
-var numItems=1;
+var numItems=2;
 var Items={};
 Items.RomulanPrisoner=0;
+Items.Neelix=1;
 
 for(var i=0;i<numItems;i++)
 {
 	hasItem.push(false);
 }
-
+hasItem[Items.Neelix]=true;
 var AIModes={};
 AIModes.Normal=0;
 AIModes.Agressive=6;
@@ -196,6 +197,7 @@ function civilization()
 	this.mode=AIModes.Exploring;
 	this.allied=true;
 	this.fallenBack=false;
+	this.crewPool=new Array();
 	this.targetPods=false;
 	this.fallingBack=false;
 	this.initialProduction=false;
@@ -569,7 +571,14 @@ function civilization()
 		world.civ=this;
 		world.colonized=true;
 		console.log("The planet "+world.name+" has been successfully colonized by the "+this.name);
+		if(Math.random*10<5)
+		{
+			this.generatePlanetEvent(world);
+		}
 	};
+	
+
+	
 	this.update=function()
 	{
 		
@@ -815,16 +824,106 @@ function civilization()
 			var ned=new textbox();
 			ned.setup("Hi. We are Telaxian bounty hunters.  We are after an escaped ",150,370);
 			ned.addText("Telaxian serial killer, he calls himself Neelix.  Have you seen him?");
-			ned.options=0;
+			ned.options=1;
 			ned.civil=this;
+			ned.optionTrack=2;
+			ned.choicesStart=2;
+
+			ned.addText("   Nope haven't seen him.");
+			
+			if(hasItem[Items.Neelix])
+			{
+				ned.options=3;
+				ned.addText("   Yeah, and he's under our protection.");
+				ned.addText("   Here take him please.");
+			}
+			ned.optionOne=function(civil1,civil2)
+			{
+				console.log(civil2);
+				var ped=new textbox();
+				ped.setup("Oh well, be careful if you see him."  ,150,370);
+				ped.civil=civil1;
+				ped.optionTrack=0;
+				ped.options=0;
+				civil2.messages.push(ped);
+				holdInput=true;
+			};
+			ned.optionTwo=function(civil1,civil2)
+			{
+				var ped=new textbox();
+				ped.setup("If you won't turn him over, we will claim his body from the " ,150,370);
+				ped.addText("wreakage of your ship!");
+				ped.civil=civil1;
+				ped.optionTrack=0;
+				ped.options=0;
+				civil1.autoHostile.push(civil2);
+				civil2.messages.push(ped);
+				holdInput=true;
+			};
+			ned.optionThree=function(civil1,civil2)
+			{
+				var ped=new textbox();
+				ped.setup("Thank you, now this scumbag can be brought to justice.  The " ,150,370);
+				ped.addText("Telaxian people thank you.  Call on us if you need help with the Borg.");
+				ped.civil=civil1;
+				ped.optionTrack=0;
+				ped.options=0;
+				civil1.allied=true;
+				civil1.autoHostile.push(civil2);
+				civil2.messages.push(ped);
+				holdInput=true;
+			};
 			other.messages.push(ned);
 		}
 		else if(this.race==raceIDs.Orion)
 		{
 			var ned=new textbox();
-			ned.setup("Hello, would you like to buy a green skinned woman?",150,370);
+			ned.setup("Hello, would you like to buy a green skinned woman for $300?",150,370);
 			ned.options=0;
 			ned.civil=this;
+			ned.options=3;
+			ned.civil=this;
+			ned.optionTrack=1;
+			ned.choicesStart=1;
+			ned.addText("   Hells yeah!");
+			ned.addText("   No Thanks.");
+			ned.addText("   Die Slaver!");
+			ned.optionOne=function(civil1,civil2)
+			{
+				console.log(civil2);
+				var ped=new textbox();
+				ped.setup("Excellent!  Beaming her over now."  ,150,370);
+				ped.civil=civil1;
+				ped.optionTrack=0;
+				ped.options=0;
+				var sexslave=new dude();
+				civil2.crewPool.push(sexslave);
+				console.log("Ganed an Orion sex slave!");
+				civil1.allied=true;
+				civil2.messages.push(ped);
+				holdInput=true;
+			};
+			ned.optionTwo=function(civil1,civil2)
+			{
+				var ped=new textbox();
+				ped.setup("Very Well." ,150,370);
+				ped.civil=civil1;
+				ped.optionTrack=0;
+				ped.options=0;
+				civil2.messages.push(ped);
+				holdInput=true;
+			};
+			ned.optionThree=function(civil1,civil2)
+			{
+				var ped=new textbox();
+				ped.setup("Wait, what?!  Arm weapons!" ,150,370);
+				ped.civil=civil1;
+				ped.optionTrack=0;
+				ped.options=0;
+				civil1.autoHostile.push(civil2);
+				civil2.messages.push(ped);
+				holdInput=true;
+			};
 			other.messages.push(ned);
 		}else if(this.race==raceIDs.Dominion)
 		{
@@ -853,9 +952,9 @@ function civilization()
 			{
 				console.log(civil2);
 				var ped=new textbox();
-				ped.setup("Hm. I suppose we could spare a ship or two." ,150,370);
+				ped.setup("Hm. I suppose we could spare a ship or two. If only to learn"  ,150,370);
 				ped.civil=civil1;
-				ped.addText("If only to learn more about the Borg threat.");
+				ped.addText("more about the Borg threat.");
 				ped.optionTrack=0;
 				ped.options=0;
 				console.log("The Andorians have agreed to help!");

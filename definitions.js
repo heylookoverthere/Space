@@ -68,6 +68,9 @@ function textbox()
 			}else if(this.optionTrack-this.choicesStart==1)
 			{
 				this.optionTwo(this.civil,civs[0]);
+			}else if(this.optionTrack-this.choicesStart==2)
+			{
+				this.optionThree(this.civil,civs[0]);
 			}else{
 				holdInput=false;
 			}

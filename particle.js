@@ -13,6 +13,7 @@ function particle(){
 	this.alive=false;
 	this.x=0;
 	this.y=0;
+	this.evented=false;
 	this.width=1;
 	this.height=1;
 	this.color=bColors[Math.floor(Math.random()*8)];

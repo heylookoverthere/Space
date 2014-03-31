@@ -1924,7 +1924,7 @@ function newInitShips()
 		}
 	}
 	selectedShip=ships[0];
-	crewPool.push(new dude());
+	civs[0].crewPool.push(new dude());
 };
 function drawStarfield(canv,cam){
 	if(spinArt) {return;}

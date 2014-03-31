@@ -107,6 +107,7 @@ function starShip(){
 	this.desiredOrbitTarg=null;
 	this.gotoDest=false;
 	this.drawTarget=false;
+	this.beamTarget=null;
 	this.dest=null;
 	this.homeworld=null;
 	this.refitOrdered=false;
@@ -114,8 +115,8 @@ function starShip(){
 	this.autoFireTick=0;
 	this.autoFireRate=40;
 	this.fixCount=0;
-	this.civ=null;
 	this.destx=0;
+	this.civ=null;
 	this.desty=0;
 	this.orby=0;
 	this.orbx=0;
@@ -155,6 +156,7 @@ function starShip(){
 	this.nearbySystems=new Array();
 	this.nearbyVessels=new Array();
 	this.nearbyPods=new Array();
+	this.nearbyPlanets=new Array();
 	this.lightyearsTraveled=0;
 	this.crewLost=0;
 	this.maxTeamSize=4;
@@ -187,6 +189,7 @@ function starShip(){
 			}
 			this.awayTeam.push(this.crew.pop());
 		}
+		console.log("Away team ready");
 	};
 	
 	this.recallAwayTeam=function(){
@@ -214,6 +217,13 @@ function starShip(){
 			return;
 		}
 		console.log("The away team has beamed down to "+target.name);
+		if((target.planet) && (!target.evented))
+		{
+			target.evented=true;
+			this.awayTeamAt=target;
+			console.log(this.awayTeamAt);
+			this.generatePlanetEvent(target);
+		}
 		this.awayTeamAt=target;
 	};
 	
@@ -340,6 +350,46 @@ function starShip(){
 		}
 		this.name=shipNames[this.race][nami];
 		shipNamesUsed[this.race][nami]=true;
+	};
+	
+	this.cycleBeamTarget=function()
+	{
+		if(!this.nearbyVessels) {return;}
+		//this.unTractorSomething();
+		var toon=this.nearbyVessels.concat(this.nearbyPlanets);
+		//go through toon and remove ones out of tractor range!
+		for(var i=0;i<toon.length;i++)
+		{
+			if(!this.inTractorRange(toon[i]))
+			{
+				toon.splice(i,1);
+				i--;
+			}
+		}
+		//if(!this.bearbyVessels) {return;}
+		if(this.beamTarget==null)
+		{
+			//console.log("targeting selfyar?");
+			this.beamTarget=toon[0];
+			return;
+		}
+		for(var i=0;i<toon.length;i++)
+		{
+			if(toon[i]==this.beamTarget)
+			{
+				if(i==toon.length)
+				{
+					console.log("targeting self?");
+					this.beamTarget=toon[0];
+					return;
+				}else
+				{
+					
+					this.beamTarget=toon[i+1];
+					return;
+				}
+			}
+		}
 	};
 	
 	this.cycleTractorTarget=function()
@@ -775,6 +825,52 @@ function starShip(){
 		return thongs;
 	};
 	
+	this.generatePlanetEvent=function(world)
+	{
+		var numPlanetEvents=4;
+		var hich=Math.floor(Math.random()*numPlanetEvents);
+		if(hich==0)//find chest.
+		{
+			var cont=0;//Math.floor(Math.random()*3);
+			if(cont==0)
+			{
+				var amt=Math.floor(Math.random()*6+4)*10;
+				this.civ.money+=amt
+				var ned=new textbox();
+				ned.setup("You find $"+amt+ " in a space chest.",150,370);
+				ned.civil=this;
+				ned.choicesStart=1;
+				ned.optionTrack=0;
+				civs[0].messages.push(ned);
+			}else if(cont==1)
+			{
+				
+			}
+		}if(hich==1) //find dude
+		{
+			if(this.crew.length<this.crewMax)
+			{
+				this.crew.push(new dude());
+				var ned=new textbox();
+				ned.setup("You find a dude.  He agrees to join your crew.",150,370);
+				ned.civil=this;
+				ned.choicesStart=1;
+				ned.optionTrack=0;
+				civs[0].messages.push(ned);
+			}else
+			{
+				this.civ.crewPool.push(new dude());
+				var ned=new textbox();
+				ned.setup("You find a dude.  He agrees to join your crew but",150,370);
+				ned.addText("the ship is full. You direct him to headquarters on Earth");
+				ned.civil=this;
+				ned.choicesStart=1;
+				ned.optionTrack=0;
+				civs[0].messages.push(ned);
+			}
+		}
+	};
+	
 	this.getRepairRate=function()
 	{
 		//todo only engineering crew.
@@ -866,7 +962,7 @@ function starShip(){
 
 		if(this.awayTeamAt)
 		{
-			if ((Math.abs(this.AwayTeamAt.x-this.x)>this.sensorRange) || (Math.abs(this.AwayTeamAt.y-this.y)>this.sensorRange)) //should that be sensor range?
+			if ((Math.abs(this.awayTeamAt.x-this.x)>this.sensorRange) || (Math.abs(this.awayTeamAt.y-this.y)>this.sensorRange)) //should that be sensor range?
 			{
 				console.log(this.prefix+ " "+this.name+ "is now out of range of their away team!");
 				var t=this.awayTeam.length;
@@ -877,6 +973,11 @@ function starShip(){
 				this.awayTeamAt=null;
 			}
 		}
+		if((this.beamTarget) &&((!this.beamTarget.alive) || (!this.isInSensorRange(this.beamTarget))))
+		{
+			this.beamTarget=null;
+		}
+		
 		if((this.torpedoTarget) &&((!this.torpedoTarget.alive) || (!this.isInSensorRange(this.torpedoTarget))))
 		{
 			this.torpedoTarget=null;
@@ -1441,7 +1542,16 @@ function starShip(){
 				tractorTargetSprite.draw(can, -this.tractorTarget.width/2,-this.tractorTarget.height/2);
 				can.restore();
 			}
-			
+			if((this.beamTarget) &&(this.drawTarget))
+			{
+				can.save();
+				can.translate((this.beamTarget.x+cam.x)*cam.zoom,(this.beamTarget.y+cam.y)*cam.zoom);
+				
+				//can.rotate((this.beamTarget.heading-90)* (Math.PI / 180));//todo negatives.
+				can.scale(cam.zoom,cam.zoom);
+				beamTargetSprite.draw(can, -this.beamTarget.width/2,-this.beamTarget.height/2);
+				can.restore();
+			}
 			for(var i=0;i<this.phaserBanks.length;i++)
 			{
 				this.phaserBanks[i].draw(can,cam);

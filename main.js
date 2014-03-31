@@ -128,6 +128,8 @@ var startkey=new akey("return");
 var phaserkey=new akey("u");
 var tractorkey=new akey("b");
 var tractortargetkey=new akey("n");
+var beamkey=new akey("i");
+var beamtargetkey=new akey("a");
 
 var dkey=new akey("d");
 var starkey=new akey("s");
@@ -849,6 +851,31 @@ function mainMenuUpdate(){
 			//spinArt=!spinArt;
 			gameSpeed=0;
 	}
+	if(beamkey.check())
+	{
+		if(selectedShip.awayTeamAt!=null)
+		{
+			selectedShip.beamUpAwayTeam();
+		}else if(selectedShip.awayTeamAt==null)
+		{
+			if(selectedShip.awayTeam.length<1)
+			{
+				selectedShip.prepareAwayTeam(selectedShip.crew.length-2);
+			}
+			if(selectedShip.beamTarget)
+			{
+				selectedShip.beamDown(selectedShip.beamTarget);
+			}
+		}
+	}
+	var allworlds=new Array();
+	for (var i=0;i<stars.length;i++)
+	{
+		for(var j=0;j<stars[i].planets.length;j++)
+		{
+			allworlds.push(stars[i].planets[j]);
+		}
+	}
 	for(var i=0;i<ships.length;i++)
 	{
 		if(ships[i].alive)
@@ -856,6 +883,7 @@ function mainMenuUpdate(){
 			ships[i].nearbySystems=ships[i].inSensorRange(stars);	
 			ships[i].nearbyVessels=ships[i].inSensorRange(ships);
 			ships[i].nearbyPods=ships[i].inSensorRange(escapes);
+			ships[i].nearbyPlanets=ships[i].inSensorRange(allworlds);
 			if(ships[i].nearbyVessels==null)
 			{
 				ships[i].torpedoTarget=null;
@@ -884,6 +912,11 @@ function mainMenuUpdate(){
 	{
 		selectedShip.cycleTractorTarget();
 	}
+	if(beamtargetkey.check())
+	{
+		selectedShip.cycleBeamTarget();
+	}
+	
 	/*for(var i=0;i<this.escapes.length;i++)
 	{
 		escapes[i].update();
@@ -933,9 +966,9 @@ function crewScreenUpdate(){
 	ed.width=700;
 	ed.height=600;
 	ed.msg[0]="Crew: "
-	for(var i=0;i<crewPool.length;i++)
+	for(var i=0;i<civs[0].crewPool.length;i++)
 	{
-		ed.msg[0]+=crewPool[i].title+" "+crewPool[i].name+" ";
+		ed.msg[0]+=civs[0].crewPool[i].title+" "+civs[0].crewPool[i].name+" ";
 	}
 
 	if((escapekey.check()) || (crewscreenkey.check()))
