@@ -9,7 +9,7 @@ for(var i=0;i<numItems;i++)
 {
 	hasItem.push(false);
 }
-hasItem[Items.Neelix]=true;
+
 var AIModes={};
 AIModes.Normal=0;
 AIModes.Agressive=6;
@@ -195,7 +195,7 @@ function civilization()
 	this.encounterTrack=0;
 	this.money=1000;
 	this.mode=AIModes.Exploring;
-	this.allied=true;
+	this.allied=false;
 	this.fallenBack=false;
 	this.crewPool=new Array();
 	this.targetPods=false;
@@ -867,6 +867,7 @@ function civilization()
 				ped.addText("Telaxian people thank you.  Call on us if you need help with the Borg.");
 				ped.civil=civil1;
 				ped.optionTrack=0;
+				hasItem[Items.Neelix]=false;
 				ped.options=0;
 				civil1.allied=true;
 				civil1.autoHostile.push(civil2);

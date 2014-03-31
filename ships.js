@@ -12,6 +12,11 @@ Orders.Attack=6;
 Orders.Tractor=7;
 
 var borgTrack=0;
+var usedEvents=new Array();
+for(var i=0;i<100;i++)
+{
+	usedEvents.push(false);
+}
 
 function starShip(){
 	this.ship=true;
@@ -827,11 +832,16 @@ function starShip(){
 	
 	this.generatePlanetEvent=function(world)
 	{
-		var numPlanetEvents=4;
+		var numPlanetEvents=5;
 		var hich=Math.floor(Math.random()*numPlanetEvents);
+		while(usedEvents[hich])
+		{
+			hich=Math.floor(Math.random()*numPlanetEvents);
+		}
+		
 		if(hich==0)//find chest.
 		{
-			var cont=0;//Math.floor(Math.random()*3);
+			var cont=Math.floor(Math.random()*3);
 			if(cont==0)
 			{
 				var amt=Math.floor(Math.random()*6+4)*10;
@@ -844,7 +854,34 @@ function starShip(){
 				civs[0].messages.push(ned);
 			}else if(cont==1)
 			{
-				
+				var ned=new textbox();
+				ned.setup("You find an old Romulan artifact.",150,370);
+				hasItem[Items.RomulanArtifact]=true;
+				ned.civil=this;
+				ned.choicesStart=1;
+				ned.optionTrack=0;
+				civs[0].messages.push(ned);
+				usedEvents[hich]=true;
+			}else if(cont==2)
+			{
+				var ned=new textbox();
+				ned.setup("You find an old Klingon artifact, the Sword of Khaless",150,370);
+				hasItem[Items.KlingonArtifact]=true;
+				ned.civil=this;
+				ned.choicesStart=1;
+				ned.optionTrack=0;
+				civs[0].messages.push(ned);
+				usedEvents[hich]=true;
+			}else if(cont==3)
+			{
+				var ned=new textbox();
+				ned.setup("You find an old Cardassian artifact.",150,370);
+				hasItem[Items.CardassianArtifact]=true;
+				ned.civil=this;
+				ned.choicesStart=1;
+				ned.optionTrack=0;
+				civs[0].messages.push(ned);
+				usedEvents[hich]=true;
 			}
 		}if(hich==1) //find dude
 		{
@@ -865,6 +902,52 @@ function starShip(){
 				ned.addText("the ship is full. You direct him to headquarters on Earth");
 				ned.civil=this;
 				ned.choicesStart=1;
+				ned.optionTrack=0;
+				civs[0].messages.push(ned);
+			}
+		}else if(hich==2)//find Neelix.
+		{
+			var cont=0;//Math.floor(Math.random()*3);
+			if(cont==0)
+			{
+				var ned=new textbox();
+				hasItem[Items.Neelix]=true;
+				ned.setup("You find Neelix the Tellaxian and welcome him aboard.",150,370);
+				ned.civil=this;
+				ned.choicesStart=0;
+				ned.choices=0;
+				ned.optionTrack=0;
+				civs[0].messages.push(ned);
+				usedEvents[hich]=true;
+			}
+		}else if(hich==3)//find Romulan
+		{
+			var cont=0;//Math.floor(Math.random()*3);
+			if(cont==0)
+			{
+				var ned=new textbox();
+				hasItem[Items.RomulanPrisoner]=true;
+				ned.setup("You find a Romulan officer in a stasis pod.",150,370);
+				ned.civil=this;
+				ned.choicesStart=0;
+				ned.choices=0;
+				ned.optionTrack=0;
+				civs[0].messages.push(ned);
+				usedEvents[hich]=true;
+			}
+		}else if(hich==4)//find tech
+		{
+			var cont=0;//Math.floor(Math.random()*3);
+			if(cont==0)
+			{
+				var ned=new textbox();
+				var hurh=Math.floor(Math.random()*civs[0].techs.length);
+				civs[0].techs[hurh]=true;
+				ned.setup("You find alien blueprints that help you develop",150,370);
+				ned.addText("the technology of "+techNames[hurh]);
+				ned.civil=this;
+				ned.choicesStart=0;
+				ned.choices=0;
 				ned.optionTrack=0;
 				civs[0].messages.push(ned);
 			}
@@ -964,7 +1047,7 @@ function starShip(){
 		{
 			if ((Math.abs(this.awayTeamAt.x-this.x)>this.sensorRange) || (Math.abs(this.awayTeamAt.y-this.y)>this.sensorRange)) //should that be sensor range?
 			{
-				console.log(this.prefix+ " "+this.name+ "is now out of range of their away team!");
+				console.log(this.prefix+ " "+this.name+ " is now out of range of their away team!");
 				var t=this.awayTeam.length;
 				for(var i=0;i<t;i++)
 				{
