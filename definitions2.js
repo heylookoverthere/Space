@@ -218,7 +218,22 @@ function screenBox(obj)
 			{
 				can.fillText(this.object.buildings[i].name,this.x+10,this.y+2+128+i*16);
 			}
-		}else 
+		}else if(this.object.platform)
+		{
+			can.fillText(this.object.name,this.x+10,this.y+2+16);
+			can.fillText(this.object.civ.name,this.x+10,this.y+2+32);
+			can.fillText("HP: "+this.object.hp+"/"+this.object.maxHp,this.x+10,this.y+2+48);
+			can.fillText("Shields: "+this.object.shields+"/"+this.object.maxShields,this.x+10,this.y+2+64);
+			
+			can.fillText("Torpedos: "+this.object.numTorpedos+" Mines: "+this.object.numMines,this.x+10,this.y+2+80);
+			if(this.object.torpedoTarget)
+			{
+				can.fillText("Targeting: "+this.object.torpedoTarget.name,this.x+10,this.y+2+96);
+			}else
+			{
+				can.fillText("No Weapons Lock",this.x+10,this.y+2+96);
+			}
+		}
 		can.restore();
 	};
 };
