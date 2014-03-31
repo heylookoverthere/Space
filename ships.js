@@ -900,7 +900,6 @@ function starShip(){
 				
 					ned.optionOne=function(civil1,civil2)
 					{
-						console.log(civil2);
 						var ped=new textbox();
 						ped.label="Neelix:";
 						ped.setup("Thanks! I'll be the chef.  And the moral officer. And..."  ,150,370);
@@ -915,7 +914,6 @@ function starShip(){
 				
 					ned.optionTwo=function(civil1,civil2)
 					{
-						console.log(civil2);
 						var ped=new textbox();
 						ped.object=this.object;
 						if(Math.random()*10<6)

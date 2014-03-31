@@ -132,12 +132,12 @@ function howsitgoing(iv)
 	console.log("Number of Battles: "+totalbattles);
 	if(iv.productionQueue.length>0)
 	{
-		if(iv.productionQueue[iv.productionQueue.length-1].building)
+		if(iv.productionQueue[0].building)
 		{
-			console.log("Currently producing a "+ iv.productionQueue[iv.productionQueue.length-1].name+ " on " +iv.productionQueue[iv.productionQueue.length-1].world.name);	
+			console.log("Currently producing a "+ iv.productionQueue[0].name+ " on " +iv.productionQueue[0].world.name);	
 		}else //ship
 		{
-			console.log("Currently producing the "+ iv.productionQueue[iv.productionQueue.length-1].prefix+" "+iv.productionQueue[iv.productionQueue.length-1].name);
+			console.log("Currently producing the "+ iv.productionQueue[0].prefix+" "+iv.productionQueue[0].name);
 		}
 	}else
 	{
@@ -310,7 +310,7 @@ function newShip(iv,startworld)
 			james.civ=iv;
 			james.crewVessel();
 			james.alive=true;
-			return james;;
+			return james;
 		}else if(iv.race==raceIDs.Klingon)
 		{
 			var james=new starShip();
@@ -397,7 +397,7 @@ function newShip(iv,startworld)
 				james.crewVessel();
 
 				james.alive=true;
-				return james;;
+				return james;
 				
 			}else
 			{
@@ -451,7 +451,7 @@ function newShip(iv,startworld)
 				james.crewVessel();
 
 				james.alive=true;
-				return james;;
+				return james;
 				
 			}else
 			{
@@ -491,7 +491,7 @@ function newShip(iv,startworld)
 			
 			james.crewVessel();
 			james.alive=true;
-			return james;;
+			return james;
 		}else if(iv.race==raceIDs.Hirogen)
 		{
 			var james=new starShip();
@@ -510,8 +510,8 @@ function newShip(iv,startworld)
 			
 			james.crewVessel();
 			james.alive=true;
-			return james;;
-		}else if(i==raceIDs.Andorian)
+			return james;
+		}else if(iv.race==raceIDs.Andorian)
 		{
 			var james=new starShip();
 			james.homeworld=iv.homeworld;
@@ -530,10 +530,9 @@ function newShip(iv,startworld)
 			james.civ=civs[raceIDs.Andorian];
 			
 			james.crewVessel();
-			james.civ=civs[i];
 			james.alive=true;
-			iv.ships.push(james);
-		}else if(i==raceIDs.Tellarite)
+			return james;
+		}else if(iv.race==raceIDs.Tellarite)
 		{
 			var james=new starShip();
 			james.homeworld=iv.homeworld;
@@ -552,10 +551,9 @@ function newShip(iv,startworld)
 			james.civ=civs[raceIDs.Tellarite];
 			
 			james.crewVessel();
-			james.civ=civs[i];
 			james.alive=true;
-			iv.ships.push(james);
-		}else if(i==raceIDs.Breen)
+			return james;
+		}else if(iv.race==raceIDs.Breen)
 		{
 			var james=new starShip();
 			james.homeworld=iv.homeworld;
@@ -574,10 +572,10 @@ function newShip(iv,startworld)
 			james.civ=civs[raceIDs.Breen];
 			
 			james.crewVessel();
-			james.civ=civs[i];
+			james.civ=iv;
 			james.alive=true;
-			iv.ships.push(james);
-		}else if(i==raceIDs.Telaxian)
+			return james;
+		}else if(iv.race==raceIDs.Telaxian)
 		{
 			var james=new starShip();
 			james.homeworld=iv.homeworld;
@@ -593,13 +591,13 @@ function newShip(iv,startworld)
 			james.maxSpeed=7;
 			james.speed=3;
 			james.desiredSpeed=5;
-			james.civ=civs[raceIDs.Telaxian];
+			james.civ=iv;
 			
 			james.crewVessel();
-			james.civ=civs[i];
+			james.civ=iv
 			james.alive=true;
-			iv.ships.push(james);
-		}else if(i==raceIDs.Vidiian)
+			return james;
+		}else if(iv.race==raceIDs.Vidiian)
 		{
 			var james=new starShip();
 			james.homeworld=iv.homeworld;
@@ -618,10 +616,10 @@ function newShip(iv,startworld)
 			james.civ=civs[raceIDs.Vidiian];
 			
 			james.crewVessel();
-			james.civ=civs[i];
+			james.civ=iv;
 			james.alive=true;
-			iv.ships.push(james);
-		}else if(i==raceIDs.Pakled)
+			return james;
+		}else if(iv.race==raceIDs.Pakled)
 		{
 			var james=new starShip();
 			james.homeworld=iv.homeworld;
@@ -637,13 +635,11 @@ function newShip(iv,startworld)
 			james.maxSpeed=7;
 			james.speed=3;
 			james.desiredSpeed=5;
-			james.civ=civs[raceIDs.Pakled];
-			
 			james.crewVessel();
-			james.civ=civs[i];
+			james.civ=iv;
 			james.alive=true;
-			iv.ships.push(james);
-		}else if(i==raceIDs.Bajoran)
+			return james;
+		}else if(iv.race==raceIDs.Bajoran)
 		{
 			var james=new starShip();
 			james.homeworld=iv.homeworld;
@@ -661,10 +657,9 @@ function newShip(iv,startworld)
 			james.civ=civs[raceIDs.Bajoran];
 			
 			james.crewVessel();
-			james.civ=civs[i];
 			james.alive=true;
-			iv.ships.push(james);
-		}else if(i==raceIDs.Ferengi)
+			return james;
+		}else if(iv.race==raceIDs.Ferengi)
 		{
 			var james=new starShip();
 			james.homeworld=iv.homeworld;
@@ -682,10 +677,9 @@ function newShip(iv,startworld)
 			james.civ=civs[raceIDs.Ferengi];
 						
 			james.crewVessel();
-			james.civ=civs[i];
 			james.alive=true;
-			iv.ships.push(james);
-		}else if(i==raceIDs.Orion)
+			return james;
+		}else if(iv.race==raceIDs.Orion)
 		{
 			var james=new starShip();
 			james.homeworld=iv.homeworld;
@@ -703,9 +697,8 @@ function newShip(iv,startworld)
 			james.civ=civs[raceIDs.Orion];
 						
 			james.crewVessel();
-			james.civ=civs[i];
 			james.alive=true;
-			iv.ships.push(james);
+			return james;
 		}else if(iv.race==raceIDs.Borg)
 		{
 			var james=new starShip();

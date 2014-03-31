@@ -189,7 +189,6 @@ function civilization()
 	this.techs=new Array();
 	this.homeStar=0;
 	this.homePlanet=2;
-	this.AI=true;
 	this.flags=new Array();
 	for(var i=0;i<numCivFlags;i++)
 	{
@@ -199,8 +198,9 @@ function civilization()
 	this.researchRate=1;
 	this.encounterTrack=0;
 	this.money=1000;
+	this.AI=true;
 	this.mode=AIModes.Exploring;
-	this.allied=false;
+	this.allied=true;//false;
 	this.fallenBack=false;
 	this.crewPool=new Array();
 	this.targetPods=false;
@@ -254,25 +254,23 @@ function civilization()
 	this.masterAI=function()
 	{
 		//choose production
-		if(this.race>0)
+		if(!this.initialProduction)
 		{
-			if(!this.initialProduction)
+			this.produceBuilding(Buildings.ShieldGrid,this.homeworld);
+			this.produceBuilding(Buildings.Mine,this.homeworld);
+			this.produceBuilding(Buildings.OrbitalDefense,this.homeworld);
+			this.money-=300;
+			this.initialProduction=true;
+		}else
+		{
+			var cost=300;
+			if(this.money>cost-1)
 			{
-				this.produceBuilding(Buildings.ShieldGrid,this.homeworld);
-				this.produceBuilding(Buildings.Mine,this.homeworld);
-				this.produceBuilding(Buildings.OrbitalDefense,this.homeworld);
-				this.money-=300;
-				this.initialProduction=true;
-			}else
-			{
-				var cost=300;
-				if(this.money>cost-1)
-				{
-					this.money-=cost;
-					this.produceShip(9,this.homeworld);
-				}
+				this.money-=cost;
+				this.produceShip(9,this.homeworld);
 			}
 		}
+
 		
 		if(this.homeworld.civ!=this)
 		{
@@ -535,7 +533,7 @@ function civilization()
 	
 	this.produceShip=function(lass,worldstart,worldgo)//todo make worldstart do something
 	{
-		var jimmy=newShip(this);
+		var jimmy=newShip(this,this.homeworld);
 		if(lass==1)
 		{
 			jimmy.colony=true;
@@ -727,9 +725,9 @@ function civilization()
 				console.log(civil2);
 				var ped=new textbox();
 				ped.label="Vulcan Captain:";
-				ped.setup("Hm.  It seems logical to offer you our aid, as they will" ,150,370);
+				ped.setup("Hm.  It seems logical to offer you our aid, as they will surely come" ,150,370);
 				ped.civil=civil1;
-				ped.addText("surely come for us once they are done with you.");
+				ped.addText("for us once they are done with you.");
 				ped.optionTrack=0;
 				ped.options=0;
 				console.log("The Vulcans have agreed to help!");
