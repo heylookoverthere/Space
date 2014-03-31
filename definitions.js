@@ -3,6 +3,9 @@ var bColors = ["#008000","#006400", "#FF4500", "#000080", "#696969", "#800080", 
 var yellowColors=["#F3F781","#F2F5A9","#FFFF00","#D7DF01","#AEB404"];
 var holdInput=false;
 
+Flag={};
+Flag.MetTelaxianBountyHunters=0;
+Flag.LeftNeelix=1;
 
 
 function textbox() 
@@ -12,6 +15,7 @@ function textbox()
 	this.y=370;
 	this.scroll=0;
 	this.width=600;
+	this.label=false;
 	this.height=55;
 	this.options=2;
 	this.object=null;
@@ -21,6 +25,14 @@ function textbox()
 	this.colors=new Array();
 	this.msg=new Array();
 	this.optionOne=function(civil1,civil2)
+	{
+		holdInput=false;
+	};
+	this.optionTwo=function(civil1,civil2)
+	{
+		holdInput=false;
+	};
+	this.optionThree=function(civil1,civil2)
 	{
 		holdInput=false;
 	};
@@ -102,14 +114,18 @@ function textbox()
 			}
 		}else*/
 		//todo if text is too long put it on next line
+		if(this.label)
+		{
+			can.fillText(this.label,this.x+4,this.y+9);
+		}
 		for(var i=0;i<this.msg.length;i++)
 		{
 			//if (i>bConsoleStr.length) {break;}
 			can.fillStyle=this.colors[i];
-			can.fillText(this.msg[i], this.x+10,this.y+8+(18*(i+1)));
+			can.fillText(this.msg[i], this.x+16,this.y+12+(18*(i+1)));
 			if((this.options>0) && (this.optionTrack==i))
 			{
-				can.fillText("-", this.x+5,this.y+8+(18*(i+1)));
+				can.fillText("-", this.x+17,this.y+12+(18*(i+1)));
 			}
 		}	
 		

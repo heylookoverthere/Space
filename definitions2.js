@@ -631,7 +631,7 @@ function newShip(iv,startworld)
 			
 			james.prefix="";
 			james.class="Pakled Cruiser";
-			james.race=raceIDs.Andorian;
+			james.race=raceIDs.Pakled;
 			james.christen();
 			james.sprite=Sprite("ship17");
 			james.maxSpeed=7;
@@ -1771,7 +1771,7 @@ function newInitShips()
 				
 				james.prefix="Pakled";
 				james.class="Pakled Cruiser";
-				james.race=raceIDs.Andorian;
+				james.race=raceIDs.Pakled;
 				james.christen();
 				james.sprite=Sprite("ship17");
 				james.maxSpeed=7;

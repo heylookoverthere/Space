@@ -179,7 +179,7 @@ function building(typ,wrld)
 		this.name="Orbital Defense Control";
 	}
 };
-
+var numCivFlags=10;
 function civilization()
 {
 	this.race=0;
@@ -190,6 +190,11 @@ function civilization()
 	this.homeStar=0;
 	this.homePlanet=2;
 	this.AI=true;
+	this.flags=new Array();
+	for(var i=0;i<numCivFlags;i++)
+	{
+		this.flags.push(false);
+	}
 	this.homeworldWarning=true; //todo, allow them to recover and then get warned again later.
 	this.researchRate=1;
 	this.encounterTrack=0;
@@ -709,12 +714,14 @@ function civilization()
 			ned.setup("Greetings, we are the Vulcan Confederacy.  How May we help you?",150,370);
 			ned.civil=this;
 			ned.choicesStart=1;
+			ned.label="Vulcan Captain:";
 			ned.addText("   Explain the Borg threat");
 			ned.addText("   Demand their surrender");
 			ned.optionOne=function(civil1,civil2)
 			{
 				console.log(civil2);
 				var ped=new textbox();
+				ped.label="Vulcan Captain:";
 				ped.setup("Hm.  It seems logical to offer you our aid, as they will" ,150,370);
 				ped.civil=civil1;
 				ped.addText("surely come for us once they are done with you.");
@@ -729,6 +736,7 @@ function civilization()
 			ned.optionTwo=function(civil1,civil2)
 			{
 				var ped=new textbox();
+				ped.label="Vulcan Captain:";
 				ped.setup("We will not surrender, we can defend ourselves!" ,150,370);
 				ped.civil=civil1;
 				ped.optionTrack=0;
@@ -743,6 +751,7 @@ function civilization()
 		}else if(this.race==raceIDs.Ferengi)
 		{
 			var ned=new textbox();
+			ned.label="Ferengi Captain:";
 			ned.setup("Hello, we are the Ferengi.  We have heard about your troubles.",150,370);
 			ned.addText("We would be happy to help defend your planet.  For a modest");
 			ned.addText ("fee of course.");
@@ -754,6 +763,7 @@ function civilization()
 			ned.optionOne=function(civil1,civil2)
 			{
 				var ped=new textbox();
+				ped.label="Ferengi Captain:";
 				ped.setup("Pleasure doing buisness with you.  Call us when you need our help." ,150,370);
 				ped.civil=civil1;
 				ped.optionTrack=0;
@@ -767,6 +777,7 @@ function civilization()
 			ned.optionTwo=function(civil1,civil2)
 			{
 				var ped=new textbox();
+				ped.label="Ferengi Captain:";
 				ped.setup("Very well, your loss.  Good luck with the Borg." ,150,370);
 				ped.civil=civil1;
 				ped.optionTrack=0;
@@ -778,13 +789,23 @@ function civilization()
 		}else if(this.race==raceIDs.Borg)
 		{
 			var ned=new textbox();
+			ned.label="Borg Transmission:";
 			ned.setup("We are Borg. You will be assimilated.  Resistance is futile.",150,370);
+			ned.options=0;
+			ned.civil=this;
+			other.messages.push(ned);
+		}else if(this.race==raceIDs.Betazoid)
+		{
+			var ned=new textbox();
+			ned.label="Betazoid Ambassador:";
+			ned.setup("We can read your mind, you dirty little fucker.",150,370);
 			ned.options=0;
 			ned.civil=this;
 			other.messages.push(ned);
 		}else if(this.race==raceIDs.Hirogen)
 		{
 			var ned=new textbox();
+			ned.label="Hirogen Hunter:";
 			ned.setup("We are the Hirogen.  You are now our prey.",150,370);
 			ned.options=0;
 			ned.civil=this;
@@ -792,6 +813,7 @@ function civilization()
 		}else if(this.race==raceIDs.Breen)
 		{
 			var ned=new textbox();
+			ned.label="Breen:";
 			ned.setup("....",150,370);
 			ned.options=0;
 			ned.civil=this;
@@ -799,6 +821,7 @@ function civilization()
 		}else if(this.race==raceIDs.Cardassian)
 		{
 			var ned=new textbox();
+			ned.label="Gul Dukat:";
 			ned.setup("Hello.  I am Gul Dukat of the Cardassian Union.",150,370);
 			ned.options=0;
 			ned.civil=this;
@@ -806,6 +829,7 @@ function civilization()
 		}else if(this.race==raceIDs.Bajoran)
 		{
 			var ned=new textbox();
+			ned.label="Bajoran Captain:";
 			ned.setup("Hello we are the Bajorans.  We would appreciate any help you ",150,370);
 			ned.addText("can provide in our struggle with the Cardassian Union.");
 			ned.options=0;
@@ -814,14 +838,64 @@ function civilization()
 		}else if(this.race==raceIDs.Tellarite)
 		{
 			var ned=new textbox();
+			ned.label="Tellarite Captain:";
 			ned.setup("Hello I am a Tellarite.  Basically we are a race of Man-Bear-Pigs.",150,370);
+			ned.addText("    Greet the Noble Captain");
+			ned.addText("    Conjecture that his mother was a prostitute.");
 			//ned.addText("");
-			ned.options=0;
+			ned.options=2;
+			ned.optionTrack=1;
+			ned.choicesStart=1;
 			ned.civil=this;
+			ned.optionOne=function(civil1,civil2)
+			{
+				//console.log(civil2);
+				var ped=new textbox();
+				ped.setup("The Tellarite captain greets you politely enough, but you're pretty"  ,150,370);
+				ped.addText("sure he muttered something under his breath.");
+				ped.choicesStart=2;
+				ped.optionTrack=2;
+				ped.options=2;
+				ped.addText("    You must defend your people's honor, attak!");
+				ped.addText("    Let it go");
+				ped.optionOne=function(civil1,civil2)
+				{
+					var hed=new textbox();
+					hed.label="Tellarite Captain:";
+					hed.setup("Pfft, we will destroy you humans. "  ,150,370);
+					hed.options=0;
+					civil2.autoHostile.push(civil1);
+					hed.civil=civil1;
+					civil2.messages.push(hed);
+				}
+				ped.optionTwo=function(civil1,civil2)
+				{
+					holdInput=false;
+				}
+				ped.civil=civil1;
+				civil2.messages.push(ped);
+				holdInput=true;
+			};
+			ned.optionTwo=function(civil1,civil2)
+			{
+				var ped=new textbox();
+				ped.label="Tellarite Captain:";
+				ped.setup("Haha, I like the cut of your space gib.  Call me if you need " ,150,370);
+				ped.addText("anything, you cocksucking human.");
+				ped.civil=civil1;
+				ped.optionTrack=0;
+				ped.options=0;
+				civil1.allied=true;
+				civil2.messages.push(ped);
+				holdInput=true;
+			};
 			other.messages.push(ned);
 		}else if(this.race==raceIDs.Telaxian)
 		{
+			civs[0].flags[Flag.MetTelaxianBountyHunters]=true;
+			console.log(this.flags);
 			var ned=new textbox();
+			ned.label="Telaxian Captain:";
 			ned.setup("Hi. We are Telaxian bounty hunters.  We are after an escaped ",150,370);
 			ned.addText("Telaxian serial killer, he calls himself Neelix.  Have you seen him?");
 			ned.options=1;
@@ -841,6 +915,7 @@ function civilization()
 			{
 				console.log(civil2);
 				var ped=new textbox();
+				ped.label="Telaxian Captain:";
 				ped.setup("Oh well, be careful if you see him."  ,150,370);
 				ped.civil=civil1;
 				ped.optionTrack=0;
@@ -851,6 +926,7 @@ function civilization()
 			ned.optionTwo=function(civil1,civil2)
 			{
 				var ped=new textbox();
+				ped.label="Telaxian Captain:";
 				ped.setup("If you won't turn him over, we will claim his body from the " ,150,370);
 				ped.addText("wreakage of your ship!");
 				ped.civil=civil1;
@@ -863,8 +939,10 @@ function civilization()
 			ned.optionThree=function(civil1,civil2)
 			{
 				var ped=new textbox();
+				ped.label="Telaxian Captain:";
 				ped.setup("Thank you, now this scumbag can be brought to justice.  The " ,150,370);
-				ped.addText("Telaxian people thank you.  Call on us if you need help with the Borg.");
+				ped.addText("Telaxian people thank you.  Call on us if you need help with the ");
+				ped.addText("Borg.");
 				ped.civil=civil1;
 				ped.optionTrack=0;
 				hasItem[Items.Neelix]=false;
@@ -879,6 +957,7 @@ function civilization()
 		else if(this.race==raceIDs.Orion)
 		{
 			var ned=new textbox();
+			ned.label="Orion Slaver:";
 			ned.setup("Hello, would you like to buy a green skinned woman for $300?",150,370);
 			ned.options=0;
 			ned.civil=this;
@@ -893,6 +972,7 @@ function civilization()
 			{
 				console.log(civil2);
 				var ped=new textbox();
+				ped.label="Orion Slaver:";
 				ped.setup("Excellent!  Beaming her over now."  ,150,370);
 				ped.civil=civil1;
 				ped.optionTrack=0;
@@ -907,6 +987,7 @@ function civilization()
 			ned.optionTwo=function(civil1,civil2)
 			{
 				var ped=new textbox();
+				ped.label="Orion Slaver:";
 				ped.setup("Very Well." ,150,370);
 				ped.civil=civil1;
 				ped.optionTrack=0;
@@ -917,6 +998,7 @@ function civilization()
 			ned.optionThree=function(civil1,civil2)
 			{
 				var ped=new textbox();
+				ped.label="Orion Slaver:";
 				ped.setup("Wait, what?!  Arm weapons!" ,150,370);
 				ped.civil=civil1;
 				ped.optionTrack=0;
@@ -929,6 +1011,7 @@ function civilization()
 		}else if(this.race==raceIDs.Dominion)
 		{
 			var ned=new textbox();
+			ned.label="Weyoun:";
 			ned.setup("Greetings! I am Weyoun a representative of the Dominion.",150,370);
 			ned.options=0;
 			ned.civil=this;
@@ -936,13 +1019,25 @@ function civilization()
 		}else if(this.race==raceIDs.Vidiian)
 		{
 			var ned=new textbox();
+			ned.label="Vidiian Captain:";
 			ned.setup("Nothing personal, but we need your organs to live.",150,370);
+			this.autoHostile.push(civs[0]);
+			ned.options=0;
+			ned.civil=this;
+			other.messages.push(ned);
+		}else if(this.race==raceIDs.Pakled)
+		{
+			var ned=new textbox();
+			ned.label="Pakled Captain:";
+			ned.setup("We need things.  Things to make us go.",150,370);
+			//this.autoHostile.push(civs[0]);
 			ned.options=0;
 			ned.civil=this;
 			other.messages.push(ned);
 		}else if(this.race==raceIDs.Andorian)
 		{
 			var ned=new textbox();
+			ned.label="Andorian Captain:";
 			ned.setup("Hello pinkskin.  Hope you are doing well.",150,370);
 			ned.options=2;
 			ned.civil=this;
@@ -953,6 +1048,7 @@ function civilization()
 			{
 				console.log(civil2);
 				var ped=new textbox();
+				ped.label="Andorian Captain:";
 				ped.setup("Hm. I suppose we could spare a ship or two. If only to learn"  ,150,370);
 				ped.civil=civil1;
 				ped.addText("more about the Borg threat.");
@@ -967,6 +1063,7 @@ function civilization()
 			ned.optionTwo=function(civil1,civil2)
 			{
 				var ped=new textbox();
+				ped.label="Andorian Captain:";
 				ped.setup("Do not waste our time!" ,150,370);
 				ped.civil=civil1;
 				ped.optionTrack=0;
@@ -979,6 +1076,7 @@ function civilization()
 		}else if(this.race==raceIDs.Klingon)
 		{
 			var ned=new textbox();
+			ned.label="Klingon Commander:";
 			ned.setup("Filthy humans, once we are done with the Romulans we may just",150,370);
 			ned.addText(" come for you.");
 			if(hasItem[Items.RomulanPrisoner])
@@ -996,6 +1094,7 @@ function civilization()
 				{
 					hasItem[Items.RomulanPrisoner]=false;
 					var ped=new textbox();
+					ped.label="Klingon Commander:";
 					ped.setup("Hm.  Yes we could learn much from him.  We will help" ,150,370);
 					ped.addText("You in glorious battle against the Borg in exchange for");
 					ped.addText("the Romulan officer.");
@@ -1023,6 +1122,7 @@ function civilization()
 		}else if(this.race==raceIDs.Romulan)
 		{
 			var ned=new textbox();
+			ned.label="Romulan Captain:";
 			ned.setup("We are the Romulan Star Empire.  You will not violate our Space.",150,370);
 			ned.options=0;
 			if(hasItem[Items.RomulanPrisoner])
@@ -1040,6 +1140,7 @@ function civilization()
 				{
 					hasItem[Items.RomulanPrisoner]=false;
 					var ped=new textbox();
+					ped.label="Romulan Captain:";
 					ped.setup("Thank you for returning our officer.  Prehaps this will be the" ,150,370);
 					ped.addText("begging of improved relations between our people.");
 					ped.civil=civil1;

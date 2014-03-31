@@ -832,8 +832,8 @@ function starShip(){
 	
 	this.generatePlanetEvent=function(world)
 	{
-		var numPlanetEvents=5;
-		var hich=Math.floor(Math.random()*numPlanetEvents);
+		var numPlanetEvents=9;
+		var hich=2;//Math.floor(Math.random()*numPlanetEvents);
 		while(usedEvents[hich])
 		{
 			hich=Math.floor(Math.random()*numPlanetEvents);
@@ -841,7 +841,7 @@ function starShip(){
 		
 		if(hich==0)//find chest.
 		{
-			var cont=Math.floor(Math.random()*3);
+			var cont=0;//Math.floor(Math.random()*3);
 			if(cont==0)
 			{
 				var amt=Math.floor(Math.random()*6+4)*10;
@@ -852,36 +852,6 @@ function starShip(){
 				ned.choicesStart=1;
 				ned.optionTrack=0;
 				civs[0].messages.push(ned);
-			}else if(cont==1)
-			{
-				var ned=new textbox();
-				ned.setup("You find an old Romulan artifact.",150,370);
-				hasItem[Items.RomulanArtifact]=true;
-				ned.civil=this;
-				ned.choicesStart=1;
-				ned.optionTrack=0;
-				civs[0].messages.push(ned);
-				usedEvents[hich]=true;
-			}else if(cont==2)
-			{
-				var ned=new textbox();
-				ned.setup("You find an old Klingon artifact, the Sword of Khaless",150,370);
-				hasItem[Items.KlingonArtifact]=true;
-				ned.civil=this;
-				ned.choicesStart=1;
-				ned.optionTrack=0;
-				civs[0].messages.push(ned);
-				usedEvents[hich]=true;
-			}else if(cont==3)
-			{
-				var ned=new textbox();
-				ned.setup("You find an old Cardassian artifact.",150,370);
-				hasItem[Items.CardassianArtifact]=true;
-				ned.civil=this;
-				ned.choicesStart=1;
-				ned.optionTrack=0;
-				civs[0].messages.push(ned);
-				usedEvents[hich]=true;
 			}
 		}if(hich==1) //find dude
 		{
@@ -911,12 +881,121 @@ function starShip(){
 			if(cont==0)
 			{
 				var ned=new textbox();
-				hasItem[Items.Neelix]=true;
-				ned.setup("You find Neelix the Tellaxian and welcome him aboard.",150,370);
+				ned.setup("You find a Tellaxian named Neelix. ",150,370);
+				ned.addText("    Welcome him aboard");
+				ned.addText("    Leave him");
+				ned.options=2;
+				ned.choicesStart=1;
+				ned.optionTrack=1;
+				ned.object=this;
+
+				if(this.civ.flags[Flag.MetTelaxianBountyHunters])
+				{
+					ned.addText("    Inquire about his murderous past");
+					ned.options=3;
+				}
+				
+					ned.optionOne=function(civil1,civil2)
+					{
+						console.log(civil2);
+						var ped=new textbox();
+						ped.label="Neelix:";
+						ped.setup("Thanks! I'll be the chef.  And the moral officer. And..."  ,150,370);
+						hasItem[Items.Neelix]=true;
+						//crew.push(Neelix);
+						ped.civil=civil1;
+						ped.optionTrack=0;
+						ped.options=0;
+						civil2.messages.push(ped);
+						holdInput=true;
+					};
+				
+					ned.optionTwo=function(civil1,civil2)
+					{
+						console.log(civil2);
+						var ped=new textbox();
+						ped.object=this.object;
+						if(Math.random()*10<6)
+						{
+							ped.label="Neelix:";
+							ped.setup("No pleeease don't leave me here!"  ,150,370);
+							//crew.push(Neelix);
+						}else
+						{
+							ped.label="Neelix:";
+							ped.setup("Ok. but before you go can I eat your liver?"  ,150,370);
+							this.objectkillRandomCrew(" at the hands of a psychotic Telaxian."); //killrandomawayteam
+						}
+						ped.civil=civil1;
+						ped.optionTrack=0;
+						ped.options=0;
+						civil2.messages.push(ped);
+						holdInput=true;
+					};
+					ned.optionThree=function(civil1,civil2)
+					{
+						//console.log(civil2);
+						var led=new textbox();
+						led.object=this.object;
+						if(Math.random()*10<6)
+						{
+							led.label="Neelix:";
+							led.setup("A mere misunderstanding!  I'm being persecuted for my religious "  ,150,370);
+							led.addText("beliefs.");
+							led.addText("    Welcome him aboard");
+							led.addText("    Leave him");
+							led.civil=civil1;
+							led.options=2;
+							led.choicesStart=2;
+							led.optionTrack=2;
+							//crew.push(Neelix);
+							led.optionOne=function(civil1,civil2)
+							{
+								//console.log(civil2);
+								var hed=new textbox();
+								hed.label="Neelix:";
+								hed.setup("Thanks! I'll be the chef.  And the moral officer. And..."  ,150,370);
+								hasItem[Items.Neelix]=true;
+								//crew.push(Neelix);
+								hed.civil=civil1;
+								hed.optionTrack=0;
+								hed.options=0;
+								civil2.messages.push(hed);
+								holdInput=true;
+							};
+						
+							led.optionTwo=function(civil1,civil2)
+							{
+								//console.log(civil2);
+								var hed=new textbox();
+								if(Math.random()*10<6)
+								{
+									hed.label="Neelix:";
+									hed.setup("No pleeease don't leave me here!"  ,150,370);
+									//crew.push(Neelix);
+								}else
+								{
+									hed.label="Neelix:";
+									hed.setup("Ok. but before you go can I eat your liver?"  ,150,370);
+									this.object.killRandomCrew(" at the hands of a psychotic Telaxian."); //killrandomawayteam
+								}
+								hed.civil=civil1;
+								civil2.messages.push(hed);
+								holdInput=true;
+							};
+							civil2.messages.push(led)
+					}else
+					{
+						led.label="Neelix:";
+						led.setup("Murders? well, it's easier to just show you."  ,150,370);
+						led.object.killRandomCrew(" at the hands of a psychotic Telaxian."); //killrandomawayteam
+					}
+					led.civil=civil1;
+					civil2.messages.push(led);
+					holdInput=true;
+				};
+				
 				ned.civil=this;
-				ned.choicesStart=0;
-				ned.choices=0;
-				ned.optionTrack=0;
 				civs[0].messages.push(ned);
 				usedEvents[hich]=true;
 			}
@@ -951,6 +1030,36 @@ function starShip(){
 				ned.optionTrack=0;
 				civs[0].messages.push(ned);
 			}
+		}else if(hich==5)
+		{
+			var ned=new textbox();
+			ned.setup("You find an old Romulan artifact.",150,370);
+			hasItem[Items.RomulanArtifact]=true;
+			ned.civil=this;
+			ned.choicesStart=1;
+			ned.optionTrack=0;
+			civs[0].messages.push(ned);
+			usedEvents[hich]=true;
+		}else if(hich==6)
+		{
+			var ned=new textbox();
+			ned.setup("You find an old Klingon artifact, the Sword of Khaless",150,370);
+			hasItem[Items.KlingonArtifact]=true;
+			ned.civil=this;
+			ned.choicesStart=1;
+			ned.optionTrack=0;
+			civs[0].messages.push(ned);
+			usedEvents[hich]=true;
+		}else if(hich==7)
+		{
+			var ned=new textbox();
+			ned.setup("You find an old Cardassian artifact.",150,370);
+			hasItem[Items.CardassianArtifact]=true;
+			ned.civil=this;
+			ned.choicesStart=1;
+			ned.optionTrack=0;
+			civs[0].messages.push(ned);
+			usedEvents[hich]=true;
 		}
 	};
 	
