@@ -15,6 +15,7 @@ var borgTrack=0;
 
 function starShip(){
 	this.ship=true;
+	this.platform=false;
 	this.orders=0;
 	this.race=0;
 	this.x=0;

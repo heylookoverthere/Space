@@ -194,10 +194,11 @@ function civilization()
 	this.encounterTrack=0;
 	this.money=1000;
 	this.mode=AIModes.Exploring;
-	this.allied=false;
+	this.allied=true;
 	this.fallenBack=false;
 	this.targetPods=false;
 	this.fallingBack=false;
+	this.initialProduction=false;
 	this.prisoners=new Array();
 	this.numShipsStart=0;
 	this.researchProgress=0;
@@ -242,8 +243,63 @@ function civilization()
 			console.log("The last "+this.name+" has died.");
 		}
 	};
+	
 	this.masterAI=function()
 	{
+		//choose production
+		if(this.race>0)
+		{
+			if(!this.initialProduction)
+			{
+				this.produceBuilding(Buildings.ShieldGrid,this.homeworld);
+				this.produceBuilding(Buildings.Mine,this.homeworld);
+				this.produceBuilding(Buildings.OrbitalDefense,this.homeworld);
+				this.money-=300;
+				this.initialProduction=true;
+			}else
+			{
+				var cost=300;
+				if(this.money>cost-1)
+				{
+					this.money-=cost;
+					this.produceShip(9,this.homeworld);
+				}
+			}
+		}
+		
+		if(this.homeworld.civ!=this)
+		{
+			var enemyCiv=this.homeworld.civ;
+			for(var i=0;i<this.ships.length;i++)
+			{
+				//
+				if(enemyCiv.ships.length>0)
+				{
+					var bobert = this.ships[i].nearestSpecificShip(enemyCiv);
+					if(bobert)
+					{
+						this.ships[i].destination=bobert;
+							
+						this.ships[i].orbiting=false;
+						this.ships[i].orders=Orders.Attack;
+					}
+				}else
+				{
+					this.ships[i].orderOrbit(enemyCiv.homeworld); //orderattack?
+					this.ships[i].orders=Orders.Attack;
+					if(enemyCiv.homeworldWarning)
+					{
+						
+						
+						console.log("The "+this.name+" have eliminated all "+enemyCiv.name+ " ships and are headed to " +enemyCiv.homeworld.name);
+						enemyCiv.homeworldWarning=false;
+					}
+				}
+			}
+			return;
+		}
+		
+		if(this.allied) {return;}
 		if(borgTrack==this.race)
 		{
 			//fall back to homeworld!
@@ -259,6 +315,8 @@ function civilization()
 				this.fallenBack=true;
 			}
 		}
+		
+	
 		if(this.mode==AIModes.Genociadal)
 		{
 			//select a race and attack them till they die planet and take it
@@ -393,8 +451,15 @@ function civilization()
 			console.log(bob.prefix+" "+bob.name+ " has been orderd to colonize "+world.name);
 		}else
 		{
-			this.produceShip(1,this.homeworld,world);//(ShipClass[this.race].colony);
-			console.log("A new colony ship is being constructed to colonize "+world.name);
+			if(this.money>150-1)
+			{
+				this.money-=150;
+				this.produceShip(1,this.homeworld,world);//(ShipClass[this.race].colony);
+				console.log("A new colony ship is being constructed to colonize "+world.name);
+			}else
+			{
+				console.log("Not enough money to build colony ship.");
+			}
 		}
 		//set its destination, crew it
 	};
@@ -430,6 +495,30 @@ function civilization()
 			}
 		}
 		return null;
+	};
+	
+	this.producePlatform=function(lass,worldstart)
+	{
+		var tar=false;
+		for(var i=0;i<worldstart.buildings.length;i++)
+		{
+			if(worldstart.buildings[i].type==Buildings.OrbitalDefense)
+			{
+				tar=true;
+			}
+		}
+		if(!tar)
+		{
+			console.log("Cannot launch platform on "+worldstart.name+" without Orbital control building.");
+			return;
+		}
+		var jimmy=newPlatform(worldstart);
+		//jimmy.alive=false;
+		if(this.name=="Human")
+		{
+			console.log("Began contructing on an orbital weapons platform ");
+		}
+		this.productionQueue.push(jimmy);
 	};
 	
 	this.produceShip=function(lass,worldstart,worldgo)//todo make worldstart do something
@@ -548,36 +637,48 @@ function civilization()
 					this.productionTick=0;
 			
 						
-					var jerry=this.productionQueue.pop();
-					if(jerry.ship)
+					
+					var jerry=this.productionQueue[0];
+					if(jerry)
 					{
-						if(this.name=="Human")
+						if(jerry.ship)
 						{
-							console.log("Humanity produced the starship "+jerry.name);
-						};
-						this.ships.push(jerry);
-						ships.push(jerry);
-					}else if(jerry.building)
-					{
-						//create building
-						jerry.world.buildings.push(jerry);
-						if(jerry.type==Buildings.ShieldGrid)
+							if(this.name=="Human")
+							{
+								console.log("Humanity produced the starship "+jerry.name);
+							};
+							this.ships.push(jerry);
+							ships.push(jerry);
+						}else if(jerry.platform)
 						{
-							jerry.world.maxShields=100;
-							jerry.world.shields=100;
-						}else if(jerry.type==Buildings.Shipyard)
+							if(this.name=="Human")
+							{
+								console.log("Humanity produced an orbital defense platform on "+jerry.orbitTarg.name);
+							};
+							//this.ships.push(jerry);
+							ships.push(jerry);
+						}else if(jerry.building)
 						{
-							jerry.world.hasShipyard=true;
-						}else if(jerry.type==Buildings.OrbitalDefense)
-						{
-							ships.push(newPlatform(jerry.world));
+							//create building
+							jerry.world.buildings.push(jerry);
+							if(jerry.type==Buildings.ShieldGrid)
+							{
+								jerry.world.maxShields=100;
+								jerry.world.shields=100;
+							}else if(jerry.type==Buildings.Shipyard)
+							{
+								jerry.world.hasShipyard=true;
+							}else if(jerry.type==Buildings.OrbitalDefense)
+							{
+								ships.push(newPlatform(jerry.world));
+							}
+							if(this.name=="Human")
+							{
+								console.log("Humanity produced a "+jerry.name+ " on "+jerry.world.name);
+							}
 						}
-						if(this.name=="Human")
-						{
-							console.log("Humanity produced a "+jerry.name+ " on "+jerry.world.name);
-						}
+						this.productionQueue.splice(0,1);
 					}
-				
 				}
 			}
 		}
@@ -671,6 +772,109 @@ function civilization()
 			ned.setup("We are Borg. You will be assimilated.  Resistance is futile.",150,370);
 			ned.options=0;
 			ned.civil=this;
+			other.messages.push(ned);
+		}else if(this.race==raceIDs.Hirogen)
+		{
+			var ned=new textbox();
+			ned.setup("We are the Hirogen.  You are now our prey.",150,370);
+			ned.options=0;
+			ned.civil=this;
+			other.messages.push(ned);
+		}else if(this.race==raceIDs.Breen)
+		{
+			var ned=new textbox();
+			ned.setup("....",150,370);
+			ned.options=0;
+			ned.civil=this;
+			other.messages.push(ned);
+		}else if(this.race==raceIDs.Cardassian)
+		{
+			var ned=new textbox();
+			ned.setup("Hello.  I am Gul Dukat of the Cardassian Union.",150,370);
+			ned.options=0;
+			ned.civil=this;
+			other.messages.push(ned);
+		}else if(this.race==raceIDs.Bajoran)
+		{
+			var ned=new textbox();
+			ned.setup("Hello we are the Bajorans.  We would appreciate any help you ",150,370);
+			ned.addText("can provide in our struggle with the Cardassian Union.");
+			ned.options=0;
+			ned.civil=this;
+			other.messages.push(ned);
+		}else if(this.race==raceIDs.Tellarite)
+		{
+			var ned=new textbox();
+			ned.setup("Hello I am a Tellarite.  Basically we are a race of Man-Bear-Pigs.",150,370);
+			//ned.addText("");
+			ned.options=0;
+			ned.civil=this;
+			other.messages.push(ned);
+		}else if(this.race==raceIDs.Telaxian)
+		{
+			var ned=new textbox();
+			ned.setup("Hi. We are Telaxian bounty hunters.  We are after an escaped ",150,370);
+			ned.addText("Telaxian serial killer, he calls himself Neelix.  Have you seen him?");
+			ned.options=0;
+			ned.civil=this;
+			other.messages.push(ned);
+		}
+		else if(this.race==raceIDs.Orion)
+		{
+			var ned=new textbox();
+			ned.setup("Hello, would you like to buy a green skinned woman?",150,370);
+			ned.options=0;
+			ned.civil=this;
+			other.messages.push(ned);
+		}else if(this.race==raceIDs.Dominion)
+		{
+			var ned=new textbox();
+			ned.setup("Greetings! I am Weyoun a representative of the Dominion.",150,370);
+			ned.options=0;
+			ned.civil=this;
+			other.messages.push(ned);
+		}else if(this.race==raceIDs.Vidiian)
+		{
+			var ned=new textbox();
+			ned.setup("Nothing personal, but we need your organs to live.",150,370);
+			ned.options=0;
+			ned.civil=this;
+			other.messages.push(ned);
+		}else if(this.race==raceIDs.Andorian)
+		{
+			var ned=new textbox();
+			ned.setup("Hello pinkskin.  Hope you are doing well.",150,370);
+			ned.options=2;
+			ned.civil=this;
+			ned.choicesStart=1;
+			ned.addText("   Explain the Borg threat");
+			ned.addText("   Contine on your way");
+			ned.optionOne=function(civil1,civil2)
+			{
+				console.log(civil2);
+				var ped=new textbox();
+				ped.setup("Hm. I suppose we could spare a ship or two." ,150,370);
+				ped.civil=civil1;
+				ped.addText("If only to learn more about the Borg threat.");
+				ped.optionTrack=0;
+				ped.options=0;
+				console.log("The Andorians have agreed to help!");
+				console.log(ped);
+				civil1.allied=true;
+				civil2.messages.push(ped);
+				holdInput=true;
+			};
+			ned.optionTwo=function(civil1,civil2)
+			{
+				var ped=new textbox();
+				ped.setup("Do not waste our time!" ,150,370);
+				ped.civil=civil1;
+				ped.optionTrack=0;
+				ped.options=0;
+				civil2.messages.push(ped);
+				holdInput=true;
+			};
+			ned.optionTrack=1;
 			other.messages.push(ned);
 		}else if(this.race==raceIDs.Klingon)
 		{

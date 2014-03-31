@@ -1273,6 +1273,8 @@ function newPlatform(wrld)
 	jilly.y=jilly.homeworld.y;
 	jilly.orbit(wrld);
 	jilly.numTorpedos=200;
+	jilly.platform=true;
+	jilly.ship=false;
 	jilly.addPhaser();
 	jilly.addPhaser();
 	jilly.race=iv.race;
