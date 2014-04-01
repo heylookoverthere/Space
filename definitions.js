@@ -10,6 +10,22 @@ Flag.LeftNeelix=1;
 var flashGUITick=0;
 var flashGUITrack=0;
 
+function time(){
+    this.hours=0; 
+    this.minutes=0;
+    this.seconds=0;
+    this.days=0;
+	this.years=2000;
+}
+time.prototype.update=function(plan){
+    this.days+=plan.orbitSpeed*gameSpeed;
+    if(this.days>360){
+        this.days-=360;
+        this.years++;
+    }
+};
+
+var theTime=new time();
 function textbox() 
  {  //draws a text box
 	this.exists=false;

@@ -21,6 +21,9 @@ for(var i=0;i<100;i++)
 function starShip(){
 	this.ship=true;
 	this.platform=false;
+	this.planetBeamTrack=0;
+	this.planetBeamX=0;
+	this.planetBeamY=0;
 	this.orders=0;
 	this.race=0;
 	this.x=0;
@@ -31,6 +34,7 @@ function starShip(){
 	this.colony=false;
 	this.spawnPlanet=null;
 	this.canHasShields=true;
+	this.hasShields=false;
 	this.frieghter=false;
 	this.phaserRange=500;
 	this.passengers=new Array();
@@ -45,6 +49,7 @@ function starShip(){
 	this.torpedoTarget=null;
 	this.tractorHost=null;
 	this.tractorClient=null;
+	this.shieldChargeRate=1;
 	this.autoEvac=true;
 	this.maxHp=100;
 	this.breaches=0;
@@ -52,6 +57,7 @@ function starShip(){
 	this.homing=true;//todo
 	this.selfDestructActive=false;
 	this.selfDestructTick=100;
+	this.healTick=0;
 	this.evacRate=10;
 	this.evacTick=0;
 	this.evacTrack=0;
@@ -168,6 +174,8 @@ function starShip(){
 	this.crewLost=0;
 	this.maxTeamSize=4;
 	this.awayTeamAt=null;
+	this.launchDate=0;
+	this.lastYear=2000;
 	this.windows=new Array();
 
 	
@@ -175,6 +183,7 @@ function starShip(){
 		if(this.numMines<1) {return;}
 		this.numMines--;
 		var minny=new mine();
+		minn.ship=this;
 		minny.x=this.x-minny.width/2
 		minny.y=this.y-minny.height/2;
 		minny.active=true;
@@ -241,6 +250,7 @@ function starShip(){
 			{
 				target.evented=true;
 				this.generatePlanetEvent(target);
+				this.grantXp(2);
 			}
 			this.awayTeamAt=target;
 			console.log("The away team has beamed down to "+target.name);
@@ -317,6 +327,7 @@ function starShip(){
 	{
 		var pim=new energyWeapon(this);
 		pim.xoff=12*this.phaserBanks.length;
+		pim.ship=this;
 		this.phaserBanks.push(pim);
 	};
 	
@@ -508,6 +519,7 @@ function starShip(){
 		if(this.numTorpedos<1) {return;}
 		this.numTorpedos--;
 		var torpy=new torpedo();
+		torpy.ship=this;
 		if(!this.torpedoTarget)
 		{
 			var beta=this.heading;
@@ -545,6 +557,7 @@ function starShip(){
 		if((this.canHasShields) && (this.maxShields<1) &&(this.civ.techs[Techs.EnergyShields]))
 		{
 			this.maxShields=100;
+			this.hasShields=true;
 		}
 		this.repair();
 		this.refitOrdered=false;
@@ -582,7 +595,7 @@ function starShip(){
 		return answer;
 	};
 	
-	this.getDamaged=function(amt,phaser){
+	this.getDamaged=function(amt,phaser,attacker){
 		if(this.activeShields)
 		{
 			this.shields-=amt;
@@ -602,7 +615,7 @@ function starShip(){
 		this.hp+=wound;
 		if(this.hp<1)
 		{
-			killShip(this);
+			killShip(this,attacker);
 		}
 		//todo randomly damage systems, kill crew.
 		if((this.shields<1) && (!phaser))
@@ -1110,8 +1123,63 @@ function starShip(){
 		this.escorting=null
 	}
 	
+	this.offerSurrender=function(iv)
+	{
+		//option to say no, like borg
+		if(iv.noSurrender)
+		{
+			console.log("The "+iv.name+"s will not accept surrender.");
+			return;
+		}
+		//take prisoners
+		console.log("The "+this.prefix+" "+this.name+" surrendered to the "+iv.name);
+		this.surrendered=true;
+	};
+	
+	this.grantXp=function(amt)
+	{
+		for(var i=0;i<this.crew.length;i++)
+		{
+			this.crew[i].grantXp(amt);
+		}
+	}
+	
+	this.rechargeShields=function()
+	{
+		if(this.shields>this.maxShields-1)
+		{
+			this.shields=this.maxShields;
+			return;
+		}
+		this.healTick+=1*gameSpeed;
+		if(this.healTick>100)
+		{
+			this.healTick=0;
+			this.shields+=this.shieldChargeRate;
+		}
+	}
+	
 	this.update=function(){
 		if(!this.alive){return;}
+		if(theTime.years>this.lastYear)
+		{
+			this.lastYear=theTime.years;
+			this.grantXp(10);
+		}
+		if(this.hasShields)
+		{
+			this.rechargeShields();
+		}
+		if(this.attackingPlanet)
+		{
+			this.planetBeamTrack+=1*gameSpeed;
+			if(this.planetBeamTrack>30)
+			{
+				this.planetBeamTrack=0;
+				this.planetBeamX=Math.random()*10;
+				this.planetBeamy=Math.random()*5;
+			}
+		}
 		if(this.surrendered)
 		{
 			this.attacking=false;
@@ -1831,23 +1899,43 @@ function starShip(){
 			}
 			if(this.attackingPlanet)
 			{
-				can.save();
-				for(var i=0;i<12;i++) //todo draw better.
+				if(this.race==raceIDs.Borg)
 				{
-			
-					can.strokeStyle = assimilationColors[Math.floor(Math.random()*7)];
+					can.save();
+					for(var i=0;i<12;i++) //todo draw better.
+					{
+				
+						can.strokeStyle = assimilationColors[Math.floor(Math.random()*7)];
+						can.globalAlpha=.50;
+						can.beginPath();
+						can.lineWidth = (Math.random()*3)*cam.zoom;
+						var xoffs=(Math.random()*this.attackingPlanet.width)-this.attackingPlanet.width/2;
+						var yoffs=(Math.random()*this.attackingPlanet.height)-this.attackingPlanet.height/2;
+						can.moveTo((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
+						can.lineTo((this.attackingPlanet.x+xoffs+cam.x)*cam.zoom,(this.attackingPlanet.y+yoffs+cam.y)*cam.zoom)
+						
+						can.closePath();
+						can.stroke();
+					}
+					can.restore();
+				}else
+				{
+					can.save();
+					can.strokeStyle = bColors[Math.floor(Math.random()*7)];
 					can.globalAlpha=.50;
 					can.beginPath();
-					can.lineWidth = (Math.random()*3)*cam.zoom;
-					var xoffs=(Math.random()*this.attackingPlanet.width)-this.attackingPlanet.width/2;
-					var yoffs=(Math.random()*this.attackingPlanet.height)-this.attackingPlanet.height/2;
+					can.lineWidth = ((Math.random()*3)+3)*cam.zoom;
+					var xoffs=this.planetBeamX+this.planetBeamTrack;
+					var yoffs=this.planetBeamY+this.planetBeamTrack;
 					can.moveTo((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
-					can.lineTo((this.attackingPlanet.x+xoffs+cam.x)*cam.zoom,(this.attackingPlanet.y+yoffs+cam.y)*cam.zoom)
 					
+					can.lineTo((this.attackingPlanet.x+xoffs+cam.x)*cam.zoom,(this.attackingPlanet.y+yoffs+cam.y)*cam.zoom)
+					//monsta.shootTextured(this.attackingPlanet.x+xoffs,this.attackingPlanet.y+yoffs,270,.5,"explosion0");
+
 					can.closePath();
 					can.stroke();
+					can.restore();
 				}
-				can.restore();
 			}
 			//this.sprite.draw(can, this.x-cam.x-this.width/2,this.y-cam.y-this.height/2);
 		}

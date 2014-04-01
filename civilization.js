@@ -582,6 +582,7 @@ function civilization()
 		world.race=this.race;
 		world.civ=this;
 		world.colonized=true;
+		world.colonizedDate=Math.floor(theTime.years)+"."+Math.floor(theTime.days);
 		console.log("The planet "+world.name+" has been successfully colonized by the "+this.name);
 		if(Math.random*10<5)
 		{
@@ -668,6 +669,7 @@ function civilization()
 							{
 								console.log("Humanity produced the starship "+jerry.name);
 							};
+							jerry.launchDate=Math.floor(theTime.years)+"."+Math.floor(theTime.days);
 							this.ships.push(jerry);
 							ships.push(jerry);
 						}else if(jerry.platform)

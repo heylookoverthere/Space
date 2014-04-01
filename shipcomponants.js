@@ -172,7 +172,7 @@ function dude()
 		this.hasItem.push(false);
 	}
 	this.hasItem[0]=true;//everyone gets a phaser!
-	this.civ=null;
+	this.civ=civs[0];
 	this.xp=0;
 	this.nextLevel=100;
 	this.ID=0;
@@ -200,15 +200,21 @@ function dude()
 	
 	this.grantXp=function(amt)
 	{
-		this.xp+-amt;
+		this.xp+=amt;
 		if(this.xp>this.nextLevel)
 		{
 			this.xp=0;
 			this.level++;
-			if(this.civ.name=="Humans")
+			if(this.civ)
 			{
-				console.log(this.name+" has gained a level!");
-				this.maxHp++;
+				if(this.civ.name=="Human")
+				{
+					console.log(this.name+" has gained a level!");
+					this.maxHp++;
+				}
+			}else
+			{
+				console.log(this,"Doesn't have a civ?");
 			}
 		}
 	
@@ -225,6 +231,7 @@ function energyWeapon(hip)
 	this.target=null;
 	this.pierce=0;
 	this.damageRate=1;
+	this.ship=hip;
 	this.range=hip.phaserRange;
 	this.charge=1;
 	this.firing=false;
@@ -259,7 +266,7 @@ function energyWeapon(hip)
 		if(this.damageTrack>10)
 		{
 			this.damageTrack=0;
-			this.target.getDamaged(this.strength,true);
+			this.target.getDamaged(this.strength,true,this.ship);
 		}
 		
 		//console.log(this.firing);
@@ -310,6 +317,7 @@ function torpedo(){
 	this.speed=25;
 	this.targ=null;
 	this.homing=true;
+	this.ship=null;
 	this.age=0;
 	this.height=8;
 	this.active=false;
@@ -376,7 +384,7 @@ function torpedo(){
 				if((this.x>centerx) && (this.x<centerx+thangs[i].width) && (this.y>centery) &&(this.y<centery+thangs[i].height))
 				{
 					this.detonate();
-					thangs[i].getDamaged(this.yield,false);
+					thangs[i].getDamaged(this.yield,false,this.ship);
 				}
 			}
 		}
@@ -395,6 +403,7 @@ function mine(){
 	this.delayTick=50;
 	this.yield=15;
 	this.width=8;
+	this.ship=null;
 	this.height=8;
 	this.active=false;
 	this.sprite=Sprite("mine");
@@ -444,7 +453,7 @@ function mine(){
 				if((ourx>centerx) && (ourx<centerx+thangs[i].width) && (oury>centery) &&(oury<centery+thangs[i].height))
 				{
 					this.detonate();
-					thangs[i].getDamaged(this.yield,false);
+					thangs[i].getDamaged(this.yield,false,this.ship);
 				}
 			}
 		}
@@ -557,7 +566,10 @@ function escapePod(){
 		{
 			if(this.passenger)
 			{
-				console.log(this.passenger.title+" "+this.passenger.name+"'s escape pod arrived at "+this.destination.name);
+				if(this.passenger.civ.name=="Human")
+				{
+					console.log(this.passenger.title+" "+this.passenger.name+"'s escape pod arrived at "+this.destination.name);
+				}
 				this.civ.crewPool.push(this.passenger);	
 			}else
 			{

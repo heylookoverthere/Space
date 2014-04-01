@@ -86,22 +86,6 @@ distance=function(one,two){
 	return(Math.pow(one.x-two.x,2)+Math.pow(one.y-two.y,2));
 };
 
-function time(){
-    this.hours=0; 
-    this.minutes=0;
-    this.seconds=0;
-    this.days=0;
-	this.years=2000;
-}
-time.prototype.update=function(plan){
-    this.days+=plan.orbitSpeed*gameSpeed;
-    if(this.days>360){
-        this.days-=360;
-        this.years++;
-    }
-};
-
-var theTime=new time();
 
 var ksavekey=new akey("o"); //define the different keys
 var loadkey=new akey("l");
@@ -330,7 +314,8 @@ function drawGUI()
 	canvas.fillText("Class: "+ selectedShip.class,755,265);
 	if(selectedShip.destination)
 	{
-		canvas.fillText("Following: "+selectedShip.destination.prefix+" "+selectedShip.destination.name,755,365);
+		var dost=Math.floor(distance(selectedShip,selectedShip.destination));
+		canvas.fillText("Following: "+selectedShip.destination.prefix+" "+selectedShip.destination.name+",D: "+dost,755,365);
 	}
 	if(selectedShip.torpedoTarget)
 	{

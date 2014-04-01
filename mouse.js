@@ -209,6 +209,12 @@ function drawmousetext(can,targ,cam) { //draws unit status info
 };
 
 isOver= function(targ,cam){ //is the mouse over the player/object 
-    if((mX>((targ.x-targ.width/2)+cam.x)*cam.zoom) && (mX<(((targ.x-targ.width/2)+cam.x)+targ.width*cam.zoom)*cam.zoom) &&(mY>(((targ.y-targ.height/2)+cam.y))*cam.zoom) &&(mY<(((targ.y-targ.height/2)+cam.y)+targ.height)*cam.zoom)) {return true;}
+	if(targ.planet)
+	{
+		if((mX>((targ.x-targ.width/2)+cam.x)*cam.zoom) && (mX<(((targ.x-targ.width/2)+cam.x)+targ.width*targ.size)*cam.zoom) &&(mY>(((targ.y-targ.height/2)+cam.y))*cam.zoom) &&(mY<(((targ.y-targ.height/2)+cam.y)+targ.height)*cam.zoom)) {return true;}
+	}else
+	{
+		if((mX>((targ.x-targ.width/2)+cam.x)*cam.zoom) && (mX<(((targ.x-targ.width/2)+cam.x)+targ.width)*cam.zoom) &&(mY>(((targ.y-targ.height/2)+cam.y))*cam.zoom) &&(mY<(((targ.y-targ.height/2)+cam.y)+targ.height)*cam.zoom)) {return true;}
+	}
     return false;
 };
