@@ -880,8 +880,7 @@ function mainMenuUpdate(){
 			if(selectedShip.awayTeam.length<1)
 			{
 				selectedShip.prepareAwayTeam(selectedShip.crew.length-2);
-			}
-			if(selectedShip.beamTarget)
+			}else if((selectedShip.beamTarget) && (selectedShip.awayTeam.length>0))
 			{
 				selectedShip.beamDown(selectedShip.beamTarget);
 			}

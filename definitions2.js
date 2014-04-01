@@ -56,20 +56,20 @@ civs[raceIDs.Human].numShipsStart=2;
 civs[raceIDs.Klingon].numShipsStart=6;
 civs[raceIDs.Klingon].targetPods=true;
 civs[raceIDs.Romulan].numShipsStart=5;
-civs[raceIDs.Ferengi].numShipsStart=2;
-civs[raceIDs.Vulcan].numShipsStart=3;
-civs[raceIDs.Cardassian].numShipsStart=3;
-civs[raceIDs.Dominion].numShipsStart=10;
+civs[raceIDs.Ferengi].numShipsStart=4;
+civs[raceIDs.Vulcan].numShipsStart=4;
+civs[raceIDs.Cardassian].numShipsStart=6;
+civs[raceIDs.Dominion].numShipsStart=30;
 civs[raceIDs.Hirogen].numShipsStart=5;
 
-civs[raceIDs.Vidiian].numShipsStart=3;
-civs[raceIDs.Andorian].numShipsStart=3;
+civs[raceIDs.Vidiian].numShipsStart=5;
+civs[raceIDs.Andorian].numShipsStart=6;
 civs[raceIDs.Telaxian].numShipsStart=1;
-civs[raceIDs.Tellarite].numShipsStart=2;
+civs[raceIDs.Tellarite].numShipsStart=4;
 civs[raceIDs.Bajoran].numShipsStart=2;
-civs[raceIDs.Breen].numShipsStart=8;
+civs[raceIDs.Breen].numShipsStart=20;
 civs[raceIDs.Pakled].numShipsStart=2;
-civs[raceIDs.Orion].numShipsStart=2;
+civs[raceIDs.Orion].numShipsStart=4;
 civs[raceIDs.Klingon].mode=AIModes.Agressive;
 
 civs[0].AI=false;
@@ -1112,6 +1112,7 @@ setupOurs=function(sun)
 	Earth.orbitTrack=0;
 	sun.planetDetails[2].inhabited=true;
 	sun.planetDetails[2].pop=6;
+	sun.planets[2].evented=true;
 };
 
 var stars=new Array();

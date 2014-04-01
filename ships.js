@@ -181,6 +181,11 @@ function starShip(){
 	};
 	
 	this.prepareAwayTeam=function(num){
+		if(this.crew.length<3)
+		{
+			console.log("not enough crew to form an away team");
+			return;
+		}
 		if(this.awayTeam.length>0)
 		{
 			console.log("alreay have an away team.");
@@ -206,11 +211,17 @@ function starShip(){
 	};
 	
 	this.beamDown=function(target){
+	
 		if(this.awayTeamAt!=null)
 		{
 			console.log("Away team already away!");
 			return;
 		}
+		 /*if(this.awayTeam.length<1)
+		{
+			console.log("You don't have an away team!");
+			return;
+		}*/
 		if((this.shields>0) && (this.activeShields))
 		{
 			console.log("Cannot beam down with shields up.");
@@ -221,13 +232,20 @@ function starShip(){
 			console.log("Cannot beam through enemy shields.");
 			return;
 		}
-		console.log("The away team has beamed down to "+target.name);
-		if((target.planet) && (!target.evented))
+		
+		if(target.planet)  
 		{
-			target.evented=true;
+			if(!target.evented)
+			{
+				target.evented=true;
+				this.generatePlanetEvent(target);
+			}
 			this.awayTeamAt=target;
-			console.log(this.awayTeamAt);
-			this.generatePlanetEvent(target);
+			console.log("The away team has beamed down to "+target.name);
+			
+		}else if(target.ship)
+		{
+			console.log("The away team has beamed over to the "+target.name);
 		}
 		this.awayTeamAt=target;
 	};
@@ -1176,6 +1194,8 @@ function starShip(){
 					looseCrew.push(this.awayTeam.pop());
 				}
 				this.awayTeamAt=null;
+				this.awayTeam=new Array();
+				this.awayTeam.length=0;
 			}
 		}
 		if((this.beamTarget) &&((!this.beamTarget.alive) || (!this.isInSensorRange(this.beamTarget))))
