@@ -27,6 +27,7 @@ function starShip(){
 	this.y=0;
 	this.xv=0;
 	this.yv=0;
+	this.surrendered=false;
 	this.colony=false;
 	this.spawnPlanet=null;
 	this.canHasShields=true;
@@ -1111,6 +1112,16 @@ function starShip(){
 	
 	this.update=function(){
 		if(!this.alive){return;}
+		if(this.surrendered)
+		{
+			this.attacking=false;
+			this.torpedoTarget=null;
+			for(var i=0;i<this.phaserBanks.length;i++)
+			{
+				this.phaserBanks[i].firing=false;
+				this.phaserBanks[i].target=null;
+			}
+		}
 		if(this.selfDestructActive)
 		{
 			this.selfDestructTick-=1*gameSpeed;
@@ -1144,11 +1155,15 @@ function starShip(){
 				//if(this.civ.autoHostile[this.nearbyVessels[i].civ])
 				if(this.civ.autoHostile.indexOf(this.nearbyVessels[i].civ)>-1)
 				{
-					this.torpedoTarget=this.nearbyVessels[i];
-					this.attacking=true;
-					if(this.inPhaserRange(this.torpedoTarget))
+					
+					if((!this.nearbyVessels[i].surrendered) && (!this.surrendered))
 					{
-							this.firePhasers();
+						this.torpedoTarget=this.nearbyVessels[i];
+						this.attacking=true;
+						if(this.inPhaserRange(this.torpedoTarget))
+						{
+								this.firePhasers();
+						}
 					}
 				}
 			}
@@ -1619,11 +1634,22 @@ function starShip(){
 			//if(this.civ.autoHostile[this.nearbyVessels[i].civ])
 			if(this.civ.autoHostile.indexOf(this.nearbyVessels[i].civ)>-1)
 			{
-				this.torpedoTarget=this.nearbyVessels[i];
-				this.attacking=true;
-				if(this.inPhaserRange(this.torpedoTarget))
+				
+				if((!this.nearbyVessels[i].surrendered)  && (!this.surrendered))
 				{
-						this.firePhasers();
+					this.torpedoTarget=this.nearbyVessels[i];
+					if((this.race==0) || (this.nearbyVessels[i].race==0))
+					{
+						//console.log(this.nearbyVessels[i].surrendered,this.surrendered);
+					}
+					this.attacking=true;
+					if(this.inPhaserRange(this.torpedoTarget))
+					{
+							this.firePhasers();
+					}
+				}else
+				{
+					this.attacking=false;
 				}
 			}
 		}
@@ -1911,7 +1937,7 @@ function fleet(){
 				{
 					//this.ships[i].destination=this.ships[0];
 				}
-				if(this.attacking)
+				if((this.attacking))
 				{
 					/*if(this.ships[i].torpedoTarget)
 					{
@@ -1924,7 +1950,7 @@ function fleet(){
 						
 					}*/
 					ships[i].attacking=true;
-					if(!ships[0].torpedoTarget)
+					if((!ships[0].torpedoTarget) || (ships[0].torpedoTarget.surrendered))
 					{
 						this.attacking=false;
 					}else

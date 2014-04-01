@@ -222,6 +222,7 @@ function energyWeapon(hip)
 	this.xoff=0;
 	this.target=null;
 	this.strength=1;
+	this.target=null;
 	this.pierce=0;
 	this.damageRate=1;
 	this.range=hip.phaserRange;
@@ -236,9 +237,9 @@ function energyWeapon(hip)
 		this.y=hip.y;
 		if(hip.torpedoTarget)
 		{
-			target=hip.torpedoTarget;
+			this.target=hip.torpedoTarget;
 		}
-		if((!this.target) || (!this.target.alive))
+		if((!this.target) || (!this.target.alive)||(this.target.surrendered)||(this.surrendered))
 		{
 			this.firing=false;
 			return;
@@ -464,6 +465,7 @@ function escapePod(){
 	this.active=false;
 	this.capacity=1;
 	this.statis=false;
+	this.surrendered=false;
 	this.warpSpeed=false;
 	this.width=8;
 	this.height=8;
