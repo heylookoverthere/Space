@@ -682,6 +682,7 @@ function civilization()
 							{
 								jerry.world.maxShields=100;
 								jerry.world.shields=100;
+								jerry.world.activeShields=true;
 							}else if(jerry.type==Buildings.Shipyard)
 							{
 								jerry.world.hasShipyard=true;
@@ -710,7 +711,10 @@ function civilization()
 	};
 	this.generateMessage=function(other) //run on contact with other ships (with month or so break in between)
 	{
-		
+		if(civs[0].AI)
+		{
+			return;
+		}
 		if(this.race==raceIDs.Vulcan)
 		{
 			var ned=new textbox();

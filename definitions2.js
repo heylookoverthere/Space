@@ -1019,7 +1019,7 @@ function star(){
 				canvas.globalAlpha=0.30;
 			}
 			this.sprite.draw(can, -this.width/2,-this.height/2);
-			if(this.shields>0)
+			if((this.shields>0) && (this.activeShields))
 			{
 				canvas.globalAlpha=this.shields/100;
 				if(this.width<32)

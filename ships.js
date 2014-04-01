@@ -211,12 +211,12 @@ function starShip(){
 			console.log("Away team already away!");
 			return;
 		}
-		if(this.shields>0)
+		if((this.shields>0) && (this.activeShields))
 		{
 			console.log("Cannot beam down with shields up.");
 			return;
 		}
-		if(target.shields>0)
+		if((target.shields>0)&& (target.activeShields))
 		{
 			console.log("Cannot beam through enemy shields.");
 			return;
@@ -233,12 +233,12 @@ function starShip(){
 	};
 	
 	this.beamUpAwayTeam=function(){
-		if(this.shields>0)
+		if((this.shields>0) && (this.activeShields))
 		{
 			console.log("Cannot beam away team back with shields up.");
 			return;
 		}
-		if(this.awayTeamAt.shields>0)
+		if((this.awayTeamAt.shields>0)&& (this.awayTeamAt.activeShields))
 		{
 			console.log("Cannot beam through enemy shields.");
 			return;
@@ -249,12 +249,12 @@ function starShip(){
 	};
 	
 	this.beamUp=function(unt){
-		if(this.shields>0)
+		if((this.shields>0) && (this.activeShields))
 		{
 			console.log("Cannot beam away team back with shields up.");
 			return;
 		}
-		if(this.awayTeamAt.shields>0)
+		if((this.awayTeamAt.shields>0) && (this.awayTeamAt.activeShields))
 		{
 			console.log("Cannot beam through enemy shields.");
 			return;
@@ -280,7 +280,7 @@ function starShip(){
 		{
 			console.log("Out of tractor range");
 			return;
-		}if(something.shields>0)
+		}if((something.shields>0) && (something.activeShields))
 		{
 			console.log("Cannoy tractor while their sheilds are up.");
 			return;
@@ -365,7 +365,7 @@ function starShip(){
 		//go through toon and remove ones out of tractor range!
 		for(var i=0;i<toon.length;i++)
 		{
-			if(!this.inTractorRange(toon[i]))
+			if((!this.inTractorRange(toon[i])) || ((toon[i].shields>0) && (toon[i].activeShields)))
 			{
 				toon.splice(i,1);
 				i--;
@@ -454,7 +454,7 @@ function starShip(){
 			{
 				//console.log("same team!");
 				bearbyVessels.splice(i,1);
-				//i--;
+				i--;
 			}
 		}
 		
@@ -563,10 +563,22 @@ function starShip(){
 	};
 	
 	this.getDamaged=function(amt,phaser){
-		this.shields-=amt;
-		var wound=0;
-		if(this.shields<0){wound+=this.shields; this.shields=0;}
-		wound-=this.armor;
+		if(this.activeShields)
+		{
+			this.shields-=amt;
+			var wound=0;
+			if(this.shields<0){
+				wound+=this.shields;
+				this.shields=0;
+				if(this.civ==civs[0]){
+					flashGUITick=5;
+				}
+			}
+		}else
+		{
+			wound=-amt
+		}
+		wound+=this.armor;//CHECK
 		this.hp+=wound;
 		if(this.hp<1)
 		{
@@ -1692,7 +1704,7 @@ function starShip(){
 			{
 				this.windows[i].draw(can,cam);
 			}
-			if(this.shields>0)
+			if((this.shields>0) && (this.activeShields))
 			{
 				canvas.globalAlpha=this.shields/100;
 				if(this.width<32)
@@ -1853,7 +1865,7 @@ function fleet(){
 			if(!this.ships[i].alive)
 			{
 				this.ships.splice(i,1);
-				//i--;
+				i--;
 			}else
 			{
 				this.ships[i].inFormation=false;

@@ -76,7 +76,7 @@ updateEscapes=function()
 		if(!escapes[i].active)
 		{
 			escapes.splice(i,1);
-			//i--;
+			i--;
 		}else
 		{
 			escapes[i].update();
@@ -104,7 +104,7 @@ updateTorpedos=function(thangs){
 		if(!torpedos[i].active)
 		{
 			torpedos.splice(i,1);
-			//i--;
+			i--;
 		}else
 		{
 			torpedos[i].update(thangs);
@@ -683,7 +683,7 @@ function escapePod(){
 			}
 			can.scale(cam.zoom,cam.zoom);
 			this.sprite.draw(can, -this.width/2,-this.height/2);
-			if(this.shields>0)
+			if((this.shields>0) && (this.activeShields))
 			{
 				canvas.globalAlpha=this.shields/100;
 				this.shieldSprite.draw(can, -this.width,-this.height);

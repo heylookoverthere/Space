@@ -237,11 +237,12 @@ function particleSystem(){
 			{
 				if(this.particles[i].alive)
 				{
+					can.save();
 					if (true){//this.particles[i].color!=c){
 						can.fillStyle = this.particles[i].color;
 						c= this.particles[i].color;
 					}
-					can.save();
+					
 					can.translate((this.particles[i].x+cam.x)*cam.zoom,(this.particles[i].y+cam.y)*cam.zoom);
 				
 					can.scale(this.particles[i].size*cam.zoom,this.particles[i].size*cam.zoom);
@@ -252,7 +253,7 @@ function particleSystem(){
 						this.particles[i].sprite.draw(can, -this.particles[i].width/2,-this.particles[i].height/2);
 						if(this.particles[i].shields>0)
 						{
-							can.save();
+							//can.save();
 							can.globalAlpha=this.shields/100;
 							//can.scale(this.particles[i].size*cam.zoom,this.particles[i].size*cam.zoom);
 							this.particles[i].shieldSprite.draw(can, -this.particles[i].width/2,-this.particles[i].height/2);

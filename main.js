@@ -148,6 +148,7 @@ var firekey=new akey("f");
 var fleetattackkey=new akey("j");
 var enterkey=startkey;
 var colonizekey=new akey("z");
+var shieldskey=new akey("7");
 
 
 
@@ -216,7 +217,17 @@ if(MUSIC_ON){
 
 function drawGUI()
 {
-canvas.font = "8pt Calibri";
+	if(flashGUITick>0)
+	{
+		canvas.fillStyle=bColors[flashGUITrack];
+		flashGUITick-=1;//*gameSpeed;
+		flashGUITrack++;
+		if(flashGUITrack>bColors.length-1)
+		{
+			flashGUITrack=0;
+		}
+	}	
+	canvas.font = "8pt Calibri";
 	//canvas.fillText("Press Enter",200,500);
 	//canvas.fillText("  New Game",175,450);
 	//canvas.fillStyle = "grey";
@@ -722,6 +733,10 @@ function mainMenuUpdate(){
 			{
 				selectedShip.desiredSpeed--;
 			}
+		}
+		if(shieldskey.check())
+		{
+			selectedShip.activeShields=!selectedShip.activeShields;
 		}
 		if(gokey.check())
 		{

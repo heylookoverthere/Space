@@ -7,6 +7,8 @@ Flag={};
 Flag.MetTelaxianBountyHunters=0;
 Flag.LeftNeelix=1;
 
+var flashGUITick=0;
+var flashGUITrack=0;
 
 function textbox() 
  {  //draws a text box
