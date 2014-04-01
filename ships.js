@@ -28,6 +28,7 @@ function starShip(){
 	this.xv=0;
 	this.yv=0;
 	this.colony=false;
+	this.spawnPlanet=null;
 	this.canHasShields=true;
 	this.frieghter=false;
 	this.phaserRange=500;

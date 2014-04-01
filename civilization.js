@@ -200,7 +200,7 @@ function civilization()
 	this.money=1000;
 	this.AI=true;
 	this.mode=AIModes.Exploring;
-	this.allied=true;//false;
+	this.allied=false;
 	this.fallenBack=false;
 	this.crewPool=new Array();
 	this.targetPods=false;
@@ -533,7 +533,11 @@ function civilization()
 	
 	this.produceShip=function(lass,worldstart,worldgo)//todo make worldstart do something
 	{
-		var jimmy=newShip(this,this.homeworld);
+		if(!worldstart)
+		{
+			worldstart=this.homeworld;
+		}
+		var jimmy=newShip(this,worldstart);
 		if(lass==1)
 		{
 			jimmy.colony=true;
