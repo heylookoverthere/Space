@@ -186,7 +186,9 @@ function dude()
 		if(this.hp<1)
 		{
 			this.kill(because);
+			return this;
 		}
+		return false;
 	};
 	this.kill=function(cause)
 	{

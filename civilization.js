@@ -201,7 +201,7 @@ function civilization()
 	this.money=1000;
 	this.AI=true;
 	this.mode=AIModes.Exploring;
-	this.allied=false;
+	this.allied=true;//false;
 	this.fallenBack=false;
 	this.crewPool=new Array();
 	this.targetPods=false;

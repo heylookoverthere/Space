@@ -809,11 +809,11 @@ function cloud(dense){
 function nebula(){
 	this.x=Math.random()*universeWidth;
 	this.y=Math.random()*universeHeight;
-	this.numClouds=Math.random()*34;
+	this.numClouds=Math.random()*100;
 	this.clouds=new Array();
 	for(var i=0;i<this.numClouds;i++)
 	{
-		this.clouds[i]=new cloud(120);
+		this.clouds[i]=new cloud(220);
 	}
 	
 	this.draw=function(can,cam){
@@ -1212,6 +1212,7 @@ function killShip(targ,attacker)
 	{
 		attacker.grantXp(15);
 		attacker.kills++;
+		attacker.enterLog("Today we destroyed the "+targ.prefix+" "+targ.name);
 	}
 	if(selectedShip==targ)
 	{

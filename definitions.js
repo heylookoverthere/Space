@@ -150,6 +150,135 @@ function textbox()
 		can.restore();
 	};
 };
+
+function sellScreen(shopkeep) 
+ {  //draws a text box
+	this.exists=false;
+	this.x=140;
+	this.y=170;
+	this.scroll=0;
+	this.width=600;
+	this.label=false;
+	this.height=350;
+	this.options=4;
+	this.object=null;
+	this.civil=null;
+	this.choicesStart=3;
+	this.optionTrack=0;//draw the liitle -
+	this.colors=new Array();
+	this.msg=new Array();
+	this.itemList=new Array();
+	this.cart=new Array();
+
+	this.clearCart=function()
+	{
+		this.cart=new Array();
+	}
+	
+	this.checkout=function()
+	{
+		
+	};
+	this.addtoCart=function(){
+		this.cart.push(this.itemList[this.optionTrack])
+	};
+	this.optionTwo=null;
+	this.optionThree=null;
+	this.response=function()
+	{
+		console.log("CONSEQUENCES HAVE HAPPENED");
+	};
+	this.addText=function(text)
+	{
+		this.msg.push(text);
+		this.colors.push("white");
+	};
+	
+	this.setup=function(firsttext,x,y)
+	{
+		this.msg.push(firsttext);
+		this.exists=true;
+		holdInput=true;
+		this.colors.push("white");
+		this.x=x;
+		this.y=y;
+	};
+	this.update=function()
+	{
+		if(upkey.check())
+		{
+			if(this.optionTrack>this.choicesStart)
+			{
+				this.optionTrack--;
+			}
+		}else if(downkey.check())
+		{
+			if(this.optionTrack<this.msg.length-1)
+			{
+				this.optionTrack++;
+			}
+		}else if(startkey.check())
+		{
+			//this.response();
+			if(this.optionTrack-this.choicesStart==0)
+			{
+				this.optionOne(this.civil,civs[0]);
+			}else if(this.optionTrack-this.choicesStart==1)
+			{
+				this.optionTwo(this.civil,civs[0]);
+			}else if(this.optionTrack-this.choicesStart==2)
+			{
+				this.optionThree(this.civil,civs[0]);
+			}else{
+				holdInput=false;
+			}
+			this.exists=false;
+			
+		}
+	};
+	this.draw=function(can)
+	{
+		can.save();
+		can.globalAlpha=0.80;
+		can.fillStyle = "#DCDCDC";
+		var hight=this.msg.length*16;
+		can.fillRect(this.x-10,this.y-10,this.width+10,this.height+10+hight);
+		
+		can.fillStyle = "#483D8B ";
+		can.fillRect(this.x,this.y,this.width-10,this.height-10+hight);
+		
+		can.font = "16pt Calibri";
+		can.textAlign = "left";
+		can.textBaseline = "middle";
+		can.fillStyle = "white";
+	/*(	if(this.lines==1){
+			can.fillStyle=this.colors[i];
+			can.fillText(this.msg[0], this.x+10,this.y+8+(14));
+			if((this.options>0) && (this.optionTrack==1))
+			{
+				can.fillText("-",this.x+5,this.y+8);
+			}
+		}else*/
+		//todo if text is too long put it on next line
+		if(this.label)
+		{
+			can.fillText(this.label,this.x+4,this.y+9);
+		}
+		for(var i=0;i<this.msg.length;i++)
+		{
+			//if (i>bConsoleStr.length) {break;}
+			can.fillStyle=this.colors[i];
+			can.fillText(this.msg[i], this.x+16,this.y+12+(18*(i+1)));
+			if((this.options>0) && (this.optionTrack==i))
+			{
+				can.fillText("-", this.x+17,this.y+12+(18*(i+1)));
+			}
+		}	
+		
+		can.restore();
+	};
+};
+
 function timesaver()
 {
 

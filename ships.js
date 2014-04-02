@@ -1,6 +1,31 @@
 var tractorColors=["#01A9DB","#0080FF","#2E9AFE","#2E9AFE","#81BEF7","#81F7F3","#A9E2F3","#58D3F7"];
 var assimilationColors=["#9FF781","#58FA58","#2EFE2E","#04B404","#088A08","#088A08","#0B3B0B","#088A29"];
 
+function logEntry(date,author,ship,data)
+{
+	this.date=null;
+	this.author=null;
+	this.ship=null;
+	this.data=null;
+	if(date)
+	{
+		this.date=date;
+	}
+	if(author)
+	{
+		this.author=author;
+	}
+	if(ship)
+	{
+		this.ship=ship;
+	}
+	if(data)
+	{
+		this.data=data;
+	}
+	
+};
+
 var Orders={};
 Orders.whatever=0;
 Orders.Explore=1;
@@ -43,6 +68,7 @@ function starShip(){
 	this.transportRange=200;
 	this.lifeSupport=true;
 	this.lifeSupportRate=.25;
+	this.captainsLog=new Array();
 	this.maxMines=100;
 	this.maxTorpedos=100;
 	this.numTorpedos=100;
@@ -679,6 +705,7 @@ function starShip(){
 			{
 				vict=Math.floor(Math.random()*this.crew.length);	
 			}
+			this.enterLog("Today we lost "+this.crew[vict].title+ " "+this.crew[vict].name+ " to "+cause);
 			this.crew[vict].kill(cause);
 			this.crewLost++;
 			this.crew.splice(vict,1);
@@ -872,6 +899,7 @@ function starShip(){
 					if((thangs[i].discovered==false)  && (this.race==0)){
 						thangs[i].discovered=true;
 						console.log("The "+this.prefix+ " "+this.name+ " discoverd the "+thangs[i].name+" System");
+						this.enterLog("Today we discoverd the "+thangs[i].name+" System.");
 						
 					}
 					if((this.civ.fContacted[thangs[i].race]==false) && (this.race==0)){
@@ -879,8 +907,9 @@ function starShip(){
 						if((thangs[i].race>0) && (thangs[i].alive) && (this.civ.race==0))
 						{
 							console.log("The "+this.prefix+ " "+this.name+ " made first contact with the "+races[thangs[i].race]+"s.");
-							console.log(thangs[i]);
+							this.enterLog("Today we made first contact with the "+races[thangs[i].race]+"s.");
 							civs[thangs[i].race].generateMessage(this.civ);
+							
 						}
 					}
 				}
@@ -911,6 +940,7 @@ function starShip(){
 				ned.choicesStart=1;
 				ned.optionTrack=0;
 				civs[0].messages.push(ned);
+				this.enterLog("We found $"+amt+ " in a space chest.");
 			}
 		}if(hich==1) //find dude
 		{
@@ -923,6 +953,7 @@ function starShip(){
 				ned.choicesStart=1;
 				ned.optionTrack=0;
 				civs[0].messages.push(ned);
+				this.enterLog("We a dude and he agreed to join our crew.");
 			}else
 			{
 				this.civ.crewPool.push(new dude());
@@ -933,6 +964,7 @@ function starShip(){
 				ned.choicesStart=1;
 				ned.optionTrack=0;
 				civs[0].messages.push(ned);
+				this.enterLog("We a dude and he agreed to join our crew, but since the ship was full we sent him back to earth");
 			}
 		}else if(hich==2)//find Neelix.
 		{
@@ -966,6 +998,7 @@ function starShip(){
 						ped.options=0;
 						civil2.messages.push(ped);
 						holdInput=true;
+						this.enterLog("Today we took a Telaxian named Neelix abord.");
 					};
 				
 					ned.optionTwo=function(civil1,civil2)
@@ -976,12 +1009,13 @@ function starShip(){
 						{
 							ped.label="Neelix:";
 							ped.setup("No pleeease don't leave me here!"  ,150,370);
+							this.enterLog("We met a Telaxian on a planet, but left him to die there because he was creepy.");
 							//crew.push(Neelix);
 						}else
 						{
 							ped.label="Neelix:";
 							ped.setup("Ok. but before you go can I eat your liver?"  ,150,370);
-							this.objectkillRandomCrew(" at the hands of a psychotic Telaxian."); //killrandomawayteam
+							this.object.killRandomCrew(" at the hands of a psychotic Telaxian."); //killrandomawayteam
 						}
 						ped.civil=civil1;
 						ped.optionTrack=0;
@@ -1019,6 +1053,7 @@ function starShip(){
 								hed.options=0;
 								civil2.messages.push(hed);
 								holdInput=true;
+								this.enterLog("Today we took a Telaxian named Neelix abord, despite some concerns about him possibly being a serial murderer.");
 							};
 						
 							led.optionTwo=function(civil1,civil2)
@@ -1029,6 +1064,7 @@ function starShip(){
 								{
 									hed.label="Neelix:";
 									hed.setup("No pleeease don't leave me here!"  ,150,370);
+									this.enterLog("We met a Telaxian on a planet, but left him to die there because we heard he was a serial killer");
 									//crew.push(Neelix);
 								}else
 								{
@@ -1070,6 +1106,7 @@ function starShip(){
 				ned.optionTrack=0;
 				civs[0].messages.push(ned);
 				usedEvents[hich]=true;
+				this.enterLog("We found a romulan officer in a stasis pod.  Prehaps if we returned him to his people, they might chill the fuck out a little.");
 			}
 		}else if(hich==4)//find tech
 		{
@@ -1086,6 +1123,7 @@ function starShip(){
 				ned.choices=0;
 				ned.optionTrack=0;
 				civs[0].messages.push(ned);
+				this.enterLog("We found alien blueprints that helped us develop the technology of "+techNames[hurh]);
 			}
 		}else if(hich==5)
 		{
@@ -1097,6 +1135,7 @@ function starShip(){
 			ned.optionTrack=0;
 			civs[0].messages.push(ned);
 			usedEvents[hich]=true;
+			this.enterLog("We found an old Romulan artifact.");
 		}else if(hich==6)
 		{
 			var ned=new textbox();
@@ -1107,6 +1146,7 @@ function starShip(){
 			ned.optionTrack=0;
 			civs[0].messages.push(ned);
 			usedEvents[hich]=true;
+			this.enterLog("We found an old Klingon artifact, the Sword of Khaless");
 		}else if(hich==7)
 		{
 			var ned=new textbox();
@@ -1117,6 +1157,7 @@ function starShip(){
 			ned.optionTrack=0;
 			civs[0].messages.push(ned);
 			usedEvents[hich]=true;
+			this.enterLog("We found an old Cardassian artifact.");
 		}
 	};
 	
@@ -1137,6 +1178,7 @@ function starShip(){
 	this.offerSurrender=function(iv)
 	{
 		//option to say no, like borg
+		this.enterLog("With no other options availible, we must surrender to the "+iv.name+"s.");
 		if(iv.noSurrender)
 		{
 			console.log("The "+iv.name+"s will not accept surrender.");
@@ -1154,6 +1196,18 @@ function starShip(){
 			this.crew[i].grantXp(amt);
 		}
 	}
+	
+	this.enterLog=function(txt){
+		this.captainsLog.push(new logEntry(theTime.years+"."+theTime.days,this.crew[0],this,txt));
+	};
+	
+	this.logLog=function(){
+		for(var i=0;i<this.captainsLog.length;i++)
+		{
+			console.log(this.captainsLog[i].author.title+" "+this.captainsLog[i].author.name+ ", Stardate: "+this.captainsLog[i].date);
+			console.log(this.captainsLog[i].data);
+		}
+	};
 	
 	this.rechargeShields=function()
 	{
@@ -1567,6 +1621,7 @@ function starShip(){
 				if((Math.abs(this.x-this.desiredOrbitTarg.x)<50) && (Math.abs(this.y-this.desiredOrbitTarg.y)<50)) 
 				{
 					console.log(this.prefix+ " "+this.name+ " has arrived in orbit of "+this.desiredOrbitTarg.name);
+					this.enterLog("The "+this.prefix+ " "+this.name+ " has arrived in orbit of "+this.desiredOrbitTarg.name);
 					if(this.orders==Orders.Attack)
 					{
 						this.planetTarget=this.desiredOrbitTarg;
@@ -1575,6 +1630,7 @@ function starShip(){
 					{
 						this.civ.colonize(this.desiredOrbitTarg);
 						console.log(this.prefix+ " "+this.name+ " successfully colonized "+this.desiredOrbitTarg.name);
+						this.enterLog("The "+this.prefix+ " "+this.name+ " successfully colonized "+this.desiredOrbitTarg.name);
 						this.alive=false;
 					}
 					this.orbit(this.desiredOrbitTarg);
@@ -1697,7 +1753,14 @@ function starShip(){
 			this.oxygen-=Math.floor(this.breaches*2*gameSpeed);
 		}else
 		{
-			this.killRandomCrew(" of suffocation.");
+			for(var n=0;n<this.crew.length;n++)
+			{
+				var phillip=this.crew[n].hurt(5,"of suffocation")
+				if(phillip)
+				{
+					this.enterLog("Today we lost "+phillip.title+ " "+phillip.name+" to suffocation.");
+				}
+			}
 		}
 		if((this.lifeSupport) && (this.oxygen<1000))
 		{
@@ -1757,6 +1820,7 @@ function starShip(){
 		if((this.hp<15) && (this.autoEvac) && (!this.evacuating) && (!this.evacDone)&& (this.crew.length>0))
 		{
 			this.Evac(this.civ.homeworld);
+			this.enterLog("The crew is abandoning ship, I will remain behind for now.");
 			console.log(this.prefix+ " "+this.name+ "'s crew is abandoning ship.");
 		}
 		
