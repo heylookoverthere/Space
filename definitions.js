@@ -217,11 +217,12 @@ function buyScreen(customer)
 	this.height=350;
 	this.options=4;
 	this.object=null;
+	this.total=0;
 	this.civil=null;
 	this.choicesStart=0;
 	this.optionTrack=0;//draw the liitle -
 	this.columTrack=0;
-	this.colums=1;
+	this.colums=2;
 	this.colors=new Array();
 	this.msg=new Array();
 	this.itemList=new Array();
@@ -245,19 +246,15 @@ function buyScreen(customer)
 	
 	this.checkout=function()
 	{
-		var total=0;
-		for(var i=0;i<this.cart.length;i++)
-		{
-			total+=this.cart[i].cost;
-		}
-		if(total>this.customer.civ.money)
+		
+		if(this.total>this.customer.civ.money)
 		{
 			console.log("Not enough money");
 			return;
 		}
-		this.customer.civ.money-=total;
+		this.customer.civ.money-=this.total;
 		//this.customer.giveitems(this.itemList);
-		holdInput=false;
+		this.exit();
 	};
 	this.exit=function(){
 		this.clearCart();
@@ -286,21 +283,49 @@ function buyScreen(customer)
 	};
 	this.update=function()
 	{
+		if(escapekey.check())
+		{
+			this.exit();
+		}
 		if(upkey.check())
 		{
-			if(this.optionTrack>this.choicesStart)
+			if(this.columTrack==0)
 			{
-				this.optionTrack--;
+				if(this.optionTrack>this.choicesStart)
+				{
+					this.optionTrack--;
+				}
+			}else if(this.columTrack==1)
+			{
+				if(this.optionTrack>0)
+				{
+					this.optionTrack--;
+				}
 			}
 		}else if(downkey.check())
 		{
-			if(this.optionTrack<this.itemList.length-1)
+			if(this.columTrack==0)
 			{
-				this.optionTrack++;
+				if(this.optionTrack<this.itemList.length-1)
+				{
+					this.optionTrack++;
+				}
+			}else if(this.columTrack==1)
+			{
+				if(this.optionTrack<this.cart.length-1)
+				{
+					this.optionTrack++;
+				}
 			}
-			
 		}else if(rightkey.check())
 		{
+				if(this.columTrack==0)
+				{
+					if(this.optionTrack>this.cart.length-1)
+					{
+						this.optionTrack=this.cart.length-1;
+					}
+				}
 				this.columTrack++;
 				if(this.columTrack>this.colums)
 				{
@@ -308,32 +333,56 @@ function buyScreen(customer)
 				}
 		}else if(leftkey.check())
 		{
-				this.columTrack--;
-				if(this.columTrack<0)
+			if(this.columTrack==1)
+			{
+				if(this.optionTrack>this.itemList.length-1)
 				{
-					this.columTrack=0;
+					this.optionTrack=this.itemList.length-1;
 				}
+			}
+			this.columTrack--;
+			if(this.columTrack<0)
+			{
+				this.columTrack=0;
+			}
 		}else if(startkey.check())
 		{
 			if(this.columTrack==0)
 			{
-				this.addtoCart(1);	
+				if(this.cart.length<20)
+				{
+					this.addtoCart(1);	
+				}else
+				{
+					console.log("the fucking cart is full.");
+				}
 			}else if(this.columTrack==1)
+			{
+				console.log("removed "+this.cart[this.optionTrack].name +" from cart");
+				this.cart.splice(this.optionTrack,1);
+				this.columTrack--;				
+			}
+			else if(this.columTrack==2)
 			{
 				this.checkout();
 			}
 			
+		}
+		this.total=0;
+		for(var i=0;i<this.cart.length;i++)
+		{
+			this.total+=this.cart[i].cost;
 		}
 	};
 	this.draw=function(can)
 	{
 		//draw user money, items, count, cost, checkout button and maker that it's selected
 		can.save();
-		can.globalAlpha=0.80;
+		
 		can.fillStyle = "#DCDCDC";
 		var hight=this.itemList.length*16;
 		can.fillRect(this.x-10,this.y-10,this.width+10,this.height+10+hight);
-		
+		can.globalAlpha=0.80;
 		can.fillStyle = "#483D8B ";
 		can.fillRect(this.x,this.y,this.width-10,this.height-10+hight);
 		
@@ -344,8 +393,14 @@ function buyScreen(customer)
 	
 		can.fillText("Shop",this.x+4,this.y+9);
 	
-		can.fillText("Money: $"+this.customer.civ.money,this.x+100,this.y+9);
-		can.fillText("Checkout",this.x+500,this.y+395);
+		can.fillText("Money: $"+this.customer.civ.money,this.x+200,this.y+9);
+		can.fillText("Total: $"+this.total,this.x+480,this.y+378);
+		can.fillText("Checkout",this.x+480,this.y+395);
+		can.moveTo(this.x+400,this.y);
+		can.strokeStyle = "white";
+		can.lineWidth = 6;
+		can.lineTo(this.x+400,this.y+420);
+		can.stroke();
 		for(var i=0;i<this.itemList.length;i++)
 		{
 			//if (i>bConsoleStr.length) {break;}
@@ -359,17 +414,33 @@ function buyScreen(customer)
 				{
 					can.fillText("-", this.x+17,this.y+12+(18*(i+1)));
 				}
-			}else
+			}else if(this.columTrack==1)
 			{
-				can.fillText("-", this.x+492,this.y+395);
+				if((this.cart.length>0) && (this.optionTrack==i))
+				{
+					can.fillText("-", this.x+420,this.y+12+(18*(i+1)));
+				}
+			}else if(this.columTrack==2)
+			{
+				can.fillText("-", this.x+472,this.y+395);
 			}
 		}
-		can.fillText("Cart:", this.x+360,this.y+9);
+		can.fillText("Cart:", this.x+410,this.y+9);
 		for(var i=0;i<this.cart.length;i++)
 		{
 			//if (i>bConsoleStr.length) {break;}
 			//can.fillStyle=this.colors[i];
-			can.fillText(this.cart[i].name, this.x+360,this.y+12+(18*(i+1)));
+			can.fillText("   "+this.cart[i].name, this.x+410,this.y+12+(18*(i+1)));
+			if(this.columTrack==1)
+			{
+				if((this.cart.length>0) && (this.optionTrack==i))
+				{
+					can.fillText("-", this.x+420,this.y+12+(18*(i+1)));
+				}
+			}else if(this.columTrack==2)
+			{
+				can.fillText("-", this.x+472,this.y+395);
+			}
 		}
 		
 		can.restore();
