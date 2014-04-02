@@ -151,13 +151,14 @@ function textbox()
 	};
 };
 
-function sellScreen(shopkeep) 
+function sellScreen(customer) 
  {  //draws a text box
 	this.exists=false;
 	this.x=140;
 	this.y=170;
 	this.scroll=0;
 	this.width=600;
+	this.customer=customer.
 	this.label=false;
 	this.height=350;
 	this.options=4;
@@ -177,31 +178,33 @@ function sellScreen(shopkeep)
 	
 	this.checkout=function()
 	{
-		
+		var total=0;
+		for(var i=0;i<this.cart.length;i++)+
+		{
+			total+=this.cart[i].cost;
+		}
+		if(total>this.cusomer.money)
+		{
+			console.log("Not enough money");
+		}
 	};
 	this.addtoCart=function(){
 		this.cart.push(this.itemList[this.optionTrack])
 	};
-	this.optionTwo=null;
-	this.optionThree=null;
-	this.response=function()
+
+	this.addItem=function(it)
 	{
-		console.log("CONSEQUENCES HAVE HAPPENED");
-	};
-	this.addText=function(text)
-	{
-		this.msg.push(text);
-		this.colors.push("white");
+		
 	};
 	
 	this.setup=function(firsttext,x,y)
 	{
-		this.msg.push(firsttext);
 		this.exists=true;
 		holdInput=true;
 		this.colors.push("white");
 		this.x=x;
 		this.y=y;
+		//todo!
 	};
 	this.update=function()
 	{
@@ -220,19 +223,6 @@ function sellScreen(shopkeep)
 		}else if(startkey.check())
 		{
 			//this.response();
-			if(this.optionTrack-this.choicesStart==0)
-			{
-				this.optionOne(this.civil,civs[0]);
-			}else if(this.optionTrack-this.choicesStart==1)
-			{
-				this.optionTwo(this.civil,civs[0]);
-			}else if(this.optionTrack-this.choicesStart==2)
-			{
-				this.optionThree(this.civil,civs[0]);
-			}else{
-				holdInput=false;
-			}
-			this.exists=false;
 			
 		}
 	};
