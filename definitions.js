@@ -151,26 +151,93 @@ function textbox()
 	};
 };
 
-function sellScreen(customer) 
+function shopItem(type)
+{
+	this.type=0;
+	this.name="crack";
+	this.description="Crack!";
+	this.item=true;
+	this.person=false;
+	this.tech=false;
+	this.shop=false;
+	this.cost=3.50;
+	if(type)
+	{
+		this.type=type;
+		if(type==Item.RedShirt)
+		{
+			this.name="Red Shirt";
+			this.description="A fine red shirt.";
+		}else if(type==Item.HandPhaser)
+		{
+			this.name="Hand Phaser";
+			this.description="A hand Phaser.";
+		}else if(type==Item.PhaserRifle)
+		{
+			this.name="Phaser Rifle";
+			this.description="More powerful than the hand phaser, but lacks the vibrate setting.";
+		}else if(type==Item.Tricorder)
+		{
+			this.name="Tricorder";
+			this.description="For Scanning.";
+		}else if(type==Item.MedKit)
+		{
+			this.name="Med Kit";
+			this.description="For healin.";
+		}else if(type==Item.EmergencyTranspor)
+		{
+			this.name="Emergency Transporter";
+			this.description="That bullshit from Nemisis.";
+		}else if(type==Item.Bomb)
+		{
+			this.name="Bomb";
+			this.description="Space Bomb.  For bombing things.";
+		}else if(type==Item.PersonalCloak)
+		{
+			this.name="Personal Cloaking Device";
+			this.description="Developed by section 31 in 2285 to allow it's agents to sneak into the ladies locker room.";
+		}else if(type==Item.PersonalShield)
+		{
+			this.name="Personal Shield";
+			this.description="Borg technology allows the creation of a personal energy shield..";
+		}
+	}
+	this.num=1;
+};
+
+function buyScreen(customer) 
  {  //draws a text box
 	this.exists=false;
 	this.x=140;
 	this.y=170;
 	this.scroll=0;
 	this.width=600;
-	this.customer=customer.
+	this.customer=customer;
 	this.label=false;
 	this.height=350;
 	this.options=4;
 	this.object=null;
 	this.civil=null;
-	this.choicesStart=3;
+	this.choicesStart=0;
 	this.optionTrack=0;//draw the liitle -
+	this.columTrack=0;
+	this.colums=1;
 	this.colors=new Array();
 	this.msg=new Array();
 	this.itemList=new Array();
 	this.cart=new Array();
+	this.onCheckout=false;
 
+	this.defaultItemList=function()
+	{
+		this.itemList.push(new shopItem(Item.RedShirt));
+		this.itemList.push(new shopItem(Item.HandPhaser));
+		this.itemList.push(new shopItem(Item.PhaserRifle));
+		this.itemList.push(new shopItem(Item.Tricorder));
+		this.itemList.push(new shopItem(Item.Bomb));
+		this.options=4;
+	};
+	
 	this.clearCart=function()
 	{
 		this.cart=new Array();
@@ -179,31 +246,42 @@ function sellScreen(customer)
 	this.checkout=function()
 	{
 		var total=0;
-		for(var i=0;i<this.cart.length;i++)+
+		for(var i=0;i<this.cart.length;i++)
 		{
 			total+=this.cart[i].cost;
 		}
-		if(total>this.cusomer.money)
+		if(total>this.customer.civ.money)
 		{
 			console.log("Not enough money");
+			return;
 		}
+		this.customer.civ.money-=total;
+		//this.customer.giveitems(this.itemList);
+		holdInput=false;
 	};
-	this.addtoCart=function(){
-		this.cart.push(this.itemList[this.optionTrack])
+	this.exit=function(){
+		this.clearCart();
+		this.exists=false;
+		holdInput=false;
+	};
+	this.addtoCart=function(amt){
+		for(var i=0;i<amt;i++)
+		{
+			this.cart.push(this.itemList[this.optionTrack]);
+		}
 	};
 
 	this.addItem=function(it)
 	{
+		this.itemList.push(it);
+		this.options++;
 		
 	};
 	
-	this.setup=function(firsttext,x,y)
+	this.setup=function()
 	{
 		this.exists=true;
 		holdInput=true;
-		this.colors.push("white");
-		this.x=x;
-		this.y=y;
 		//todo!
 	};
 	this.update=function()
@@ -216,22 +294,44 @@ function sellScreen(customer)
 			}
 		}else if(downkey.check())
 		{
-			if(this.optionTrack<this.msg.length-1)
+			if(this.optionTrack<this.itemList.length-1)
 			{
 				this.optionTrack++;
 			}
+			
+		}else if(rightkey.check())
+		{
+				this.columTrack++;
+				if(this.columTrack>this.colums)
+				{
+					this.columTrack=this.colums;
+				}
+		}else if(leftkey.check())
+		{
+				this.columTrack--;
+				if(this.columTrack<0)
+				{
+					this.columTrack=0;
+				}
 		}else if(startkey.check())
 		{
-			//this.response();
+			if(this.columTrack==0)
+			{
+				this.addtoCart(1);	
+			}else if(this.columTrack==1)
+			{
+				this.checkout();
+			}
 			
 		}
 	};
 	this.draw=function(can)
 	{
+		//draw user money, items, count, cost, checkout button and maker that it's selected
 		can.save();
 		can.globalAlpha=0.80;
 		can.fillStyle = "#DCDCDC";
-		var hight=this.msg.length*16;
+		var hight=this.itemList.length*16;
 		can.fillRect(this.x-10,this.y-10,this.width+10,this.height+10+hight);
 		
 		can.fillStyle = "#483D8B ";
@@ -241,29 +341,36 @@ function sellScreen(customer)
 		can.textAlign = "left";
 		can.textBaseline = "middle";
 		can.fillStyle = "white";
-	/*(	if(this.lines==1){
-			can.fillStyle=this.colors[i];
-			can.fillText(this.msg[0], this.x+10,this.y+8+(14));
-			if((this.options>0) && (this.optionTrack==1))
-			{
-				can.fillText("-",this.x+5,this.y+8);
-			}
-		}else*/
-		//todo if text is too long put it on next line
-		if(this.label)
-		{
-			can.fillText(this.label,this.x+4,this.y+9);
-		}
-		for(var i=0;i<this.msg.length;i++)
+	
+		can.fillText("Shop",this.x+4,this.y+9);
+	
+		can.fillText("Money: $"+this.customer.civ.money,this.x+100,this.y+9);
+		can.fillText("Checkout",this.x+500,this.y+395);
+		for(var i=0;i<this.itemList.length;i++)
 		{
 			//if (i>bConsoleStr.length) {break;}
-			can.fillStyle=this.colors[i];
-			can.fillText(this.msg[i], this.x+16,this.y+12+(18*(i+1)));
-			if((this.options>0) && (this.optionTrack==i))
+			//can.fillStyle=this.colors[i];
+			can.fillText("    "+this.itemList[i].name, this.x+16,this.y+12+(18*(i+1)));
+			
+			can.fillText(this.itemList[i].cost, this.x+196,this.y+12+(18*(i+1)));
+			if(this.columTrack==0)
 			{
-				can.fillText("-", this.x+17,this.y+12+(18*(i+1)));
+				if((this.options>0) && (this.optionTrack==i))
+				{
+					can.fillText("-", this.x+17,this.y+12+(18*(i+1)));
+				}
+			}else
+			{
+				can.fillText("-", this.x+492,this.y+395);
 			}
-		}	
+		}
+		can.fillText("Cart:", this.x+360,this.y+9);
+		for(var i=0;i<this.cart.length;i++)
+		{
+			//if (i>bConsoleStr.length) {break;}
+			//can.fillStyle=this.colors[i];
+			can.fillText(this.cart[i].name, this.x+360,this.y+12+(18*(i+1)));
+		}
 		
 		can.restore();
 	};

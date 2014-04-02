@@ -241,6 +241,14 @@ function screenBox(obj)
 	};
 };
 
+function fuckoff()
+{
+	var goat=new buyScreen(selectedShip);
+	goat.setup();
+	goat.defaultItemList();
+	civs[0].messages.push(goat);
+}
+
 function progressBar()
 {
 	this.x=0;
