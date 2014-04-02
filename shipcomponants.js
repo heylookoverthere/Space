@@ -198,6 +198,30 @@ function dude()
 		this.alive=false;
 	};
 	
+	this.setTitle=function()
+	{
+		if (this.rank==0)
+		{
+			this.title="Crewman";
+		}else if (this.rank==1)
+		{
+			this.title="Ensign";
+		}else if (this.rank==2)
+		{
+			this.title="Lieutenant";
+		}else if (this.rank==3)
+		{
+			this.title="Lt. Commander";
+		}else if (this.rank==4)
+		{
+			this.title="Commander";
+		}else if (this.rank==5)
+		{
+			this.title="Captain";
+		}
+		
+	};
+	
 	this.grantXp=function(amt)
 	{
 		this.xp+=amt;
@@ -215,6 +239,16 @@ function dude()
 			}else
 			{
 				console.log(this,"Doesn't have a civ?");
+			}
+			if((this.level%5==0) && (this.rank<4))
+			{
+				this.rank++;
+				this.setTitle();
+				console.log(this.name+" was promoted to "+this. title);
+				if(this.rank==4)
+				{
+					this.civ.captainQueue.push(this);
+				}
 			}
 		}
 	

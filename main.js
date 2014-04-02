@@ -245,8 +245,8 @@ function drawGUI()
 		canvas.fillText("Planet Name: "+ stars[curSystem].planets[stars[curSystem].selected].name,25,145);
 		canvas.fillText("Planet Type: "+ typestr,25,160);
 		canvas.fillText("Planet HP: "+stars[curSystem].planets[stars[curSystem].selected].hp,25,175);
-		if(Cube){
-		canvas.fillText("Distance of Borg Cube: "+Math.floor(distance(Cube.planetTarget,Cube)),25,190);
+		if((Cube) && (Cube.alive) &&(Cube.planetTarget)){
+		canvas.fillText("Cube "+Math.floor(distance(Cube.planetTarget,Cube))+" AU from "+Cube.planetTarget.name,25,190);
 		}
 		if(stars[curSystem].planets[stars[curSystem].selected].orbitDecay>0)
 		{
@@ -971,8 +971,9 @@ function crewScreenUpdate(){
 	ed.msg[0]="Crew: "
 	for(var i=0;i<civs[0].crewPool.length;i++)
 	{
-		ed.msg[0]+=civs[0].crewPool[i].title+" "+civs[0].crewPool[i].name+" ";
+		ed.msg[0]+=civs[0].crewPool[i].title+" "+civs[0].crewPool[i].name+", ";
 	}
+	ed.msg[0]=ed.msg[0].substring(0,ed.msg[0].length-2);
 
 	if((escapekey.check()) || (crewscreenkey.check()))
 	{

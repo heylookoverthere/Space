@@ -183,6 +183,7 @@ var numCivFlags=10;
 function civilization()
 {
 	this.race=0;
+	this.player=false;
 	this.alive=true;
 	this.name="Humanity";
 	this.content=100;  //clf: they are happy.  They do not have 100 contents.
@@ -205,6 +206,7 @@ function civilization()
 	this.crewPool=new Array();
 	this.targetPods=false;
 	this.fallingBack=false;
+	this.captainQueue=new Array();
 	this.initialProduction=false;
 	this.prisoners=new Array();
 	this.numShipsStart=0;
@@ -533,11 +535,33 @@ function civilization()
 	
 	this.produceShip=function(lass,worldstart,worldgo)//todo make worldstart do something
 	{
+		if(this.player)
+		{
+			if(this.captainQueue.length>0)
+			{
+				var theguy=this.captainQueue[0];
+				this.captainQueue.splice(0,1);
+				if(theguy.rank<5)
+				{
+					theguy.rank=5;
+					theguy.title="Captain";
+				}
+				this.crewPool.splice(0,1);
+				var jimmy=newShip(this,worldstart,theguy);
+			}else
+			{
+				console.log("No qualified captain for proposed new ship!");
+				return;
+			}
+		}else
+		{
+			var jimmy=newShip(this,worldstart);
+		}
 		if(!worldstart)
 		{
 			worldstart=this.homeworld;
 		}
-		var jimmy=newShip(this,worldstart);
+
 		if(lass==1)
 		{
 			jimmy.colony=true;
@@ -547,7 +571,7 @@ function civilization()
 				jimmy.orders=Orders.Colonize;
 			}
 		}
-		if(this.name=="Human")
+		if(this.player)
 		{
 			console.log("Began contructing on the starship "+jimmy.name);
 		}

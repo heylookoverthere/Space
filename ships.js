@@ -26,6 +26,7 @@ function starShip(){
 	this.planetBeamY=0;
 	this.orders=0;
 	this.race=0;
+	this.kills=0;
 	this.x=0;
 	this.y=0;
 	this.xv=0;
@@ -629,9 +630,17 @@ function starShip(){
 		}
 	};
 	
-	this.crewVessel=function(){
+	this.crewVessel=function(cpt){
 		this.crewMax=Math.floor(Math.random()*4)+4;
-		for(var i=0;i<this.crewMax;i++){
+		var i=0;
+		{
+			if(cpt)
+			{
+				this.crew[0]=cpt;
+				i=1;
+			}
+		}
+		for(;i<this.crewMax;i++){
 			this.crew[i]=new dude();
 			this.crew[i].civ=this.civ;
 			if((Math.random()*100)<20)
@@ -640,7 +649,9 @@ function starShip(){
 			}
 		}
 		this.crew[0].title="Captain";
+		this.crew[0].rank=5;
 		this.crew[1].title="Lt. Commander";
+		this.crew[1].rank=3;
 	};
 	
 	this.checkCrew=function(){
