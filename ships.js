@@ -204,7 +204,7 @@ function starShip(){
 	this.launchDate=0;
 	this.lastYear=2000;
 	this.windows=new Array();
-
+	this.items=new Array();
 	
 	this.layMine=function(){
 		if(this.numMines<1) {return;}

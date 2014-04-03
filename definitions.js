@@ -205,9 +205,10 @@ function shopItem(type)
 	this.num=1;
 };
 
-function buyScreen(customer) 
+function buyScreen(customer,sell) 
  {  //draws a text box
 	this.exists=false;
+	this.buying=true;
 	this.x=140;
 	this.y=170;
 	this.scroll=0;
@@ -228,15 +229,32 @@ function buyScreen(customer)
 	this.itemList=new Array();
 	this.cart=new Array();
 	this.onCheckout=false;
-
+	if(sell)
+	{
+		this.buying=false;
+	}
 	this.defaultItemList=function()
 	{
-		this.itemList.push(new shopItem(Item.RedShirt));
-		this.itemList.push(new shopItem(Item.HandPhaser));
-		this.itemList.push(new shopItem(Item.PhaserRifle));
-		this.itemList.push(new shopItem(Item.Tricorder));
-		this.itemList.push(new shopItem(Item.Bomb));
-		this.options=4;
+		if(this.buying)
+		{
+			this.itemList.push(new shopItem(Item.RedShirt));
+			this.itemList.push(new shopItem(Item.HandPhaser));
+			this.itemList.push(new shopItem(Item.PhaserRifle));
+			this.itemList.push(new shopItem(Item.Tricorder));
+			this.itemList.push(new shopItem(Item.Bomb));
+			this.options=4;
+		}else
+		{
+			var q=20;
+			if(customer.items.length<20)
+			{
+				q=customer.items.length;
+			}
+			for(var i=0;i<q;i++)
+			{
+				this.itemList.push(customer.items.pop());
+			}
+		}
 	};
 	
 	this.clearCart=function()
@@ -246,17 +264,30 @@ function buyScreen(customer)
 	
 	this.checkout=function()
 	{
-		
-		if(this.total>this.customer.civ.money)
+		if(this.buying)
 		{
-			console.log("Not enough money");
-			return;
+			if(this.total>this.customer.civ.money)
+			{
+				console.log("Not enough money");
+				return;
+			}
+			this.customer.civ.money-=this.total;
+			//this.customer.giveitems(this.itemList);
+		}else
+		{
+			this.customer.civ.money+=this.total;
+			console.log("Sold!");
 		}
-		this.customer.civ.money-=this.total;
-		//this.customer.giveitems(this.itemList);
 		this.exit();
 	};
 	this.exit=function(){
+		if(!this.buying)
+		{
+			for(var i=0;i<this.cart.length;i++)
+			{
+				this.customer.items.push(this.cart[i]);
+			}
+		}
 		this.clearCart();
 		this.exists=false;
 		holdInput=false;
@@ -265,6 +296,10 @@ function buyScreen(customer)
 		for(var i=0;i<amt;i++)
 		{
 			this.cart.push(this.itemList[this.optionTrack]);
+			if(!this.buying)
+			{
+				this.itemList.splice(this.optionTrack,1);
+			}
 		}
 	};
 
@@ -360,7 +395,7 @@ function buyScreen(customer)
 			{
 				console.log("removed "+this.cart[this.optionTrack].name +" from cart");
 				this.cart.splice(this.optionTrack,1);
-				this.columTrack--;				
+				this.optionTrack--;				
 			}
 			else if(this.columTrack==2)
 			{
@@ -390,12 +425,18 @@ function buyScreen(customer)
 		can.textAlign = "left";
 		can.textBaseline = "middle";
 		can.fillStyle = "white";
-	
-		can.fillText("Shop",this.x+4,this.y+9);
-	
+		if(this.buying)
+		{
+			can.fillText("Shop      Buying",this.x+4,this.y+9);
+			can.fillText("Checkout",this.x+480,this.y+395);
+		}else
+		{
+			can.fillText("Shop      Selling",this.x+4,this.y+9);
+			can.fillText("Sell",this.x+480,this.y+395);
+		}
 		can.fillText("Money: $"+this.customer.civ.money,this.x+200,this.y+9);
 		can.fillText("Total: $"+this.total,this.x+480,this.y+378);
-		can.fillText("Checkout",this.x+480,this.y+395);
+		
 		can.moveTo(this.x+400,this.y);
 		can.strokeStyle = "white";
 		can.lineWidth = 6;

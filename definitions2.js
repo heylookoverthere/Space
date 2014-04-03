@@ -157,6 +157,19 @@ function howsitgoing(iv)
 	
 }
 
+Upgrades={};
+Upgrades.Shields=0;
+Upgrades.MaxShields=1;
+Upgrades.AddPhaser=2;
+Upgrades.PhaserPower=3;
+Upgrades.MaxTorpedos=4;
+Upgrades.MaxMines=5;
+Upgrades.MaxSpeed=6;
+Upgrades.MaxCrew=7;
+Upgrades.SensorRange=8;
+Upgrades.WeaponsRange=9;
+
+
 function screenBox(obj)
 {
 	this.object=obj;
@@ -174,6 +187,7 @@ function screenBox(obj)
 		can.fillStyle="white";
 		can.fillRect(this.x,this.y,this.width+this.borderSize,this.height+this.borderSize);
 		can.fillStyle=this.backColor;
+		can.globalAlpha=.80;
 		can.fillRect(this.x+this.borderSize,this.y+this.borderSize,this.width-this.borderSize,this.height-this.borderSize);
 		can.fillStyle="white";
 		if(this.object.ship)
@@ -243,7 +257,9 @@ function screenBox(obj)
 
 function fuckoff()
 {
-	var goat=new buyScreen(selectedShip);
+	selectedShip.items.push(new shopItem(Item.RedShirt));
+	selectedShip.items.push(new shopItem(Item.HandPhaser));
+	var goat=new buyScreen(selectedShip,true);
 	goat.setup();
 	goat.defaultItemList();
 	civs[0].messages.push(goat);
