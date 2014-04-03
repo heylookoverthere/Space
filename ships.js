@@ -44,6 +44,7 @@ for(var i=0;i<100;i++)
 }
 
 function starShip(){
+	//this.class=baseClass
 	this.ship=true;
 	this.platform=false;
 	this.planetBeamTrack=0;
@@ -117,7 +118,7 @@ function starShip(){
 	this.acceleration=.5;
 	this.hp=100;
 	this.prefix="U.S.S.";
-	this.class="Type-2 Shuttle";
+	this.class=shipClasses[0][0];
 	this.heading=Math.floor(Math.random()*359);
 	this.desiredHeading=this.heading;
 	this.speed=1;
@@ -180,7 +181,7 @@ function starShip(){
 	this.impulseEngine=0;
 	this.tillEvent=Math.random()*8000;
 	this.armor=0;
-	this.sheilds=0;
+	this.shields=0;
 	this.numEscapePods=10;
 	for(var i=0;i<this.numEscapePods;i++)
 	{
@@ -216,6 +217,80 @@ function starShip(){
 		minny.active=true;
 		minny.range=10;
 		mines.push(minny);
+	};
+	
+	this.classify=function()
+	{
+		this.colony=this.class.colony;
+		this.canHasShields=this.class.canHasShields;
+		this.hasShields=this.class.hasShields;
+		this.frieghter=this.class.frieghter;
+		this.phaserRange=this.class.phaserRange;
+		this.destination=this.class.destination;
+		this.transportRange=this.class.transportRange;
+		this.lifeSupport=this.class.lifeSupport;
+		this.lifeSupportRate=this.class.lifeSupportRate;
+		this.maxMines=this.class.maxMines;
+		this.maxTorpedos=this.class.maxTorpedos;
+		this.numTorpedos=this.class.numTorpedos;
+		this.numMines=this.class.numMines;
+		this.shieldChargeRate=this.class.shieldChargeRate;
+		this.autoEvac=this.class.autoEvac;
+		this.maxHp=this.class.maxHp;
+		this.oxygen=this.class.oxygen;
+		this.homing=this.class.homing;
+		this.evacRate=this.class.evacRate;
+		this.NCC=this.class.NCC;
+		this.warpSignature=this.class.warpSignature;
+		this.commandCode=this.class.commandCode;
+		this.prefixCode=this.class.prefixCode; //that bullshit from WoKhan
+		this.accelrate=this.class.accelrate;
+		this.weaponsHot=this.class.weaponsHot;
+		this.numPhasers=this.class.numPhasers;
+		this.numTorpedoBays=this.class.numTorpedoBays;
+		for(var v=1;v<this.numPhasers;v++){ //they already have one
+			this.phaserBanks.push(new energyWeapon(this));
+		}
+		this.shields=this.class.shields;
+		this.tractorDist=this.class.tractorDist;
+		this.maxShields=this.class.maxShields;
+		this.hasShields=this.class.hasShields;
+		this.shieldSprite=this.class.shieldSprite;
+		this.sensorRange=this.class.sensorRange;
+		this.tractorRange=this.class.tractorRange;
+		//this.morale=this.class.
+		this.turnSpeed=this.class.turnSpeed;
+		this.acceleration=this.class.acceleration;
+		this.hp=this.class.hp;
+		this.prefix=this.class.prefix;
+		this.maxSpeed=this.class.maxSpeed;
+		this.type=this.class.type;
+		this.width=this.class.width;
+		this.height=this.class.height;
+		this.crewCapacity=this.class.crewCapacity;
+		this.crewMax=this.class.crewMax;
+		this.orbitDiameter=this.class.orbitDiameter;
+		this.captainFlees=this.class.captainFlees;
+		this.baseRepair=this.class.baseRepair;
+		this.autoFireRate=this.class.autoFireRate;
+		
+		
+		this.sensors=this.class.sensors;
+		this.torpedoTubes=this.class.torpedoTubes;
+		this.sprite=this.class.sprite;
+		
+		this.impulseEngine=this.class.impulseEngine;
+		this.armor=this.class.armor;
+		this.shields=this.class.shields;
+		this.numEscapePods=this.class.numEscapePods;
+		this.transporter=this.class.transporter;
+		this.crewQuarters=this.class.crewQuarters;
+		this.tractor=this.class.tractor;
+		this.warpCore=this.class.warpCore;
+		this.warpEngine=this.class.warpEngine;
+		this.stores=this.class.stores;
+
+		this.maxTeamSize=this.class.maxTeamSize;
 	};
 	
 	this.prepareAwayTeam=function(num){
@@ -339,7 +414,7 @@ function starShip(){
 			return;
 		}if((something.shields>0) && (something.activeShields))
 		{
-			console.log("Cannoy tractor while their sheilds are up.");
+			console.log("Cannoy tractor while their shields are up.");
 			return;
 		}
 

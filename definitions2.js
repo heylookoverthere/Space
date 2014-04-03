@@ -304,6 +304,8 @@ function newShip(iv,startworld,capt)
 		{
 			var james=new starShip();
 			james.homeworld=Earth;
+			james.class=shipClasses[0][0];
+			james.classify();
 			var bah=Math.floor(Math.random()*7);
 			james.x=startworld.x
 			james.y=startworld.y;
@@ -341,6 +343,8 @@ function newShip(iv,startworld,capt)
 		{
 			var james=new starShip();
 			james.homeworld=iv.homeworld;
+			james.class=shipClasses[raceIDs.Vulcan][0];
+			james.classify();
 			james.x=startworld.x
 			james.y=startworld.y;
 			james.prefix="Vulcan";
@@ -359,6 +363,8 @@ function newShip(iv,startworld,capt)
 		}else if(iv.race==raceIDs.Klingon)
 		{
 			var james=new starShip();
+				james.class=shipClasses[raceIDs.Klingon][0];
+				james.classify();
 				james.x=startworld.x
 				james.y=startworld.y;
 				james.homeworld=iv.homeworld;
@@ -381,6 +387,8 @@ function newShip(iv,startworld,capt)
 		}else if(iv.race==raceIDs.Dominion)
 		{
 			var james=new starShip();
+				james.class=shipClasses[raceIDs.Dominion][0];
+				james.classify();
 				james.x=startworld.x
 				james.y=startworld.y;
 				james.homeworld=iv.homeworld;
@@ -403,7 +411,8 @@ function newShip(iv,startworld,capt)
 		}else if(iv.race==raceIDs.Cardassian)
 		{
 			var james=new starShip();
-			
+			james.class=shipClasses[raceIDs.Cardassian][0];
+			james.classify();
 			james.x=startworld.x
 			james.y=startworld.y;
 			james.homeworld=iv.homeworld;
@@ -427,6 +436,8 @@ function newShip(iv,startworld,capt)
 		}else if(iv.race==raceIDs.Romulan)
 		{
 			var james=new starShip();
+			james.class=shipClasses[raceIDs.Romulan][0];
+			james.classify();
 			james.x=startworld.x
 			james.y=startworld.y;
 			james.homeworld=iv.homeworld;
@@ -447,6 +458,8 @@ function newShip(iv,startworld,capt)
 		}else if(iv.race==raceIDs.Hirogen)
 		{
 			var james=new starShip();
+			james.class=shipClasses[raceIDs.Hirogen][0];
+			james.classify();
 			james.x=startworld.x
 			james.y=startworld.y;
 			james.homeworld=iv.homeworld;
@@ -467,6 +480,8 @@ function newShip(iv,startworld,capt)
 		}else if(iv.race==raceIDs.Andorian)
 		{
 			var james=new starShip();
+			james.class=shipClasses[raceIDs.Andorian][0];
+			james.classify();
 			james.homeworld=iv.homeworld;
 			james.x=startworld.x
 			james.y=startworld.y;
@@ -490,6 +505,8 @@ function newShip(iv,startworld,capt)
 		{
 			var james=new starShip();
 			james.homeworld=iv.homeworld;
+			james.class=shipClasses[raceIDs.Tellarite][0];
+			james.classify();
 			james.x=startworld.x
 			james.y=startworld.y;
 			james.desiredHeading=Math.floor(Math.random()*359);
@@ -511,6 +528,8 @@ function newShip(iv,startworld,capt)
 		}else if(iv.race==raceIDs.Breen)
 		{
 			var james=new starShip();
+			james.class=shipClasses[raceIDs.Breen][0];
+			james.classify();
 			james.homeworld=iv.homeworld;
 			james.x=startworld.x
 			james.y=startworld.y;
@@ -534,6 +553,8 @@ function newShip(iv,startworld,capt)
 		}else if(iv.race==raceIDs.Telaxian)
 		{
 			var james=new starShip();
+			james.class=shipClasses[raceIDs.Telaxian][0];
+			james.classify();
 			james.homeworld=iv.homeworld;
 			james.x=startworld.x
 			james.y=startworld.y;
@@ -557,6 +578,8 @@ function newShip(iv,startworld,capt)
 		}else if(iv.race==raceIDs.Vidiian)
 		{
 			var james=new starShip();
+			james.class=shipClasses[raceIDs.Vidiian][0];
+			james.classify();
 			james.homeworld=iv.homeworld;
 			james.x=startworld.x
 			james.y=startworld.y;
@@ -580,6 +603,8 @@ function newShip(iv,startworld,capt)
 		}else if(iv.race==raceIDs.Pakled)
 		{
 			var james=new starShip();
+			james.class=shipClasses[raceIDs.Pakled][0];
+			james.classify();
 			james.homeworld=iv.homeworld;
 			james.x=startworld.x
 			james.y=startworld.y;
@@ -602,6 +627,8 @@ function newShip(iv,startworld,capt)
 		}else if(iv.race==raceIDs.Bajoran)
 		{
 			var james=new starShip();
+			james.class=shipClasses[raceIDs.Bajoran][0];
+			james.classify();
 			james.homeworld=iv.homeworld;
 			james.x=startworld.x
 			james.y=startworld.y;
@@ -623,6 +650,8 @@ function newShip(iv,startworld,capt)
 		}else if(iv.race==raceIDs.Ferengi)
 		{
 			var james=new starShip();
+			james.class=shipClasses[raceIDs.Ferengi][0];
+			james.classify();
 			james.homeworld=iv.homeworld;
 			james.x=startworld.x
 			james.y=startworld.y;
@@ -644,6 +673,8 @@ function newShip(iv,startworld,capt)
 		}else if(iv.race==raceIDs.Orion)
 		{
 			var james=new starShip();
+			james.class=shipClasses[raceIDs.Orion][0];
+			james.classify();
 			james.homeworld=iv.homeworld;
 			james.x=startworld.x
 			james.y=startworld.y;
@@ -665,6 +696,8 @@ function newShip(iv,startworld,capt)
 		}else if(iv.race==raceIDs.Borg)
 		{
 			var james=new starShip();
+			james.class=shipClasses[raceIDs.Borg][0];
+			james.classify();
 			james.homeworld=iv.homeworld;
 			james.x=startworld.x
 			james.y=startworld.y;
@@ -1388,6 +1421,8 @@ function newInitShips()
 			if(i==raceIDs.Human)
 			{
 				var james=new starShip();
+				james.class=shipClasses[raceIDs.Human][0];
+				james.classify();
 				james.homeworld=Earth;
 				var bah=Math.floor(Math.random()*7);
 				james.orbit(stars[0].planets[bah]);
@@ -1423,6 +1458,8 @@ function newInitShips()
 			}else if(i==raceIDs.Vulcan)
 			{
 				var james=new starShip();
+				james.class=shipClasses[raceIDs.Vulcan][0];
+				james.classify();
 				james.homeworld=civs[i].homeworld;
 				james.x=james.homeworld.sun.x;
 				james.y=james.homeworld.sun.y;
@@ -1444,6 +1481,8 @@ function newInitShips()
 			}else if(i==raceIDs.Klingon)
 			{
 				var james=new starShip();
+				james.class=shipClasses[raceIDs.Klingon][0];
+				james.classify();
 				if(Math.random()*20<5)
 				{
 					var blah=Math.floor(Math.random()*(numSystems-1))+1;
@@ -1504,6 +1543,8 @@ function newInitShips()
 			}else if(i==raceIDs.Dominion)
 			{
 				var james=new starShip();
+				james.class=shipClasses[raceIDs.Dominion][0];
+				james.classify();
 				if(Math.random()*20<5)
 				{
 					var blah=Math.floor(Math.random()*(numSystems-1))+1;
@@ -1563,6 +1604,8 @@ function newInitShips()
 			}else if(i==raceIDs.Cardassian)
 			{
 				var james=new starShip();
+								james.class=shipClasses[raceIDs.Cardassian][0];
+				james.classify();
 				if(Math.random()*20<5)
 				{
 					var blah=Math.floor(Math.random()*(numSystems-1))+1;
@@ -1621,6 +1664,8 @@ function newInitShips()
 		}else if(i==raceIDs.Romulan)
 			{
 				var james=new starShip();
+				james.class=shipClasses[raceIDs.Romulan][0];
+				james.classify();
 				james.homeworld=civs[i].homeworld;
 				james.x=james.homeworld.x;
 				james.y=james.homeworld.y;
@@ -1644,6 +1689,8 @@ function newInitShips()
 			}else if(i==raceIDs.Andorian)
 			{
 				var james=new starShip();
+				james.class=shipClasses[raceIDs.Andorian][0];
+				james.classify();
 				james.homeworld=civs[i].homeworld;
 				james.x=james.homeworld.x;
 				james.y=james.homeworld.y;
@@ -1667,6 +1714,8 @@ function newInitShips()
 			}else if(i==raceIDs.Tellarite)
 			{
 				var james=new starShip();
+				james.class=shipClasses[raceIDs.Tellarite][0];
+				james.classify();
 				james.homeworld=civs[i].homeworld;
 				james.x=james.homeworld.x;
 				james.y=james.homeworld.y;
@@ -1689,6 +1738,8 @@ function newInitShips()
 			}else if(i==raceIDs.Breen)
 			{
 				var james=new starShip();
+				james.class=shipClasses[raceIDs.Breen][0];
+				james.classify();
 				james.homeworld=civs[i].homeworld;
 				james.x=james.homeworld.x;
 				james.y=james.homeworld.y;
@@ -1711,6 +1762,8 @@ function newInitShips()
 			}else if(i==raceIDs.Telaxian)
 			{
 				var james=new starShip();
+				james.class=shipClasses[raceIDs.Telaxian][0];
+				james.classify();
 				james.homeworld=civs[i].homeworld;
 				james.x=james.homeworld.x;
 				james.y=james.homeworld.y;
@@ -1733,6 +1786,8 @@ function newInitShips()
 			}else if(i==raceIDs.Vidiian)
 			{
 				var james=new starShip();
+				james.class=shipClasses[raceIDs.Vidiian][0];
+				james.classify();
 				james.homeworld=civs[i].homeworld;
 				james.x=james.homeworld.x;
 				james.y=james.homeworld.y;
@@ -1755,6 +1810,8 @@ function newInitShips()
 			}else if(i==raceIDs.Pakled)
 			{
 				var james=new starShip();
+				james.class=shipClasses[raceIDs.Pakled][0];
+				james.classify();
 				james.homeworld=civs[i].homeworld;
 				james.x=james.homeworld.x;
 				james.y=james.homeworld.y;
@@ -1778,6 +1835,8 @@ function newInitShips()
 			}else if(i==raceIDs.Hirogen)
 			{
 				var james=new starShip();
+				james.class=shipClasses[raceIDs.Hirogen][0];
+				james.classify();
 				james.homeworld=civs[i].homeworld;
 				james.x=james.homeworld.x;
 				james.y=james.homeworld.y;
@@ -1799,6 +1858,8 @@ function newInitShips()
 			}else if(i==raceIDs.Bajoran)
 			{
 				var james=new starShip();
+				james.class=shipClasses[raceIDs.Bajoran][0];
+				james.classify();
 				james.homeworld=civs[i].homeworld;
 				james.x=james.homeworld.x;
 				james.y=james.homeworld.y;
@@ -1820,6 +1881,8 @@ function newInitShips()
 			}else if(i==raceIDs.Ferengi)
 			{
 				var james=new starShip();
+				james.class=shipClasses[raceIDs.Ferengi][0];
+				james.classify();
 				james.homeworld=civs[i].homeworld;
 				james.x=james.homeworld.x;
 				james.y=james.homeworld.y;
@@ -1841,6 +1904,8 @@ function newInitShips()
 			}else if(i==raceIDs.Orion)
 			{
 				var james=new starShip();
+				james.class=shipClasses[raceIDs.Orion][0];
+				james.classify();
 				james.homeworld=civs[i].homeworld;
 				james.x=james.homeworld.x;
 				james.y=james.homeworld.y;
@@ -1862,6 +1927,8 @@ function newInitShips()
 			}else if(i==raceIDs.Borg)
 			{
 				var james=new starShip();
+				james.class=shipClasses[raceIDs.Borg][0];
+				james.classify();
 				james.homeworld=civs[i].homeworld;
 				james.x=Math.random()*universeWidth;
 				james.y=universeHeight;//todo
