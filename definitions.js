@@ -9,6 +9,10 @@ Flag.LeftNeelix=1;
 
 var flashGUITick=0;
 var flashGUITrack=0;
+var arrowSprite=new Array();
+arrowSprite.push(Sprite("greenarrow"));
+arrowSprite.push(Sprite("yellowarrow"));
+arrowSprite.push(Sprite("redarrow"));
 
 function time(){
     this.hours=0; 
@@ -105,7 +109,6 @@ function textbox()
 				holdInput=false;
 			}
 			this.exists=false;
-			
 		}
 	};
 	this.draw=function(can)

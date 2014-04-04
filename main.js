@@ -885,6 +885,7 @@ function mainMenuUpdate(){
 		{
 			ships[i].nearbySystems=ships[i].inSensorRange(stars);	
 			ships[i].nearbyVessels=ships[i].inSensorRange(ships);
+			ships[i].sortNearbyVessels();
 			ships[i].nearbyPods=ships[i].inSensorRange(escapes);
 			ships[i].nearbyPlanets=ships[i].inSensorRange(allworlds);
 			if(ships[i].nearbyVessels==null)

@@ -88,6 +88,24 @@ function shipClass()
 
 baseClass=new shipClass();
 
+colonlyShipClass=new shipClass();
+frieghterClass=new shipClass();
+shuttlecraft=new shipClass();
+shuttlecraft.prefix="U.S.S.";
+shuttlecraft.name="Type-2 Shuttle";
+shuttlecraft.numTorpedos=0;
+shuttlecraft.numMines=0;
+shuttlecraft.hasShields=false;
+shuttlecraft.crewMax=5;
+shuttlecraft.turnSpeed=3;
+
+galaxyClass=new shipClass();
+cubeClass=new shipClass()
+dominionWarship=new shipClass();
+birdOfPrey=new shipClass();
+warbird=new shipClass();
+
+
 shipClasses=new Array();
 for(var i=0;i<18;i++)
 {

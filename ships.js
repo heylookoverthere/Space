@@ -1299,6 +1299,21 @@ function starShip(){
 		}
 	}
 	
+	this.sortNearbyVessels=function()
+	{
+		if(!this.nearbyVessels) {return;}
+		var closest=0
+		for(var i=0;i<this.nearbyVessels.length;i++)
+		{
+			if(distance(this.nearbyVessels[i],this)<distance(this.nearbyVessels[closest],this))
+			{
+				var temp=this.nearbyVessels[closest];
+				this.nearbyVessels[closest]=this.nearbyVessels[i];
+				this.nearbyVessels[i]=temp;
+			}
+		}
+	}
+	
 	this.update=function(){
 		if(!this.alive){return;}
 		if(theTime.years>this.lastYear)
@@ -2088,6 +2103,29 @@ function starShip(){
 				}
 			}
 			//this.sprite.draw(can, this.x-cam.x-this.width/2,this.y-cam.y-this.height/2);
+			if((this==selectedShip)&&(this.nearbyVessels.length>0))
+			{
+				var k=1;
+				var nicky=this.nearbyVessels[0];
+				if(!cam.isOn(nicky))
+				{
+					if(nicky.civ==this.civ)
+					{
+						k=0;
+					}else if(this.civ.autoHostile.indexOf(nicky.civ)>-1)
+					{
+						k=2
+					}
+					var peta=Math.atan2(nicky.y-this.y,nicky.x-this.x)* (180 / Math.PI);
+					can.save();
+					can.translate((this.x+cam.x)*cam.zoom,(this.y+cam.y+6)*cam.zoom);
+					can.rotate((peta)* (Math.PI / 180));
+					//can.rotate((this.beamTarget.heading-90)* (Math.PI / 180));//todo negatives.
+					can.scale(cam.zoom,cam.zoom);
+					arrowSprite[k].draw(can, 0,0);
+					can.restore();
+				}
+			}	
 		}
 	};
 };
