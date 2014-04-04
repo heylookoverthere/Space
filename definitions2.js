@@ -208,7 +208,7 @@ function screenBox(obj)
 			can.fillText("Crew: ",this.x+10,this.y+2+112);
 			for(var i=0;i<this.object.crew.length;i++)
 			{
-				can.fillText(this.object.crew[i].title+" "+this.object.crew[i].name+"Lvl: "+this.object.crew[i].level,this.x+10,this.y+2+128+i*16);
+				can.fillText(this.object.crew[i].title+" "+this.object.crew[i].name+" Lvl: "+this.object.crew[i].level,this.x+10,this.y+2+128+i*16);
 			}
 		}else if(this.object.planet)
 		{

@@ -182,6 +182,7 @@ function dude()
 	this.AIDS=false;
 	this.hurt=function(amt,because)
 	{
+		if(!this.alive){return;}
 		this.hp-=amt;
 		if(this.hp<1)
 		{
@@ -330,7 +331,7 @@ function energyWeapon(hip)
 			can.strokeStyle = bColors[Math.floor(this.colorTrack)];
 			can.beginPath();
 			can.lineWidth = 4*cam.zoom;
-
+			can.globalAlpha=.40;
 			can.moveTo((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
 			can.lineTo((this.target.x+cam.x)*cam.zoom,(this.target.y+cam.y)*cam.zoom)
 		
@@ -612,6 +613,7 @@ function escapePod(){
 			console.log("An empty escape pod arrived at "+this.destination.name);
 			}
 			this.active=false;
+			this.alive=false;
 		}
 		if(this.tractorHost)
 		{

@@ -64,6 +64,7 @@ function starShip(){
 	this.hasShields=false;
 	this.frieghter=false;
 	this.phaserRange=500;
+	this.torpedoRange=500;
 	this.passengers=new Array();
 	this.destination=null;
 	this.transportRange=200;
@@ -211,7 +212,7 @@ function starShip(){
 		if(this.numMines<1) {return;}
 		this.numMines--;
 		var minny=new mine();
-		minn.ship=this;
+		minny.ship=this;
 		minny.x=this.x-minny.width/2
 		minny.y=this.y-minny.height/2;
 		minny.active=true;
@@ -964,6 +965,14 @@ function starShip(){
 		return false;
 	};
 	
+	this.isInTorpedoRange=function(thang){//todo
+		if ((Math.abs(thang.x-this.x)<this.torpedoRange) && (Math.abs(thang.y-this.y)<this.torpedoRange))
+		{
+			return true;
+		}
+		return false;
+	};
+	
 	this.inSensorRange=function(thangs){
 		var thongs=new Array();
 		for(var i=0;i<thangs.length;i++){
@@ -1303,13 +1312,18 @@ function starShip(){
 	{
 		if(!this.nearbyVessels) {return;}
 		var closest=0
-		for(var i=0;i<this.nearbyVessels.length;i++)
-		{
-			if(distance(this.nearbyVessels[i],this)<distance(this.nearbyVessels[closest],this))
+		var swapped=true;
+		while(swapped){
+			swapped=false;
+			for(var i=0;i<this.nearbyVessels.length;i++)
 			{
-				var temp=this.nearbyVessels[closest];
-				this.nearbyVessels[closest]=this.nearbyVessels[i];
-				this.nearbyVessels[i]=temp;
+				if(distance(this.nearbyVessels[i],this)<distance(this.nearbyVessels[closest],this))
+				{
+					var temp=this.nearbyVessels[closest];
+					this.nearbyVessels[closest]=this.nearbyVessels[i];
+					this.nearbyVessels[i]=temp;
+					swapped=true;
+				}
 			}
 		}
 	}
@@ -1379,7 +1393,7 @@ function starShip(){
 				if(this.civ.autoHostile.indexOf(this.nearbyVessels[i].civ)>-1)
 				{
 					
-					if((!this.nearbyVessels[i].surrendered) && (!this.surrendered))
+					if((!this.nearbyVessels[i].surrendered) && (!this.surrendered) && (this.isInTorpedoRange(this.nearbyVessels[i])))
 					{
 						this.torpedoTarget=this.nearbyVessels[i];
 						this.attacking=true;
@@ -1394,7 +1408,7 @@ function starShip(){
 			{
 				this.attacking=false;
 			}
-			if(this.attacking)
+			if((this.attacking)  && (this.torpedoTarget))
 			{
 				this.autoFireTick+=1*gameSpeed;
 				if(this.autoFireTick>this.autoFireRate)
@@ -1442,7 +1456,7 @@ function starShip(){
 			this.beamTarget=null;
 		}
 		
-		if((this.torpedoTarget) &&((!this.torpedoTarget.alive) || (!this.isInSensorRange(this.torpedoTarget))))
+		if((this.torpedoTarget) &&((!this.torpedoTarget.alive) || (!this.isInTorpedoRange(this.torpedoTarget))))
 		{
 			this.torpedoTarget=null;
 			for(var i=0;i<this.phaserBanks.length;i++)
@@ -1845,7 +1859,7 @@ function starShip(){
 		{
 			for(var n=0;n<this.crew.length;n++)
 			{
-				var phillip=this.crew[n].hurt(5,"of suffocation")
+				var phillip=this.crew[n].hurt(5," of suffocation")
 				if(phillip)
 				{
 					this.enterLog("Today we lost "+phillip.title+ " "+phillip.name+" to suffocation.");
@@ -1867,7 +1881,7 @@ function starShip(){
 			if(this.civ.autoHostile.indexOf(this.nearbyVessels[i].civ)>-1)
 			{
 				
-				if((!this.nearbyVessels[i].surrendered)  && (!this.surrendered))
+				if((!this.nearbyVessels[i].surrendered)  && (!this.surrendered)&& (this.isInTorpedoRange(this.nearbyVessels[i])))
 				{
 					this.torpedoTarget=this.nearbyVessels[i];
 					if((this.race==0) || (this.nearbyVessels[i].race==0))
@@ -1889,7 +1903,7 @@ function starShip(){
 		{
 			this.attacking=false;
 		}
-		if(this.attacking)
+		if((this.attacking) && (this.torpedoTarget))
 		{
 			this.autoFireTick+=1*gameSpeed;
 			if(this.autoFireTick>this.autoFireRate)
@@ -2106,8 +2120,16 @@ function starShip(){
 			if((this==selectedShip)&&(this.nearbyVessels.length>0))
 			{
 				var k=1;
-				var nicky=this.nearbyVessels[0];
-				if(!cam.isOn(nicky))
+				var nicky=null;
+				for(var i=this.nearbyVessels.length-1;i>-1;i--)
+				{
+					if(!cam.isOn(this.nearbyVessels[i]))
+					{
+						nicky=this.nearbyVessels[i];
+						//break;
+					}
+				}
+				if((nicky))// && (!cam.isOn(nicky)))
 				{
 					if(nicky.civ==this.civ)
 					{
@@ -2118,6 +2140,7 @@ function starShip(){
 					}
 					var peta=Math.atan2(nicky.y-this.y,nicky.x-this.x)* (180 / Math.PI);
 					can.save();
+					can.globalAlpha=.40;
 					can.translate((this.x+cam.x)*cam.zoom,(this.y+cam.y+6)*cam.zoom);
 					can.rotate((peta)* (Math.PI / 180));
 					//can.rotate((this.beamTarget.heading-90)* (Math.PI / 180));//todo negatives.
