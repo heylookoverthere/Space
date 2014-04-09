@@ -183,6 +183,7 @@ var numCivFlags=10;
 function civilization()
 {
 	this.race=0;
+	this.color="purple";
 	this.player=false;
 	this.alive=true;
 	this.name="Humanity";

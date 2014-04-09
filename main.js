@@ -133,7 +133,7 @@ var fleetattackkey=new akey("j");
 var enterkey=startkey;
 var colonizekey=new akey("z");
 var shieldskey=new akey("7");
-
+var mapkey=new akey("8");
 
 
 
@@ -576,7 +576,10 @@ function mainMenuDraw(){
 	}
 	
 	
-	
+	if(keydown[mapkey.key])
+	{
+		drawLittleMap(canvas,camera);
+	}
 	/*canvas.save();
 		canvas.strokeStyle = "red";
 		canvas.beginPath();
@@ -797,6 +800,7 @@ function mainMenuUpdate(){
 		gameSpeed-=.3;
 		if (gameSpeed<.3) {gameSpeed=0;}
 	}
+
 
 	if(keydown.shift)
 	{

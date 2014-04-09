@@ -72,9 +72,29 @@ civs[raceIDs.Pakled].numShipsStart=2;
 civs[raceIDs.Orion].numShipsStart=4;
 civs[raceIDs.Klingon].mode=AIModes.Agressive;
 
+civs[raceIDs.Human].color="#000066";//"#0066FF";
+civs[raceIDs.Vulcan].color="#CC9900";
+civs[raceIDs.Andorian].color="#00FFFF";//"#0066CC";
+civs[raceIDs.Tellarite].color="#990000";
+civs[raceIDs.Romulan].color="#336600";
+civs[raceIDs.Klingon].color="#CC0000";
+civs[raceIDs.Betazoid].color="#FF9999";
+civs[raceIDs.Vidiian].color="#CCFF99";
+civs[raceIDs.Cardassian].color="#660033";
+civs[raceIDs.Borg].color="#003300"
+civs[raceIDs.Orion].color="#00CC00";
+civs[raceIDs.Telaxian].color="#FF9966";
+civs[raceIDs.Ferengi].color="#CC3300";
+civs[raceIDs.Pakled].color="#800000";
+civs[raceIDs.Bajoran].color="#FF00FF";
+civs[raceIDs.Breen].color="#003366";
+civs[raceIDs.Hirogen].color="#FFFF66";
+civs[raceIDs.Dominion].color="#666699";
+
 civs[0].AI=false;
 civs[0].player=true;
 civs[raceIDs.Borg].AI=false; //for now.
+civs[raceIDs.Borg].allied=false; //for now.
 civs[raceIDs.Romulan].mode=AIModes.Defense;
 civs[raceIDs.Dominion].mode=AIModes.Defense;
 
@@ -83,6 +103,102 @@ var stations=new Array(); //todo add to civilization
 
 var curShip=0;
 var planetTypes = ["Class M","Class L","Class N","Class F","Class J","Class T","Demon Class"];
+
+function drawLittleMap(can, cam)
+{
+	var mapFactor=1000;
+	can.fillStyle="black";
+	var mapedgex=140;
+	var mapedgey=20;
+	can.fillRect(mapedgex,mapedgey,universeWidth/mapFactor,universeHeight/mapFactor);
+	can.fillStyle="white";
+	canvas.font = "8pt Calibri";
+	
+	var hostileMapMode=false;
+	for(var i=0;i<stars.length;i++)
+	{
+		var xp=stars[i].x/mapFactor-1;
+		var yp=stars[i].y/mapFactor-1;
+		can.fillRect(mapedgex+xp,mapedgey+yp,4,4);
+		if(stars[i].civs.length>0)
+		{
+			can.fillStyle=stars[i].civs[0].color;
+		}
+		can.fillText(stars[i].name,mapedgex+xp+6,mapedgey+yp);
+		can.fillStyle="white";
+		
+	}
+	for(var i=0;i<nebulas.length;i++)
+	{
+		can.fillStyle="pink";
+		var xp=nebulas[i].x/mapFactor-1;
+		var yp=nebulas[i].y/mapFactor-1;
+		can.globalAlpha=.50;
+		can.fillRect(mapedgex+xp,mapedgey+yp,6,6);
+		if((mX>mapedgex+xp) && (mX<mapedgex+xp+6) &&(mY>mapedgey+yp) &&(mY<mapedgey+yp+6))
+		{
+			can.fillText(nebulas[i].name,mapedgex+xp+6,mapedgey+yp);
+		}
+		can.fillStyle="white";
+		can.globalAlpha=1;
+		
+	}
+	for(var i=0;i<ships.length;i++)
+	{
+		var xp=ships[i].x/mapFactor;
+		var yp=ships[i].y/mapFactor;
+		can.fillStyle=ships[i].civ.color;
+		if(hostileMapMode)
+		{
+			if(ships[i].civ.name=="Human")
+			{
+				can.fillStyle="green";
+			}else if(civs[0].autoHostile.indexOf(ships[i].civ)>-1)
+			{
+				can.fillStyle="red";
+			}else if(ships[i].civ.allied)
+			{
+				can.fillStyle="blue";
+			}else
+			{
+				can.fillStyle="yellow";
+			}
+		}
+		can.fillRect(mapedgex+xp,mapedgey+yp,2,2);
+		
+		if((mX>mapedgex+xp) && (mX<mapedgex+xp+2) &&(mY>mapedgey+yp) &&(mY<mapedgey+yp+2))
+		{
+			can.fillText(ships[i].name,mapedgex+xp+6,mapedgey+yp);
+		}
+		
+		can.fillStyle="white";
+		
+	}
+	
+	//nebulas, escape pods? 
+	can.strokeStyle="yellow";
+	can.lineWidth =1;
+	var point1={};
+	var point2={};
+	//point1.x=-(cam.x+cam.width/2)/mapFactor;
+	//point1.y=-(cam.y+cam.height/2)/mapFactor;
+	point1.x=-cam.x/mapFactor;
+	point1.y=-cam.y/mapFactor;
+	point2.x=(0-(cam.x+cam.width)/(mapFactor*cam.zoom));
+	point2.y=(0-(cam.y+cam.height)/(mapFactor*cam.zoom));
+	//console.log(point1,point2);
+	can.beginPath();
+	
+	can.moveTo(mapedgex+point1.x,mapedgey+point1.y);
+	can.lineTo(mapedgex+point1.x+cam.width/(mapFactor*cam.zoom),mapedgey+point1.y);
+	can.lineTo(mapedgex+point1.x+cam.width/(mapFactor*cam.zoom),mapedgey+point1.y+cam.height/(mapFactor*cam.zoom));
+	can.lineTo(mapedgex+point1.x,mapedgey+point1.y+cam.height/(mapFactor*cam.zoom));
+	can.lineTo(mapedgex+point1.x,mapedgey+point1.y);
+
+    can.stroke();
+	can.closePath();	
+	//can.fillRect(mapedgex+point1.x,mapedgey+point1.y,cam.width/(mapFactor*cam.zoom),cam.height/(mapFactor*cam.zoom));
+};
 
 function honorDead(iv)
 {
@@ -864,6 +980,7 @@ function cloud(dense){
 };
 
 function nebula(){
+	this.name="Some Nebula";
 	this.x=Math.random()*universeWidth;
 	this.y=Math.random()*universeHeight;
 	this.numClouds=Math.random()*100;
@@ -900,6 +1017,7 @@ function star(){
 	this.size=1;
 	this.height=96;
 	this.alive=true;
+	this.civs=new Array();
 	this.cloaked=false;
 	this.shields=0;
 	this.shieldSprite=Sprite("shields");
@@ -1113,6 +1231,7 @@ function initUniverse()
 	stars[0].name="Sol";
 	stars[0].x=universeWidth/4;
 	stars[0].y=universeHeight/4;
+	stars[0].civs.push(civs[0]);
 	camera.x=universeWidth/4;
 	camera.y=universeHeight/4;
 	setupOurs(stars[0]);
@@ -1140,7 +1259,7 @@ function initUniverse()
 		if(i>0)
 		{
 			civs[i].star=Math.floor(Math.random()*(numSystems-1))+1;
-	
+			stars[civs[i].star].civs.push(civs[i]);
 			if(i==raceIDs.Vulcan) 
 			{
 				stars[civs[i].star].x=56000;

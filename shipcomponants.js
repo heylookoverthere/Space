@@ -273,7 +273,7 @@ function energyWeapon(hip)
 	this.charge=1;
 	this.firing=false;
 	this.type=0;
-	this.colorTrack=0;
+	this.colorTrack=Math.floor(Math.random()*7);
 	this.damageTrack=0;
 
 	this.update=function(hip){
