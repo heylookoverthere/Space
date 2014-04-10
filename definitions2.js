@@ -135,6 +135,10 @@ function drawLittleMap(can, cam)
 		var yp=nebulas[i].y/mapFactor-1;
 		can.globalAlpha=.50;
 		can.fillRect(mapedgex+xp,mapedgey+yp,6,6);
+		can.fillStyle="blue";
+		can.fillRect(mapedgex+xp-3,mapedgey+yp+2,6,6);
+		can.fillStyle="green";
+		can.fillRect(mapedgex+xp+3,mapedgey+yp+2,6,6);
 		if((mX>mapedgex+xp) && (mX<mapedgex+xp+6) &&(mY>mapedgey+yp) &&(mY<mapedgey+yp+6))
 		{
 			can.fillText(nebulas[i].name,mapedgex+xp+6,mapedgey+yp);
@@ -165,7 +169,14 @@ function drawLittleMap(can, cam)
 			}
 		}
 		can.fillRect(mapedgex+xp,mapedgey+yp,2,2);
-		
+		for(var p=0;p<ships[i].tail.length;p++)
+		{
+			var txp=ships[i].tail[p].x/mapFactor;
+			var typ=ships[i].tail[p].y/mapFactor;
+			can.globalAlpha=.30;
+			can.fillRect(mapedgex+txp,mapedgey+typ,2,2);
+		}
+		can.globalAlpha=1;
 		if((mX>mapedgex+xp) && (mX<mapedgex+xp+2) &&(mY>mapedgey+yp) &&(mY<mapedgey+yp+2))
 		{
 			can.fillText(ships[i].name,mapedgex+xp+6,mapedgey+yp);

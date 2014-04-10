@@ -46,6 +46,8 @@ for(var i=0;i<100;i++)
 function starShip(){
 	//this.class=baseClass
 	this.ship=true;
+	this.tail=new Array();
+	this.tailLength=100;
 	this.platform=false;
 	this.planetBeamTrack=0;
 	this.planetBeamX=0;
@@ -53,6 +55,7 @@ function starShip(){
 	this.orders=0;
 	this.race=0;
 	this.kills=0;
+	this.tailCount=0;
 	this.AIMode=AIModes.Explore;
 	this.x=0;
 	this.y=0;
@@ -1971,6 +1974,19 @@ function starShip(){
 			}else
 			{
 				this.attackingPlanet=null;
+			}
+			this.tailCount++;
+			if(this.tailCount>80)
+			{
+				var til={}
+				til.x=this.x;
+				til.y=this.y;
+				this.tail.push(til);
+				if(this.tail.length>this.tailLength)
+				{
+					this.tail.splice(0,1);
+				}
+				this.tailCount=0;
 			}
 	};
 	
