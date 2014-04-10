@@ -11,10 +11,11 @@ var spinArt=false;
 var flicker=true;
 var twinkRate=10;
 var curSystem=0;
-var numNebulas=80;
+var numNebulas=50;
 var Earth=null;
 var selectedShip=null;
 var Cube=null;
+var drawMap=false;
 //var things=new Array();
 var numCivilizations=18;
 var civs=new Array();
@@ -24,6 +25,14 @@ for(var i=0;i<numCivilizations;i++)
 	civs[i].race=i;
 	civs[i].name=races[i];
 	
+}
+
+function clearTails()
+{
+	for(var i=0;i<ships.length;i++)
+	{
+		ships[i].tail=new Array();
+	}
 }
 
 for(var j=0;j<civs.length;j++)

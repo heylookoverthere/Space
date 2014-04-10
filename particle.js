@@ -78,11 +78,7 @@ function particle(){
 			if(pt>-1)
 			{
 				this.sun.civs.splice(pt,1);
-				console.log("removed "+this.civ.name+ " from the "+this.sun.name + " System civ list");
-			}else
-			{
-				console.log("removed no civ "+" from the "+this.sun.name + " System civ list");
-				console.log(this.civ.name);
+				//console.log("removed "+this.civ.name+ " from the "+this.sun.name + " System civ list");
 			}
 			if((logAll) ||(this.civ.name=="Humanity"))
 			{

@@ -96,7 +96,7 @@ var escapekey=new akey("esc");
 var pageupkey=new akey("o");
 var pagedownkey=new akey("l");
 var homekey=new akey("home");
-
+var endkey=new akey("end");
 var upkey=new akey("up");
 var rightkey=new akey("right");
 var downkey=new akey("down");
@@ -130,7 +130,7 @@ var enterkey=startkey;
 var colonizekey=new akey("z");
 var shieldskey=new akey("7");
 var mapkey=new akey("8");
-
+var cleartailskey=new akey("9");
 
 
 
@@ -572,7 +572,7 @@ function mainMenuDraw(){
 	}
 	
 	
-	if(keydown[mapkey.key])
+	if(drawMap)//keydown[mapkey.key])
 	{
 		drawLittleMap(canvas,camera);
 	}
@@ -744,6 +744,11 @@ function mainMenuUpdate(){
 		}
 	}
 	
+	if(mapkey.check())
+	{
+		drawMap=!drawMap;
+	}
+	
 	if(toggleshipkey.check()) //todo!
 	{
 		civs[0].cycleShips(camera);
@@ -837,6 +842,12 @@ function mainMenuUpdate(){
 		}
 		camera.unFollow();
 	}
+	
+	if(endkey.check())
+	{
+		selectedShip=Cube;
+		camera.follow(Cube);
+	}
 
 	if(homekey.check())
 	{
@@ -907,6 +918,11 @@ function mainMenuUpdate(){
 			ships[i].update();
 
 		}
+	}
+	
+	if(cleartailskey.check())
+	{
+		clearTails();
 	}
 	
 	if(targetkey.check())

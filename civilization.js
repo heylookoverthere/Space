@@ -216,7 +216,7 @@ function civilization()
 	this.researchProgress=0;
 	this.researchTick=0;
 	this.nextResearch=100;
-	this.numDefending=3;
+	this.numDefending=2;
 	this.productionQueue=new Array();
 	this.productionTick=0;
 	this.productionRate=1;
@@ -306,7 +306,7 @@ function civilization()
 						this.ships[i].orbiting=false;
 						this.ships[i].orders=Orders.Attack;
 					}
-				}else
+				}else if(enemyCiv.homeworld.civ==enemyCiv)
 				{
 					this.ships[i].orderOrbit(enemyCiv.homeworld); //orderattack?
 					this.ships[i].orders=Orders.Attack;
@@ -317,6 +317,10 @@ function civilization()
 						console.log("The "+this.name+" have eliminated all "+enemyCiv.name+ " ships and are headed to " +enemyCiv.homeworld.name);
 						enemyCiv.homeworldWarning=false;
 					}
+				}else
+				{
+					//resettle on new planet?
+					this.ships[i].orders=Orders.Explore;
 				}
 			}
 			return;
@@ -588,7 +592,8 @@ function civilization()
 	
 	this.conquer=function(plan)
 	{
-
+//breen repeatidly conquoring dominion homeworld?
+		if(plan.civ==this) {return;}
 		plan.civ=this;
 		plan.colonized=true;
 		for(var i=0;i<this.ships.length;i++)
@@ -801,7 +806,14 @@ function civilization()
 		}
 	};
 	
-
+	this.addHostile=function(iv)
+	{
+		if(this.autoHostile.indexOf(iv)>-1)
+		{
+			return;
+		}
+		this.autoHostile.push(iv);
+	}
 	
 	this.update=function()
 	{

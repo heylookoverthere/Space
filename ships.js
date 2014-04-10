@@ -685,7 +685,16 @@ function starShip(){
 	
 	this.attackPlanet=function(plnt)
 	{
-		plnt.hurt(3);
+		if((this.civ.autoHostile.indexOf(plnt.civ)==-1) && (plnt.civ!=this.civ))
+		{
+			//this.civ.addHostile(plnt.civ);
+			this.civ.autoHostile.push(plnt.civ);
+			console.log(this.civ.name+" has pissed off "+plnt.civ.name+ " by attacking their colony on "+plnt.name);
+		}
+		if(plnt.civ!=this.civ)
+		{
+			plnt.hurt(3);
+		}
 	};
 	
 	this.closestWorld=function(refit){
@@ -1781,28 +1790,6 @@ function starShip(){
 				{
 					this.decelerate();
 				}
-				//turn to desired heading
-				/*if(Math.floor(this.heading)<Math.floor(this.desiredHeading))
-				{
-					this.heading+=this.turnSpeed*gameSpeed;
-					this.turning=true;
-					if (this.heading < 0.0)
-						this.heading += 360.0;
-					else if (this.heading > 360.0)
-						this.heading -= 360;
-				}else if(Math.floor(this.heading)>Math.floor(this.desiredHeading))
-				{
-					this.heading-=this.turnSpeed*gameSpeed;
-					this.turning=true;
-					if (this.heading < 0.0)
-						this.heading += 360.0;
-					else if (this.heading > 360.0)
-						this.heading -= 360;
-				}else
-				{
-					this.turning=false;
-				}*/
-				
 			var differenceHeading = Math.abs(this.desiredHeading - this.heading);
 			//if we need to turn clockwise
 			if(differenceHeading>2)
