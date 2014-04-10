@@ -1728,7 +1728,10 @@ function starShip(){
 				}
 				if((Math.abs(this.x-this.desiredOrbitTarg.x)<50) && (Math.abs(this.y-this.desiredOrbitTarg.y)<50)) 
 				{
-					console.log(this.prefix+ " "+this.name+ " has arrived in orbit of "+this.desiredOrbitTarg.name);
+					if((logAll) ||(this.civ.name=="Humanity"))
+					{
+						console.log(this.prefix+ " "+this.name+ " has arrived in orbit of "+this.desiredOrbitTarg.name);
+					}
 					this.enterLog("The "+this.prefix+ " "+this.name+ " has arrived in orbit of "+this.desiredOrbitTarg.name);
 					if(this.orders==Orders.Attack)
 					{
@@ -1884,23 +1887,33 @@ function starShip(){
 			//if(this.civ.autoHostile[this.nearbyVessels[i].civ])
 			if(this.civ.autoHostile.indexOf(this.nearbyVessels[i].civ)>-1)
 			{
-				
-				if((!this.nearbyVessels[i].surrendered)  && (!this.surrendered)&& (this.isInTorpedoRange(this.nearbyVessels[i])))
+				if(true)//don't always attack! sometimes flee!
 				{
-					this.torpedoTarget=this.nearbyVessels[i];
-					if((this.race==0) || (this.nearbyVessels[i].race==0))
+					if((!this.nearbyVessels[i].surrendered)  && (!this.surrendered)&& (this.isInTorpedoRange(this.nearbyVessels[i])))
 					{
-						//console.log(this.nearbyVessels[i].surrendered,this.surrendered);
-					}
-					this.attacking=true;
-					if(this.inPhaserRange(this.torpedoTarget))
+						this.torpedoTarget=this.nearbyVessels[i];
+						if((this.race==0) || (this.nearbyVessels[i].race==0))
+						{
+							//console.log(this.nearbyVessels[i].surrendered,this.surrendered);
+						}
+						this.attacking=true;
+						if(this.inPhaserRange(this.torpedoTarget))
+						{
+								this.firePhasers();
+						}
+					}else
 					{
-							this.firePhasers();
+						this.attacking=false;
 					}
-				}else
-				{
-					this.attacking=false;
 				}
+			}else if((this.civ.hostileOnContact) && (this.civ!=this.nearbyVessels[i].civ))
+			{
+				this.civ.autoHostile.push(this.nearbyVessels[i].civ);
+				console.log("The "+this.nearbyVessels[i].civ.name+" have pissed off the "+this.civ.name+" by existing.");
+			}else if((this.civ.hostileOnIncursion) && (this.civ!=this.nearbyVessels[i].civ) && (this.civ.inOurSpace(this.nearbyVessels[i])))
+			{
+				this.civ.autoHostile.push(this.nearbyVessels[i].civ);
+				console.log("The "+this.nearbyVessels[i].civ.name+" have pissed off the "+this.civ.name+" by entering their space.");
 			}
 		}
 		if((!this.torpedoTarget) || (!this.torpedoTarget.alive))
@@ -1976,7 +1989,7 @@ function starShip(){
 				this.attackingPlanet=null;
 			}
 			this.tailCount++;
-			if(this.tailCount>80)
+			if(this.tailCount>100)
 			{
 				var til={}
 				til.x=this.x;

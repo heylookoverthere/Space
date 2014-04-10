@@ -119,7 +119,7 @@ for (var ci=0;ci<20;ci++)
 
 var numShipNames=38;
 var races=new Array(40);
-races= ["Human","Vulcan","Andorian","Tellerite","Romulan","Klingon","Betazed","Vidiian","Cardassian","Borg","Orion","Telaxian","Ferengi","Pakled","Bajoran","Breen","Hirogen","Dominion"];
+races= ["Humanity","Vulcan","Andorian","Tellerite","Romulan","Klingon","Betazed","Vidiian","Cardassian","Borg","Orion","Telaxian","Ferengi","Pakled","Bajoran","Breen","Hirogen","Dominion"];
 var raceIDs={};
 raceIDs.Human=0;
 raceIDs.Vulcan=1;
@@ -234,7 +234,7 @@ function dude()
 			this.level++;
 			if(this.civ)
 			{
-				if(this.civ.name=="Human")
+				if((logAll) ||(this.civ.name=="Humanity"))
 				{
 					console.log(this.name+" has gained a level!");
 					this.maxHp++;
@@ -603,7 +603,7 @@ function escapePod(){
 		{
 			if(this.passenger)
 			{
-				if(this.passenger.civ.name=="Human")
+				if((logAll) ||(this.passenger.civ.name=="Humanity"))
 				{
 					console.log(this.passenger.title+" "+this.passenger.name+"'s escape pod arrived at "+this.destination.name);
 				}

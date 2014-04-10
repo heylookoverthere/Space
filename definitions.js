@@ -2,7 +2,7 @@ var starting=false;
 var bColors = ["#008000","#006400", "#FF4500", "#000080", "#696969", "#800080", "#808000", "#A52A2A", "#8B4513", "#FFDEAD", "#FFFF40","#000080" , "#FFFF80"]; //list of colors for radar/a few 
 var yellowColors=["#F3F781","#F2F5A9","#FFFF00","#D7DF01","#AEB404"];
 var holdInput=false;
-
+var logAll=false;
 Flag={};
 Flag.MetTelaxianBountyHunters=0;
 Flag.LeftNeelix=1;

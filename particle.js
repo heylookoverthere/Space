@@ -84,14 +84,14 @@ function particle(){
 				console.log("removed no civ "+" from the "+this.sun.name + " System civ list");
 				console.log(this.civ.name);
 			}
-			if(this.civ.name=="Human")
+			if((logAll) ||(this.civ.name=="Humanity"))
 			{
 				if(this==this.civ.homeworld)
 				{
-					console.log("Earth has fallen!  Well shit.");
+					console.log(this.name+" has fallen!  Well shit.");
 				}else
 				{
-					console.log("Humanity lost their colony on "+this.name);
+					console.log(this.civ.name+" lost their colony on "+this.name);
 				}
 			}
 			for(var i=0;i<this.civ.worlds.length;i++)

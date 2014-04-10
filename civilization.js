@@ -186,6 +186,8 @@ function civilization()
 	this.color="purple";
 	this.player=false;
 	this.alive=true;
+	this.hostileOnContact=false;
+	this.hostileOnIncursion=false;
 	this.name="Humanity";
 	this.content=100;  //clf: they are happy.  They do not have 100 contents.
 	this.techs=new Array();
@@ -254,6 +256,18 @@ function civilization()
 			console.log("The last "+this.name+" has died.");
 		}
 	};
+	
+	this.inOurSpace=function(hip)
+	{
+		for (var i=0;i<this.worlds.length;i++)
+		{
+			if(distance(this.worlds[i],hip)<500)
+			{
+				return true;
+			}	
+		}
+		return false;
+	}
 	
 	this.newMasterAI=function()
 	{
@@ -695,7 +709,7 @@ function civilization()
 		}
 		var jimmy=newPlatform(worldstart);
 		//jimmy.alive=false;
-		if(this.name=="Human")
+		if((logAll) ||(this.name=="Humanity"))
 		{
 			console.log("Began contructing on an orbital weapons platform ");
 		}
@@ -752,13 +766,13 @@ function civilization()
 		{
 			var timmy=new building(type,wrld);
 			this.productionQueue.push(timmy);
-			if(this.name=="Human")
+			if((logAll) ||(this.name=="Humanity"))
 			{
 				console.log("Began contructing a new "+timmy.name+" on " +wrld.name);
 			}
 		}else
 		{
-			if(this.name=="Human")
+			if((logAll) ||(this.name=="Humanity"))
 			{
 				console.log("Can't fit any more buildings on " +wrld.name);
 			}
@@ -836,9 +850,9 @@ function civilization()
 			{
 				//finished researching somthing!
 				this.techs[this.researchProgress]=true;
-				if(this.name=="Human")
+				if((logAll) ||(this.name=="Humanity"))
 				{
-					console.log(this.name+ "s have discovered "+techNames[this.researchProgress]);
+					console.log(this.name+ " have discovered "+techNames[this.researchProgress]);
 				}
 				if(this.researchProgress<this.techs.length)
 				{
@@ -862,7 +876,7 @@ function civilization()
 					{
 						if(jerry.ship)
 						{
-							if(this.name=="Human")
+							if((logAll) ||(this.name=="Humanity"))
 							{
 								console.log("Humanity produced the starship "+jerry.name);
 							};
@@ -871,7 +885,7 @@ function civilization()
 							ships.push(jerry);
 						}else if(jerry.platform)
 						{
-							if(this.name=="Human")
+							if((logAll) ||(this.name=="Humanity"))
 							{
 								console.log("Humanity produced an orbital defense platform on "+jerry.orbitTarg.name);
 							};
@@ -893,7 +907,7 @@ function civilization()
 							{
 								ships.push(newPlatform(jerry.world));
 							}
-							if(this.name=="Human")
+							if((logAll) ||(this.name=="Humanity"))
 							{
 								console.log("Humanity produced a "+jerry.name+ " on "+jerry.world.name);
 							}

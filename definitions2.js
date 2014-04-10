@@ -34,15 +34,15 @@ for(var j=0;j<civs.length;j++)
 	}
 	if(j!=raceIDs.Breen)
 	{
-		civs[raceIDs.Breen].autoHostile.push(civs[j]);
+		//civs[raceIDs.Breen].autoHostile.push(civs[j]);
 	}
 	if(j!=raceIDs.Hirogen)
 	{
-		civs[raceIDs.Hirogen].autoHostile.push(civs[j]);
+		//civs[raceIDs.Hirogen].autoHostile.push(civs[j]);
 	}
 	if(j!=raceIDs.Dominion)
 	{
-		civs[raceIDs.Dominion].autoHostile.push(civs[j]);
+		//civs[raceIDs.Dominion].autoHostile.push(civs[j]);
 	}
 	//civs[j].autoHostile.push(civs[raceIDs.Borg]);
 	
@@ -59,7 +59,8 @@ civs[raceIDs.Romulan].numShipsStart=1;
 civs[raceIDs.Ferengi].numShipsStart=4;
 civs[raceIDs.Vulcan].numShipsStart=4;
 civs[raceIDs.Cardassian].numShipsStart=6;
-civs[raceIDs.Dominion].numShipsStart=30;
+civs[raceIDs.Dominion].numShipsStart=4;
+civs[raceIDs.Dominion].money=9000;
 civs[raceIDs.Hirogen].numShipsStart=5;
 
 civs[raceIDs.Vidiian].numShipsStart=5;
@@ -67,7 +68,13 @@ civs[raceIDs.Andorian].numShipsStart=6;
 civs[raceIDs.Telaxian].numShipsStart=1;
 civs[raceIDs.Tellarite].numShipsStart=4;
 civs[raceIDs.Bajoran].numShipsStart=2;
-civs[raceIDs.Breen].numShipsStart=20;
+civs[raceIDs.Breen].numShipsStart=5;
+civs[raceIDs.Breen].money=5000;
+civs[raceIDs.Breen].hostileOnIncursion=true;
+civs[raceIDs.Romulan].hostileOnIncursion=true;
+civs[raceIDs.Borg].hostileOnContact=true;
+civs[raceIDs.Dominion].hostileOnContact=true;
+civs[raceIDs.Hirogen].hostileOnContact=true;
 civs[raceIDs.Pakled].numShipsStart=2;
 civs[raceIDs.Orion].numShipsStart=4;
 civs[raceIDs.Klingon].mode=AIModes.Agressive;
@@ -95,7 +102,7 @@ civs[0].AI=false;
 civs[0].player=true;
 civs[raceIDs.Borg].AI=false; //for now.
 civs[raceIDs.Borg].allied=false; //for now.
-civs[raceIDs.Romulan].mode=AIModes.Defense;
+//civs[raceIDs.Romulan].mode=AIModes.Defense;
 civs[raceIDs.Dominion].mode=AIModes.Defense;
 
 var ships=new Array();
@@ -154,7 +161,7 @@ function drawLittleMap(can, cam)
 		can.fillStyle=ships[i].civ.color;
 		if(hostileMapMode)
 		{
-			if(ships[i].civ.name=="Human")
+			if(ships[i].civ.name=="Humanity")
 			{
 				can.fillStyle="green";
 			}else if(civs[0].autoHostile.indexOf(ships[i].civ)>-1)
@@ -2099,8 +2106,10 @@ function newInitShips()
 				james.christen();
 				james.hp=1500;
 				james.maxHp=1500;
+				james.activeShields=true;
+				james.hasShields=true;
+				james.maxShields=100;
 				james.shields=100;
-				
 				james.oxygen=10000;
 				james.class="Cube";
 				james.sprite=Sprite("ship3");
