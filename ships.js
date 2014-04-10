@@ -405,6 +405,7 @@ function starShip(){
 		
 		if(this.tractorClient)
 		{
+			this.tractorClient.orbiting=false;
 			this.tractorClient.tractorHost=null;
 			this.tractorClient=null;	
 		}
@@ -1266,10 +1267,10 @@ function starShip(){
 	this.offerSurrender=function(iv)
 	{
 		//option to say no, like borg
-		this.enterLog("With no other options availible, we must surrender to the "+iv.name+"s.");
+		this.enterLog("With no other options availible, we must surrender to the "+iv.name+".");
 		if(iv.noSurrender)
 		{
-			console.log("The "+iv.name+"s will not accept surrender.");
+			console.log("The "+iv.name+" will not accept surrender.");
 			return;
 		}
 		//take prisoners
@@ -1537,26 +1538,31 @@ function starShip(){
 				this.decelerate();
 			}
 			//turn to desired heading
-			if(Math.floor(this.heading)<Math.floor(this.desiredHeading))
+			var differenceHeading = Math.abs(this.desiredHeading - this.heading);
+			//if we need to turn clockwise
+			if(differenceHeading>2)
 			{
-				this.heading+=this.turnSpeed*gameSpeed;
-				this.turning=true;
-				if (this.heading < 0.0)
-					this.heading += 360.0;
-				else if (this.heading > 360.0)
-					this.heading -= 360;
-			}else if(Math.floor(this.heading)>Math.floor(this.desiredHeading))
+				if(isTurnCCW(this.heading, this.desiredHeading))
+				{
+					//Turn right
+					this.heading-=this.turnSpeed*gameSpeed;
+						this.turning=true;
+				}else
+				{
+					this.heading+=this.turnSpeed*gameSpeed;
+						this.turning=true;
+				}
+			}else{
+				this.turning=false;//totodo
+			}
+			if(this.heading > 359)
 			{
-				this.heading-=this.turnSpeed*gameSpeed;
-				this.turning=true;
-				if (this.heading < 0.0)
-					this.heading += 360.0;
-				else if (this.heading > 360.0)
-					this.heading -= 360;
-			}else
+				this.heading = 0;
+			}
+			if(this.heading < 0)
 			{
-				this.turning=false;
-			}	
+				this.heading += 360;
+			}
 
 			if((Math.abs(this.x-this.escorting.x)<100) && (Math.abs(this.y-this.escorting.y)<100) && (this.escorting!=this)) 
 			{
@@ -1601,27 +1607,32 @@ function starShip(){
 				this.decelerate();
 			}
 			//turn to desired heading
-			if(Math.floor(this.heading)<Math.floor(this.desiredHeading))
+			var differenceHeading = Math.abs(this.desiredHeading - this.heading);
+			//if we need to turn clockwise
+			if(differenceHeading>2)
 			{
-				this.heading+=this.turnSpeed*gameSpeed;
-				this.turning=true;
-				if (this.heading < 0.0)
-					this.heading += 360.0;
-				else if (this.heading > 360.0)
-					this.heading -= 360;
-			}else if(Math.floor(this.heading)>Math.floor(this.desiredHeading))
+				if(isTurnCCW(this.heading, this.desiredHeading))
+				{
+					//Turn right
+					this.heading-=this.turnSpeed*gameSpeed;
+						this.turning=true;
+				}else
+				{
+					this.heading+=this.turnSpeed*gameSpeed;
+						this.turning=true;
+				}
+			}else{
+				this.turning=false;//totodo
+			}
+
+			if(this.heading > 359)
 			{
-				this.heading-=this.turnSpeed*gameSpeed;
-				this.turning=true;
-				if (this.heading < 0.0)
-					this.heading += 360.0;
-				else if (this.heading > 360.0)
-					this.heading -= 360;
-			}else
+				this.heading = 0;
+			}
+			if(this.heading < 0)
 			{
-				this.turning=false;
-			}	
-				//***
+				this.heading += 360;
+			}
 
 
 				if((Math.abs(this.x-this.destination.x)<100) && (Math.abs(this.y-this.destination.y)<100) && (this.destination!=this)) 
@@ -1691,26 +1702,33 @@ function starShip(){
 				else if (beta > 360.0)
 					beta -= 360;
 				this.desiredHeading=beta;
-				if(Math.floor(this.heading)<Math.floor(this.desiredHeading))
+				var differenceHeading = Math.abs(this.desiredHeading - this.heading);
+				//if we need to turn clockwise
+				if(differenceHeading>2)
 				{
-					this.heading+=this.turnSpeed*gameSpeed;
-					this.turning=true;
-					if (this.heading < 0.0)
-						this.heading += 360.0;
-					else if (this.heading > 360.0)
-						this.heading -= 360;
-				}else if(Math.floor(this.heading)>Math.floor(this.desiredHeading))
-				{
-					this.heading-=this.turnSpeed*gameSpeed;
-					this.turning=true;
-					if (this.heading < 0.0)
-						this.heading += 360.0;
-					else if (this.heading > 360.0)
-						this.heading -= 360;
-				}else
-				{
-					this.turning=false;
+					if(isTurnCCW(this.heading, this.desiredHeading))
+					{
+						//Turn right
+						this.heading-=this.turnSpeed*gameSpeed;
+							this.turning=true;
+					}else
+					{
+						this.heading+=this.turnSpeed*gameSpeed;
+							this.turning=true;
+					}
+				}else{
+					this.turning=false;//totodo
 				}
+				
+				if(this.heading > 359)
+				{
+					this.heading = 0;
+				}
+				if(this.heading < 0)
+				{
+					this.heading += 360;
+				}
+				
 				if(this.speed<this.desiredSpeed)
 				{
 					this.accelerate();
@@ -1764,7 +1782,7 @@ function starShip(){
 					this.decelerate();
 				}
 				//turn to desired heading
-				if(Math.floor(this.heading)<Math.floor(this.desiredHeading))
+				/*if(Math.floor(this.heading)<Math.floor(this.desiredHeading))
 				{
 					this.heading+=this.turnSpeed*gameSpeed;
 					this.turning=true;
@@ -1783,7 +1801,47 @@ function starShip(){
 				}else
 				{
 					this.turning=false;
+				}*/
+				
+			var differenceHeading = Math.abs(this.desiredHeading - this.heading);
+			//if we need to turn clockwise
+			if(differenceHeading>2)
+			{
+				if(isTurnCCW(this.heading, this.desiredHeading))
+				{
+					//Turn right
+					this.heading-=this.turnSpeed*gameSpeed;
+						this.turning=true;
+				}else
+				{
+					this.heading+=this.turnSpeed*gameSpeed;
+						this.turning=true;
 				}
+			}else{
+				this.turning=false;//totodo
+			}
+
+			//MessageBox.Show(headingDifference + "");
+			//just for now
+			//heading = targetHeading;
+
+			if(this.heading > 359)
+			{
+				this.heading = 0;
+			}
+			if(this.heading < 0)
+			{
+				this.heading += 360;
+			}
+			
+			if(this.desiredHeading > 359)
+			{
+				this.desiredHeading = 0;
+			}
+			if(this.desiredHeading < 0)
+			{
+				this.desiredHeading += 360;
+			}
 			
 			this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
 			this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));

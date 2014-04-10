@@ -640,25 +640,30 @@ function escapePod(){
 			this.heading=beta;
 			this.desiredHeading=beta;
 			//turn to desired heading
-			if(Math.floor(this.heading)<Math.floor(this.desiredHeading))
+			var differenceHeading = Math.abs(this.desiredHeading - this.heading);
+			//if we need to turn clockwise
+			if(differenceHeading>2)
 			{
-				this.heading+=this.turnSpeed*gameSpeed;
-				this.turning=true;
-				if (this.heading < 0.0)
-					this.heading += 360.0;
-				else if (this.heading > 360.0)
-					this.heading -= 360;
-			}else if(Math.floor(this.heading)>Math.floor(this.desiredHeading))
+				if(isTurnCCW(this.heading, this.desiredHeading))
+				{
+					//Turn right
+					this.heading-=this.turnSpeed*gameSpeed;
+						this.turning=true;
+				}else
+				{
+					this.heading+=this.turnSpeed*gameSpeed;
+						this.turning=true;
+				}
+			}else{
+				this.turning=false;//totodo
+			}
+			if(this.heading > 359)
 			{
-				this.heading-=this.turnSpeed*gameSpeed;
-				this.turning=true;
-				if (this.heading < 0.0)
-					this.heading += 360.0;
-				else if (this.heading > 360.0)
-					this.heading -= 360;
-			}else
+				this.heading = 0;
+			}
+			if(this.heading < 0)
 			{
-				this.turning=false;
+				this.heading += 360;
 			}
 		}
 		

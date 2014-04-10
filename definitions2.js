@@ -79,7 +79,7 @@ civs[raceIDs.Pakled].numShipsStart=2;
 civs[raceIDs.Orion].numShipsStart=4;
 civs[raceIDs.Klingon].mode=AIModes.Agressive;
 
-civs[raceIDs.Human].color="#000066";//"#0066FF";
+civs[raceIDs.Human].color="#0033CC";//"#0066FF";
 civs[raceIDs.Vulcan].color="#CC9900";
 civs[raceIDs.Andorian].color="#00FFFF";//"#0066CC";
 civs[raceIDs.Tellarite].color="#990000";
@@ -88,7 +88,7 @@ civs[raceIDs.Klingon].color="#CC0000";
 civs[raceIDs.Betazoid].color="#FF9999";
 civs[raceIDs.Vidiian].color="#CCFF99";
 civs[raceIDs.Cardassian].color="#660033";
-civs[raceIDs.Borg].color="#003300"
+civs[raceIDs.Borg].color="#194719";//"#003300"
 civs[raceIDs.Orion].color="#00CC00";
 civs[raceIDs.Telaxian].color="#FF9966";
 civs[raceIDs.Ferengi].color="#CC3300";
@@ -103,13 +103,23 @@ civs[0].player=true;
 civs[raceIDs.Borg].AI=false; //for now.
 civs[raceIDs.Borg].allied=false; //for now.
 //civs[raceIDs.Romulan].mode=AIModes.Defense;
-civs[raceIDs.Dominion].mode=AIModes.Defense;
+civs[raceIDs.Dominion].mode=AIModes.Agressive;
 
 var ships=new Array();
 var stations=new Array(); //todo add to civilization
 
 var curShip=0;
 var planetTypes = ["Class M","Class L","Class N","Class F","Class J","Class T","Demon Class"];
+
+function hdgDiff (h1, h2) { // angle between two headings
+   var diff = fmod(h1 - h2 + 3600, 360);
+   return diff <= 180 ? diff : 360 - diff;
+}
+
+function isTurnCCW(hdg, newHdg) { // should a new heading turn left ie. CCW?
+   var diff = newHdg - hdg;        // CCW = counter-clockwise ie. left
+   return diff > 0 ? diff > 180 : diff >= -180;
+}
 
 function drawLittleMap(can, cam)
 {
@@ -1306,7 +1316,12 @@ function initUniverse()
 	{
 		if(i>0)
 		{
-			civs[i].star=Math.floor(Math.random()*(numSystems-1))+1;
+			var patty=Math.floor(Math.random()*(numSystems-1))+1;
+			while(stars[patty].civs.length>0)
+			{
+				patty=Math.floor(Math.random()*(numSystems-1))+1;
+			}
+			civs[i].star=patty
 			stars[civs[i].star].civs.push(civs[i]);
 			if(i==raceIDs.Vulcan) 
 			{
