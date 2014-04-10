@@ -13,6 +13,7 @@ function particle(){
 	this.alive=false;
 	this.x=0;
 	this.y=0;
+	this.sun=null;
 	this.colonizeDate=2000.00;
 	this.evented=false;
 	this.width=1;
@@ -73,6 +74,16 @@ function particle(){
 		if((this.hp<1) && (this.civ))
 		{
 			this.hp=100;
+			var pt=this.sun.civs.indexOf(this.civ);
+			if(pt>-1)
+			{
+				this.sun.civs.splice(pt,1);
+				console.log("removed "+this.civ.name+ " from the "+this.sun.name + " System civ list");
+			}else
+			{
+				console.log("removed no civ "+" from the "+this.sun.name + " System civ list");
+				console.log(this.civ.name);
+			}
 			if(this.civ.name=="Human")
 			{
 				if(this==this.civ.homeworld)

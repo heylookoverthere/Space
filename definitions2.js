@@ -1251,6 +1251,36 @@ function initUniverse()
 		//stars[i].name=names[0][Math.floor(Math.random()*10)];
 		stars[i].x=Math.floor(Math.random()*universeWidth);
 		stars[i].y=Math.floor(Math.random()*universeHeight);
+		var eli=false;
+		while(eli)
+		{
+			for(var p=0;p<i;p++)
+			{
+				if((!eli) && (i!=p) && (distance(stars[i],stars[p])<10000))
+				{
+					eli=true;
+				}
+			}
+			if(eli)
+			{
+				stars[i].x=Math.floor(Math.random()*universeWidth);
+				stars[i].y=Math.floor(Math.random()*universeHeight);
+			}
+		}
+		/*
+		var eli=false;
+		for(var p=0;p<i;p++)
+		{
+			if((!eli) && (i!=p) && (distance(stars[i],stars[p])<500))
+			{
+				eli=true;
+			}
+		}
+		if(eli)
+		{
+			stars[i].x=Math.floor(Math.random()*universeWidth);
+			stars[i].y=Math.floor(Math.random()*universeHeight);
+		}*/
 		stars[i].type=Math.floor(Math.random()*3);
 		//monsta.startTextured(1000000,stars[i].x-48,stars[i].y-48,0,0,0,false,false,"sun"+stars[i].type);
 	}
@@ -1664,7 +1694,7 @@ function newInitShips()
 				var james=new starShip();
 				james.class=shipClasses[raceIDs.Dominion][0];
 				james.classify();
-				if(Math.random()*20<5)
+				if(false)//Math.random()*20<5)
 				{
 					var blah=Math.floor(Math.random()*(numSystems-1))+1;
 					var gah=Math.floor(Math.random()*stars[blah].numPlanets);

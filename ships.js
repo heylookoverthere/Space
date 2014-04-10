@@ -53,6 +53,7 @@ function starShip(){
 	this.orders=0;
 	this.race=0;
 	this.kills=0;
+	this.AIMode=AIModes.Explore;
 	this.x=0;
 	this.y=0;
 	this.xv=0;

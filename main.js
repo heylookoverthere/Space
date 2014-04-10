@@ -76,16 +76,12 @@ function akey(k) {  //represents a keyboard button
 
 	//curMap = new Map();
 //INITSDONKEY
-initUniverse();
-newInitShips();
-
-	
-
-
 distance=function(one,two){
 	return(Math.pow(one.x-two.x,2)+Math.pow(one.y-two.y,2));
 };
 
+initUniverse();
+newInitShips();
 
 var ksavekey=new akey("o"); //define the different keys
 var loadkey=new akey("l");
@@ -848,7 +844,8 @@ function mainMenuUpdate(){
 		camera.y=0-stars[0].y+CANVAS_HEIGHT/2;
 		camera.center(stars[0]);
 		curSystem=0;
-		camera.unFollow();
+		//camera.unFollow();
+		camera.follow(Earth);
 		/*for(var i=0;i<ships.length;i++)
 		{
 			ships[i].Evac();

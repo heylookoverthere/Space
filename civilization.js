@@ -18,7 +18,7 @@ AIModes.Defense=2;
 AIModes.Explore=3;
 AIModes.AgressiveDefense=4;
 AIModes.Genocidal=5;
-AIModes.Exploring=7;
+AIModes.Explor=7;
 
 var Techs = {};
 Techs.Aeroponics=1;
@@ -201,8 +201,8 @@ function civilization()
 	this.encounterTrack=0;
 	this.money=1000;
 	this.AI=true;
-	this.mode=AIModes.Exploring;
-	this.allied=true;//false;
+	this.mode=AIModes.Explore;
+	this.allied=false;
 	this.fallenBack=false;
 	this.crewPool=new Array();
 	this.targetPods=false;
@@ -214,6 +214,7 @@ function civilization()
 	this.researchProgress=0;
 	this.researchTick=0;
 	this.nextResearch=100;
+	this.numDefending=3;
 	this.productionQueue=new Array();
 	this.productionTick=0;
 	this.productionRate=1;
@@ -251,6 +252,171 @@ function civilization()
 		{
 			this.alive=false;
 			console.log("The last "+this.name+" has died.");
+		}
+	};
+	
+	this.newMasterAI=function()
+	{
+		//choose production
+		if(!this.initialProduction)
+		{
+			this.produceBuilding(Buildings.ShieldGrid,this.homeworld);
+			this.produceBuilding(Buildings.Mine,this.homeworld);
+			this.produceBuilding(Buildings.OrbitalDefense,this.homeworld);
+			this.money-=300;
+			this.initialProduction=true;
+		}else
+		{
+			var cost=300;
+			if(this.money>cost-1)
+			{
+				this.money-=cost;
+				this.produceShip(9,this.homeworld);
+			}
+		}
+
+		
+		if(this.homeworld.civ!=this)
+		{
+			var enemyCiv=this.homeworld.civ;
+			for(var i=0;i<this.ships.length;i++)
+			{
+				//
+				if(enemyCiv.ships.length>0)
+				{
+					var bobert = this.ships[i].nearestSpecificShip(enemyCiv);
+					if(bobert)
+					{
+						this.ships[i].destination=bobert;
+							
+						this.ships[i].orbiting=false;
+						this.ships[i].orders=Orders.Attack;
+					}
+				}else
+				{
+					this.ships[i].orderOrbit(enemyCiv.homeworld); //orderattack?
+					this.ships[i].orders=Orders.Attack;
+					if(enemyCiv.homeworldWarning)
+					{
+						
+						
+						console.log("The "+this.name+" have eliminated all "+enemyCiv.name+ " ships and are headed to " +enemyCiv.homeworld.name);
+						enemyCiv.homeworldWarning=false;
+					}
+				}
+			}
+			return;
+		}
+		
+		if(this.allied) {return;}
+		if(borgTrack==this.race)
+		{
+			//fall back to homeworld!
+			this.fallingBack=true;
+			for(var i=0;i<this.ships.length;i++)
+			{
+				this.ships[i].orderOrbit(this.homeworld);
+				this.ships[i].desiredSpeed=this.ships[i].maxSpeed;
+			}
+			if(!this.fallenBack)
+			{
+				console.log("all ships returning to "+this.homeworld.name+" to aid in its defense");
+				this.fallenBack=true;
+			}
+		}
+		
+		//set each ship's state
+		//var counter=0;
+		for(var counter=0;(counter<this.numDefending) &&(counter<this.ships.length);counter++)
+		{
+			this.ships[counter].AIMode=AIModes.Defense;
+		}
+		//if you have an enemy, and hella ships, then go attack him.
+		if((this.ships.length>10) && (this.autoHostile.length>0))
+		{
+			for(var counter=this.numDefending;counter<this.ships.length;counter++)
+			{
+				this.ships[counter].AIMode=AIModes.Agressive;
+			}
+		}else
+		{
+			for(var counter=this.numDefending;counter<this.ships.length;counter++)
+			{
+				this.ships[counter].AIMode==AIModes.Explore;
+			}
+		}		
+		
+		for(var i=0;i<this.ships.length;i++)
+		{
+			if(this.ships[i].AIMode==AIModes.Genociadal)
+			{
+				//select a race and attack them till they die planet and take it
+			}else if(this.ships[i].AIMode==AIModes.Agressive)
+			{
+				if(this.autoHostile.length<1)
+				{
+						this.ships[i].desiredOrbitTarg=null;
+						this.ships[i].planetTarget=null;
+						this.ships[i].destination=null;
+
+					this.ships[i].AIMode=AIModes.Explore;
+					return;
+				}
+				
+				var enemyCiv=this.autoHostile[0];
+				if(enemyCiv.ships.length>0)
+				{
+					var bobert = this.ships[i].nearestSpecificShip(enemyCiv);
+					if(bobert)
+					{
+						this.ships[i].destination=bobert;
+								
+						this.ships[i].orbiting=false;
+						this.ships[i].orders=Orders.Attack;
+					}
+				}else
+				{
+					this.ships[i].orderOrbit(enemyCiv.homeworld); //orderattack?
+					this.ships[i].orders=Orders.Attack;
+					if(enemyCiv.homeworldWarning)
+					{
+							
+							
+						console.log("The "+this.name+" have eliminated all "+enemyCiv.name+ " ships and are headed to " +enemyCiv.homeworld.name);
+						enemyCiv.homeworldWarning=false;
+					}
+				}
+			}else if(this.ships[i].AIMode==AIModes.Expanding)
+			{
+			
+			}else if(this.ships[i].AIMode==AIModes.Explore)
+			{
+			
+				if((!this.ships[i].desiredOrbitTarg) || (this.ships[i].orbitTarg))//todo
+				{
+					var blah=Math.floor(Math.random()*(numSystems-1))+1;
+					var gah=Math.floor(Math.random()*stars[blah].numPlanets);
+					this.ships[i].orderOrbit(stars[blah].planets[gah]);
+				}
+			
+			}else if(this.ships[i].AIMode==AIModes.Defense)
+			{
+				//move at least one ship to each system
+				var whichWorld=0;
+				this.ships[i].orderOrbit(this.worlds[whichWorld]);
+				if((this.ships[i].colony) || (this.ships[i].freighter))
+				{
+					break;
+				}
+				whichWorld++;
+				if(whichWorld>this.worlds.length)
+				{
+					whichWorld=0;
+				}
+			}else if(this.ships[i].AIMode==AIModes.AgressiveDefense)
+			{
+				//attack anyone in your space
+			}
 		}
 	};
 	
@@ -338,7 +504,7 @@ function civilization()
 					this.ships[i].planetTarget=null;
 					this.ships[i].destination=null;
 				}
-				this.mode=AIModes.Exloring;
+				this.mode=AIModes.Explore;
 				return;
 			}
 			
@@ -372,7 +538,7 @@ function civilization()
 		}else if(this.mode==AIModes.Expanding)
 		{
 		
-		}else if(this.mode==AIModes.Exploring)
+		}else if(this.mode==AIModes.Explore)
 		{
 			for(var i=0;i<this.ships.length;i++)
 			{
@@ -408,6 +574,7 @@ function civilization()
 	
 	this.conquer=function(plan)
 	{
+
 		plan.civ=this;
 		plan.colonized=true;
 		for(var i=0;i<this.ships.length;i++)
@@ -420,6 +587,7 @@ function civilization()
 			}
 		}
 		this.worlds.push(plan);
+		plan.sun.civs.push(this);
 		if(this.race!=raceIDs.Borg)
 		{
 			console.log(plan.name+ " has been conquered by "+this.name);
@@ -606,6 +774,10 @@ function civilization()
 		this.worlds.push(world);
 		world.race=this.race;
 		world.civ=this;
+		if(sun.civs.indexOf(this)==-1)
+		{
+			world.sun.civs.push(this);
+		}
 		world.colonized=true;
 		world.colonizedDate=Math.floor(theTime.years)+"."+Math.floor(theTime.days);
 		console.log("The planet "+world.name+" has been successfully colonized by the "+this.name);
@@ -654,7 +826,7 @@ function civilization()
 			
 			if(this.AI)
 			{
-				this.masterAI();
+				this.newMasterAI();
 			}
 			
 			this.updateTick=0;
