@@ -2034,7 +2034,41 @@ function starShip(){
 				this.attackingPlanet=null;
 			}
 			this.tailCount++;
-			if(this.tailCount>100)
+			var taleRate=150;
+			if(gameSpeed<.5)
+			{
+				taleRate=5000;
+			}else if(gameSpeed<1)
+			{
+				taleRate=2500;
+			}else if(gameSpeed<2)
+			{
+				taleRate=1000;
+			}else if(gameSpeed<3)
+			{
+				taleRate=800;
+			}else if(gameSpeed<4)
+			{
+				taleRate=600;
+			}
+			else if(gameSpeed<5)
+			{
+				taleRate=450;
+			}else if(gameSpeed<6)
+			{
+				taleRate=300;
+			}
+			else if(gameSpeed<7)
+			{
+				taleRate=250;
+			}else if(gameSpeed<8)
+			{
+				taleRate=200;
+			}else if(gameSpeed<9)
+			{
+				taleRate=175;
+			}
+			if(this.tailCount>taleRate)
 			{
 				var til={}
 				til.x=this.x;
