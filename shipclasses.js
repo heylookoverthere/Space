@@ -53,7 +53,8 @@ function shipClass()
 	this.desiredHeading=this.heading;
 	this.speed=1;
 	this.desiredSpeed=1;
-	this.maxSpeed=5
+	this.maxSpeed=5;
+	this.cruisingSpeed=5;
 	this.status="idle";
 	this.type=0;
 	this.width=32;

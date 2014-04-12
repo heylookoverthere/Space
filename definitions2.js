@@ -507,7 +507,7 @@ function newShip(iv,startworld,capt)
 			james.sprite=Sprite("ship5");
 			james.maxSpeed=7;
 			james.speed=3;
-			james.desiredSpeed=4;
+			james.cruisingSpeed=4;
 			james.civ=iv;
 			james.crewVessel(capt);
 			james.alive=true;
@@ -532,7 +532,7 @@ function newShip(iv,startworld,capt)
 				james.addPhaser();
 				//james.homing=false;
 				james.speed=6;
-				james.desiredSpeed=6;
+				james.cruisingSpeed=6;
 				james.crewVessel(capt);
 				james.alive=true;
 				james.launchDate=Math.floor(theTime.years)+"."+Math.floor(theTime.days);
@@ -556,7 +556,7 @@ function newShip(iv,startworld,capt)
 				james.addPhaser();
 				//james.homing=false;
 				james.speed=6;
-				james.desiredSpeed=6;
+				james.cruisingSpeed=6;
 				james.crewVessel(capt);
 				james.alive=true;
 				james.launchDate=Math.floor(theTime.years)+"."+Math.floor(theTime.days);
@@ -580,7 +580,7 @@ function newShip(iv,startworld,capt)
 			james.addPhaser();
 			//james.homing=false;
 			james.speed=6;
-			james.desiredSpeed=6;
+			james.cruisingSpeed=6;
 			james.crewVessel(capt);
 			james.alive=true;
 			james.launchDate=Math.floor(theTime.years)+"."+Math.floor(theTime.days);
@@ -601,7 +601,7 @@ function newShip(iv,startworld,capt)
 			james.sprite=Sprite("ship6");
 			james.maxSpeed=7;
 			james.speed=3;
-			james.desiredSpeed=5;
+			james.cruisingSpeed=5;
 			james.civ=iv;
 			
 			james.crewVessel(capt);
@@ -623,7 +623,7 @@ function newShip(iv,startworld,capt)
 			james.sprite=Sprite("ship10");
 			james.maxSpeed=7;
 			james.speed=3;
-			james.desiredSpeed=5;
+			james.cruisingSpeed=5;
 			james.civ=iv;
 			
 			james.crewVessel(capt);
@@ -647,7 +647,7 @@ function newShip(iv,startworld,capt)
 			james.sprite=Sprite("ship15");
 			james.maxSpeed=7;
 			james.speed=3;
-			james.desiredSpeed=5;
+			james.cruisingSpeed=5;
 			james.civ=civs[raceIDs.Andorian];
 			
 			james.crewVessel(capt);
@@ -671,7 +671,7 @@ function newShip(iv,startworld,capt)
 			james.sprite=Sprite("ship16");
 			james.maxSpeed=7;
 			james.speed=3;
-			james.desiredSpeed=5;
+			james.cruisingSpeed=5;
 			james.civ=civs[raceIDs.Tellarite];
 			
 			james.crewVessel(capt);
@@ -695,7 +695,7 @@ function newShip(iv,startworld,capt)
 			james.sprite=Sprite("ship14");
 			james.maxSpeed=7;
 			james.speed=3;
-			james.desiredSpeed=5;
+			james.cruisingSpeed=5;
 			james.civ=civs[raceIDs.Breen];
 			
 			james.crewVessel(capt);
@@ -720,7 +720,7 @@ function newShip(iv,startworld,capt)
 			james.sprite=Sprite("ship12");
 			james.maxSpeed=7;
 			james.speed=3;
-			james.desiredSpeed=5;
+			james.cruisingSpeed=5;
 			james.civ=iv;
 			
 			james.crewVessel(capt);
@@ -745,7 +745,7 @@ function newShip(iv,startworld,capt)
 			james.sprite=Sprite("ship13");
 			james.maxSpeed=7;
 			james.speed=3;
-			james.desiredSpeed=5;
+			james.cruisingSpeed=5;
 			james.civ=civs[raceIDs.Vidiian];
 			
 			james.crewVessel(capt);
@@ -770,7 +770,7 @@ function newShip(iv,startworld,capt)
 			james.sprite=Sprite("ship17");
 			james.maxSpeed=7;
 			james.speed=3;
-			james.desiredSpeed=5;
+			james.cruisingSpeed=5;
 			james.civ=iv;
 			james.crewVessel(capt);
 			
@@ -793,7 +793,7 @@ function newShip(iv,startworld,capt)
 			james.sprite=Sprite("ship11");
 			james.maxSpeed=7;
 			james.speed=3;
-			james.desiredSpeed=5;
+			james.cruisingSpeed=5;
 			james.civ=civs[raceIDs.Bajoran];
 			
 			james.crewVessel(capt);
@@ -816,7 +816,7 @@ function newShip(iv,startworld,capt)
 			james.sprite=Sprite("ship7");
 			james.maxSpeed=7;
 			james.speed=3;
-			james.desiredSpeed=5;
+			james.cruisingSpeed=5;
 			james.civ=civs[raceIDs.Ferengi];
 						
 			james.crewVessel(capt);
@@ -839,7 +839,7 @@ function newShip(iv,startworld,capt)
 			james.sprite=Sprite("ship18");
 			james.maxSpeed=7;
 			james.speed=3;
-			james.desiredSpeed=5;
+			james.cruisingSpeed=5;
 			james.civ=civs[raceIDs.Orion];
 						
 			james.crewVessel(capt);
@@ -866,7 +866,7 @@ function newShip(iv,startworld,capt)
 			james.class="Cube";
 			james.sprite=Sprite("ship3");
 			james.maxSpeed=10;
-			james.desiredSpeed=5;
+			james.cruisingSpeed=5;
 			//james.adjustHeading(270);
 			james.speed=5;
 			james.autoFireRate=20;
@@ -1626,6 +1626,8 @@ function newInitShips()
 				james.sprite=Sprite("ship2");
 				james.maxSpeed=9;
 				james.activeShields=true;
+				james.crusingSpeed=7;
+				james.desiredSpeed=james.cruisingSpeed;
 				james.hasShields=true;
 				james.maxShields=70;
 				james.shields=70;
@@ -1662,7 +1664,8 @@ function newInitShips()
 				james.sprite=Sprite("ship5");
 				james.maxSpeed=7;
 				james.speed=3;
-				james.desiredSpeed=4;
+				james.cruisingSpeed=4;
+				james.desiredSpeed=james.cruisingSpeed;
 				james.civ=civs[raceIDs.Vulcan];
 				james.crewVessel();
 				james.civ=civs[i];
@@ -1701,7 +1704,8 @@ function newInitShips()
 					james.addPhaser();
 					//james.homing=false;
 					james.maxSpeed=7;
-					james.desiredSpeed=6;
+					james.cruisingSpeed=6;
+					james.desiredSpeed=james.cruisingSpeed;
 					james.crewVessel();
 
 					james.alive=true;
@@ -1725,7 +1729,8 @@ function newInitShips()
 					james.addPhaser();
 					//james.homing=false;
 					james.speed=6;
-					james.desiredSpeed=6;
+					james.cruisingSpeed=6;
+					james.desiredSpeed=james.cruisingSpeed;
 					james.crewVessel();
 					james.alive=true;
 					james.launchDate=Math.floor(theTime.years)+"."+Math.floor(theTime.days);
@@ -1762,7 +1767,8 @@ function newInitShips()
 					james.addPhaser();
 					//james.homing=false;
 					james.maxSpeed=7;
-					james.desiredSpeed=6;
+					james.cruisingSpeed=6;
+					james.desiredSpeed=james.cruisingSpeed;
 					james.crewVessel();
 
 					james.alive=true;
@@ -1786,7 +1792,8 @@ function newInitShips()
 					james.addPhaser();
 					//james.homing=false;
 					james.speed=6;
-					james.desiredSpeed=6;
+					james.cruisingSpeed=6;
+					james.desiredSpeed=james.cruisingSpeed;
 					james.crewVessel();
 					james.alive=true;
 					james.launchDate=Math.floor(theTime.years)+"."+Math.floor(theTime.days);
@@ -1823,7 +1830,8 @@ function newInitShips()
 					james.addPhaser();
 					//james.homing=false;
 					james.maxSpeed=7;
-					james.desiredSpeed=6;
+					james.cruisingSpeed=6;
+					james.desiredSpeed=james.cruisingSpeed;
 					james.crewVessel();
 					james.launchDate=Math.floor(theTime.years)+"."+Math.floor(theTime.days);
 					james.alive=true;
@@ -1846,7 +1854,8 @@ function newInitShips()
 					james.addPhaser();
 					//james.homing=false;
 					james.speed=6;
-					james.desiredSpeed=6;
+					james.cruisingSpeed=6;
+					james.desiredSpeed=james.cruisingSpeed;
 					james.crewVessel();
 					james.alive=true;
 					james.launchDate=Math.floor(theTime.years)+"."+Math.floor(theTime.days);
@@ -1869,7 +1878,8 @@ function newInitShips()
 				james.sprite=Sprite("ship6");
 				james.maxSpeed=7;
 				james.speed=3;
-				james.desiredSpeed=5;
+				james.cruisingSpeed=5;
+				james.desiredSpeed=james.cruisingSpeed;
 				james.civ=civs[raceIDs.Romulan];
 				
 				james.crewVessel();
@@ -1894,7 +1904,8 @@ function newInitShips()
 				james.sprite=Sprite("ship15");
 				james.maxSpeed=7;
 				james.speed=3;
-				james.desiredSpeed=5;
+				james.cruisingSpeed=5;
+				james.desiredSpeed=james.cruisingSpeed;
 				james.civ=civs[raceIDs.Andorian];
 				
 				james.crewVessel();
@@ -1919,7 +1930,8 @@ function newInitShips()
 				james.sprite=Sprite("ship16");
 				james.maxSpeed=7;
 				james.speed=3;
-				james.desiredSpeed=5;
+				james.cruisingSpeed=5;
+				james.desiredSpeed=james.cruisingSpeed;
 				james.civ=civs[raceIDs.Tellarite];
 				james.launchDate=Math.floor(theTime.years)+"."+Math.floor(theTime.days);
 				james.crewVessel();
@@ -1943,7 +1955,8 @@ function newInitShips()
 				james.sprite=Sprite("ship14");
 				james.maxSpeed=7;
 				james.speed=3;
-				james.desiredSpeed=5;
+				james.cruisingSpeed=5;
+				james.desiredSpeed=james.cruisingSpeed;
 				james.civ=civs[raceIDs.Breen];
 				james.launchDate=Math.floor(theTime.years)+"."+Math.floor(theTime.days);
 				james.crewVessel();
@@ -1967,7 +1980,8 @@ function newInitShips()
 				james.sprite=Sprite("ship12");
 				james.maxSpeed=7;
 				james.speed=3;
-				james.desiredSpeed=5;
+				james.cruisingSpeed=5;
+				james.desiredSpeed=james.cruisingSpeed;
 				james.civ=civs[raceIDs.Telaxian];
 				james.launchDate=Math.floor(theTime.years)+"."+Math.floor(theTime.days);
 				james.crewVessel();
@@ -1991,7 +2005,8 @@ function newInitShips()
 				james.sprite=Sprite("ship13");
 				james.maxSpeed=7;
 				james.speed=3;
-				james.desiredSpeed=5;
+				james.cruisingSpeed=5;
+				james.desiredSpeed=james.cruisingSpeed;
 				james.civ=civs[raceIDs.Vidiian];
 				james.launchDate=Math.floor(theTime.years)+"."+Math.floor(theTime.days);
 				james.crewVessel();
@@ -2015,7 +2030,8 @@ function newInitShips()
 				james.sprite=Sprite("ship17");
 				james.maxSpeed=7;
 				james.speed=3;
-				james.desiredSpeed=5;
+				james.cruisingSpeed=5;
+				james.desiredSpeed=james.cruisingSpeed;
 				james.civ=civs[raceIDs.Pakled];
 				james.launchDate=Math.floor(theTime.years)+"."+Math.floor(theTime.days);
 				james.civ=civs[i];
@@ -2039,7 +2055,8 @@ function newInitShips()
 				james.sprite=Sprite("ship10");
 				james.maxSpeed=7;
 				james.speed=3;
-				james.desiredSpeed=5;
+				james.cruisingSpeed=5;
+				james.desiredSpeed=james.cruisingSpeed;
 				james.civ=civs[raceIDs.Hirogen];
 				james.launchDate=Math.floor(theTime.years)+"."+Math.floor(theTime.days);
 				james.crewVessel();
@@ -2062,7 +2079,8 @@ function newInitShips()
 				james.sprite=Sprite("ship11");
 				james.maxSpeed=7;
 				james.speed=3;
-				james.desiredSpeed=5;
+				james.cruisingSpeed=5;
+				james.desiredSpeed=james.cruisingSpeed;
 				james.civ=civs[raceIDs.Bajoran];
 				james.launchDate=Math.floor(theTime.years)+"."+Math.floor(theTime.days);
 				james.crewVessel();
@@ -2085,7 +2103,8 @@ function newInitShips()
 				james.sprite=Sprite("ship7");
 				james.maxSpeed=7;
 				james.speed=3;
-				james.desiredSpeed=5;
+				james.cruisingSpeed=5;
+				james.desiredSpeed=james.cruisingSpeed;
 				james.civ=civs[raceIDs.Ferengi];
 				james.launchDate=Math.floor(theTime.years)+"."+Math.floor(theTime.days);
 				james.crewVessel();
@@ -2108,7 +2127,8 @@ function newInitShips()
 				james.sprite=Sprite("ship18");
 				james.maxSpeed=7;
 				james.speed=3;
-				james.desiredSpeed=5;
+				james.cruisingSpeed=5;
+				james.desiredSpeed=james.cruisingSpeed;
 				james.civ=civs[raceIDs.Orion];
 				james.launchDate=Math.floor(theTime.years)+"."+Math.floor(theTime.days);
 				james.crewVessel();
@@ -2138,7 +2158,8 @@ function newInitShips()
 				james.class="Cube";
 				james.sprite=Sprite("ship3");
 				james.maxSpeed=10;
-				james.desiredSpeed=5;
+				james.cruisingSpeed=5;
+				james.desiredSpeed=james.cruisingSpeed;
 				//james.adjustHeading(270);
 				james.speed=5;
 				james.autoFireRate=20;

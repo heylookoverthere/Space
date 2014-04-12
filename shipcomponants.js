@@ -347,6 +347,8 @@ function torpedo(){
 	this.y=0;
 	this.xv=0;
 	this.yv=0;
+	this.maxxv=50;
+	this.maxyv=50;
 	this.range=40;
 	this.delayTick=5;
 	this.yield=15;
@@ -400,8 +402,26 @@ function torpedo(){
 		}
 		this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
 		this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
-		this.x+=this.xv*gameSpeed*this.speed;
-		this.y+=this.yv*gameSpeed*this.speed;
+
+		var martinax=this.xv*gameSpeed*this.speed;
+		var martinay=this.yv*gameSpeed*this.speed;
+
+		/*if(martinax>this.maxxv)
+		{
+			martinax=this.maxxv;
+		}
+		if(martinay>this.maxyv)
+		{
+			martinay=this.maxyv;
+		}*/
+		var piss={};
+		piss.x=this.x+=martinax;
+		piss.y=this.y+=martinay;
+		//if ((this.homing) && (this.targ) && (distance(piss,this.targ)<distance(this,this.targ)))
+		
+		this.x+=martinax;
+		this.y+=martinay;
+		
 		this.age++;
 		if(this.age>2000)
 		{

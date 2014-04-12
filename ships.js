@@ -126,9 +126,9 @@ function starShip(){
 	this.class=shipClasses[0][0];
 	this.heading=Math.floor(Math.random()*359);
 	this.desiredHeading=this.heading;
-	this.speed=1;
-	this.desiredSpeed=1;
-	this.maxSpeed=5
+	this.speed=0;
+	this.desiredSpeed=this.cruisingSpeed;
+	this.maxSpeed=5;
 	this.status="idle";
 	this.type=0;
 	this.width=32;
@@ -150,6 +150,11 @@ function starShip(){
 	this.captainFlees=false;
 	this.orbitTarg=null;
 	this.planetAttackTick=0;
+	this.cruisingSpeed=this.maxSpeed;
+	if(this.maxSpeed>6)
+	{
+		this.cruisingSpeed=this.maxSpeed-2;
+	}
 	this.desiredOrbitTarg=null;
 	this.gotoDest=false;
 	this.drawTarget=false;
@@ -296,6 +301,7 @@ function starShip(){
 		this.stores=this.class.stores;
 
 		this.maxTeamSize=this.class.maxTeamSize;
+		this.cruisingSpeed=this.class.cruisingSpeed;
 	};
 	
 	this.prepareAwayTeam=function(num){
@@ -833,12 +839,14 @@ function starShip(){
 		this.orbitTarg=null;
 		this.heading=this.orbitTrack;
 		this.desiredHeading=this.heading;
-		this.desiredSpeed=2;
+		this.desiredSpeed=this.cruisingSpeed;;
 		//this.speed=1;
 	};
 	
 	this.orderLeaveOrbit=function(){
 		this.leavingProgress=0;
+		this.orbiting=false;
+		this.orbitTarg=null;
 		this.status="Breaking Orbit";
 	};
 	
@@ -950,9 +958,14 @@ function starShip(){
 		if ((this.speed<this.maxSpeed)) //&& ((!this.destination) || (this.speed<this.destination.maxSpeed)))//don't go faster than lead ship!
 		{
 			this.speed+=this.acceleration*gameSpeed;
-		}else
+		}
+		if(this.speed>this.maxSpeed)
 		{
 			this.speed=this.maxSpeed;
+		}
+		if(this.speed>this.desiredSpeed)
+		{
+			this.speed=this.desiredSpeed;
 		}
 	};
 	
@@ -965,7 +978,7 @@ function starShip(){
 		}
 		this.acceltick=0;
 		this.speed-=this.acceleration*gameSpeed;
-		if (this.speed<1)
+		if (this.speed<.1)
 		{
 			this.speed=0;
 		}
@@ -1536,7 +1549,13 @@ function starShip(){
 			else if (beta > 360.0)
 				beta -= 360;
 			this.desiredHeading=beta;
-			this.desiredSpeed=this.maxSpeed;
+			if(distance(this,this.escorting)>50)
+			{
+				this.desiredSpeed=this.maxSpeed;
+			}else
+			{
+				this.desiredSpeed=this.escoring.speed;
+			}
 			
 				//todo why do I have do copy this.
 			if(this.speed<this.desiredSpeed)
@@ -1605,7 +1624,20 @@ function starShip(){
 				else if (beta > 360.0)
 					beta -= 360;
 				this.desiredHeading=beta;
-				this.desiredSpeed=this.maxSpeed;
+				if(distance(this,this.destination)>50)
+				{
+					this.desiredSpeed=this.maxSpeed;
+				}else
+				{
+					if(this.destination.speed)
+					{
+						this.desiredSpeed=this.destination.speed;
+					}else
+					{
+						this.desiredSpeed=this.cruisingSpeed;
+					}
+				}
+					
 				
 				//todo why do I have do copy this.
 			if(this.speed<this.desiredSpeed)
@@ -1680,7 +1712,7 @@ function starShip(){
 					console.log("You flew into the sun moron.");
 				}
 				//if((this.shrinking) && (this.orbitDiameter>1)) {this.orbitDiameter--;}
-				if(this.leavingProgress!=null) 
+				/*if(this.leavingProgress!=null) 
 				{
 					this.leavingProgress+=1*gameSpeed;
 					this.status="Breaking Orbit";
@@ -1692,9 +1724,9 @@ function starShip(){
 					}
 					
 				}else
-				{
+				{*/
 					this.status="Orbiting";
-				}
+				//}
 				if (this.orbitTrack>360){ this.orbitTrack=0;}
 				this.x=this.orbx+Math.cos(this.orbitTrack* (Math.PI / 180))*this.orbitDiameter;
 				this.y=this.orby+Math.sin(this.orbitTrack*(Math.PI / 180))*this.orbitDiameter;
@@ -1751,7 +1783,7 @@ function starShip(){
 				this.y+=this.yv*gameSpeed*this.speed;
 				if(this.speed<1)
 				{
-					this.desiredSpeed=this.maxSpeed;
+					this.desiredSpeed=this.cruisingSpeed;
 				}
 				if((Math.abs(this.x-this.desiredOrbitTarg.x)<50) && (Math.abs(this.y-this.desiredOrbitTarg.y)<50)) 
 				{
@@ -2090,7 +2122,8 @@ function starShip(){
 			can.translate((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
 			if(this.orbiting)
 			{
-				can.rotate((this.orbitTrack-this.leavingProgress)* (Math.PI / 180));
+				can.rotate((this.orbitTrack)* (Math.PI / 180));
+				//can.rotate((this.orbitTrack-this.leavingProgress)* (Math.PI / 180));
 			}else
 			{
 				can.rotate((this.heading-90)* (Math.PI / 180));//todo negatives.
@@ -2126,7 +2159,8 @@ function starShip(){
 				can.translate((this.torpedoTarget.x+cam.x)*cam.zoom,(this.torpedoTarget.y+cam.y)*cam.zoom);
 				if(this.torpedoTarget.orbiting)
 				{
-					can.rotate((this.torpedoTarget.orbitTrack-this.torpedoTarget.leavingProgress)* (Math.PI / 180));
+					can.rotate((this.torpedoTarget.orbitTrack)* (Math.PI / 180));
+					//can.rotate((this.torpedoTarget.orbitTrack-this.torpedoTarget.leavingProgress)* (Math.PI / 180));
 				}else
 				{
 					can.rotate((this.torpedoTarget.heading-90)* (Math.PI / 180));//todo negatives.
@@ -2141,7 +2175,8 @@ function starShip(){
 				can.translate((this.tractorTarget.x+cam.x)*cam.zoom,(this.tractorTarget.y+cam.y)*cam.zoom);
 				if(this.tractorTarget.orbiting)
 				{
-					can.rotate((this.tractorTarget.orbitTrack-this.tractorTarget.leavingProgress)* (Math.PI / 180));
+					can.rotate((this.tractorTarget.orbitTrack)* (Math.PI / 180));
+					//can.rotate((this.tractorTarget.orbitTrack-this.tractorTarget.leavingProgress)* (Math.PI / 180));
 				}else
 				{
 					can.rotate((this.tractorTarget.heading-90)* (Math.PI / 180));//todo negatives.

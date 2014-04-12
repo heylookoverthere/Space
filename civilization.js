@@ -254,6 +254,7 @@ function civilization()
 		{
 			this.alive=false;
 			console.log("The last "+this.name+" has died.");
+			this.cleanUp();
 		}
 	};
 	
@@ -268,6 +269,25 @@ function civilization()
 		}
 		return false;
 	}
+	
+	this.cleanUp=function()
+	{
+		for(var i=0;i<this.worlds.length;i++)
+		{
+			this.worlds[i].civ=null;
+			this.worlds[i].colonized=false; //todo: leave them independant, or give them to conquorer
+	
+			var pt=this.worlds[i].sun.civs.indexOf(this);
+			if(pt>-1)
+			{
+				this.worlds[i].sun.civs.splice(pt,1);
+				//console.log("removed "+this.civ.name+ " from the "+this.sun.name + " System civ list");
+			}
+		}
+		this.ships=new Array();
+	}
+	
+	var justOnce=false;
 	
 	this.newMasterAI=function()
 	{
@@ -320,8 +340,14 @@ function civilization()
 				}else
 				{
 					//resettle on new planet?
+					this.ships.planetTarget=null;
 					this.ships[i].orders=Orders.Explore;
 				}
+				if(this.ships[i].orders=Orders.Attack)
+				{
+					//later.
+				}
+				
 			}
 			return;
 		}
@@ -345,9 +371,13 @@ function civilization()
 		
 		//set each ship's state
 		//var counter=0;
-		for(var counter=0;(counter<this.numDefending) &&(counter<this.ships.length);counter++)
+		if(!justOnce)
 		{
-			this.ships[counter].AIMode=AIModes.Defense;
+			for(var counter=0;(counter<this.numDefending) &&(counter<this.ships.length);counter++)
+			{
+				this.ships[counter].AIMode=AIModes.Defense;
+			}
+			justOnce=true;
 		}
 		//if you have an enemy, and hella ships, then go attack him.
 		if((this.ships.length>10) && (this.autoHostile.length>0))
@@ -417,9 +447,10 @@ function civilization()
 					this.ships[i].orderOrbit(stars[blah].planets[gah]);
 				}
 			
-			}else if(this.ships[i].AIMode==AIModes.Defense)
+			}else if(this.ships[i].AIMode==AIModes.Defense) 
 			{
 				//move at least one ship to each system
+				this.ships[i].AIMode=0;
 				var whichWorld=0;
 				this.ships[i].orderOrbit(this.worlds[whichWorld]);
 				if((this.ships[i].colony) || (this.ships[i].freighter))
@@ -438,157 +469,6 @@ function civilization()
 		}
 	};
 	
-	this.masterAI=function()
-	{
-		//choose production
-		if(!this.initialProduction)
-		{
-			this.produceBuilding(Buildings.ShieldGrid,this.homeworld);
-			this.produceBuilding(Buildings.Mine,this.homeworld);
-			this.produceBuilding(Buildings.OrbitalDefense,this.homeworld);
-			this.money-=300;
-			this.initialProduction=true;
-		}else
-		{
-			var cost=300;
-			if(this.money>cost-1)
-			{
-				this.money-=cost;
-				this.produceShip(9,this.homeworld);
-			}
-		}
-
-		
-		if(this.homeworld.civ!=this)
-		{
-			var enemyCiv=this.homeworld.civ;
-			for(var i=0;i<this.ships.length;i++)
-			{
-				//
-				if(enemyCiv.ships.length>0)
-				{
-					var bobert = this.ships[i].nearestSpecificShip(enemyCiv);
-					if(bobert)
-					{
-						this.ships[i].destination=bobert;
-							
-						this.ships[i].orbiting=false;
-						this.ships[i].orders=Orders.Attack;
-					}
-				}else
-				{
-					this.ships[i].orderOrbit(enemyCiv.homeworld); //orderattack?
-					this.ships[i].orders=Orders.Attack;
-					if(enemyCiv.homeworldWarning)
-					{
-						
-						
-						console.log("The "+this.name+" have eliminated all "+enemyCiv.name+ " ships and are headed to " +enemyCiv.homeworld.name);
-						enemyCiv.homeworldWarning=false;
-					}
-				}
-			}
-			return;
-		}
-		
-		if(this.allied) {return;}
-		if(borgTrack==this.race)
-		{
-			//fall back to homeworld!
-			this.fallingBack=true;
-			for(var i=0;i<this.ships.length;i++)
-			{
-				this.ships[i].orderOrbit(this.homeworld);
-				this.ships[i].desiredSpeed=this.ships[i].maxSpeed;
-			}
-			if(!this.fallenBack)
-			{
-				console.log("all ships returning to "+this.homeworld.name+" to aid in its defense");
-				this.fallenBack=true;
-			}
-		}
-		
-	
-		if(this.mode==AIModes.Genociadal)
-		{
-			//select a race and attack them till they die planet and take it
-		}else if(this.mode==AIModes.Agressive)
-		{
-			if(this.autoHostile.length<1)
-			{
-				for(var i=0;i<this.ships.length;i++)
-				{
-					this.ships[i].desiredOrbitTarg=null;
-					this.ships[i].planetTarget=null;
-					this.ships[i].destination=null;
-				}
-				this.mode=AIModes.Explore;
-				return;
-			}
-			
-			var enemyCiv=this.autoHostile[0];
-			for(var i=0;i<this.ships.length;i++)
-			{
-				//
-				if(enemyCiv.ships.length>0)
-				{
-					var bobert = this.ships[i].nearestSpecificShip(enemyCiv);
-					if(bobert)
-					{
-						this.ships[i].destination=bobert;
-							
-						this.ships[i].orbiting=false;
-						this.ships[i].orders=Orders.Attack;
-					}
-				}else
-				{
-					this.ships[i].orderOrbit(enemyCiv.homeworld); //orderattack?
-					this.ships[i].orders=Orders.Attack;
-					if(enemyCiv.homeworldWarning)
-					{
-						
-						
-						console.log("The "+this.name+" have eliminated all "+enemyCiv.name+ " ships and are headed to " +enemyCiv.homeworld.name);
-						enemyCiv.homeworldWarning=false;
-					}
-				}
-			}
-		}else if(this.mode==AIModes.Expanding)
-		{
-		
-		}else if(this.mode==AIModes.Explore)
-		{
-			for(var i=0;i<this.ships.length;i++)
-			{
-				if(!this.ships[i].desiredOrbitTarg) //todo
-				{
-					var blah=Math.floor(Math.random()*(numSystems-1))+1;
-					var gah=Math.floor(Math.random()*stars[blah].numPlanets);
-					this.ships[i].orderOrbit(stars[blah].planets[gah]);
-				}
-			}
-		}else if(this.mode==AIModes.Defense)
-		{
-			//move at least one ship to each system
-			var whichWorld=0;
-			for(var i=0;i<this.ships.length;i++)
-			{
-				this.ships[i].orderOrbit(this.worlds[whichWorld]);
-				if((this.ships[i].colony) || (this.ships[i].freighter))
-				{
-					break;
-				}
-				whichWorld++;
-				if(whichWorld>this.worlds.length)
-				{
-					whichWorld=0;
-				}
-			}
-		}else if(this.mode==AIModes.AgressiveDefense)
-		{
-			//attack anyone in your space
-		}
-	};
 	
 	this.conquer=function(plan)
 	{

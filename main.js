@@ -82,6 +82,7 @@ distance=function(one,two){
 
 initUniverse();
 newInitShips();
+var debugText=false;
 
 var ksavekey=new akey("o"); //define the different keys
 var loadkey=new akey("l");
@@ -110,6 +111,7 @@ var tractorkey=new akey("b");
 var tractortargetkey=new akey("n");
 var beamkey=new akey("i");
 var beamtargetkey=new akey("a");
+var textkey=new akey("1");
 
 var dkey=new akey("d");
 var starkey=new akey("s");
@@ -197,6 +199,24 @@ if(MUSIC_ON){
 
 function drawGUI()
 {
+	canvas.fillText("Gamespeed: "+gameSpeed,755,25);
+	//canvas.fillText("Particles: "+ monsta.particles.length,755,100);
+	//canvas.fillText("Stars drawn: "+ starsDrawn,755,115);
+	canvas.fillText("Stardate: "+ Math.floor(theTime.years)+"."+Math.floor(theTime.days) ,755,40);
+	canvas.fillText("Zoom: "+camera.zoom ,755,55);
+	canvas.fillText("Your Ships: "+civs[0].ships.length ,755,70);
+	canvas.fillText("Total Ships: "+ships.length ,755,85);
+	
+	productionBar.val=civs[0].productionTick;
+	productionBar.maxVal=civs[0].nextProduction;
+	productionBar.draw(canvas,camera);
+	researchBar.val=civs[0].researchTick;
+	researchBar.maxVal=civs[0].nextResearch;
+	researchBar.draw(canvas,camera);
+}
+function drawDebug()
+{
+	if(!debugText) {return;}
 	if(flashGUITick>0)
 	{
 		canvas.fillStyle=bColors[flashGUITrack];
@@ -214,13 +234,13 @@ function drawGUI()
 	//canvas.fillText("  Load Game",175,475);
 	canvas.fillText("Camera: "+camera.x+", "+camera.y,755,10);
 
-    canvas.fillText("Gamespeed: "+gameSpeed,755,25);
-	canvas.fillText("Particles: "+ monsta.particles.length,755,40);
-	canvas.fillText("Stars drawn: "+ starsDrawn,755,55);
-	canvas.fillText("Stardate: "+ Math.floor(theTime.years)+"."+Math.floor(theTime.days) ,755,70);
-	canvas.fillText("Zoom: "+camera.zoom ,755,85);
-	canvas.fillText("Your Ships: "+civs[0].ships.length ,755,100);
-	canvas.fillText("Total Ships: "+ships.length ,755,115);
+   // canvas.fillText("Gamespeed: "+gameSpeed,755,25);
+	canvas.fillText("Particles: "+ monsta.particles.length,755,100);
+	canvas.fillText("Stars drawn: "+ starsDrawn,755,115);
+	//canvas.fillText("Stardate: "+ Math.floor(theTime.years)+"."+Math.floor(theTime.days) ,755,70);
+	//canvas.fillText("Zoom: "+camera.zoom ,755,85);
+	//canvas.fillText("Your Ships: "+civs[0].ships.length ,755,100);
+	//canvas.fillText("Total Ships: "+ships.length ,755,115);
 	
 	canvas.fillText("System: "+stars[curSystem].name,25,55);
 	canvas.fillText("Planets: "+ stars[curSystem].numPlanets,25,70);
@@ -287,7 +307,7 @@ function drawGUI()
 		}
 	}else if(selectedShip.turning)
 	{
-		actiontext="Adjusting Heading";
+		//actiontext="Adjusting Heading";
 	}
 	if(selectedShip.destination)
 	{
@@ -399,7 +419,7 @@ function drawGUI()
 		}
 	}else if(selectedShip.torpedoTarget.turning)
 	{
-		actiontext="Adjusting Heading";
+		//actiontext="Adjusting Heading";
 	}
 	canvas.fillText("Ship: "+selectedShip.torpedoTarget.prefix+" "+selectedShip.torpedoTarget.name,55,350);
 	if(selectedShip.torpedoTarget.destination)
@@ -451,12 +471,6 @@ function drawGUI()
 	canvas.fillText("Ships Detected Nearby: "+ selectedShip.torpedoTarget.nearbyVessels.length,55,620)
 	canvas.fillText("Systems Detected Nearby: "+ selectedShip.torpedoTarget.nearbySystems.length,55,635)
 	}
-	productionBar.val=civs[0].productionTick;
-	productionBar.maxVal=civs[0].nextProduction;
-	productionBar.draw(canvas,camera);
-	researchBar.val=civs[0].researchTick;
-	researchBar.maxVal=civs[0].nextResearch;
-	researchBar.draw(canvas,camera);
 };
 
 function mainMenuDraw(){
@@ -549,6 +563,7 @@ function mainMenuDraw(){
 		nebulas[i].draw(canvas,camera);
 	}
 	drawGUI();
+	drawDebug();
 	for(var i=0;i<ships.length;i++)
 	{
 		ships[i].draw(canvas,camera);
@@ -727,13 +742,13 @@ function mainMenuUpdate(){
 			/*ships[0].gotoDest=true;
 			ships[0].destx=420;
 			ships[0].desty=300;*/
-			if((selectedShip.orbiting) && (!this.leavingProgres))
+			if(selectedShip.orbiting)
 			{
 				selectedShip.orderLeaveOrbit();
 			}else
 			{
-				selectedShip.orbit(stars[curSystem].planets[stars[curSystem].selected]);
-				console.log("The U.S.S. "+selectedShip.name+" is now orbiting " +stars[curSystem].planets[stars[curSystem].selected].name);
+				selectedShip.orderOrbit(selectedShip.civ.homeworld);
+				console.log(selectedShip.prefix+" "+selectedShip.name+" has been sent to " +selectedShip.civ.homeworld.name);
 			}
 		}
 	}else
@@ -752,6 +767,11 @@ function mainMenuUpdate(){
 	if(toggleshipkey.check()) //todo!
 	{
 		civs[0].cycleShips(camera);
+	}
+	
+	if(textkey.check())
+	{
+		debugText=!debugText;
 	}
 	
 	if(toggleallshipskey.check()) //todo!
