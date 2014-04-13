@@ -343,7 +343,7 @@ function civilization()
 						this.ships[i].orbiting=false;
 						this.ships[i].orders=Orders.Attack;
 					}
-				}else if((this.enemyCiv.homeworld.civ==this.enemyCiv) && (this.orbitTarg!=this.enemyCiv.homeworld))
+				}else if((this.enemyCiv.homeworld.civ==this.enemyCiv) && (this.ships[i].orbitTarg!=this.enemyCiv.homeworld)&& (this.ships[i].desiredOrbitTarg!=this.enemyCiv.homeworld))
 				{
 					this.ships[i].orderOrbit(this.enemyCiv.homeworld); //orderattack?
 					this.ships[i].orders=Orders.Attack;
@@ -370,7 +370,7 @@ function civilization()
 		}
 		
 		if(this.allied) {return;}
-		if((borgTrack==this.race) && (civs[raceIDs.Borg].alive))
+		if((borgTrack==this.race) && (civs[raceIDs.Borg].ships.length>0))
 		{
 			//fall back to homeworld!
 			this.fallingBack=true;
@@ -456,17 +456,13 @@ function civilization()
 						this.enemyCiv.homeworldWarning=false;
 
 					}
-				}else if(this.targetWorlds.length>0)
+				}else if((this.targetWorlds.length>0) && (!this.ships[i].desiredOrbitTarg))
 				{
-					this.ships[i].orderOrbit(this.enemyCiv.worlds[0]);
+					this.ships[i].orderOrbit(this.targetWorlds[0]);
 					this.ships[i].orders=Orders.Attack;
 				}else if(this.enemyCiv.worlds.length>0)
 				{
-						console.log("enemy homeworld taken out, heading to mop up");
-						for(var i=0;i<this.enemyCiv.worlds.length;i++)
-						{
-							this.targetWorlds.push(this.enemyCiv.worlds[i]);
-						}
+		
 				}
 			}else if(this.ships[i].AIMode==AIModes.Expanding)
 			{
