@@ -3,16 +3,31 @@ oshipNames= ["Enterprise","Hood","Voyager","Defiant","Intrepid","Akira","Excalib
 
 var shipNames=new Array(40);
 var shipNamesTrack=new Array(40);
-for (var q=0;q<18;q++)
+/*for (var q=0;q<18;q++)
 {
 	shipNames[q]=["one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","Testicles","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89"];
 	shipNamesTrack[q]=0;
+}*/
+for (var q=0;q<18;q++)
+{
+	shipNames[q]=new Array();
 }
 shipNames[0]=["Enterprise","Hood","Voyager","Defiant","Intrepid","Akira","Excalibur","Lexington","Ohio","Rhode Island","Raven","Gandhi","Exter","Horatio","Yamaguchi","Summit","Dakota","Snook","Jucovy","Balls","Potemkin","Goatfucker","Obama","Bastile"];
 shipNames[1]=["D'Kyr","D'Vahl","Tal'Kir","Ti'Mur","T'Pau","T'Vran","Ni'Var","Nyran","Seleya","Sh'Raan","Vaankara","Vahklas","Yarahla"];
 shipNames[4]=["Belak","D'Ridthau","Decius","Devoras","Dividices","Genorex","Haakona","Khazara","Makar"];
 shipNames[5]=["Amar","B'Moth","Bortas","Ch'Tang","Fek'lhr","Gr'oth","Hegh'ta","Hor'Cha","Rotarran","Par'tok","Ya'Vang",];
 shipNames[8]=["Aldara","Barkano","Bok'Nor","Groumall","Koranak","Kornaire","Kraxon","Prakesh","Rabol","Ravinok","Reklar","Trager","Vetar"];
+
+for (var q=0;q<18;q++)
+{
+	var po=1;
+	while(shipNames[q].length<99)
+	{
+		shipNames[q].push(po);
+		po++;
+	}
+		
+}
 
 var escapes=new Array();
 var mines=new Array();
@@ -112,10 +127,10 @@ updateTorpedos=function(thangs){
 	}
 };
 
-for (var ci=0;ci<20;ci++)
+/*or (var ci=0;ci<20;ci++)
 {
 	shipNames[9][ci]="Cube #"+Math.floor(Math.random()*9999);
-}
+}*/
 
 var numShipNames=38;
 var races=new Array(40);
@@ -247,7 +262,10 @@ function dude()
 			{
 				this.rank++;
 				this.setTitle();
-				console.log(this.name+" was promoted to "+this. title);
+				if((logAll) ||(this.civ.name=="Humanity"))
+				{
+					console.log(this.name+" was promoted to "+this. title);
+				}
 				if(this.rank==4)
 				{
 					this.civ.captainQueue.push(this);
@@ -403,8 +421,8 @@ function torpedo(){
 		this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
 		this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
 
-		var martinax=this.xv*gameSpeed*this.speed;
-		var martinay=this.yv*gameSpeed*this.speed;
+		var martina=gameSpeed*this.speed;
+		//var martinay=this.yv*gameSpeed*this.speed;
 
 		/*if(martinax>this.maxxv)
 		{
@@ -414,13 +432,16 @@ function torpedo(){
 		{
 			martinay=this.maxyv;
 		}*/
-		var piss={};
-		piss.x=this.x+=martinax;
-		piss.y=this.y+=martinay;
+		
 		//if ((this.homing) && (this.targ) && (distance(piss,this.targ)<distance(this,this.targ)))
 		
-		this.x+=martinax;
-		this.y+=martinay;
+		if(martina>150)
+		{
+			martina=150;
+		}
+		
+		this.x+=this.xv*martina;
+		this.y+=this.yv*martina;
 		
 		this.age++;
 		if(this.age>2000)

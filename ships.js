@@ -491,6 +491,10 @@ function starShip(){
 	};
 	
 	this.christen=function(){
+	if(this.civ.name=="Borg")
+	{
+		this.name=" #"+Math.floor(Math.random()*4999)+4000;
+	}
 		var nami=Math.floor(Math.random()*shipNames[this.race].length);
 		while(true) {
 			if(shipNamesUsed[this.race][nami]) 
@@ -1609,6 +1613,8 @@ function starShip(){
 			}
 		}else if((this.destination) && (this.destination!=this))//TODO change to if destination, then if goal orbit or park.
 		{
+			if(this.destination.alive)
+			{
 				this.orbiting=false;
 				if(this.orders==Orders.MeetFleet)
 				{
@@ -1639,41 +1645,41 @@ function starShip(){
 				}
 					
 				
-				//todo why do I have do copy this.
-			if(this.speed<this.desiredSpeed)
-			{
-				this.accelerate();
-			}else if(this.speed>this.desiredSpeed)
-			{
-				this.decelerate();
-			}
-			//turn to desired heading
-			var differenceHeading = Math.abs(this.desiredHeading - this.heading);
-			//if we need to turn clockwise
-			if(differenceHeading>2)
-			{
-				if(isTurnCCW(this.heading, this.desiredHeading))
+					//todo why do I have do copy this.
+				if(this.speed<this.desiredSpeed)
 				{
-					//Turn right
-					this.heading-=this.turnSpeed*gameSpeed;
-						this.turning=true;
-				}else
+					this.accelerate();
+				}else if(this.speed>this.desiredSpeed)
 				{
-					this.heading+=this.turnSpeed*gameSpeed;
-						this.turning=true;
+					this.decelerate();
 				}
-			}else{
-				this.turning=false;//totodo
-			}
+				//turn to desired heading
+				var differenceHeading = Math.abs(this.desiredHeading - this.heading);
+				//if we need to turn clockwise
+				if(differenceHeading>2)
+				{
+					if(isTurnCCW(this.heading, this.desiredHeading))
+					{
+						//Turn right
+						this.heading-=this.turnSpeed*gameSpeed;
+							this.turning=true;
+					}else
+					{
+						this.heading+=this.turnSpeed*gameSpeed;
+							this.turning=true;
+					}
+				}else{
+					this.turning=false;//totodo
+				}
 
-			if(this.heading > 359)
-			{
-				this.heading = 0;
-			}
-			if(this.heading < 0)
-			{
-				this.heading += 360;
-			}
+				if(this.heading > 359)
+				{
+					this.heading = 0;
+				}
+				if(this.heading < 0)
+				{
+					this.heading += 360;
+				}
 
 
 				if((Math.abs(this.x-this.destination.x)<100) && (Math.abs(this.y-this.destination.y)<100) && (this.destination!=this)) 
@@ -1691,6 +1697,10 @@ function starShip(){
 					this.x+=this.xv*gameSpeed*this.speed;
 					this.y+=this.yv*gameSpeed*this.speed;
 				}
+			}else
+			{
+				this.destination=null;
+			}
 		}else if(this.orbiting)
 		{
 			if((this.destination) && (this.destination!=this.orbitTarg))
@@ -2022,6 +2032,10 @@ function starShip(){
 			console.log(this.prefix+ " "+this.name+ "'s crew is abandoning ship.");
 		}
 		
+			if((this.planetTarget) &&(this.planetTarget.civ==this.civ))
+			{
+				this.planetTarget=null;
+			}
 		
 			if((this.orbiting) &&(this.orbitTarg==this.planetTarget) &&(!this.torpedoTarget))
 			{

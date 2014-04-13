@@ -202,10 +202,12 @@ function civilization()
 	this.researchRate=1;
 	this.encounterTrack=0;
 	this.money=1000;
+	this.enemyCiv=null;
 	this.AI=true;
 	this.mode=AIModes.Explore;
 	this.allied=false;
 	this.fallenBack=false;
+	this.targetWorlds=new Array();
 	this.crewPool=new Array();
 	this.targetPods=false;
 	this.fallingBack=false;
@@ -292,6 +294,21 @@ function civilization()
 	this.newMasterAI=function()
 	{
 		//choose production
+		if((this.enemyCiv) && (this.targetWorlds.length<2))
+		{
+			for(var i=0;i<this.enemyCiv.worlds.length;i++)
+			{
+				this.targetWorlds.push(this.enemyCiv.worlds[i]);
+			}
+		}
+		for(var i=0;i<this.autoHostile.length;i++)
+		{
+			if(!this.autoHostile[i].alive)
+			{
+				this.autoHostile.splice(i,1);
+				i--;
+			}
+		}
 		if(!this.initialProduction)
 		{
 			this.produceBuilding(Buildings.ShieldGrid,this.homeworld);
@@ -312,13 +329,13 @@ function civilization()
 		
 		if(this.homeworld.civ!=this)
 		{
-			var enemyCiv=this.homeworld.civ;
+			this.enemyCiv=this.homeworld.civ;
 			for(var i=0;i<this.ships.length;i++)
 			{
 				//
-				if(enemyCiv.ships.length>0)
+				if(this.enemyCiv.ships.length>0)
 				{
-					var bobert = this.ships[i].nearestSpecificShip(enemyCiv);
+					var bobert = this.ships[i].nearestSpecificShip(this.enemyCiv);
 					if(bobert)
 					{
 						this.ships[i].destination=bobert;
@@ -326,16 +343,16 @@ function civilization()
 						this.ships[i].orbiting=false;
 						this.ships[i].orders=Orders.Attack;
 					}
-				}else if(enemyCiv.homeworld.civ==enemyCiv)
+				}else if((this.enemyCiv.homeworld.civ==this.enemyCiv) && (this.orbitTarg!=this.enemyCiv.homeworld))
 				{
-					this.ships[i].orderOrbit(enemyCiv.homeworld); //orderattack?
+					this.ships[i].orderOrbit(this.enemyCiv.homeworld); //orderattack?
 					this.ships[i].orders=Orders.Attack;
-					if(enemyCiv.homeworldWarning)
+					if(this.enemyCiv.homeworldWarning)
 					{
 						
 						
-						console.log("The "+this.name+" have eliminated all "+enemyCiv.name+ " ships and are headed to " +enemyCiv.homeworld.name);
-						enemyCiv.homeworldWarning=false;
+						console.log("The "+this.name+" have eliminated all "+this.enemyCiv.name+ " ships and are headed to " +this.enemyCiv.homeworld.name);
+						this.enemyCiv.homeworldWarning=false;
 					}
 				}else
 				{
@@ -353,7 +370,7 @@ function civilization()
 		}
 		
 		if(this.allied) {return;}
-		if(borgTrack==this.race)
+		if((borgTrack==this.race) && (civs[raceIDs.Borg].alive))
 		{
 			//fall back to homeworld!
 			this.fallingBack=true;
@@ -410,11 +427,17 @@ function civilization()
 					this.ships[i].AIMode=AIModes.Explore;
 					return;
 				}
-				
-				var enemyCiv=this.autoHostile[0];
-				if(enemyCiv.ships.length>0)
+				if((this.enemyCiv) && (!this.enemyCiv.alive))
 				{
-					var bobert = this.ships[i].nearestSpecificShip(enemyCiv);
+					this.enemyCiv=null;
+				}
+				if(!this.enemyCiv)
+				{
+					this.enemyCiv=this.autoHostile[0];
+				}
+				if(this.enemyCiv.ships.length>0)
+				{
+					var bobert = this.ships[i].nearestSpecificShip(this.enemyCiv);
 					if(bobert)
 					{
 						this.ships[i].destination=bobert;
@@ -422,17 +445,28 @@ function civilization()
 						this.ships[i].orbiting=false;
 						this.ships[i].orders=Orders.Attack;
 					}
-				}else
+				}else if((this.enemyCiv.homeworld.civ==this.enemyCiv) && (this.ships[i].orbitTarg!=this.enemyCiv.homeworld)&& (this.ships[i].desiredOrbitTarg!=this.enemyCiv.homeworld))
 				{
-					this.ships[i].orderOrbit(enemyCiv.homeworld); //orderattack?
+					console.log("sending" +ships[i].name+" to enemy homeworld");
+					this.ships[i].orderOrbit(this.enemyCiv.homeworld); //orderattack?
 					this.ships[i].orders=Orders.Attack;
-					if(enemyCiv.homeworldWarning)
+					if(this.enemyCiv.homeworldWarning)
 					{
-							
-							
-						console.log("The "+this.name+" have eliminated all "+enemyCiv.name+ " ships and are headed to " +enemyCiv.homeworld.name);
-						enemyCiv.homeworldWarning=false;
+						console.log("The "+this.name+" have eliminated all "+this.enemyCiv.name+ " ships and are headed to " +this.enemyCiv.homeworld.name);
+						this.enemyCiv.homeworldWarning=false;
+
 					}
+				}else if(this.targetWorlds.length>0)
+				{
+					this.ships[i].orderOrbit(this.enemyCiv.worlds[0]);
+					this.ships[i].orders=Orders.Attack;
+				}else if(this.enemyCiv.worlds.length>0)
+				{
+						console.log("enemy homeworld taken out, heading to mop up");
+						for(var i=0;i<this.enemyCiv.worlds.length;i++)
+						{
+							this.targetWorlds.push(this.enemyCiv.worlds[i]);
+						}
 				}
 			}else if(this.ships[i].AIMode==AIModes.Expanding)
 			{
@@ -476,6 +510,11 @@ function civilization()
 		if(plan.civ==this) {return;}
 		plan.civ=this;
 		plan.colonized=true;
+		var t=this.targetWorlds.indexOf(plan);
+		if(t!=-1)
+		{
+			this.targetWorlds.splice(t,1);
+		}
 		for(var i=0;i<this.ships.length;i++)
 		{
 			if(this.ships[i].planetTarget==plan)

@@ -133,7 +133,7 @@ var colonizekey=new akey("z");
 var shieldskey=new akey("7");
 var mapkey=new akey("8");
 var cleartailskey=new akey("9");
-
+var maxspeedkey=new akey("0");
 
 
 function merp() {
@@ -767,6 +767,11 @@ function mainMenuUpdate(){
 	if(toggleshipkey.check()) //todo!
 	{
 		civs[0].cycleShips(camera);
+	}
+	
+	if(maxspeedkey.check())
+	{
+		gameSpeed=10;
 	}
 	
 	if(textkey.check())
