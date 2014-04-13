@@ -272,6 +272,16 @@ function civilization()
 		return false;
 	}
 	
+	this.getTax=function()
+	{
+		var tax=0;
+		for(var i=0;i<this.worlds.length;i++)
+		{
+			tax+=this.worlds[i].taxRate;
+		}
+		this.money+=tax;
+	}
+	
 	this.cleanUp=function()
 	{
 		for(var i=0;i<this.worlds.length;i++)
@@ -716,7 +726,7 @@ function civilization()
 		this.worlds.push(world);
 		world.race=this.race;
 		world.civ=this;
-		if(sun.civs.indexOf(this)==-1)
+		if(world.sun.civs.indexOf(this)==-1)
 		{
 			world.sun.civs.push(this);
 		}
@@ -743,6 +753,11 @@ function civilization()
 		
 		if(!this.alive) {return;}
 		this.checkDeath();
+		if(yearFlag)
+		{
+			this.getTax();
+			yearFlag=false;
+		}
 		if(this.messages[0])
 		{
 			this.messages[0].update();

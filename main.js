@@ -206,6 +206,7 @@ function drawGUI()
 	canvas.fillText("Zoom: "+camera.zoom ,755,55);
 	canvas.fillText("Your Ships: "+civs[0].ships.length ,755,70);
 	canvas.fillText("Total Ships: "+ships.length ,755,85);
+	canvas.fillText("Money: $"+civs[0].money ,755,100);
 	
 	productionBar.val=civs[0].productionTick;
 	productionBar.maxVal=civs[0].nextProduction;
@@ -235,7 +236,7 @@ function drawDebug()
 	canvas.fillText("Camera: "+camera.x+", "+camera.y,755,10);
 
    // canvas.fillText("Gamespeed: "+gameSpeed,755,25);
-	canvas.fillText("Particles: "+ monsta.particles.length,755,100);
+	canvas.fillText("Particles: "+ monsta.particles.length,755,130);
 	canvas.fillText("Stars drawn: "+ starsDrawn,755,115);
 	//canvas.fillText("Stardate: "+ Math.floor(theTime.years)+"."+Math.floor(theTime.days) ,755,70);
 	//canvas.fillText("Zoom: "+camera.zoom ,755,85);

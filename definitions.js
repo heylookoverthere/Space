@@ -21,11 +21,13 @@ function time(){
     this.days=0;
 	this.years=2000;
 }
+var yearFlag=false;
 time.prototype.update=function(plan){
     this.days+=plan.orbitSpeed*gameSpeed;
     if(this.days>360){
         this.days-=360;
         this.years++;
+		yearFlag=true;
     }
 };
 
