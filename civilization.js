@@ -327,12 +327,12 @@ function civilization()
 		}
 
 		
-		if(this.homeworld.civ!=this)
+		if(this.homeworld.civ!=this)//revenge at all costs against enemyciv.
 		{
 			this.enemyCiv=this.homeworld.civ;
 			for(var i=0;i<this.ships.length;i++)
 			{
-				//
+				//first hit their ships
 				if(this.enemyCiv.ships.length>0)
 				{
 					var bobert = this.ships[i].nearestSpecificShip(this.enemyCiv);
@@ -347,6 +347,7 @@ function civilization()
 				{
 					this.ships[i].orderOrbit(this.enemyCiv.homeworld); //orderattack?
 					this.ships[i].orders=Orders.Attack;
+					this.ships[i].AIMode=AIModes.Agressive;
 					if(this.enemyCiv.homeworldWarning)
 					{
 						
@@ -354,11 +355,17 @@ function civilization()
 						console.log("The "+this.name+" have eliminated all "+this.enemyCiv.name+ " ships and are headed to " +this.enemyCiv.homeworld.name);
 						this.enemyCiv.homeworldWarning=false;
 					}
+				}else if((this.enemyCiv.worlds.length>0) && (!this.ships[i].desiredOrbitTarg))
+				{
+					if((!this.ships[i].orbitTarg) || ((this.ships[i].orbitTarg) && (this.ships[i].orbitTarg.civ!=this.enemyCiv)))
+					//console.log("!!!!!!!!!!Lost Homeworld!!!!!!!moping up!");
+					this.ships[i].orderOrbit(this.enemyCiv.worlds[0]);
+					this.ships[i].orders=Orders.Attack;
 				}else
 				{
 					//resettle on new planet?
-					this.ships.planetTarget=null;
-					this.ships[i].orders=Orders.Explore;
+					//this.ships[i].planetTarget=null;
+					//this.ships[i].orders=Orders.Explore;
 				}
 				if(this.ships[i].orders=Orders.Attack)
 				{
@@ -420,10 +427,10 @@ function civilization()
 			{
 				if(this.autoHostile.length<1)
 				{
-						this.ships[i].desiredOrbitTarg=null;
-						this.ships[i].planetTarget=null;
-						this.ships[i].destination=null;
-
+					this.ships[i].desiredOrbitTarg=null;
+					this.ships[i].planetTarget=null;
+					this.ships[i].destination=null;
+					//console.log("No enemies left for "+this.name+" to fight.");
 					this.ships[i].AIMode=AIModes.Explore;
 					return;
 				}
@@ -447,7 +454,7 @@ function civilization()
 					}
 				}else if((this.enemyCiv.homeworld.civ==this.enemyCiv) && (this.ships[i].orbitTarg!=this.enemyCiv.homeworld)&& (this.ships[i].desiredOrbitTarg!=this.enemyCiv.homeworld))
 				{
-					console.log("sending" +ships[i].name+" to enemy homeworld");
+					console.log("sending " +this.name+" "+ships[i].name+" to enemy homeworld");
 					this.ships[i].orderOrbit(this.enemyCiv.homeworld); //orderattack?
 					this.ships[i].orders=Orders.Attack;
 					if(this.enemyCiv.homeworldWarning)
@@ -456,13 +463,14 @@ function civilization()
 						this.enemyCiv.homeworldWarning=false;
 
 					}
-				}else if((this.targetWorlds.length>0) && (!this.ships[i].desiredOrbitTarg))
+				}else if((this.targetWorlds.length>0) && (!this.ships[i].desiredOrbitTarg)) //&& (this.ships[i].orbitTarg.civ!=this.enemyCiv))
 				{
 					this.ships[i].orderOrbit(this.targetWorlds[0]);
 					this.ships[i].orders=Orders.Attack;
-				}else if(this.enemyCiv.worlds.length>0)
+				}else if(false)
 				{
-		
+					this.ships[i].orderOrbit(this.targetWorlds[0]);
+					this.ships[i].orders=Orders.Attack;
 				}
 			}else if(this.ships[i].AIMode==AIModes.Expanding)
 			{

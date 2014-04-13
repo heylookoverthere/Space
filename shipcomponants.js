@@ -403,7 +403,7 @@ function torpedo(){
 		}
 	};
 	
-	this.update=function(thangs){
+	this.update=function(thangs){ //acceleration?
 		if((this.homing) && (this.targ))
 		{
 			var beta=Math.atan2(this.targ.y-this.y,this.targ.x-this.x)* (180 / Math.PI);
