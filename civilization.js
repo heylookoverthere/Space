@@ -194,6 +194,7 @@ function civilization()
 	this.homeStar=0;
 	this.homePlanet=2;
 	this.flags=new Array();
+	this.maxShips=95;
 	for(var i=0;i<numCivFlags;i++)
 	{
 		this.flags.push(false);
@@ -329,10 +330,13 @@ function civilization()
 		}else
 		{
 			var cost=300;
-			if(this.money>cost-1)
+			if((this.money>cost-1) && (this.ships.length<this.maxShips))
 			{
-				this.money-=cost;
-				this.produceShip(9,this.homeworld);
+				
+				if(this.produceShip(9,this.homeworld))
+				{
+					this.money-=cost;
+				}
 			}
 		}
 
@@ -586,8 +590,11 @@ function civilization()
 		{
 			if(this.money>150-1)
 			{
-				this.money-=150;
-				this.produceShip(1,this.homeworld,world);//(ShipClass[this.race].colony);
+				t
+				if(this.produceShip(1,this.homeworld,world))//(ShipClass[this.race].colony);
+				{
+					his.money-=150;
+				}
 				console.log("A new colony ship is being constructed to colonize "+world.name);
 			}else
 			{
@@ -672,7 +679,7 @@ function civilization()
 			}else
 			{
 				console.log("No qualified captain for proposed new ship!");
-				return;
+				return false;
 			}
 		}else
 		{
@@ -697,6 +704,7 @@ function civilization()
 			console.log("Began contructing on the starship "+jimmy.name);
 		}
 		this.productionQueue.push(jimmy);
+		return true;
 	};
 	
 	this.produceBuilding=function(type,wrld){

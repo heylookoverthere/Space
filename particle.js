@@ -27,7 +27,7 @@ function particle(){
 	this.orbitDecay=0;
 	//this.texture=
 	this.size=1;
-	this.taxRate=20;
+	this.taxRate=50;
 	this.speed=(Math.random()*4)+1;
 	this.orbiting=false;
 	this.orbx=0;
