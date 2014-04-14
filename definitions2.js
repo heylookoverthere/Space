@@ -322,6 +322,177 @@ Upgrades.MaxCrew=7;
 Upgrades.SensorRange=8;
 Upgrades.WeaponsRange=9;
 
+statusModes={};
+statusModes.Overview=0;
+statusModes.CivView=1;
+statusModes.WarView=3;
+
+
+function statusBox()
+{
+	this.civ=civs[0];
+	this.civTrack=0;
+	this.visible=false;
+	this.mode=statusModes.CivView;
+	this.x=140;
+	this.y=20;
+	this.productionBar=new progressBar();
+	this.researchBar=new progressBar();
+	this.productionBar.x=550;
+	this.productionBar.label="Production:";
+	this.productionBar.y=50;
+
+	this.researchBar.x=550;
+	this.researchBar.label="Research:  ";
+	this.researchBar.y=70;
+	
+	this.scale=1;
+	this.height=550
+	this.width=650;
+	this.backColor="blue";
+	this.borderSize=4;
+	this.cycleCiv=function()
+	{
+		this.civTrack++;
+		if(this.civTrack>17)
+		{
+			this.civTrack=0;
+		}
+		this.civ=civs[this.civTrack];
+	};
+	this.draw=function(can,cam)
+	{
+		if(!this.visible)
+		{
+			return;
+		}
+		can.save();
+		can.font = "12pt Calibri";
+		can.fillStyle="white";
+		can.fillStyle=this.civ.color;
+		can.fillRect(this.x,this.y,this.width+this.borderSize,this.height+this.borderSize);
+		can.fillStyle=this.backColor;
+		can.globalAlpha=.80;
+		can.fillRect(this.x+this.borderSize,this.y+this.borderSize,this.width-this.borderSize,this.height-this.borderSize);
+		can.fillStyle="white";
+		if(this.mode==statusModes.Overview)
+		{
+		
+		}else if(this.mode==statusModes.CivView)
+		{
+			//can.fillStyle=this.civ.color;
+			can.fillText(this.civ.name,this.x+10,this.y+2+16);
+			//can.fillStyle="white";
+			can.fillText("Money: " +this.civ.money,this.x+10,this.y+2+32);
+			var pump="dunno";
+			if(this.civ.mode==AIModes.Agressive)
+			{
+				if(this.civ.autoHostile.length>0)
+				{
+					pump="Agressive";
+				}else
+				{
+					pump="Agressive, but with no enemies";
+				}
+			}else if(this.civ.mode==AIModes.Defense)
+			{
+				pump="Defending";
+			}else if(this.civ.mode==AIModes.Explore)
+			{
+				pump="Exploring";
+			}
+			if(this.civ.fallingBack)
+			{
+				pump="Preparing for Borg invasion";
+			}
+			if(this.civ.homeworld.civ!=this.civ)//revenge at all costs against enemyciv.
+			{
+				pump="Seeking revenge against "+this.civ.homeworld.civ.name + "at all costs";
+			}
+			if(!this.civ.AI)
+			{
+				pump="Manual Control";
+			}
+			can.fillText("AI Mode: "+pump,this.x+10,this.y+2+48);
+			if(this.civ.allied)
+			{
+				can.fillText("Allied with humans.",this.x+10,this.y+2+64);
+			}
+			
+			if(this.civ.autoHostile.length>0)
+			{
+				var george="";
+				if(this.civ.autoHostile.length>15)
+				{
+					george=" Just about Everybody.";
+				}else
+				{
+				
+					for(var i=0;i<this.civ.autoHostile.length;i++)
+					{
+						george+=this.civ.autoHostile[i].name+ " ";
+					}
+				}
+				can.fillText("At War With: "+george,this.x+10,this.y+2+78);
+			}
+
+			can.fillText("Worlds: ",this.x+10,this.y+2+112);
+			var kim=this.civ.worlds.length;
+			var elipsis=false;
+			if(kim>10)
+			{
+				//kim=10;
+				//elipsis=true;
+			}
+			for(var i=0;i<kim;i++)
+			{
+				var mike="";
+				if(this.civ.worlds[i]==this.civ.homeworld)
+				{
+					mike=" (Homeworld)";
+				}
+				can.fillText(this.civ.worlds[i].name+mike+", "+this.civ.worlds[i].sun.name+" system",this.x+10,this.y+2+128+i*16);
+			}
+			can.fillText("Ships: ",this.x+350,this.y+2+112);
+			kim=this.civ.ships.length;
+			elipsis=false;
+			if(kim>10)
+			{
+				//kim=10;
+				//elipsis=true;
+			}
+			for(var i=0;i<kim;i++)
+			{
+				can.fillText(this.civ.ships[i].name+", "+this.civ.ships[i].actionText,this.x+350,this.y+2+128+i*16);
+			}
+		}else if(this.mode==statusModes.WarView)
+		{
+		
+		}
+		
+		if(this.civ.productionQueue.length>0)
+		{
+			if((this.civ.productionQueue[0]) &&(this.civ.productionQueue[0].building))
+			{
+				can.fillText("Producing a "+ this.civ.productionQueue[0].name+ " on " +this.civ.productionQueue[0].world.name,this.x+350,this.y+90);	
+			}else if(this.civ.productionQueue[0])
+			{
+				can.fillText("Producing: "+this.civ.productionQueue[0].name,this.x+400,this.y+90);
+			}
+		}
+		
+		this.productionBar.val=this.civ.productionTick;
+		this.productionBar.maxVal=this.civ.nextProduction;
+		this.productionBar.draw(canvas,camera);
+	
+		this.researchBar.val=this.civ.researchTick;
+		this.researchBar.maxVal=this.civ.nextResearch;
+		this.researchBar.draw(canvas,camera);
+		can.restore();
+	};
+};
+
+var roland=new statusBox();
 
 function screenBox(obj)
 {

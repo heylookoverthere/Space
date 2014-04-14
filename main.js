@@ -130,6 +130,8 @@ var firekey=new akey("f");
 var fleetattackkey=new akey("j");
 var enterkey=startkey;
 var colonizekey=new akey("z");
+var toggleinfokey=new akey("5");
+var infokey=new akey("6");
 var shieldskey=new akey("7");
 var mapkey=new akey("8");
 var cleartailskey=new akey("9");
@@ -275,14 +277,14 @@ function drawDebug()
 	}
 	//ship info
 	if(!selectedShip) {canvas.restore(); return;}
-	var actiontext="Full Stop";
+	selectedShip.actionText="Full Stop";
 	if(selectedShip.speed>0){
 		if((selectedShip.desiredOrbitTarg) || (selectedShip.destination) || (selectedShip.escorting))
 		{
-			actiontext=selectedShip.status;
+			selectedShip.actionText=selectedShip.status;
 		}else
 		{
-			actiontext="Exploring the " +getQuadrant(selectedShip) + " Quadrant";
+			selectedShip.actionText="Exploring the " +getQuadrant(selectedShip) + " Quadrant";
 		}
 	}
 	if(selectedShip.nearbyPods.length>0)
@@ -301,28 +303,28 @@ function drawDebug()
 	{
 		if(selectedShip.leavingProgress)
 		{
-			actiontext="Breaking Orbit";
+			selectedShip.actionText="Breaking Orbit";
 		}else
 		{
-			actiontext="Orbiting "+selectedShip.orbitTarg.name;
+			selectedShip.actionText="Orbiting "+selectedShip.orbitTarg.name;
 		}
 	}else if(selectedShip.turning)
 	{
-		//actiontext="Adjusting Heading";
+		//selectedShip.actionText="Adjusting Heading";
 	}
 	if(selectedShip.destination)
 	{
 		if(selectedShip.destination.planet)
 		{
-			actiontext="Enroute to "+selectedShip.destination.name;
+			selectedShip.actionText="Enroute to "+selectedShip.destination.name;
 		}else if(selectedShip.destination.ship)
 		{
 			if(selectedShip.orders=Orders.Attack)
 			{
-				actiontext="Enroute to attack "+selectedShip.destination.name;
+				selectedShip.actionText="Enroute to attack "+selectedShip.destination.name;
 			}else
 			{
-				actiontext="Enroute to "+selectedShip.destination.name;
+				selectedShip.actionText="Enroute to "+selectedShip.destination.name;
 			}
 			
 		}
@@ -370,7 +372,7 @@ function drawDebug()
 		canvas.fillText("Away Team on: "+ selectedShip.awayTeamAt.name,755,485);
 	}
 	
-	canvas.fillText(actiontext,755,500);
+	canvas.fillText(selectedShip.actionText,755,500);
 	canvas.fillText("Coords: "+Math.floor(selectedShip.x)+","+Math.floor(selectedShip.y),755,515);
 	canvas.fillText("Heading: "+ Math.floor(selectedShip.heading),755,530);
 	canvas.fillText("Desired Heading: "+ selectedShip.desiredHeading,755,545);
@@ -390,7 +392,7 @@ function drawDebug()
 	//-===========/
 	if((selectedShip.torpedoTarget) && (false))
 	{
-	var actiontext="Full Stop";
+	var actionText="Full Stop";
 	if((Math.abs(selectedShip.torpedoTarget.x-selectedShip.x)<selectedShip.phaserRange) && (Math.abs(selectedShip.torpedoTarget.y-selectedShip.y)<selectedShip.phaserRange)) //todo distance!
 	{
 		canvas.fillStyle="red";
@@ -402,10 +404,10 @@ function drawDebug()
 		if(selectedShip.torpedoTarget.speed>0){
 			if(selectedShip.torpedoTarget.desiredOrbitTarg)
 			{
-				actiontext=selectedShip.torpedoTarget.status;
+				actionText=selectedShip.torpedoTarget.status;
 			}else
 			{
-				actiontext="Exploring the " +getQuadrant(selectedShip) + " Quadrant";
+				actionText="Exploring the " +getQuadrant(selectedShip) + " Quadrant";
 			}
 		}
 	}
@@ -413,14 +415,14 @@ function drawDebug()
 	{
 		if(selectedShip.torpedoTarget.leavingProgress)
 		{
-			actiontext="Breaking Orbit";
+			actionText="Breaking Orbit";
 		}else
 		{
-			actiontext="Orbiting "+selectedShip.torpedoTarget.orbitTarg.name;
+			actionText="Orbiting "+selectedShip.torpedoTarget.orbitTarg.name;
 		}
 	}else if(selectedShip.torpedoTarget.turning)
 	{
-		//actiontext="Adjusting Heading";
+		//selectedShip.actionText="Adjusting Heading";
 	}
 	canvas.fillText("Ship: "+selectedShip.torpedoTarget.prefix+" "+selectedShip.torpedoTarget.name,55,350);
 	if(selectedShip.torpedoTarget.destination)
@@ -456,7 +458,7 @@ function drawDebug()
 	}
 	canvas.fillText("Crew Compliment: "+ selectedShip.torpedoTarget.crew.length+"/"+selectedShip.torpedoTarget.crewMax,55,470);
 	canvas.fillText("Class: "+ selectedShip.torpedoTarget.class,55,485);
-	canvas.fillText(actiontext,55,500);
+	canvas.fillText(actionText,55,500);
 	canvas.fillText("Coords: "+Math.floor(selectedShip.torpedoTarget.x)+","+Math.floor(selectedShip.torpedoTarget.y),55,515);
 	canvas.fillText("Heading: "+ Math.floor(selectedShip.torpedoTarget.heading),55,530);
 	canvas.fillText("Desired Heading: "+ selectedShip.torpedoTarget.desiredHeading,55,545);
@@ -592,6 +594,8 @@ function mainMenuDraw(){
 	{
 		drawLittleMap(canvas,camera);
 	}
+	
+	roland.draw(canvas,camera);
 	/*canvas.save();
 		canvas.strokeStyle = "red";
 		canvas.beginPath();
@@ -613,6 +617,14 @@ function mainMenuUpdate(){
     timestamp = new Date();
     milliseconds = timestamp.getTime();
     tick++;
+	if(yearFlag)
+	{
+		for(var i=0;i<civs.length;i++)
+		{
+			civs[i].yearFlag=true;
+		}
+		yearFlag=false;
+	}
 	for(var i=0;i<civs.length;i++)
 	{
 		civs[i].update();
@@ -763,6 +775,16 @@ function mainMenuUpdate(){
 	if(mapkey.check())
 	{
 		drawMap=!drawMap;
+	}
+	
+	if(infokey.check())
+	{
+		roland.visible=!roland.visible;
+	}
+	
+	if(toggleinfokey.check())
+	{
+		roland.cycleCiv();
 	}
 	
 	if(toggleshipkey.check()) //todo!

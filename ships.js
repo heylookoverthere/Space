@@ -110,6 +110,7 @@ function starShip(){
 	this.phaserBanks.push(new energyWeapon(this));
 	this.shields=0;
 	this.tractorDist=80;
+	this.actionText="Idle."
 	this.maxShields=0;
 	this.activeShields=false;
 	this.activeWeapons=true;
@@ -129,7 +130,7 @@ function starShip(){
 	this.speed=0;
 	this.desiredSpeed=this.cruisingSpeed;
 	this.maxSpeed=5;
-	this.status="idle";
+	this.actionText="idle";
 	this.type=0;
 	this.width=32;
 	this.height=32;
@@ -851,7 +852,7 @@ function starShip(){
 		this.leavingProgress=0;
 		this.orbiting=false;
 		this.orbitTarg=null;
-		this.status="Breaking Orbit";
+		this.actionText="Breaking Orbit";
 	};
 	
 	this.adjustHeading=function(targ){
@@ -1401,7 +1402,7 @@ function starShip(){
 			}
 		}
 
-		if(this.platform)
+		if((this.platform) && (this.orbitTarg))
 		{
 			this.orbx=this.orbitTarg.x;
 			this.orby=this.orbitTarg.y;
@@ -1545,7 +1546,7 @@ function starShip(){
 				return;
 			}
 			this.orbiting=false;
-			this.status="Escorting the "+this.escorting.prefix+" "+this.escorting.name+".";
+			this.actionText="Escorting the "+this.escorting.prefix+" "+this.escorting.name+".";
 			var beta=Math.atan2(this.escorting.y-this.y,this.escorting.x-this.x)* (180 / Math.PI);
 			
 			if (beta < 0.0)
@@ -1618,10 +1619,10 @@ function starShip(){
 				this.orbiting=false;
 				if(this.orders==Orders.MeetFleet)
 				{
-					this.status="Enroute to meet with the fleet";
+					this.actionText="Enroute to meet with the fleet";
 				}else if(this.orders==Orders.Attack)
 				{
-					this.status="Enroute to attack "+this.destination.name;
+					this.actionText="Enroute to attack "+this.destination.name;
 				}
 				var beta=Math.atan2(this.destination.y-this.y,this.destination.x-this.x)* (180 / Math.PI);
 				
@@ -1725,7 +1726,7 @@ function starShip(){
 				/*if(this.leavingProgress!=null) 
 				{
 					this.leavingProgress+=1*gameSpeed;
-					this.status="Breaking Orbit";
+					this.actionText="Breaking Orbit";
 					//if(Math.floor(this.leavingProgress)==Math.floor(this.desiredHeading))
 					if(this.leavingProgress>90)
 					{
@@ -1735,7 +1736,7 @@ function starShip(){
 					
 				}else
 				{*/
-					this.status="Orbiting";
+					this.actionText="Orbiting "+this.orbitTarg.name;
 				//}
 				if (this.orbitTrack>360){ this.orbitTrack=0;}
 				this.x=this.orbx+Math.cos(this.orbitTrack* (Math.PI / 180))*this.orbitDiameter;
@@ -1744,7 +1745,7 @@ function starShip(){
 			}
 		}else if(this.desiredOrbitTarg)//TODO
 		{
-				this.status="Enroute to "+this.desiredOrbitTarg.name;
+				this.actionText="Enroute to "+this.desiredOrbitTarg.name;
 				//console.log("yaaaar");
 				var beta=Math.atan2(this.desiredOrbitTarg.y-this.y,this.desiredOrbitTarg.x-this.x)* (180 / Math.PI);
 				
@@ -2015,6 +2016,7 @@ function starShip(){
 				this.autoFireTick=0;
 				this.fireTorpedo();
 			}
+			this.actionText="Attacking "+this.torpedoTarget.civ.name+ " ship "+this.torpedoTarget.name;
 		}
 		for(var i=0;i<this.phaserBanks.length;i++)
 		{
@@ -2046,6 +2048,7 @@ function starShip(){
 				{
 					this.attackPlanet(this.planetTarget);
 					this.planetAttackTick=0;
+					this.actionText="Attacking "+this.planetTarget.civ.name+ " colony on "+this.planetTarget.name;
 				}
 				if(this.planetTarget.civ==null)
 				{

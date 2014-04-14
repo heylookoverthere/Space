@@ -185,6 +185,7 @@ function civilization()
 	this.race=0;
 	this.color="purple";
 	this.player=false;
+	this.yearFlag=false;
 	this.alive=true;
 	this.hostileOnContact=false;
 	this.hostileOnIncursion=false;
@@ -590,10 +591,9 @@ function civilization()
 		{
 			if(this.money>150-1)
 			{
-				t
 				if(this.produceShip(1,this.homeworld,world))//(ShipClass[this.race].colony);
 				{
-					his.money-=150;
+					this.money-=150;
 				}
 				console.log("A new colony ship is being constructed to colonize "+world.name);
 			}else
@@ -761,10 +761,10 @@ function civilization()
 		
 		if(!this.alive) {return;}
 		this.checkDeath();
-		if(yearFlag)
+		if(this.yearFlag)
 		{
 			this.getTax();
-			yearFlag=false;
+			this.yearFlag=false;
 		}
 		if(this.messages[0])
 		{

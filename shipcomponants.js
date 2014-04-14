@@ -21,7 +21,7 @@ shipNames[8]=["Aldara","Barkano","Bok'Nor","Groumall","Koranak","Kornaire","Krax
 for (var q=0;q<18;q++)
 {
 	var po=1;
-	while(shipNames[q].length<99)
+	while(shipNames[q].length<299)
 	{
 		shipNames[q].push(po);
 		po++;
