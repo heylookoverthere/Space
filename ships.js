@@ -696,15 +696,18 @@ function starShip(){
 	
 	this.attackPlanet=function(plnt)
 	{
-		if((this.civ.autoHostile.indexOf(plnt.civ)==-1) && (plnt.civ!=this.civ))
+		if(plnt.civ)
 		{
-			//this.civ.addHostile(plnt.civ);
-			this.civ.autoHostile.push(plnt.civ);
-			console.log(this.civ.name+" has pissed off "+plnt.civ.name+ " by attacking their colony on "+plnt.name);
-		}
-		if(plnt.civ!=this.civ)
-		{
-			plnt.hurt(3);
+			if((this.civ.autoHostile.indexOf(plnt.civ)==-1) && (plnt.civ!=this.civ))
+			{
+				//this.civ.addHostile(plnt.civ);
+				this.civ.autoHostile.push(plnt.civ);
+				console.log(this.civ.name+" has pissed off "+plnt.civ.name+ " by attacking their colony on "+plnt.name);
+			}
+			if(plnt.civ!=this.civ)
+			{
+				plnt.hurt(3);
+			}
 		}
 	};
 	

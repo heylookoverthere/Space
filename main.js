@@ -645,6 +645,11 @@ function mainMenuUpdate(){
 		roland.cycleCiv();
 	}
 	
+	if(roland.visible)
+	{
+		roland.update();
+	}
+	
 	if(this.holdInput) {return;}
 	monsta.update();
 	if(crewscreenkey.check())
@@ -667,7 +672,7 @@ function mainMenuUpdate(){
 			console.log("First Fleet established");
 		}
 	 }
-	if(startkey.check()){
+	if((startkey.check()) && (!roland.visible)){
 		//mode=1;
 		for(var i=0;i<ships.length;i++)
 		{
@@ -861,7 +866,7 @@ function mainMenuUpdate(){
 	{
 	  cmoverate=5;
 	}
-	if(keydown.left)
+	if((keydown.left) && (!roland.visible))
 	{
 		//if(camera.x<universeWidth-CANVAS_WIDTH)
 		{
@@ -869,7 +874,7 @@ function mainMenuUpdate(){
 		}
 		camera.unFollow();
 	}
-	if(keydown.right)
+	if((keydown.right) && (!roland.visible))
 	{
 		//if(camera.x>0)
 		{
@@ -877,7 +882,7 @@ function mainMenuUpdate(){
 		}
 		camera.unFollow();
 	}
-	if(keydown.up)
+	if((keydown.up) && (!roland.visible))
 	{
 		//if(camera.y<universeHeight-CANVAS_HEIGHT)
 		{
@@ -885,7 +890,7 @@ function mainMenuUpdate(){
 		}
 		camera.unFollow();
 	}
-	if(keydown.down)
+	if((keydown.down) && (!roland.visible))
 	{
 		//if(camera.y>0)
 		{

@@ -336,6 +336,9 @@ function statusBox()
 	this.mode=statusModes.CivView;
 	this.x=140;
 	this.y=20;
+	this.worldTrack=0;
+	this.shipTrack=0;
+	this.collumTrack=0;
 	this.productionBar=new progressBar();
 	this.researchBar=new progressBar();
 	this.productionBar.x=550;
@@ -358,8 +361,67 @@ function statusBox()
 		{
 			this.civTrack=0;
 		}
+		this.worldTrack=0;
+		this.shipTrack=0;
+		this.collumTrack=0;
 		this.civ=civs[this.civTrack];
 	};
+	this.update=function()
+	{
+		if(leftkey.check())
+		{
+			if(this.collumTrack>0)
+			{
+				this.collumTrack--;
+			}
+		}
+		if(rightkey.check())
+		{
+			if(this.collumTrack<2)
+			{
+				this.collumTrack++;
+			}
+		}
+		if(upkey.check())
+		{
+			if((this.collumTrack==1) && (this.worldTrack>0))
+			{
+				this.worldTrack--;
+			}else if((this.collumTrack==2) && (this.shipTrack>0))
+			{
+				this.shipTrack--;
+			}
+		}
+		if(downkey.check())
+		{
+			if((this.collumTrack==1) && (this.worldTrack<this.civ.worlds.length-1) && (this.worldTrack<25))
+			{
+				this.worldTrack++;
+			}else if((this.collumTrack==2) && (this.shipTrack<this.civ.ships.length-1)&& (this.shipTrack<25))
+			{
+				this.shipTrack++;
+			}
+		}
+		if(startkey.check())
+		{
+			if(this.collumTrack==2)
+			{
+				selectedShip=this.civ.ships[this.shipTrack];
+				camera.follow(selectedShip);
+				this.visible=false;
+				this.worldTrack=0;
+				this.shipTrack=0;
+				this.collumTrack=0;
+			}else if(this.collumTrack==1)
+			{
+				camera.follow(this.civ.worlds[this.worldTrack]);
+				this.visible=false;
+				this.worldTrack=0;
+				this.shipTrack=0;
+				this.collumTrack=0;
+			}
+		}
+	}
 	this.draw=function(can,cam)
 	{
 		if(!this.visible)
@@ -454,7 +516,12 @@ function statusBox()
 				{
 					mike=" (Homeworld)";
 				}
+				if((this.collumTrack==1) && (i==this.worldTrack))
+				{
+					can.fillStyle="green";
+				}
 				can.fillText(this.civ.worlds[i].name+mike+", "+this.civ.worlds[i].sun.name+" system",this.x+10,this.y+2+128+i*16);
+				can.fillStyle="white";
 			}
 			if(elipsis)
 			{
@@ -473,7 +540,12 @@ function statusBox()
 			}
 			for(var i=0;i<kim;i++)
 			{
+				if((this.collumTrack==2) && (i==this.shipTrack))
+				{
+					can.fillStyle="green";
+				}
 				can.fillText(this.civ.ships[i].name+", "+this.civ.ships[i].actionText,this.x+350,this.y+2+128+i*16);
+				can.fillStyle="white";
 			}
 			if(elipsis)
 			{
