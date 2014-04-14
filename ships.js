@@ -1736,8 +1736,10 @@ function starShip(){
 					
 				}else
 				{*/
+				if(!this.attackingPlanet)
+				{
 					this.actionText="Orbiting "+this.orbitTarg.name;
-				//}
+				}
 				if (this.orbitTrack>360){ this.orbitTrack=0;}
 				this.x=this.orbx+Math.cos(this.orbitTrack* (Math.PI / 180))*this.orbitDiameter;
 				this.y=this.orby+Math.sin(this.orbitTrack*(Math.PI / 180))*this.orbitDiameter;

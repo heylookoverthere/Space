@@ -406,6 +406,9 @@ function civilization()
 				console.log("all ships returning to "+this.homeworld.name+" to aid in its defense");
 				this.fallenBack=true;
 			}
+		}else
+		{
+			this.fallingBack=false;
 		}
 		
 		//set each ship's state

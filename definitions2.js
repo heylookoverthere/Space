@@ -407,7 +407,7 @@ function statusBox()
 			}
 			if(this.civ.homeworld.civ!=this.civ)//revenge at all costs against enemyciv.
 			{
-				pump="Seeking revenge against "+this.civ.homeworld.civ.name + "at all costs";
+				pump="Seeking revenge against "+this.civ.homeworld.civ.name + " at all costs";
 			}
 			if(!this.civ.AI)
 			{
@@ -436,7 +436,7 @@ function statusBox()
 				can.fillText("At War With: "+george,this.x+10,this.y+2+78);
 			}
 
-			can.fillText("Worlds: ",this.x+10,this.y+2+112);
+			can.fillText("Worlds: "+this.civ.worlds.length,this.x+10,this.y+2+112);
 			var kim=this.civ.worlds.length;
 			var elipsis=false;
 			if(kim>25)
@@ -460,7 +460,7 @@ function statusBox()
 			{
 				can.fillText("....",this.x+10,this.y+2+128+kim*16);
 			}
-			can.fillText("Ships: ",this.x+350,this.y+2+112);
+			can.fillText("Ships: "+this.civ.ships.length,this.x+350,this.y+2+112);
 			kim=this.civ.ships.length;
 			elipsis=false;
 			if(kim>25)

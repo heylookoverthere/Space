@@ -629,6 +629,22 @@ function mainMenuUpdate(){
 	{
 		civs[i].update();
 	}
+	
+	if(mapkey.check())
+	{
+		drawMap=!drawMap;
+	}
+	
+	if(infokey.check())
+	{
+		roland.visible=!roland.visible;
+	}
+	
+	if(toggleinfokey.check())
+	{
+		roland.cycleCiv();
+	}
+	
 	if(this.holdInput) {return;}
 	monsta.update();
 	if(crewscreenkey.check())
@@ -772,20 +788,7 @@ function mainMenuUpdate(){
 		}
 	}
 	
-	if(mapkey.check())
-	{
-		drawMap=!drawMap;
-	}
 	
-	if(infokey.check())
-	{
-		roland.visible=!roland.visible;
-	}
-	
-	if(toggleinfokey.check())
-	{
-		roland.cycleCiv();
-	}
 	
 	if(toggleshipkey.check()) //todo!
 	{
@@ -1017,13 +1020,14 @@ function mainMenuUpdate(){
 ed=new textbox();
 
 function crewScreenDraw(){
+	canvas.save();
 	ed.draw(canvas,camera);
 	canvas.font = "16pt Calibri";
 	canvas.textAlign = "center";
 	canvas.textBaseline = "middle";
 	canvas.fillStyle = "black";
 	canvas.fillText("Crew Pool",80,20);
-	
+	canvas.restore();
 };
 
 
