@@ -439,10 +439,13 @@ function statusBox()
 			can.fillText("Worlds: ",this.x+10,this.y+2+112);
 			var kim=this.civ.worlds.length;
 			var elipsis=false;
-			if(kim>10)
+			if(kim>25)
 			{
-				//kim=10;
-				//elipsis=true;
+				kim=25;
+				elipsis=true;
+			}else
+			{
+				elipsis=false;
 			}
 			for(var i=0;i<kim;i++)
 			{
@@ -453,17 +456,28 @@ function statusBox()
 				}
 				can.fillText(this.civ.worlds[i].name+mike+", "+this.civ.worlds[i].sun.name+" system",this.x+10,this.y+2+128+i*16);
 			}
+			if(elipsis)
+			{
+				can.fillText("....",this.x+10,this.y+2+128+kim*16);
+			}
 			can.fillText("Ships: ",this.x+350,this.y+2+112);
 			kim=this.civ.ships.length;
 			elipsis=false;
-			if(kim>10)
+			if(kim>25)
 			{
-				//kim=10;
-				//elipsis=true;
+				kim=25;
+				elipsis=true;
+			}else
+			{
+				elipsis=false;
 			}
 			for(var i=0;i<kim;i++)
 			{
 				can.fillText(this.civ.ships[i].name+", "+this.civ.ships[i].actionText,this.x+350,this.y+2+128+i*16);
+			}
+			if(elipsis)
+			{
+				can.fillText("....",this.x+350,this.y+2+128+kim*16);
 			}
 		}else if(this.mode==statusModes.WarView)
 		{
@@ -488,6 +502,23 @@ function statusBox()
 		this.researchBar.val=this.civ.researchTick;
 		this.researchBar.maxVal=this.civ.nextResearch;
 		this.researchBar.draw(canvas,camera);
+		if(!this.civ.alive)
+		{
+			can.strokeStyle="red";
+			can.lineWidth =10;
+
+			//console.log(point1,point2);
+			can.beginPath();
+			
+			can.moveTo(this.x,this.y);
+			can.lineTo(this.x+this.width,this.y+this.height);
+			can.moveTo(this.x+this.width,this.y);
+			can.lineTo(this.x,this.y+this.height);
+
+
+			can.stroke();
+			can.closePath();	
+		}
 		can.restore();
 	};
 };
