@@ -306,21 +306,6 @@ function civilization()
 	this.newMasterAI=function()
 	{
 		//choose production
-		if((this.enemyCiv) && (this.targetWorlds.length<2))
-		{
-			for(var i=0;i<this.enemyCiv.worlds.length;i++)
-			{
-				this.targetWorlds.push(this.enemyCiv.worlds[i]);
-			}
-		}
-		for(var i=0;i<this.autoHostile.length;i++)
-		{
-			if(!this.autoHostile[i].alive)
-			{
-				this.autoHostile.splice(i,1);
-				i--;
-			}
-		}
 		if(!this.initialProduction)
 		{
 			this.produceBuilding(Buildings.ShieldGrid,this.homeworld);
@@ -331,6 +316,7 @@ function civilization()
 		}else
 		{
 			var cost=300;
+			if(this.race==raceIDs.Borg) {cost=5000;}
 			if((this.money>cost-1) && (this.ships.length<this.maxShips))
 			{
 				
@@ -340,7 +326,28 @@ function civilization()
 				}
 			}
 		}
+		
+		if(this.race==raceIDs.Borg) //for now the borg have a seperate much simpler AI.  Kill everything.
+		{
+			return;
+		}
 
+		if((this.enemyCiv) && (this.targetWorlds.length<2))
+		{
+			for(var i=0;i<this.enemyCiv.worlds.length;i++)
+			{
+				this.targetWorlds.push(this.enemyCiv.worlds[i]);
+			}
+		}
+		//remove dead enemies
+		for(var i=0;i<this.autoHostile.length;i++)
+		{
+			if(!this.autoHostile[i].alive)
+			{
+				this.autoHostile.splice(i,1);
+				i--;
+			}
+		}
 		
 		if(this.homeworld.civ!=this)//revenge at all costs against enemyciv.
 		{
@@ -472,7 +479,7 @@ function civilization()
 					}
 				}else if((this.enemyCiv.homeworld.civ==this.enemyCiv) && (this.ships[i].orbitTarg!=this.enemyCiv.homeworld)&& (this.ships[i].desiredOrbitTarg!=this.enemyCiv.homeworld))
 				{
-					console.log("sending " +this.name+" "+ships[i].name+" to enemy homeworld");
+					//console.log("sending " +this.name+" "+ships[i].name+" to enemy homeworld");
 					this.ships[i].orderOrbit(this.enemyCiv.homeworld); //orderattack?
 					this.ships[i].orders=Orders.Attack;
 					if(this.enemyCiv.homeworldWarning)

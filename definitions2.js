@@ -35,6 +35,22 @@ function clearTails()
 	}
 }
 
+function elipseString(str,limit){
+	if(str.length>limit)
+	{
+		var pr="";
+		for(var i=0;i<limit-3;i++)
+		{
+			pr+=str[i];
+		}
+		pr+="...";
+		return pr;
+	}else
+	{
+		return str;
+	}
+}
+
 for(var j=0;j<civs.length;j++)
 {
 	if(j!=raceIDs.Borg)
@@ -109,7 +125,7 @@ civs[raceIDs.Dominion].color="#666699";
 
 civs[0].AI=false;
 civs[0].player=true;
-civs[raceIDs.Borg].AI=false; //for now.
+civs[raceIDs.Borg].AI=true; //for now.
 civs[raceIDs.Borg].allied=false; //for now.
 //civs[raceIDs.Romulan].mode=AIModes.Defense;
 civs[raceIDs.Dominion].mode=AIModes.Agressive;
@@ -394,10 +410,10 @@ function statusBox()
 		}
 		if(downkey.check())
 		{
-			if((this.collumTrack==1) && (this.worldTrack<this.civ.worlds.length-1) && (this.worldTrack<25))
+			if((this.collumTrack==1) && (this.worldTrack<this.civ.worlds.length-1) && (this.worldTrack<24))
 			{
 				this.worldTrack++;
-			}else if((this.collumTrack==2) && (this.shipTrack<this.civ.ships.length-1)&& (this.shipTrack<25))
+			}else if((this.collumTrack==2) && (this.shipTrack<this.civ.ships.length-1)&& (this.shipTrack<24))
 			{
 				this.shipTrack++;
 			}
@@ -520,7 +536,9 @@ function statusBox()
 				{
 					can.fillStyle="green";
 				}
-				can.fillText(this.civ.worlds[i].name+mike+", "+this.civ.worlds[i].sun.name+" system",this.x+10,this.y+2+128+i*16);
+				var reek=this.civ.worlds[i].name+mike+", "+this.civ.worlds[i].sun.name+" system"
+				reek=elipseString(reek,52);
+				can.fillText(reek,this.x+10,this.y+2+128+i*16);
 				can.fillStyle="white";
 			}
 			if(elipsis)
@@ -560,7 +578,9 @@ function statusBox()
 		{
 			if((this.civ.productionQueue[0]) &&(this.civ.productionQueue[0].building))
 			{
-				can.fillText("Producing a "+ this.civ.productionQueue[0].name+ " on " +this.civ.productionQueue[0].world.name,this.x+350,this.y+90);	
+				reek="Producing a "+ this.civ.productionQueue[0].name+ " on " +this.civ.productionQueue[0].world.name;
+				reek=elipseString(reek,44);
+				can.fillText(reek,this.x+350,this.y+90);	
 			}else if(this.civ.productionQueue[0])
 			{
 				can.fillText("Producing: "+this.civ.productionQueue[0].name,this.x+400,this.y+90);

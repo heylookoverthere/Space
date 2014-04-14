@@ -494,7 +494,8 @@ function starShip(){
 	this.christen=function(){
 	if(this.civ.name=="Borg")
 	{
-		this.name=" #"+Math.floor(Math.random()*4999)+4000;
+		this.name=" #"+(Math.floor(Math.random()*4999)+4000);
+		return;
 	}
 		var nami=Math.floor(Math.random()*shipNames[this.race].length);
 		while(true) {
@@ -2053,7 +2054,12 @@ function starShip(){
 				{
 					this.attackPlanet(this.planetTarget);
 					this.planetAttackTick=0;
-					this.actionText="Attacking "+this.planetTarget.civ.name+ " colony on "+this.planetTarget.name;
+					var doof="";
+					if(this.planetTarget.civ)
+					{
+						doof= this.planetTarget.civ.name;
+					}
+					this.actionText="Attacking "+doof+ " colony on "+this.planetTarget.name;
 				}
 				if(this.planetTarget.civ==null)
 				{
