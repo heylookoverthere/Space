@@ -510,6 +510,7 @@ function statusBox()
 					{
 						george+=this.civ.autoHostile[i].name+ " ";
 					}
+					george=elipseString(george,70);
 				}
 				can.fillText("At War With: "+george,this.x+10,this.y+2+78);
 			}
@@ -537,7 +538,7 @@ function statusBox()
 					can.fillStyle="green";
 				}
 				var reek=this.civ.worlds[i].name+mike+", "+this.civ.worlds[i].sun.name+" system"
-				reek=elipseString(reek,52);
+				reek=elipseString(reek,50);
 				can.fillText(reek,this.x+10,this.y+2+128+i*16);
 				can.fillStyle="white";
 			}
@@ -1179,11 +1180,12 @@ function newShip(iv,startworld,capt)
 			james.cruisingSpeed=5;
 			//james.adjustHeading(270);
 			james.speed=5;
+			james.desiredSpeed=james.cruisingSpeed;
 			james.autoFireRate=20;
 			james.addPhaser();
 			
-			james.planetTarget=Earth;
-			james.orderOrbit(james.planetTarget);
+			//james.planetTarget=Earth;
+			//james.orderOrbit(james.planetTarget);
 			james.crewVessel(capt);
 			
 			james.alive=true;

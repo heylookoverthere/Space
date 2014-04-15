@@ -380,8 +380,10 @@ function civilization()
 				}else if((this.enemyCiv.worlds.length>0) && (!this.ships[i].desiredOrbitTarg))
 				{
 					if((!this.ships[i].orbitTarg) || ((this.ships[i].orbitTarg) && (this.ships[i].orbitTarg.civ!=this.enemyCiv)))
+					{
 					//console.log("!!!!!!!!!!Lost Homeworld!!!!!!!moping up!");
 					this.ships[i].orderOrbit(this.enemyCiv.worlds[0]);
+					}
 					this.ships[i].orders=Orders.Attack;
 				}else
 				{
@@ -398,20 +400,25 @@ function civilization()
 			return;
 		}
 		
-		if(this.allied) {return;}
+		if(this.allied) {
+			if(!civs[0].alive)
+			{
+				this.allied=false;
+			}
+			return;
+		}
 		if((borgTrack==this.race) && (civs[raceIDs.Borg].ships.length>0))
 		{
-			//fall back to homeworld!
-			this.fallingBack=true;
-			for(var i=0;i<this.ships.length;i++)
+			if(!this.fallingBack)
 			{
-				this.ships[i].orderOrbit(this.homeworld);
-				this.ships[i].desiredSpeed=this.ships[i].maxSpeed;
-			}
-			if(!this.fallenBack)
-			{
+				//fall back to homeworld!
+				this.fallingBack=true;
+				for(var i=0;i<this.ships.length;i++)
+				{
+					this.ships[i].orderOrbit(this.homeworld);
+					this.ships[i].desiredSpeed=this.ships[i].maxSpeed;
+				}
 				console.log("all ships returning to "+this.homeworld.name+" to aid in its defense");
-				this.fallenBack=true;
 			}
 		}else
 		{
@@ -461,7 +468,14 @@ function civilization()
 				}
 				if((this.enemyCiv) && (!this.enemyCiv.alive))
 				{
-					this.enemyCiv=null;
+					if(this.autoHostile.length>1)
+					{
+						this.enemyCiv=this.autoHostile[1];
+					}else
+					{
+						this.enemyCiv=null;
+						this.ships[i].AIMode=AIModes.Explore;
+					}
 				}
 				if(!this.enemyCiv)
 				{
@@ -770,6 +784,7 @@ function civilization()
 	{
 		
 		if(!this.alive) {return;}
+		
 		this.checkDeath();
 		if(this.yearFlag)
 		{

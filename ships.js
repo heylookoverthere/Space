@@ -2083,9 +2083,13 @@ function starShip(){
 							console.log("The Borg have assimilated all inhabited planets.  Oh well.");
 						}else
 						{
-							this.orderOrbit(civs[borgTrack].homeworld);
-							this.desiredSpeed=7;
-							this.planetTarget=civs[borgTrack].homeworld;
+							for(var h=0;h<this.civ.ships.length;h++)
+							{
+								this.civ.ships[h].orderOrbit(civs[borgTrack].homeworld);
+								this.civ.ships[h].desiredSpeed=7;
+								this.civ.ships[h].planetTarget=civs[borgTrack].homeworld;
+								this.civ.ships[h].actionText="Enroute to assimilate "+civs[borgTrack].homeworld.name;
+							}
 						}
 					}
 				}
