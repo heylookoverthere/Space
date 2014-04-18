@@ -21,7 +21,7 @@ shipNames[8]=["Aldara","Barkano","Bok'Nor","Groumall","Koranak","Kornaire","Krax
 for (var q=0;q<18;q++)
 {
 	var po=1;
-	while(shipNames[q].length<999)
+	while(shipNames[q].length<2999)
 	{
 		shipNames[q].push(po);
 		po++;
@@ -39,6 +39,102 @@ var targetSprite=Sprite("shiptargetedbig");
 var tractorTargetSprite=Sprite("tractortargetedbig");
 
 var beamTargetSprite=Sprite("beamtargetedbig");
+
+SystemIDs={};
+SystemIDs.LifeSupport=0;
+SystemIDs.DamageControl=1;
+SystemIDs.Shields=2;
+SystemIDs.Medical=3;
+SystemIDs.Weapons=4;
+SystemIDs.Targeting=5;
+SystemIDs.Scanners=6;
+SystemIDs.LongRangeScanners=7;//?
+SystemIDs.ImpulseEngines=8;
+SystemIDs.WarpEngines=9;
+SystemIDs.TransWarpEngines=10;//?
+SystemIDs.ComputerCore=11; //the computer! 
+SystemIDs.ScienceLab=12;
+SystemIDs.CargoBay=13;
+SystemIDs.PassengerBay=14;
+SystemIDs.ShuttleBay=15;
+SystemIDs.Transporter=16;
+SystemIDs.Navigation=17;
+
+var NumSystems=18;
+
+
+
+function shipSystem(hip)
+{
+	this.name="Billy.";
+	this.installed=false;
+	this.ship=hip;
+	this.type=-1;
+	this.alive=true;
+	this.active=false;
+	this.on=false;//this is the player disabling things
+	this.installed=false
+	this.learningCurve=1; //eventually.
+	this.boobyTrapped=false;//eventually.
+	this.overloadChance=0;//eventually.
+	this.hp=this.maxHp=100;
+	this.repairTime=0;
+	this.hitChange=10;
+	this.manned=null;
+	this.power=0;
+	this.maxpower=0; //"Thanks, I got it off a hair dryer."
+	this.turnOff=function(alert)
+	{
+		this.power=0
+		this.on=false
+		this.active=false;
+		if(alert)
+		{
+			console.log(this.ship.name+"'s "+this.name+" turned off");
+		}
+	}
+	this.turnOn=function(alert)
+	{
+		this.power=1
+		this.active=true
+		this.on=true;
+	}
+	this.disable=function(alert)
+	{
+		this.power=0
+		this.active=false;
+		if(alert)
+		{
+			console.log(this.ship.name+"'s "+this.name+" disabled.");
+		}
+	}
+	this.takeHit=function(dmg)
+	{
+		this.hp-=dmg;
+		if(this.hp<1)
+		{
+			this.hp=0;
+			this.alive=false;
+			this.disable();
+		}
+		
+	};
+	this.update=function()
+	{
+		//switch case for all passive effects.
+		if(this.type==SystemIDs.LifeSupport)
+		{
+			if(this.ship.oxygen<1000)
+			{
+				this.ship.oxygen+=this.ship.lifeSupportRate*gameSpeed;
+				if(this.ship.oxygen>1000)
+				{
+					this.ship.oxygen=1000;
+				}
+			}
+		}
+	};
+}
 
 function shipWindow()
 {
@@ -191,7 +287,8 @@ function dude()
 	this.xp=0;
 	this.nextLevel=100;
 	this.ID=0;
-	this.race="human";
+	this.raceID=0;
+	this.civID=0;
 	this.rank=0;
 	this.title="Crewman";
 	this.AIDS=false;
@@ -365,13 +462,18 @@ function torpedo(){
 	this.y=0;
 	this.xv=0;
 	this.yv=0;
+	this.acceltick=0
+	this.accelrate=10;
+	this.acceleration=10;
 	this.maxxv=50;
 	this.maxyv=50;
 	this.range=40;
-	this.delayTick=5;
+	this.delayTick=15;
 	this.yield=15;
 	this.width=8;
-	this.speed=25;
+	this.speed=15;
+	this.desiredSpeed=25;
+	this.maxSpeed=25;
 	this.targ=null;
 	this.homing=true;
 	this.ship=null;
@@ -403,6 +505,43 @@ function torpedo(){
 		}
 	};
 	
+	this.accelerate=function()
+	{
+		this.acceltick++;
+		if(this.acceltick<this.accelrate)
+		{
+			return;
+		}
+		this.acceltick=0;
+		if ((this.speed<this.maxSpeed)) //&& ((!this.destination) || (this.speed<this.destination.maxSpeed)))//don't go faster than lead ship!
+		{
+			this.speed+=this.acceleration*gameSpeed;
+		}
+		if(this.speed>this.maxSpeed)
+		{
+			this.speed=this.maxSpeed;
+		}
+		if(this.speed>this.desiredSpeed)
+		{
+			this.speed=this.desiredSpeed;
+		}
+	};
+	
+	this.decelerate=function()
+	{
+		this.acceltick++;
+		if(this.acceltick<this.accelrate)
+		{
+			return;
+		}
+		this.acceltick=0;
+		this.speed-=this.acceleration*gameSpeed;
+		if (this.speed<.1)
+		{
+			this.speed=0;
+		}
+	};
+	
 	this.update=function(thangs){ //acceleration?
 		if((this.homing) && (this.targ))
 		{
@@ -418,6 +557,13 @@ function torpedo(){
 				this.targ=null;
 			}
 		}
+		if(this.speed<this.desiredSpeed)
+		{
+			this.accelerate();
+		}else if(this.speed>this.desiredSpeed)
+		{
+			this.decelerate();
+		}	
 		this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
 		this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
 

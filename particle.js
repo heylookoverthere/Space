@@ -37,7 +37,7 @@ function particle(){
 	this.astroid=false;
 	this.meteor=false;
 	this.colonized=false;
-	this.race=-1;
+	this.raceID=-1;
 	this.civ=null;
 	this.numMoons=0;
 	this.moons=new Array();

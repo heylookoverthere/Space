@@ -46,6 +46,10 @@ for(var i=0;i<100;i++)
 function starShip(){
 	//this.class=baseClass
 	this.ship=true;
+	this.systems=new Array();
+	//todo
+	this.rooms=6;
+	this.maxSystems=6;
 	this.tail=new Array();
 	this.tailLength=100;
 	this.platform=false;
@@ -53,7 +57,7 @@ function starShip(){
 	this.planetBeamX=0;
 	this.planetBeamY=0;
 	this.orders=0;
-	this.race=0;
+	this.civID=0;
 	this.kills=0;
 	this.tailCount=0;
 	this.AIMode=AIModes.Explore;
@@ -138,9 +142,9 @@ function starShip(){
 	this.attackingPlanet=null;
 	this.name="Tim.";
 	
-	if(shipNamesTrack[this.race]>shipNames[this.race].length)
+	if(shipNamesTrack[this.civID]>shipNames[this.civID].length)
 	{
-		shipNamesTrack[this.race]=0;
+		shipNamesTrack[this.civID]=0;
 	}
 	this.crewCapacity=5;
 	this.crewMax=0;
@@ -497,15 +501,15 @@ function starShip(){
 		this.name=" #"+(Math.floor(Math.random()*4999)+4000);
 		return;
 	}
-		var nami=Math.floor(Math.random()*shipNames[this.race].length);
+		var nami=Math.floor(Math.random()*shipNames[this.civID].length);
 		while(true) {
-			if(shipNamesUsed[this.race][nami]) 
+			if(shipNamesUsed[this.civID][nami]) 
 			{
-				nami=Math.floor(Math.random()*shipNames[this.race].length);
+				nami=Math.floor(Math.random()*shipNames[this.civID].length);
 			}else {break;}
 		}
-		this.name=shipNames[this.race][nami];
-		shipNamesUsed[this.race][nami]=true;
+		this.name=shipNames[this.civID][nami];
+		shipNamesUsed[this.civID][nami]=true;
 	};
 	
 	this.cycleBeamTarget=function()
@@ -635,6 +639,11 @@ function starShip(){
 		}
 	};
 
+	this.installSystem=function(micheal)
+	{
+		//todo 
+	};
+
 	this.fireTorpedo=function(){
 		if(this.numTorpedos<1) {return;}
 		this.numTorpedos--;
@@ -666,6 +675,10 @@ function starShip(){
 		torpy.heading=beta;
 		torpy.x=this.x-torpy.width/2;
 		torpy.y=this.y-torpy.height/2;
+		//torpy.xv=this.xv;
+		//torpy.yv=this.yv;
+		torpy.speed=this.speed;
+		if(torpy.speed<5) {torpy.speed=5;}
 		torpy.active=true;
 		torpedos.push(torpy);
 		//console.log(torpy);
@@ -776,7 +789,7 @@ function starShip(){
 			this.crew[i].civ=this.civ;
 			if((Math.random()*100)<20)
 			{
-				//this.crew[i].race="vulcan";
+				//this.crew[i].civID="vulcan";
 			}
 		}
 		this.crew[0].title="Captain";
@@ -1016,19 +1029,19 @@ function starShip(){
 			{
 				if((thangs[i]!=this) && (!thangs[i].cloaked) && (thangs[i].alive)){  //todo, sensors that can detect cloaked ships.
 					thongs.push(thangs[i]);	
-					if((thangs[i].discovered==false)  && (this.race==0)){
+					if((thangs[i].discovered==false)  && (this.civID==0)){
 						thangs[i].discovered=true;
 						console.log("The "+this.prefix+ " "+this.name+ " discoverd the "+thangs[i].name+" System");
 						this.enterLog("Today we discoverd the "+thangs[i].name+" System.");
 						
 					}
-					if((this.civ.fContacted[thangs[i].race]==false) && (this.race==0)){
-						this.civ.fContacted[thangs[i].race]=true;
-						if((thangs[i].race>0) && (thangs[i].alive) && (this.civ.race==0))
+					if((this.civ.fContacted[thangs[i].civID]==false) && (this.civID==0)){
+						this.civ.fContacted[thangs[i].civID]=true;
+						if((thangs[i].civID>0) && (thangs[i].alive) && (this.civ.civID==0))
 						{
-							console.log("The "+this.prefix+ " "+this.name+ " made first contact with the "+races[thangs[i].race]+"s.");
-							this.enterLog("Today we made first contact with the "+races[thangs[i].race]+"s.");
-							civs[thangs[i].race].generateMessage(this.civ);
+							console.log("The "+this.prefix+ " "+this.name+ " made first contact with the "+races[thangs[i].civID]+"s.");
+							this.enterLog("Today we made first contact with the "+races[thangs[i].civID]+"s.");
+							civs[thangs[i].civID].generateMessage(this.civ);
 							
 						}
 					}
@@ -1375,6 +1388,12 @@ function starShip(){
 		{
 			this.rechargeShields();
 		}
+		
+		for(var i=0;i<this.systems.length;i++)
+		{
+			this.systems[i].update();
+		}
+		
 		if(this.attackingPlanet)
 		{
 			this.planetBeamTrack+=1*gameSpeed;
@@ -1626,7 +1645,7 @@ function starShip(){
 					this.actionText="Enroute to meet with the fleet";
 				}else if(this.orders==Orders.Attack)
 				{
-					this.actionText="Enroute to attack "+this.destination.name;
+					this.actionText="Enroute to attack "+this.destination.prefix+" "+this.destination.name;
 				}
 				var beta=Math.atan2(this.destination.y-this.y,this.destination.x-this.x)* (180 / Math.PI);
 				
@@ -1901,7 +1920,7 @@ function starShip(){
 			}
 		}
 		this.tillEvent-=1*gameSpeed;
-		if((this.tillEvent<1) && (this.race==0)) //todo race vs civ
+		if((this.tillEvent<1) && (this.civID==0)) //todo race vs civ
 		{
 			//this.generateEvent();
 			this.tillEvent=Math.random()*8000;
@@ -1967,14 +1986,7 @@ function starShip(){
 				}
 			}
 		}
-		if((this.lifeSupport) && (this.oxygen<1000))
-		{
-			this.oxygen+=this.lifeSupportRate*gameSpeed;
-			if(this.oxygen>1000)
-			{
-				this.oxygen=1000;
-			}
-		}
+		
 	
 		for(var i=0;i<this.nearbyVessels.length;i++)
 		{
@@ -1986,7 +1998,7 @@ function starShip(){
 					if((!this.nearbyVessels[i].surrendered)  && (!this.surrendered)&& (this.isInTorpedoRange(this.nearbyVessels[i])))
 					{
 						this.torpedoTarget=this.nearbyVessels[i];
-						if((this.race==0) || (this.nearbyVessels[i].race==0))
+						if((this.civID==0) || (this.nearbyVessels[i].civID==0))
 						{
 							//console.log(this.nearbyVessels[i].surrendered,this.surrendered);
 						}
@@ -2254,7 +2266,7 @@ function starShip(){
 			}
 			if(this.attackingPlanet)
 			{
-				if(this.race==raceIDs.Borg)
+				if(this.civID==raceIDs.Borg)
 				{
 					can.save();
 					for(var i=0;i<12;i++) //todo draw better.

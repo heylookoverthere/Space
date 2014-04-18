@@ -2,7 +2,8 @@ function shipClass()
 {
 	this.ship=true;
 	this.orders=0;
-	this.race=0;
+	this.civID=0;
+	this.raceID=0;
 	this.colony=false;
 	this.canHasShields=true;
 	this.hasShields=false;
