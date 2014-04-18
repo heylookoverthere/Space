@@ -2081,10 +2081,10 @@ function starShip(){
 					this.attackingPlanet=null;
 					this.desiredOrbitTarg=null;
 					this.destination=null;
-					if(this.civ==civs[raceIDs.Borg])
+					if(this.civ==civs[civIDs.Borg])
 					{
 						borgTrack++;
-						if(borgTrack==raceIDs.Borg)
+						if(borgTrack==civIDs.Borg)
 						{
 							borgTrack++;
 						}
@@ -2266,7 +2266,7 @@ function starShip(){
 			}
 			if(this.attackingPlanet)
 			{
-				if(this.civID==raceIDs.Borg)
+				if(this.civID==civIDs.Borg)
 				{
 					can.save();
 					for(var i=0;i<12;i++) //todo draw better.

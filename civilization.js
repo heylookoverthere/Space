@@ -316,7 +316,7 @@ function civilization()
 		}else
 		{
 			var cost=300;
-			if(this.civID==raceIDs.Borg) {cost=10000;}
+			if(this.civID==civIDs.Borg) {cost=10000;}
 			if((this.money>cost-1) && (this.ships.length<this.maxShips))
 			{
 				
@@ -327,7 +327,7 @@ function civilization()
 			}
 		}
 		
-		if(this.civID==raceIDs.Borg) //for now the borg have a seperate much simpler AI.  Kill everything.
+		if(this.civID==civIDs.Borg) //for now the borg have a seperate much simpler AI.  Kill everything.
 		{
 			return;
 		}
@@ -407,7 +407,7 @@ function civilization()
 			}
 			return;
 		}
-		if((borgTrack==this.civID) && (civs[raceIDs.Borg].ships.length>0))
+		if((borgTrack==this.civID) && (civs[civIDs.Borg].ships.length>0))
 		{
 			if(!this.fallingBack)
 			{
@@ -569,7 +569,7 @@ function civilization()
 		}
 		this.worlds.push(plan);
 		plan.sun.civs.push(this);
-		if(this.civID!=raceIDs.Borg)
+		if(this.civID!=civIDs.Borg)
 		{
 			console.log(plan.name+ " has been conquered by "+this.name);
 		}else
@@ -915,7 +915,7 @@ function civilization()
 		{
 			return;
 		}
-		if(this.civID==raceIDs.Vulcan)
+		if(this.civID==civIDs.Vulcan)
 		{
 			var ned=new textbox();
 			ned.setup("Greetings, we are the Vulcan Confederacy.  How May we help you?",150,370);
@@ -955,7 +955,7 @@ function civilization()
 			};
 			ned.optionTrack=1;
 			other.messages.push(ned);
-		}else if(this.civID==raceIDs.Ferengi)
+		}else if(this.civID==civIDs.Ferengi)
 		{
 			var ned=new textbox();
 			ned.label="Ferengi Captain:";
@@ -993,7 +993,7 @@ function civilization()
 				holdInput=true;
 			};
 			other.messages.push(ned);
-		}else if(this.civID==raceIDs.Borg)
+		}else if(this.civID==civIDs.Borg)
 		{
 			var ned=new textbox();
 			ned.label="Borg Transmission:";
@@ -1001,7 +1001,7 @@ function civilization()
 			ned.options=0;
 			ned.civil=this;
 			other.messages.push(ned);
-		}else if(this.civID==raceIDs.Betazoid)
+		}else if(this.civID==civIDs.Betazoid)
 		{
 			var ned=new textbox();
 			ned.label="Betazoid Ambassador:";
@@ -1009,7 +1009,7 @@ function civilization()
 			ned.options=0;
 			ned.civil=this;
 			other.messages.push(ned);
-		}else if(this.civID==raceIDs.Hirogen)
+		}else if(this.civID==civIDs.Hirogen)
 		{
 			var ned=new textbox();
 			ned.label="Hirogen Hunter:";
@@ -1017,7 +1017,7 @@ function civilization()
 			ned.options=0;
 			ned.civil=this;
 			other.messages.push(ned);
-		}else if(this.civID==raceIDs.Breen)
+		}else if(this.civID==civIDs.Breen)
 		{
 			var ned=new textbox();
 			ned.label="Breen:";
@@ -1025,7 +1025,7 @@ function civilization()
 			ned.options=0;
 			ned.civil=this;
 			other.messages.push(ned);
-		}else if(this.civID==raceIDs.Cardassian)
+		}else if(this.civID==civIDs.Cardassian)
 		{
 			var ned=new textbox();
 			ned.label="Gul Dukat:";
@@ -1033,7 +1033,7 @@ function civilization()
 			ned.options=0;
 			ned.civil=this;
 			other.messages.push(ned);
-		}else if(this.civID==raceIDs.Bajoran)
+		}else if(this.civID==civIDs.Bajoran)
 		{
 			var ned=new textbox();
 			ned.label="Bajoran Captain:";
@@ -1042,7 +1042,7 @@ function civilization()
 			ned.options=0;
 			ned.civil=this;
 			other.messages.push(ned);
-		}else if(this.civID==raceIDs.Tellarite)
+		}else if(this.civID==civIDs.Tellarite)
 		{
 			var ned=new textbox();
 			ned.label="Tellarite Captain:";
@@ -1097,7 +1097,7 @@ function civilization()
 				holdInput=true;
 			};
 			other.messages.push(ned);
-		}else if(this.civID==raceIDs.Telaxian)
+		}else if(this.civID==civIDs.Telaxian)
 		{
 			civs[0].flags[Flag.MetTelaxianBountyHunters]=true;
 			console.log(this.flags);
@@ -1161,7 +1161,7 @@ function civilization()
 			};
 			other.messages.push(ned);
 		}
-		else if(this.civID==raceIDs.Orion)
+		else if(this.civID==civIDs.Orion)
 		{
 			var ned=new textbox();
 			ned.label="Orion Slaver:";
@@ -1215,7 +1215,7 @@ function civilization()
 				holdInput=true;
 			};
 			other.messages.push(ned);
-		}else if(this.civID==raceIDs.Dominion)
+		}else if(this.civID==civIDs.Dominion)
 		{
 			var ned=new textbox();
 			ned.label="Weyoun:";
@@ -1223,7 +1223,7 @@ function civilization()
 			ned.options=0;
 			ned.civil=this;
 			other.messages.push(ned);
-		}else if(this.civID==raceIDs.Vidiian)
+		}else if(this.civID==civIDs.Vidiian)
 		{
 			var ned=new textbox();
 			ned.label="Vidiian Captain:";
@@ -1232,7 +1232,7 @@ function civilization()
 			ned.options=0;
 			ned.civil=this;
 			other.messages.push(ned);
-		}else if(this.civID==raceIDs.Pakled)
+		}else if(this.civID==civIDs.Pakled)
 		{
 			var ned=new textbox();
 			ned.label="Pakled Captain:";
@@ -1241,7 +1241,7 @@ function civilization()
 			ned.options=0;
 			ned.civil=this;
 			other.messages.push(ned);
-		}else if(this.civID==raceIDs.Andorian)
+		}else if(this.civID==civIDs.Andorian)
 		{
 			var ned=new textbox();
 			ned.label="Andorian Captain:";
@@ -1280,7 +1280,7 @@ function civilization()
 			};
 			ned.optionTrack=1;
 			other.messages.push(ned);
-		}else if(this.civID==raceIDs.Klingon)
+		}else if(this.civID==civIDs.Klingon)
 		{
 			var ned=new textbox();
 			ned.label="Klingon Commander:";
@@ -1326,7 +1326,7 @@ function civilization()
 			}
 			ned.civil=this;
 			other.messages.push(ned);
-		}else if(this.civID==raceIDs.Romulan)
+		}else if(this.civID==civIDs.Romulan)
 		{
 			var ned=new textbox();
 			ned.label="Romulan Captain:";

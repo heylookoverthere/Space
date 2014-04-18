@@ -115,4 +115,4 @@ for(var i=0;i<18;i++)
 	shipClasses[i].push(baseClass);
 }
 
-//shipClasses[raceIDs.Human].push(galaxyClass);
+//shipClasses[civIDs.Human].push(galaxyClass);
