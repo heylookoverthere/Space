@@ -47,6 +47,19 @@ function starShip(){
 	//this.class=baseClass
 	this.ship=true;
 	this.systems=new Array();
+	for(var i=0;i<NumSystems;i++)
+	{
+		var wynn=new shipSystem(this);
+		wynn.type=i;
+		if((wynn.type==SystemIDs.Weapons) ||(wynn.type==SystemIDs.LifeSupport)||(wynn.type==SystemIDs.DamageControl)||(wynn.type==SystemIDs.MedicalBay)||(wynn.type==SystemIDs.ImpulseEngines)||(wynn.type==SystemIDs.WarpEngines) ||(wynn.type==SystemIDs.Scanners)||(wynn.type==SystemIDs.Targeting)||(wynn.type==SystemIDs.Navigation))
+		{
+			wynn.installed=true;
+			wynn.on=true;
+			wynn.active=true;
+			wynn.power=wynn.minPower;
+		}
+		this.systems.push(wynn);
+	}
 	//todo
 	this.rooms=6;
 	this.maxSystems=6;
@@ -82,6 +95,7 @@ function starShip(){
 	this.maxMines=100;
 	this.maxTorpedos=100;
 	this.numTorpedos=100;
+	this.healCount=0;
 	this.numMines=this.maxMines;
 	this.torpedoTarget=null;
 	this.tractorHost=null;
@@ -333,6 +347,7 @@ function starShip(){
 	
 	this.recallAwayTeam=function(){
 		//beam them, check range and all?
+		if(!this.systems[SystemIDs.Transporter].functional(false)) {return;}
 		for(var i=0;i<this.awayTeam.length;i++)
 		{
 			this.crew.push(this.awayTeam.pop());
@@ -340,7 +355,7 @@ function starShip(){
 	};
 	
 	this.beamDown=function(target){
-	
+		if(!this.systems[SystemIDs.Transporter].functional(false)) {return;}
 		if(this.awayTeamAt!=null)
 		{
 			console.log("Away team already away!");
@@ -381,6 +396,7 @@ function starShip(){
 	};
 	
 	this.beamUpAwayTeam=function(){
+		if(!this.systems[SystemIDs.Transporter].functional(false)) {return;}
 		if((this.shields>0) && (this.activeShields))
 		{
 			console.log("Cannot beam away team back with shields up.");
@@ -397,6 +413,7 @@ function starShip(){
 	};
 	
 	this.beamUp=function(unt){
+		if(!this.systems[SystemIDs.Transporter].functional(false)) {return;}
 		if((this.shields>0) && (this.activeShields))
 		{
 			console.log("Cannot beam away team back with shields up.");
@@ -425,6 +442,7 @@ function starShip(){
 	
 	this.tractorSomething=function(something){
 		//if somethign not in range return;
+		if(!this.systems[SystemIDs.Tractor].functional(false)) {return;}
 		if(!this.inTractorRange(something)) 
 		{
 			console.log("Out of tractor range");
@@ -468,6 +486,7 @@ function starShip(){
 	
 	this.firePhasers=function(){
 		if((!this.torpedoTarget) || (!this.inPhaserRange(this.torpedoTarget))) {return;}
+		if(!this.systems[SystemIDs.Weapons].functional(false)) {return;}
 		for(var i=0;i<this.phaserBanks.length;i++)
 		{
 			
@@ -645,6 +664,7 @@ function starShip(){
 	};
 
 	this.fireTorpedo=function(){
+		if(!this.systems[SystemIDs.Weapons].functional(false)) {return;}
 		if(this.numTorpedos<1) {return;}
 		this.numTorpedos--;
 		var torpy=new torpedo();
@@ -710,6 +730,7 @@ function starShip(){
 	
 	this.attackPlanet=function(plnt)
 	{
+		if(!this.systems[SystemIDs.Weapons].functional(false)) {return;}
 		if(plnt.civ)
 		{
 			if((this.civ.autoHostile.indexOf(plnt.civ)==-1) && (plnt.civ!=this.civ))
@@ -971,6 +992,7 @@ function starShip(){
 	
 	this.accelerate=function()
 	{
+		if((!this.systems[SystemIDs.ImpulseEngines].functional(false)) &&(!this.systems[SystemIDs.WarpEngines].functional(false))) {return;}
 		this.acceltick++;
 		if(this.acceltick<this.accelrate)
 		{
@@ -1344,6 +1366,7 @@ function starShip(){
 	
 	this.rechargeShields=function()
 	{
+		if(!this.systems[SystemIDs.Shields].functional(false)) {return;}
 		if(this.shields>this.maxShields-1)
 		{
 			this.shields=this.maxShields;
@@ -1379,6 +1402,8 @@ function starShip(){
 	
 	this.update=function(){
 		if(!this.alive){return;}
+		if(!this.systems[SystemIDs.Shields].functional(false)) {this.activeSheilds=false;}
+		if(!this.systems[SystemIDs.Tractor].functional(false)) {this.unTractorSomething();}
 		if(theTime.years>this.lastYear)
 		{
 			this.lastYear=theTime.years;
@@ -1527,7 +1552,7 @@ function starShip(){
 			this.tractorClient=null;
 		}
 		
-		if(this.breaches>0)//repairs!
+		/*if(this.breaches>0)//repairs!
 		{
 			var fixrate=this.getRepairRate();
 			this.fixCount+=fixrate*gameSpeed;
@@ -1539,7 +1564,7 @@ function starShip(){
 					this.breaches--;
 				}
 			}
-		}
+		}*/
 		
 		if(this.tractorHost)
 		{
@@ -1590,6 +1615,10 @@ function starShip(){
 			{
 				this.accelerate();
 			}else if(this.speed>this.desiredSpeed)
+			{
+				this.decelerate();
+			}
+			if((!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (this.speed>0))
 			{
 				this.decelerate();
 			}
@@ -1674,6 +1703,10 @@ function starShip(){
 				{
 					this.accelerate();
 				}else if(this.speed>this.desiredSpeed)
+				{
+					this.decelerate();
+				}
+				if((!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (this.speed>0))
 				{
 					this.decelerate();
 				}
@@ -1812,6 +1845,10 @@ function starShip(){
 				}else if(this.speed>this.desiredSpeed)
 				{
 					this.decelerate();
+				}		
+				if((!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (this.speed>0))
+				{
+					this.decelerate();
 				}				
 				this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
 				this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
@@ -1851,13 +1888,17 @@ function starShip(){
 		{
 			
 				//accel or decel to desired speed
-				if(this.speed<this.desiredSpeed)
-				{
-					this.accelerate();
-				}else if(this.speed>this.desiredSpeed)
-				{
-					this.decelerate();
-				}
+			if(this.speed<this.desiredSpeed)
+			{
+				this.accelerate();
+			}else if(this.speed>this.desiredSpeed)
+			{
+				this.decelerate();
+			}
+			if((!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (this.speed>0))
+			{
+				this.decelerate();
+			}
 			var differenceHeading = Math.abs(this.desiredHeading - this.heading);
 			//if we need to turn clockwise
 			if(differenceHeading>2)

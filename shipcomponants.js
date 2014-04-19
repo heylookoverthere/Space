@@ -59,8 +59,12 @@ SystemIDs.PassengerBay=14;
 SystemIDs.ShuttleBay=15;
 SystemIDs.Transporter=16;
 SystemIDs.Navigation=17;
+SystemIDs.Holodeck=18;
+SystemIDs.EscapePods=19;
+SystemIDs.Tractor=20;
+//2 eggrolls chicken fried rice
 
-var NumSystems=18;
+var NumSystems=21;
 
 
 
@@ -82,7 +86,8 @@ function shipSystem(hip)
 	this.hitChange=10;
 	this.manned=null;
 	this.power=0;
-	this.maxpower=0; //"Thanks, I got it off a hair dryer."
+	this.minPower=1;
+	this.maxPower=0; //"Thanks, I got it off a hair dryer."
 	this.turnOff=function(alert)
 	{
 		this.power=0
@@ -119,6 +124,27 @@ function shipSystem(hip)
 		}
 		
 	};
+	
+	this.functional=function(manned)
+	{
+		if((this.power>0) && (this.on)&& (this.installed)&& (this.alive)&& (this.active))
+		{
+			if(manned)
+			{
+				if(this.manned!=null)
+				{
+					return true;
+				}else
+				{
+					return false;
+				}
+			}else
+			{
+				return true;
+			}
+		}
+		return false;
+	};
 	this.update=function()
 	{
 		//switch case for all passive effects.
@@ -130,6 +156,43 @@ function shipSystem(hip)
 				if(this.ship.oxygen>1000)
 				{
 					this.ship.oxygen=1000;
+				}
+			}
+		}else if(this.type==SystemIDs.DamageControl)
+		{
+			if(this.ship.breaches>0)//repairs!
+			{
+				var fixrate=this.ship.getRepairRate();
+				this.ship.fixCount+=fixrate*gameSpeed;
+				if(this.ship.fixCount>100)
+				{
+					this.ship.fixCount=0;
+					if(this.ship.breaches>0)
+					{
+						this.ship.breaches--;
+					}
+				}
+			}else if(this.ship.hp<this.ship.maxHp)//repair hull
+			{
+				var fixrate=this.ship.getRepairRate();
+				this.ship.fixCount+=fixrate*gameSpeed;
+				if(this.ship.fixCount>2000)
+				{
+					this.ship.hp++
+				}
+			}
+		}else if(this.type==SystemIDs.MedicalBay)
+		{
+			var healrate=this.ship.getRepairRate(); //todo
+			this.ship.healCount+=healrate*gameSpeed;
+			if(this.ship.healCount>1000)
+			{
+				for(var i=0;i<this.ship.crew.length;i++)
+				{
+					if(this.ship.crew[i].hp<this.ship.crew[i].maxHp)
+					{
+						this.ship.crew[i].hp++;
+					}
 				}
 			}
 		}
@@ -275,6 +338,7 @@ function dude()
 	this.hp=100;
 	this.maxHp=100;
 	this.alive=true;
+	this.station=0;
 	this.level=1;
 	this.moveSpeed=1;
 	this.hasItem=new Array();
@@ -292,6 +356,22 @@ function dude()
 	this.rank=0;
 	this.title="Crewman";
 	this.AIDS=false;
+	this.manStation=function(st)
+	{
+		if(!st)
+		{ 
+			st=this.station;
+		}
+		//todo!
+		if(!st.manned)
+		{
+			st.manned=this;
+			return true;
+		}else
+		{
+			return false;
+		}
+	}
 	this.hurt=function(amt,because)
 	{
 		if(!this.alive){return;}
