@@ -78,6 +78,7 @@ function starShip(){
 	this.y=0;
 	this.xv=0;
 	this.yv=0;
+	this.nearbyHostiles=new Array();
 	this.surrendered=false;
 	this.colony=false;
 	this.spawnPlanet=null;
@@ -94,6 +95,11 @@ function starShip(){
 	this.captainsLog=new Array();
 	this.maxMines=100;
 	this.maxTorpedos=100;
+	this.menu=new screenBox(this);
+	this.menu.x=20;
+	this.menu.y=350;
+	this.menu.width=256;
+	this.menu.height=250;
 	this.numTorpedos=100;
 	this.healCount=0;
 	this.numMines=this.maxMines;
@@ -1400,10 +1406,24 @@ function starShip(){
 		}
 	}
 	
+	this.scanNearby=function(thangs)
+	{
+		this.nearbyHostiles=new Array()
+		this.nearbyVessels=this.inSensorRange(thangs);
+		for(var i=0;i<this.nearbyVessels.length;i++)
+		{
+			if(this.civ.autoHostile.indexOf(this.nearbyVessels[i].civ)>-1)
+			{
+				this.nearbyHostiles.push(this.nearbyVessels[i]);
+			}
+		}
+	};
+	
 	this.update=function(){
 		if(!this.alive){return;}
 		if(!this.systems[SystemIDs.Shields].functional(false)) {this.activeSheilds=false;}
 		if(!this.systems[SystemIDs.Tractor].functional(false)) {this.unTractorSomething();}
+		this.menu.update();
 		if(theTime.years>this.lastYear)
 		{
 			this.lastYear=theTime.years;
@@ -1792,7 +1812,7 @@ function starShip(){
 					
 				}else
 				{*/
-				if(!this.attackingPlanet)
+				if((!this.attackingPlanet) && (this.orbitTarg))
 				{
 					this.actionText="Orbiting "+this.orbitTarg.name;
 				}

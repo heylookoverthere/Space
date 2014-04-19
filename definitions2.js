@@ -626,37 +626,129 @@ function screenBox(obj)
 	this.scale=1;
 	this.height=150
 	this.width=100;
+	this.page=0;
+	this.pages=7;
 	this.backColor="blue";
 	this.borderSize=4;
+	this.update=function()
+	{
+	  //clicky buttons!!
+	  /*if((debugkey.check()) && (selectedShip==this.object))
+	  {
+		this.turnPage();
+		console.log(this.object.name);
+	  }*/
+	};
+	this.turnPage=function(back)
+	{
+		if(!back)
+		{
+			this.page++
+			if(this.page>this.pages-1)
+			{
+				//this.page=this.pages-1;
+				this.page=0;
+			}
+		}else
+		{
+			this.page--;
+			if(this.page<0)
+			{
+				//this.page=0;
+				this.page=this.pages-1;
+			}
+		}
+	}
 	this.draw=function(can,cam)
 	{
 		can.save();
 		can.font = "12pt Calibri";
 		can.fillStyle="white";
+		can.globalAlpha=.65;
 		can.fillRect(this.x,this.y,this.width+this.borderSize,this.height+this.borderSize);
 		can.fillStyle=this.backColor;
-		can.globalAlpha=.80;
+
 		can.fillRect(this.x+this.borderSize,this.y+this.borderSize,this.width-this.borderSize,this.height-this.borderSize);
 		can.fillStyle="white";
 		if(this.object.ship)
 		{
-			can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
-			can.fillText(this.object.civ.name+ " Lanch Date: " +this.object.launchDate,this.x+10,this.y+2+32);
-			can.fillText("HP: "+this.object.hp+"/"+this.object.maxHp,this.x+10,this.y+2+48);
-			can.fillText("Shields: "+this.object.shields+"/"+this.object.maxShields,this.x+10,this.y+2+64);
+			if(this.page==0)
+			{
+				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
+				can.fillText(this.object.civ.name+ " Lanch Date: " +this.object.launchDate,this.x+10,this.y+2+32);
+				var reek=elipseString(this.object.actionText,60);
+				can.fillText(reek,this.x+10,this.y+2+48);
+				can.fillText("HP: "+this.object.hp+"/"+this.object.maxHp,this.x+10,this.y+2+64);
+				can.fillText("Shields: "+this.object.shields+"/"+this.object.maxShields,this.x+10,this.y+2+80);
+				
+				can.fillText("Phasers:"+this.object.phaserBanks.length+" Torpedos: "+this.object.numTorpedos+" Mines: "+this.object.numMines,this.x+10,this.y+2+96);
+				if(this.object.torpedoTarget)
+				{
+					can.fillText("Targeting: "+this.object.torpedoTarget.name,this.x+10,this.y+2+108);
+				}else
+				{
+					can.fillText("No Weapons Lock",this.x+10,this.y+2+108);
+				}
+			}else if(this.page==1)
+			{
+				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
+				can.fillText("Crew: ",this.x+10,this.y+2+32);
+				for(var i=0;i<this.object.crew.length;i++)
+				{
+					can.fillText(this.object.crew[i].title+" "+this.object.crew[i].name+" Lvl: "+this.object.crew[i].level,this.x+10,this.y+2+64+i*16);
+				}
+			}else if(this.page==2)//navigation
+			{
+				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
+				can.fillText("Navigation: ",this.x+10,this.y+2+32);
+				can.fillText("Heading: "+this.object.heading,this.x+10,this.y+2+48);
+				var destext="Nowhere";
+				var destdist=0;
+				if(this.object.destination) 
+				{
+					destext="Starship "+this.object.destination.name;
+					destdist=Math.floor(distance(this.object,this.object.destination));
+				}
+				if(this.object.desiredOrbitTarg) 
+				{
+					destext=this.object.desiredOrbitTarg.name+","+this.object.desiredOrbitTarg.sun.name+ " system";
+					destext=elipseString(destext,27);
+					destdist=Math.floor(distance(this.object,this.object.desiredOrbitTarg));
+				}
+				can.fillText("Destination: "+destext,this.x+10,this.y+2+64);
+				can.fillText("Distance: "+destdist+" AU",this.x+10,this.y+2+80);
+				can.fillText("Speed: "+this.object.speed+"/"+this.object.maxSpeed,this.x+10,this.y+2+96);
+				
+			}else if(this.page==3)//combat //somehow add list of nearby hostile ships.
+			{
+				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
+				can.fillText("Combat: ",this.x+10,this.y+2+32);
+				can.fillText(this.object.nearbyHostiles.length+" enemy ships in sensor range.",this.x+10,this.y+2+48);
+				if(this.object.torpedoTarget)
+				{
+					can.fillText("Targeting: "+this.object.torpedoTarget.name,this.x+10,this.y+2+64);
+					can.fillText(this.object.torpedoTarget.civ.name+" "+this.object.torpedoTarget.class.name +" Starship",this.x+10,this.y+2+80); //todo class!
+					can.fillText("Target HP: "+this.object.torpedoTarget.hp+"/"+this.object.torpedoTarget.maxHp,this.x+10,this.y+2+96);
+					can.fillText("Target Shields: "+this.object.torpedoTarget.shields+"/"+this.object.torpedoTarget.maxShields,this.x+10,this.y+2+112);
+					can.fillText("Target Crew: "+this.object.torpedoTarget.crew.length,this.x+10,this.y+2+124);
+					//todo, list whats systems are offline
 			
-			can.fillText("Phasers:"+this.object.phaserBanks.length+" Torpedos: "+this.object.numTorpedos+" Mines: "+this.object.numMines,this.x+10,this.y+2+80);
-			if(this.object.torpedoTarget)
+				}else
+				{
+					can.fillText("No Weapons Lock",this.x+10,this.y+2+64);
+				}
+			}else if(this.page==4)//Systems
 			{
-				can.fillText("Targeting: "+this.object.torpedoTarget.name,this.x+10,this.y+2+96);
-			}else
+				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
+				can.fillText("Ships Systems: ",this.x+10,this.y+2+32);
+			}else if(this.page==5)
 			{
-				can.fillText("No Weapons Lock",this.x+10,this.y+2+96);
-			}
-			can.fillText("Crew: ",this.x+10,this.y+2+112);
-			for(var i=0;i<this.object.crew.length;i++)
+				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
+				can.fillText("Damage Control: ",this.x+10,this.y+2+32);
+			}else if(this.page==6)
 			{
-				can.fillText(this.object.crew[i].title+" "+this.object.crew[i].name+" Lvl: "+this.object.crew[i].level,this.x+10,this.y+2+128+i*16);
+				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
+				can.fillText("Orders & Policies: ",this.x+10,this.y+2+32);
 			}
 		}else if(this.object.planet)
 		{
@@ -763,7 +855,7 @@ function newShip(iv,startworld,capt)
 			james.civ=iv;
 			james.christen();
 			//console.log(james.prefix+" "+james.name+" is now orbiting " +stars[0].planets[bah].name);
-			james.class="Galaxy Class";
+			james.class.name="Galaxy Class";
 			james.civID=0;
 			james.sprite=Sprite("ship2");
 			james.maxSpeed=9;
@@ -798,7 +890,7 @@ function newShip(iv,startworld,capt)
 			james.x=startworld.x
 			james.y=startworld.y;
 			james.prefix="Vulcan";
-			james.class="Capitol Ship";
+			james.class.name="Capitol Ship";
 			james.civID=1;
 			james.christen();
 			james.sprite=Sprite("ship5");
@@ -820,7 +912,7 @@ function newShip(iv,startworld,capt)
 				james.y=startworld.y;
 				james.homeworld=iv.homeworld;
 				james.orbit(startworld);
-				james.class="Bird of Prey";
+				james.class.name="Bird of Prey";
 				james.prefix="I.K.S";
 				james.sprite=Sprite("ship4");
 				james.civ=iv;
@@ -845,7 +937,7 @@ function newShip(iv,startworld,capt)
 				james.y=startworld.y;
 				james.homeworld=iv.homeworld;
 				james.orbit(startworld);
-				james.class="Dominion Battle Cruiser";
+				james.class.name="Dominion Battle Cruiser";
 				james.prefix="Dominion";
 				james.sprite=Sprite("ship9");
 				james.civ=iv;
@@ -870,7 +962,7 @@ function newShip(iv,startworld,capt)
 			james.y=startworld.y;
 			james.homeworld=iv.homeworld;
 			james.orbit(startworld);
-			james.class="Galor-Class";
+			james.class.name="Galor-Class";
 			james.prefix="C.U.";
 			james.sprite=Sprite("ship8");
 			james.civ=iv;
@@ -896,7 +988,7 @@ function newShip(iv,startworld,capt)
 			james.y=startworld.y;
 			james.homeworld=iv.homeworld;
 			james.prefix="IRW";
-			james.class="Warbird";
+			james.class.name="Warbird";
 			james.civID=4;
 			james.christen();
 			james.sprite=Sprite("ship6");
@@ -919,7 +1011,7 @@ function newShip(iv,startworld,capt)
 			james.y=startworld.y;
 			james.homeworld=iv.homeworld;
 			james.prefix="Hunter";
-			james.class="Hunter";
+			james.class.name="Hunter";
 			james.civID=civIDs.Hirogen;
 			james.christen();
 			james.sprite=Sprite("ship10");
@@ -943,7 +1035,7 @@ function newShip(iv,startworld,capt)
 			james.desiredHeading=Math.floor(Math.random()*359);
 			
 			james.prefix="I.G.";
-			james.class="Andorian";
+			james.class.name="Andorian";
 			james.civID=civIDs.Andorian;
 			james.christen();
 			james.sprite=Sprite("ship15");
@@ -968,7 +1060,7 @@ function newShip(iv,startworld,capt)
 			james.desiredHeading=Math.floor(Math.random()*359);
 			
 			james.prefix="";
-			james.class="Tellarite";
+			james.class.name="Tellarite";
 			james.civID=civIDs.Tellarite;
 			james.christen();
 			james.sprite=Sprite("ship16");
@@ -993,7 +1085,7 @@ function newShip(iv,startworld,capt)
 			james.desiredHeading=Math.floor(Math.random()*359);
 			
 			james.prefix="B.C.W";
-			james.class="Breen Warship";
+			james.class.name="Breen Warship";
 			james.civID=civIDs.Breen;
 			james.christen();
 			james.sprite=Sprite("ship14");
@@ -1019,7 +1111,7 @@ function newShip(iv,startworld,capt)
 			james.desiredHeading=Math.floor(Math.random()*359);
 			
 			james.prefix="Telaxian";
-			james.class="Telaxian";
+			james.class.name="Telaxian";
 			james.civID=civIDs.Telaxian;
 			james.christen();
 			james.sprite=Sprite("ship12");
@@ -1045,7 +1137,7 @@ function newShip(iv,startworld,capt)
 			james.desiredHeading=Math.floor(Math.random()*359);
 			
 			james.prefix="Vidiian";
-			james.class="Vidiian Cruiser";
+			james.class.name="Vidiian Cruiser";
 			james.civID=civIDs.Vidiian;
 			james.christen();
 			james.sprite=Sprite("ship13");
@@ -1071,7 +1163,7 @@ function newShip(iv,startworld,capt)
 			james.desiredHeading=Math.floor(Math.random()*359);
 			
 			james.prefix="";
-			james.class="Pakled Cruiser";
+			james.class.name="Pakled Cruiser";
 			james.civID=civIDs.Pakled;
 			james.christen();
 			james.sprite=Sprite("ship17");
@@ -1095,7 +1187,7 @@ function newShip(iv,startworld,capt)
 			james.y=startworld.y;
 			james.desiredHeading=Math.floor(Math.random()*359);
 			james.prefix="";
-			james.class="Bajoran Cruiser";
+			james.class.name="Bajoran Cruiser";
 			james.civID=civIDs.Bajoran;
 			james.christen();
 			james.sprite=Sprite("ship11");
@@ -1119,7 +1211,7 @@ function newShip(iv,startworld,capt)
 			james.y=startworld.y;
 			james.desiredHeading=Math.floor(Math.random()*359);
 			james.prefix="FAS";
-			james.class="Merchant";
+			james.class.name="Merchant";
 			james.civID=civIDs.Ferengi;
 			james.christen();
 			james.sprite=Sprite("ship7");
@@ -1143,7 +1235,7 @@ function newShip(iv,startworld,capt)
 			james.y=startworld.y;
 			james.desiredHeading=Math.floor(Math.random()*359);
 			james.prefix="Pirate";
-			james.class="Cruiser";
+			james.class.name="Cruiser";
 			james.civID=civIDs.Orion;
 			james.christen();
 			james.sprite=Sprite("ship18");
@@ -1174,7 +1266,7 @@ function newShip(iv,startworld,capt)
 			james.shields=100;
 			
 			james.oxygen=10000;
-			james.class="Cube";
+			james.class.name="Cube";
 			james.sprite=Sprite("ship3");
 			james.maxSpeed=10;
 			james.cruisingSpeed=5;
@@ -1933,7 +2025,7 @@ function newInitShips()
 				james.prefix="U.S.S.";
 				james.christen();
 				console.log(james.prefix+" "+james.name+" is now orbiting " +stars[0].planets[bah].name);
-				james.class="Galaxy Class";
+				james.class.name="Galaxy Class";
 				james.civID=0;
 				
 				james.sprite=Sprite("ship2");
@@ -1972,7 +2064,7 @@ function newInitShips()
 				james.y=james.homeworld.sun.y;
 				james.desiredHeading=Math.floor(Math.random()*359);
 				james.prefix="Vulcan";
-				james.class="Capitol Ship";
+				james.class.name="Capitol Ship";
 				james.civID=1;
 				james.christen();
 				james.sprite=Sprite("ship5");
@@ -2010,7 +2102,7 @@ function newInitShips()
 					james.civID=5;
 					james.civ=civs[civIDs.Klingon];
 					james.homeworld=civs[i].homeworld;
-					james.class="Bird of Prey";
+					james.class.name="Bird of Prey";
 					james.prefix="I.K.S";
 					james.christen();
 					//james.homeworld=civs[i].homeworld;
@@ -2034,7 +2126,7 @@ function newInitShips()
 					james.y=james.homeworld.y;
 					james.desiredHeading=Math.floor(Math.random()*359);
 				
-					james.class="Bird of Prey";
+					james.class.name="Bird of Prey";
 					james.prefix="I.K.S";
 					james.sprite=Sprite("ship4");
 					james.civ=civs[civIDs.Klingon];
@@ -2074,7 +2166,7 @@ function newInitShips()
 					james.civID=civIDs.Dominion;
 					james.civ=civs[civIDs.Dominion];
 				
-					james.class="Dominion Battle Cruiser";
+					james.class.name="Dominion Battle Cruiser";
 					james.prefix="Dominion";
 					james.christen();
 					//james.homeworld=civs[i].homeworld;
@@ -2098,7 +2190,7 @@ function newInitShips()
 					james.y=james.homeworld.y;
 					james.desiredHeading=Math.floor(Math.random()*359);
 					
-					james.class="Dominion Battle Cruiser";
+					james.class.name="Dominion Battle Cruiser";
 					james.prefix="Dominion";
 					james.sprite=Sprite("ship9");
 					james.civ=civs[civIDs.Dominion];
@@ -2138,7 +2230,7 @@ function newInitShips()
 					}
 					james.civID=civIDs.Cardassian;
 					james.civ=civs[i];
-					james.class="Galor-Class";
+					james.class.name="Galor-Class";
 					james.prefix="C.U.";
 					james.christen();
 					//james.homeworld=iv.homeworld;
@@ -2161,7 +2253,7 @@ function newInitShips()
 					james.y=james.homeworld.y;
 					james.desiredHeading=Math.floor(Math.random()*359);
 				
-					james.class="Galor-Class";
+					james.class.name="Galor-Class";
 					james.prefix="C.U.";
 					james.sprite=Sprite("ship8");
 					james.civ=civs[i];
@@ -2190,7 +2282,7 @@ function newInitShips()
 				james.desiredHeading=Math.floor(Math.random()*359);
 				
 				james.prefix="IRW";
-				james.class="Warbird";
+				james.class.name="Warbird";
 				james.civID=4;
 				james.christen();
 				james.sprite=Sprite("ship6");
@@ -2217,7 +2309,7 @@ function newInitShips()
 				james.desiredHeading=Math.floor(Math.random()*359);
 				
 				james.prefix="I.G.";
-				james.class="Andorian";
+				james.class.name="Andorian";
 				james.civID=civIDs.Andorian;
 				james.christen();
 				james.sprite=Sprite("ship15");
@@ -2244,7 +2336,7 @@ function newInitShips()
 				james.desiredHeading=Math.floor(Math.random()*359);
 				
 				james.prefix="Tellarite";
-				james.class="Tellarite";
+				james.class.name="Tellarite";
 				james.civID=civIDs.Tellarite;
 				james.christen();
 				james.sprite=Sprite("ship16");
@@ -2270,7 +2362,7 @@ function newInitShips()
 				james.desiredHeading=Math.floor(Math.random()*359);
 				
 				james.prefix="B.C.W";
-				james.class="Breen Warship";
+				james.class.name="Breen Warship";
 				james.civID=civIDs.Breen;
 				james.christen();
 				james.sprite=Sprite("ship14");
@@ -2296,7 +2388,7 @@ function newInitShips()
 				james.desiredHeading=Math.floor(Math.random()*359);
 				
 				james.prefix="Telaxian";
-				james.class="Telaxian";
+				james.class.name="Telaxian";
 				james.civID=civIDs.Telaxian;
 				james.christen();
 				james.sprite=Sprite("ship12");
@@ -2322,7 +2414,7 @@ function newInitShips()
 				james.desiredHeading=Math.floor(Math.random()*359);
 				
 				james.prefix="Vidiian";
-				james.class="Vidiian Cruiser";
+				james.class.name="Vidiian Cruiser";
 				james.civID=civIDs.Vidiian;
 				james.christen();
 				james.sprite=Sprite("ship13");
@@ -2348,7 +2440,7 @@ function newInitShips()
 				james.desiredHeading=Math.floor(Math.random()*359);
 				
 				james.prefix="Pakled";
-				james.class="Pakled Cruiser";
+				james.class.name="Pakled Cruiser";
 				james.civID=civIDs.Pakled;
 				james.christen();
 				james.sprite=Sprite("ship17");
@@ -2374,7 +2466,7 @@ function newInitShips()
 				james.y=james.homeworld.y;
 				james.desiredHeading=Math.floor(Math.random()*359);
 				james.prefix="Hunter";
-				james.class="Hunter";
+				james.class.name="Hunter";
 				james.civID=civIDs.Hirogen;
 				james.christen();
 				james.sprite=Sprite("ship10");
@@ -2399,7 +2491,7 @@ function newInitShips()
 				james.y=james.homeworld.y;
 				james.desiredHeading=Math.floor(Math.random()*359);
 				james.prefix="Bajoran";
-				james.class="Bajoran Cruiser";
+				james.class.name="Bajoran Cruiser";
 				james.civID=civIDs.Bajoran;
 				james.christen();
 				james.sprite=Sprite("ship11");
@@ -2424,7 +2516,7 @@ function newInitShips()
 				james.y=james.homeworld.y;
 				james.desiredHeading=Math.floor(Math.random()*359);
 				james.prefix="FAS";
-				james.class="Merchant";
+				james.class.name="Merchant";
 				james.civID=civIDs.Ferengi;
 				james.christen();
 				james.sprite=Sprite("ship7");
@@ -2449,7 +2541,7 @@ function newInitShips()
 				james.y=james.homeworld.y;
 				james.desiredHeading=Math.floor(Math.random()*359);
 				james.prefix="Pirate";
-				james.class="Cruiser";
+				james.class.name="Cruiser";
 				james.civID=civIDs.Orion;
 				james.christen();
 				james.sprite=Sprite("ship18");
@@ -2485,7 +2577,7 @@ function newInitShips()
 				james.maxShields=100;
 				james.shields=100;
 				james.oxygen=10000;
-				james.class="Cube";
+				james.class.name="Cube";
 				james.sprite=Sprite("ship3");
 				james.maxSpeed=10;
 				james.cruisingSpeed=5;

@@ -39,12 +39,12 @@ function playSound(name){
 var productionBar=new progressBar();
 var researchBar=new progressBar();
 
-productionBar.x=30;
+productionBar.x=10;
 productionBar.label="Production:";
-productionBar.y=550;
-researchBar.x=30;
+productionBar.y=8;
+researchBar.x=10;
 researchBar.label="Research:  ";
-researchBar.y=580;
+researchBar.y=30;
 function akey(k) {  //represents a keyboard button
     k = k || "space";
     this.key =k;
@@ -281,7 +281,7 @@ function drawDebug()
 	if(selectedShip.speed>0){
 		if((selectedShip.desiredOrbitTarg) || (selectedShip.destination) || (selectedShip.escorting))
 		{
-			selectedShip.actionText=selectedShip.status;
+			//selectedShip.actionText=selectedShip.status;
 		}else
 		{
 			selectedShip.actionText="Exploring the " +getQuadrant(selectedShip) + " Quadrant";
@@ -310,7 +310,10 @@ function drawDebug()
 		}
 	}else if(selectedShip.turning)
 	{
-		//selectedShip.actionText="Adjusting Heading";
+		selectedShip.actionText="Adjusting Heading";
+	}else if(selectedShip.desiredOrbitTarg)//TODO
+	{
+				selectedShip.actionText="Enroute to "+selectedShip.desiredOrbitTarg.name;
 	}
 	if(selectedShip.destination)
 	{
@@ -511,7 +514,7 @@ function mainMenuDraw(){
 			
 				var larry=new screenBox(stars[i].planets[j]);
 				larry.x=20;
-				larry.y=350;
+				larry.y=50;
 				larry.width=256;
 				larry.height=250;
 				larry.draw(canvas,camera);
@@ -570,7 +573,7 @@ function mainMenuDraw(){
 	for(var i=0;i<ships.length;i++)
 	{
 		ships[i].draw(canvas,camera);
-		if(isOver(ships[i],camera))
+		if((isOver(ships[i],camera)) && (ships[i]!=selectedShip))
 		{
 			drawmousetext(canvas,ships[i],camera);
 			var larry=new screenBox(ships[i]);
@@ -584,10 +587,13 @@ function mainMenuDraw(){
 	//draw messages
 	//for (var i=0;i<civs[0].messages.length;i++)
 	
+	selectedShip.menu.draw(canvas,camera)
+	
 	if(civs[0].messages.length>0)
 	{
 		civs[0].messages[0].draw(canvas,camera);
 	}
+	
 	
 	
 	if(drawMap)//keydown[mapkey.key])
@@ -657,9 +663,10 @@ function mainMenuUpdate(){
 		mode=1;
 	}
 	 if(debugkey.check()) {
+		selectedShip.menu.turnPage();
 		/*MUSIC_ON=!MUSIC_ON;
 		document.getElementById("titleAudio").pause();*/
-		if(!neddard){
+		/*if(!neddard){
 			neddard=true;
 			civs[0].fleets.push(new fleet());
 			for(var i=0;i<3;i++)
@@ -670,7 +677,7 @@ function mainMenuUpdate(){
 				}
 			}
 			console.log("First Fleet established");
-		}
+		}*/
 	 }
 	if((startkey.check()) && (!roland.visible)){
 		//mode=1;
@@ -952,7 +959,8 @@ function mainMenuUpdate(){
 		if(ships[i].alive)
 		{
 			ships[i].nearbySystems=ships[i].inSensorRange(stars);	
-			ships[i].nearbyVessels=ships[i].inSensorRange(ships);
+			//ships[i].nearbyVessels=ships[i].inSensorRange(ships);
+			ships[i].scanNearby(ships);
 			ships[i].sortNearbyVessels();
 			ships[i].nearbyPods=ships[i].inSensorRange(escapes);
 			ships[i].nearbyPlanets=ships[i].inSensorRange(allworlds);

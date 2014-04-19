@@ -102,9 +102,25 @@ shuttlecraft.crewMax=5;
 shuttlecraft.turnSpeed=3;
 
 galaxyClass=new shipClass();
-cubeClass=new shipClass()
+
+vulcanCapitol=new shipClass();
+
+andorianWarship=new shipClass();
+
+cubeClass=new shipClass();
+cubeClass.numTorpedos=200;
+cubeClass.hasShields=true;
+
+tellariteWarship=new shipClass();
+
 dominionWarship=new shipClass();
+
+cardassianWarship=new shipClass();
+
+hirogenHunter=new shipClass();
+
 birdOfPrey=new shipClass();
+
 warbird=new shipClass();
 
 
@@ -112,7 +128,28 @@ shipClasses=new Array();
 for(var i=0;i<18;i++)
 {
 	shipClasses[i]=new Array();
-	shipClasses[i].push(baseClass);
+}
+
+shipClasses[civIDs.Human].push(galaxyClass);
+shipClasses[civIDs.Human].push(shuttlecraft);
+shipClasses[civIDs.Vulcan].push(vulcanCapitol);
+shipClasses[civIDs.Andorian].push(andorianWarship);
+shipClasses[civIDs.Tellarite].push(tellariteWarship);
+shipClasses[civIDs.Romulan].push(warbird);
+shipClasses[civIDs.Klingon].push(birdOfPrey);
+shipClasses[civIDs.Borg].push(cubeClass);
+shipClasses[civIDs.Dominion].push(dominionWarship);
+shipClasses[civIDs.Hirogen].push(hirogenHunter);
+shipClasses[civIDs.Cardassian].push(cardassianWarship);
+
+for(var i=0;i<18;i++)
+{
+	if(shipClasses[i].length<1)
+	{
+		baseClass.name=races[i]+" Ship";
+		shipClasses[i].push(baseClass);
+		baseClass.name="oops!";
+	}
 }
 
 //shipClasses[civIDs.Human].push(galaxyClass);
