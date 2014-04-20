@@ -656,13 +656,49 @@ function mainMenuUpdate(){
 		roland.update();
 	}
 	
-	if(this.holdInput) {return;}
-	monsta.update();
-	if(crewscreenkey.check())
+	if(this.holdEverything) {return;}
+	var allworlds=new Array();
+	for (var i=0;i<stars.length;i++)
 	{
-		mode=1;
+		for(var j=0;j<stars[i].planets.length;j++)
+		{
+			allworlds.push(stars[i].planets[j]);
+		}
 	}
-	 if(debugkey.check()) {
+	
+	for(var i=0;i<ships.length;i++)
+	{
+		if(ships[i].alive)
+		{
+			ships[i].nearbySystems=ships[i].inSensorRange(stars);	
+			//ships[i].nearbyVessels=ships[i].inSensorRange(ships);
+			ships[i].scanNearby(ships);
+			ships[i].sortNearbyVessels();
+			ships[i].nearbyPods=ships[i].inSensorRange(escapes);
+			ships[i].nearbyPlanets=ships[i].inSensorRange(allworlds);
+			if(ships[i].nearbyVessels==null)
+			{
+				ships[i].torpedoTarget=null;
+			}
+			if(i!=curShip)
+			{
+				ships[i].drawTarget=false;
+			}else
+			{
+				ships[i].drawTarget=true;
+			}
+			if(selectedShip)
+			{
+				selectedShip.drawTarget=true;
+			}
+			ships[i].update();
+
+		}
+	}
+	
+	monsta.update();
+	
+	if(debugkey.check()) {
 		selectedShip.menu.turnPage();
 		/*MUSIC_ON=!MUSIC_ON;
 		document.getElementById("titleAudio").pause();*/
@@ -679,6 +715,12 @@ function mainMenuUpdate(){
 			console.log("First Fleet established");
 		}*/
 	 }
+	if(this.holdInput) {return;}
+	if(crewscreenkey.check())
+	{
+		mode=1;
+	}
+
 	if((startkey.check()) && (!roland.visible)){
 		//mode=1;
 		for(var i=0;i<ships.length;i++)
@@ -946,44 +988,6 @@ function mainMenuUpdate(){
 			}
 		}
 	}
-	var allworlds=new Array();
-	for (var i=0;i<stars.length;i++)
-	{
-		for(var j=0;j<stars[i].planets.length;j++)
-		{
-			allworlds.push(stars[i].planets[j]);
-		}
-	}
-	for(var i=0;i<ships.length;i++)
-	{
-		if(ships[i].alive)
-		{
-			ships[i].nearbySystems=ships[i].inSensorRange(stars);	
-			//ships[i].nearbyVessels=ships[i].inSensorRange(ships);
-			ships[i].scanNearby(ships);
-			ships[i].sortNearbyVessels();
-			ships[i].nearbyPods=ships[i].inSensorRange(escapes);
-			ships[i].nearbyPlanets=ships[i].inSensorRange(allworlds);
-			if(ships[i].nearbyVessels==null)
-			{
-				ships[i].torpedoTarget=null;
-			}
-			if(i!=curShip)
-			{
-				ships[i].drawTarget=false;
-			}else
-			{
-				ships[i].drawTarget=true;
-			}
-			if(selectedShip)
-			{
-				selectedShip.drawTarget=true;
-			}
-			ships[i].update();
-
-		}
-	}
-	
 	if(cleartailskey.check())
 	{
 		clearTails();

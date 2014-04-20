@@ -183,6 +183,7 @@ var numCivFlags=10;
 function civilization()
 {
 	this.civID=0;
+	this.knownWorlds=new Array();
 	this.color="purple";
 	this.player=false;
 	this.yearFlag=false;
@@ -273,6 +274,28 @@ function civilization()
 		}
 		return false;
 	}
+	
+	this.knowAllHomeWorlds=function()
+	{
+		this.knownWorlds=new Array();
+		for(var i=0;i<civs.length;i++)
+		{
+			this.knownWorlds.push(civs[i].homeworld);
+		}
+	};
+	
+	this.knowAllWorlds=function()
+	{
+		this.knownWorlds=new Array();
+		for(var i=0;i<stars.length;i++)
+		{
+			for(var j=0;j<stars[i].planets.length;j++)
+			{
+				this.knownWorlds.push(stars[i].planets[j]);
+			}
+		
+		}
+	};
 	
 	this.getTax=function()
 	{
@@ -816,7 +839,7 @@ function civilization()
 				i--;
 			}
 		}
-		if(holdInput) {return;}
+		if(holdEverything) {return;}
 		this.updateTick+=1*gameSpeed;
 		if(this.updateTick>this.updateRate)
 		{
@@ -938,7 +961,7 @@ function civilization()
 				console.log(ped);
 				civil1.allied=true;
 				civil2.messages.push(ped);
-				holdInput=true;
+				holdEverything=true;
 			};
 			ned.optionTwo=function(civil1,civil2)
 			{
@@ -951,7 +974,7 @@ function civilization()
 				civil1.autoHostile.push(civil2);
 				console.log(civil2.name + " have pissed off " +civil1.name+ " by demanding their surrender!");
 				civil2.messages.push(ped);
-				holdInput=true;
+				holdEverything=true;
 			};
 			ned.optionTrack=1;
 			other.messages.push(ned);
@@ -979,7 +1002,7 @@ function civilization()
 				console.log("The Ferengi have agreed to help!");
 				civil1.allied=true;
 				civil2.messages.push(ped);
-				holdInput=true;
+				holdEverything=true;
 			};
 			ned.optionTwo=function(civil1,civil2)
 			{
@@ -990,7 +1013,7 @@ function civilization()
 				ped.optionTrack=0;
 				ped.options=0;
 				civil2.messages.push(ped);
-				holdInput=true;
+				holdEverything=true;
 			};
 			other.messages.push(ned);
 		}else if(this.civID==civIDs.Borg)
@@ -1077,11 +1100,11 @@ function civilization()
 				}
 				ped.optionTwo=function(civil1,civil2)
 				{
-					holdInput=false;
+					holdEverything=false;
 				}
 				ped.civil=civil1;
 				civil2.messages.push(ped);
-				holdInput=true;
+				holdEverything=true;
 			};
 			ned.optionTwo=function(civil1,civil2)
 			{
@@ -1094,7 +1117,7 @@ function civilization()
 				ped.options=0;
 				civil1.allied=true;
 				civil2.messages.push(ped);
-				holdInput=true;
+				holdEverything=true;
 			};
 			other.messages.push(ned);
 		}else if(this.civID==civIDs.Telaxian)
@@ -1128,7 +1151,7 @@ function civilization()
 				ped.optionTrack=0;
 				ped.options=0;
 				civil2.messages.push(ped);
-				holdInput=true;
+				holdEverything=true;
 			};
 			ned.optionTwo=function(civil1,civil2)
 			{
@@ -1141,7 +1164,7 @@ function civilization()
 				ped.options=0;
 				civil1.autoHostile.push(civil2);
 				civil2.messages.push(ped);
-				holdInput=true;
+				holdEverything=true;
 			};
 			ned.optionThree=function(civil1,civil2)
 			{
@@ -1157,7 +1180,7 @@ function civilization()
 				civil1.allied=true;
 				civil1.autoHostile.push(civil2);
 				civil2.messages.push(ped);
-				holdInput=true;
+				holdEverything=true;
 			};
 			other.messages.push(ned);
 		}
@@ -1189,7 +1212,7 @@ function civilization()
 				console.log("Ganed an Orion sex slave!");
 				civil1.allied=true;
 				civil2.messages.push(ped);
-				holdInput=true;
+				holdEverything=true;
 			};
 			ned.optionTwo=function(civil1,civil2)
 			{
@@ -1200,7 +1223,7 @@ function civilization()
 				ped.optionTrack=0;
 				ped.options=0;
 				civil2.messages.push(ped);
-				holdInput=true;
+				holdEverything=true;
 			};
 			ned.optionThree=function(civil1,civil2)
 			{
@@ -1212,7 +1235,7 @@ function civilization()
 				ped.options=0;
 				civil1.autoHostile.push(civil2);
 				civil2.messages.push(ped);
-				holdInput=true;
+				holdEverything=true;
 			};
 			other.messages.push(ned);
 		}else if(this.civID==civIDs.Dominion)
@@ -1265,7 +1288,7 @@ function civilization()
 				console.log(ped);
 				civil1.allied=true;
 				civil2.messages.push(ped);
-				holdInput=true;
+				holdEverything=true;
 			};
 			ned.optionTwo=function(civil1,civil2)
 			{
@@ -1276,7 +1299,7 @@ function civilization()
 				ped.optionTrack=0;
 				ped.options=0;
 				civil2.messages.push(ped);
-				holdInput=true;
+				holdEverything=true;
 			};
 			ned.optionTrack=1;
 			other.messages.push(ned);
@@ -1310,7 +1333,7 @@ function civilization()
 					civil2.allied=true;
 					ped.options=0;
 					civil2.messages.push(ped);
-					holdInput=true;
+					holdEverything=true;
 				};
 			}else
 			{
@@ -1321,7 +1344,7 @@ function civilization()
 				ned.options=1;
 				ned.optionOne=function(civil1,civil2)
 				{
-					holdInput=false;
+					holdEverything=false;
 				};
 			}
 			ned.civil=this;
@@ -1341,7 +1364,7 @@ function civilization()
 				ned.choicesStart=1;
 				ned.optionOne=function(civil1,civil2)
 				{
-					holdInput=false;
+					holdEverything=false;
 				};
 				ned.optionTwo=function(civil1,civil2)
 				{
@@ -1355,7 +1378,7 @@ function civilization()
 					civil2.allied=true;
 					ped.options=0;
 					civil2.messages.push(ped);
-					holdInput=true;
+					holdEverything=true;
 				};
 			}else
 			{
@@ -1366,7 +1389,7 @@ function civilization()
 				ned.options=1;
 				ned.optionOne=function(civil1,civil2)
 				{
-					holdInput=false;
+					holdEverything=false;
 				};
 			}
 			ned.civil=this;

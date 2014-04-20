@@ -1158,7 +1158,7 @@ function starShip(){
 						ped.optionTrack=0;
 						ped.options=0;
 						civil2.messages.push(ped);
-						holdInput=true;
+						holdEverything=true;
 						this.enterLog("Today we took a Telaxian named Neelix abord.");
 					};
 				
@@ -1182,7 +1182,7 @@ function starShip(){
 						ped.optionTrack=0;
 						ped.options=0;
 						civil2.messages.push(ped);
-						holdInput=true;
+						holdEverything=true;
 					};
 					ned.optionThree=function(civil1,civil2)
 					{
@@ -1213,7 +1213,7 @@ function starShip(){
 								hed.optionTrack=0;
 								hed.options=0;
 								civil2.messages.push(hed);
-								holdInput=true;
+								holdEverything=true;
 								this.enterLog("Today we took a Telaxian named Neelix abord, despite some concerns about him possibly being a serial murderer.");
 							};
 						
@@ -1235,7 +1235,7 @@ function starShip(){
 								}
 								hed.civil=civil1;
 								civil2.messages.push(hed);
-								holdInput=true;
+								holdEverything=true;
 							};
 							civil2.messages.push(led)
 					}else
@@ -1246,7 +1246,7 @@ function starShip(){
 					}
 					led.civil=civil1;
 					civil2.messages.push(led);
-					holdInput=true;
+					holdEverything=true;
 				};
 				
 				ned.civil=this;

@@ -34,11 +34,11 @@ $(document).bind("contextmenu",function(e){
 						{
 							civs[0].orderColonize(this.object);
 						};	
-						holdInput=false;
+						holdEverything=false;
 					};
 					ned.optionTwo=function(civil1,civil2)
 					{
-						holdInput=false;
+						holdEverything=false;
 					}
 					ned.optionTrack=1;
 					civs[0].messages.push(ned);

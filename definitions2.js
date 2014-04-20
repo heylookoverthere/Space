@@ -24,7 +24,6 @@ for(var i=0;i<numCivilizations;i++)
 	civs[i]=new civilization();
 	civs[i].civID=i;
 	civs[i].name=races[i];
-	
 }
 
 function clearTails()
@@ -618,6 +617,94 @@ function statusBox()
 
 var roland=new statusBox();
 
+function textBox()
+{
+	this.x=0;
+	this.y=0;
+	this.hasFocus=false;
+	this.visible=false;
+	this.width=80;
+	this.height=16;
+	this.blinkRate=30;
+	this.blink=false;
+	this.finalText=null;
+	this.listTrack=0;
+	this.list=null;//civs[0].knownWorlds;
+	this.choice=null;
+	this.text="";
+	this.blinkTrack=0;
+	this.backColor="blue";
+	this.borderSize=2;
+	this.update=function()
+	{
+		if(this.hasFocus)
+		{
+			this.blinkTrack++;
+			if(this.blinkTrack>this.blinkRate)
+			{
+				this.blink=!this.blink;
+				this.blinkTrack=0;
+			}
+			
+			if((this.type==0) &&(startkey.check()))
+			{
+				this.finalText=this.text;
+				this.hasFocus=false;
+			}
+		}
+		
+		if(this.type==1) //dropdown basically.
+		{
+			if(this.hasFocus)
+			{
+				//holdInput=true;
+				
+				if(startkey.check())
+				{
+					holdInput=false;
+					this.hasFocus=false;
+					this.choice=this.list[this.listTrack];
+					//somehow order ship to move there.
+				}
+				
+				if(upkey.check())
+				{
+					if(this.listTrack>0)
+					{
+						this.listTrack--;
+					}
+				}else if(downkey.check())
+				{
+					if(this.listTrack<this.list.length)
+					{
+						this.listTrack++;
+					}
+				}
+				if(this.list)
+				{
+					this.text=this.list[this.listTrack].name;
+				}
+			}
+		}
+	};
+	this.draw=function(can,cam)
+	{
+		can.fillStyle="white";
+		can.fillRect(this.x,this.y,this.width+this.borderSize,this.height+this.borderSize);
+		can.fillStyle=this.backColor;
+		can.fillRect(this.x+this.borderSize,this.y+this.borderSize,this.width-this.borderSize,this.height-this.borderSize);
+		can.fillStyle="white";
+		var darry="";
+		if(this.blink)
+		{
+			darry="|";
+		}
+		can.fillText(this.text+darry,this.x+2,this.y+14)
+	};
+	
+}
+
+
 function screenBox(obj)
 {
 	this.object=obj;
@@ -625,9 +712,17 @@ function screenBox(obj)
 	this.y=0;
 	this.scale=1;
 	this.height=150
-	this.width=100;
+	this.width=60;
 	this.page=0;
 	this.pages=7;
+	this.headingBox=new textBox();
+	
+	this.planetBox=new textBox();
+	this.planetBox.type=1;
+	this.planetBox.hasFocus=true;
+	this.planetBox.width=150;
+	this.planetBox.list=civs[0].knownWorlds;
+	this.type=0;
 	this.backColor="blue";
 	this.borderSize=4;
 	this.update=function()
@@ -638,6 +733,13 @@ function screenBox(obj)
 		this.turnPage();
 		console.log(this.object.name);
 	  }*/
+	  this.headingBox.update();
+	  this.planetBox.update();
+	  if((this.planetBox.hasFocus) && (this.page==2))//todo...
+		{
+				holdInput=true;
+		}
+
 	};
 	this.turnPage=function(back)
 	{
@@ -718,6 +820,17 @@ function screenBox(obj)
 				can.fillText("Destination: "+destext,this.x+10,this.y+2+64);
 				can.fillText("Distance: "+destdist+" AU",this.x+10,this.y+2+80);
 				can.fillText("Speed: "+this.object.speed+"/"+this.object.maxSpeed,this.x+10,this.y+2+96);
+				
+				can.fillStyle="white"
+				can.fillText("Enter Heading:",this.x+10,this.y+2+124);
+				this.headingBox.x=this.x+10+110;
+				this.headingBox.y=this.y+112;
+				this.headingBox.draw(can,camera);
+				
+				can.fillText("Enter Planet:",this.x+10,this.y+2+140);
+				this.planetBox.x=this.x+10+90;
+				this.planetBox.y=this.y+132;
+				this.planetBox.draw(can,camera);
 				
 			}else if(this.page==3)//combat //somehow add list of nearby hostile ships.
 			{
@@ -1656,8 +1769,7 @@ setupOurs=function(sun)
 	sun.planets[2].evented=true;
 };
 
-var stars=new Array();
-var nebulas=new Array();
+
 
 function initUniverse()
 {
@@ -1811,6 +1923,11 @@ function initUniverse()
 	//camera.center(stars[0]);
 	camera.x=0-stars[0].x+CANVAS_WIDTH/2;
 	camera.y=0-stars[0].y+CANVAS_HEIGHT/2;
+	
+	for(var i=0;i<civs.length;i++)
+	{
+		civs[i].knowAllWorlds();
+	}
 	
 };
 

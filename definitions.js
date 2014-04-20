@@ -1,11 +1,14 @@
 var starting=false;
 var bColors = ["#008000","#006400", "#FF4500", "#000080", "#696969", "#800080", "#808000", "#A52A2A", "#8B4513", "#FFDEAD", "#FFFF40","#000080" , "#FFFF80"]; //list of colors for radar/a few 
 var yellowColors=["#F3F781","#F2F5A9","#FFFF00","#D7DF01","#AEB404"];
-var holdInput=false;
+var holdEverything=false;
 var logAll=false;
 Flag={};
 Flag.MetTelaxianBountyHunters=0;
 Flag.LeftNeelix=1;
+
+var stars=new Array();
+var nebulas=new Array();
 
 var flashGUITick=0;
 var flashGUITrack=0;
@@ -50,15 +53,15 @@ function textbox()
 	this.msg=new Array();
 	this.optionOne=function(civil1,civil2)
 	{
-		holdInput=false;
+		holdEverything=false;
 	};
 	this.optionTwo=function(civil1,civil2)
 	{
-		holdInput=false;
+		holdEverything=false;
 	};
 	this.optionThree=function(civil1,civil2)
 	{
-		holdInput=false;
+		holdEverything=false;
 	};
 	this.optionTwo=null;
 	this.optionThree=null;
@@ -76,7 +79,7 @@ function textbox()
 	{
 		this.msg.push(firsttext);
 		this.exists=true;
-		holdInput=true;
+		holdEverything=true;
 		this.colors.push("white");
 		this.x=x;
 		this.y=y;
@@ -108,7 +111,7 @@ function textbox()
 			{
 				this.optionThree(this.civil,civs[0]);
 			}else{
-				holdInput=false;
+				holdEverything=false;
 			}
 			this.exists=false;
 		}
@@ -295,7 +298,7 @@ function buyScreen(customer,sell)
 		}
 		this.clearCart();
 		this.exists=false;
-		holdInput=false;
+		holdEverything=false;
 	};
 	this.addtoCart=function(amt){
 		for(var i=0;i<amt;i++)
@@ -318,7 +321,7 @@ function buyScreen(customer,sell)
 	this.setup=function()
 	{
 		this.exists=true;
-		holdInput=true;
+		holdEverything=true;
 		//todo!
 	};
 	this.update=function()
