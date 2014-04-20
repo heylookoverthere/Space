@@ -1,6 +1,7 @@
 var techNames=["Aeroponics","Emergency Rations","Waffle Fries","Microbrewed Beer","Printers That Dont Need Paper With Those Holes On Each Side","Sneakers With Lights On Them","Captioning Pictures Of Cats","Inertial Dampners","Warp Drive","TransWarp","Slipstream","Shitty Sensors","Sensors","Long Range Sensors","Astrometrics","DetectTacheons","DetectCloakythings","DetectWormholethings","ShittyCloak","Cloak","BestCloak","Lasers","Phasers","Disruptors","BestEnergyWeapon","Torpedos","PhotonTorpedos","QuantumTorpedos","TransPhasicTorpedos","PowerCells","Grapple","TractorBeam","StructualIntegrityBeam","Transporter","TransportEnhancer","EmergencyTransporter","AdvTransporter","thatbullshitfromthenewmovie","Energy Shields","AdvEnergyShields","MetaPhasicShields","Armor","AblatativeArmor","MicroCircutry","BioNeuralCircutry","Nanobots","Assimilation","AlienMedican","AlienSurgery","Cloning","GeneticResequencing","Synthahol","AdvEnviromentalControls","ContainmentField","SubspaceTheory","ImpulseProbe","WarpProbe","Statis","WarpEscapePods","AdvEscapePods","AI","Robotics","Androids","Cybernetics","PowerManagment","Replicators","PowerManagment","Capacitors","Holodecks","EMH","MobileEmiter","AdvMetallurgy","DeuteriumCollector","Deflector"];
 var hasItem=new Array();
 var numItems=2;
+var clean=true;
 var Items={};
 Items.RomulanPrisoner=0;
 Items.Neelix=1;
@@ -988,7 +989,13 @@ function civilization()
 			ned.civil=this;
 			ned.choicesStart=3;
 			ned.addText("   Hire them for $100");
-			ned.addText("   Tell them to fuck off.");
+			if(clean)
+			{
+				ned.addText("   Tell them you aren't interested.");
+			}else
+			{
+				ned.addText("   Tell them to fuck off.");
+			}
 			ned.optionTrack=3;
 			ned.optionOne=function(civil1,civil2)
 			{
@@ -1028,7 +1035,13 @@ function civilization()
 		{
 			var ned=new textbox();
 			ned.label="Betazoid Ambassador:";
-			ned.setup("We can read your mind, you dirty little fucker.",150,370);
+			if(clean)
+			{
+				ned.setup("We can read your minds.  We wont, though.",150,370);
+			}else
+			{
+				ned.setup("We can read your mind, you dirty little fucker.",150,370);
+			}
 			ned.options=0;
 			ned.civil=this;
 			other.messages.push(ned);
@@ -1071,7 +1084,13 @@ function civilization()
 			ned.label="Tellarite Captain:";
 			ned.setup("Hello I am a Tellarite.  Basically we are a race of Man-Bear-Pigs.",150,370);
 			ned.addText("    Greet the Noble Captain");
-			ned.addText("    Conjecture that his mother was a prostitute.");
+			if(clean)
+			{
+				ned.addText("    Tell him he looks like your butt.");
+			}else
+			{
+				ned.addText("    Conjecture that his mother was a prostitute.");
+			}
 			//ned.addText("");
 			ned.options=2;
 			ned.optionTrack=1;
@@ -1111,7 +1130,13 @@ function civilization()
 				var ped=new textbox();
 				ped.label="Tellarite Captain:";
 				ped.setup("Haha, I like the cut of your space gib.  Call me if you need " ,150,370);
-				ped.addText("anything, you cocksucking human.");
+				if(clean)
+				{
+					ped.addText("anything, you smelly human.");
+				}else
+				{
+					ped.addText("anything, you cocksucking human.");
+				}
 				ped.civil=civil1;
 				ped.optionTrack=0;
 				ped.options=0;

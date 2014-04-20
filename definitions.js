@@ -397,7 +397,14 @@ function buyScreen(customer,sell)
 					this.addtoCart(1);	
 				}else
 				{
-					console.log("the fucking cart is full.");
+					
+					if(clean)
+					{
+						console.log("the cart is full.");
+					}else
+					{	
+						console.log("the fucking cart is full.");
+					}
 				}
 			}else if(this.columTrack==1)
 			{

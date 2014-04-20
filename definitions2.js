@@ -130,7 +130,7 @@ civs[civIDs.Borg].allied=false; //for now.
 civs[civIDs.Dominion].mode=AIModes.Agressive;
 
 var ships=new Array();
-var stations=new Array(); //todo add to civilization
+//var stations=new Array(); //todo add to civilization
 
 var curShip=0;
 var planetTypes = ["Class M","Class L","Class N","Class F","Class J","Class T","Demon Class"];
@@ -616,11 +616,70 @@ function statusBox()
 };
 
 var roland=new statusBox();
+var textBoxes=new Array();
+var buttons=new Array();
 
-function textBox()
+function button(pt)
 {
 	this.x=0;
 	this.y=0;
+	if(pt){
+	this.parent=pt;
+	}
+	this.hasFocus=false;
+	this.visible=false;
+	this.object=null;
+	this.width=64;
+	this.height=32;
+	this.blinkRate=30;
+	this.blink=false;
+	this.choice=null;
+	this.text="Go!";
+	this.blinkTrack=0;
+	this.backColor="green";
+	this.borderSize=2;
+	this.doThings=function()
+	{
+		
+	};
+	this.update=function()
+	{
+		
+		if(this.hasFocus)
+		{
+			//holdInput=true;
+			
+			if(startkey.check())
+			{
+				this.doThings();
+				//somehow order ship to move there.
+			}
+	}	
+
+	};
+	this.draw=function(can,cam)
+	{
+		can.fillStyle="white";
+		if(this.hasFocus)
+		{
+			can.fillStyle="yellow";
+		}
+		can.fillRect(this.x,this.y,this.width+this.borderSize,this.height+this.borderSize);
+		can.fillStyle=this.backColor;
+		can.fillRect(this.x+this.borderSize,this.y+this.borderSize,this.width-this.borderSize,this.height-this.borderSize);
+		can.fillStyle="white";
+		can.fillText(this.text,this.x+this.width/2-(6*this.text.length),this.y+this.height/2)
+	};
+	
+}
+
+function textBox(pt)
+{
+	this.x=0;
+	this.y=0;
+	if(pt){
+	this.parent=pt;
+	}
 	this.hasFocus=false;
 	this.visible=false;
 	this.width=80;
@@ -675,7 +734,7 @@ function textBox()
 					}
 				}else if(downkey.check())
 				{
-					if(this.listTrack<this.list.length)
+					if(this.listTrack<this.list.length-1)
 					{
 						this.listTrack++;
 					}
@@ -683,6 +742,7 @@ function textBox()
 				if(this.list)
 				{
 					this.text=this.list[this.listTrack].name;
+					this.width=(this.text.length+2)*6+6;
 				}
 			}
 		}
@@ -690,6 +750,10 @@ function textBox()
 	this.draw=function(can,cam)
 	{
 		can.fillStyle="white";
+		if(this.hasFocus)
+		{
+			can.fillStyle="yellow";
+		}
 		can.fillRect(this.x,this.y,this.width+this.borderSize,this.height+this.borderSize);
 		can.fillStyle=this.backColor;
 		can.fillRect(this.x+this.borderSize,this.y+this.borderSize,this.width-this.borderSize,this.height-this.borderSize);
@@ -704,6 +768,13 @@ function textBox()
 	
 }
 
+clearFocus=function()
+{
+	for(var i=0;i<textBoxes.length;i++)
+	{
+		textBoxes[i].hasFocus=false;
+	}
+}
 
 function screenBox(obj)
 {
@@ -715,16 +786,44 @@ function screenBox(obj)
 	this.width=60;
 	this.page=0;
 	this.pages=7;
-	this.headingBox=new textBox();
 	
-	this.planetBox=new textBox();
-	this.planetBox.type=1;
-	this.planetBox.hasFocus=true;
-	this.planetBox.width=150;
-	this.planetBox.list=civs[0].knownWorlds;
 	this.type=0;
 	this.backColor="blue";
 	this.borderSize=4;
+	if((this.object.ship) && (this.object.civ) &&(this.object.civ.name=="Humanity"))
+	{
+
+		this.headingBox=new textBox(this);
+		this.systemBox=new textBox(this);
+		this.systemBox.type=1;
+		this.systemBox.hasFocus=true;
+		this.systemBox.width=150;
+		this.planetBox=new textBox(this);
+		this.planetBox.type=1;
+		//this.planetBox.hasFocus=true;
+		this.planetBox.width=150;
+		//this.planetBox.list=civs[0].knownWorlds;
+		this.systemBox.list=stars;
+		this.planetBox.list=this.systemBox.list[this.systemBox.listTrack].planets;
+		textBoxes.push(this.headingBox);
+		textBoxes.push(this.systemBox);
+		textBoxes.push(this.planetBox);
+		this.goPlanetButton=new button(this);
+		this.goPlanetButton.x=this.x+10+120;
+		this.goPlanetButton.y=this.y+145;
+		this.goPlanetButton.object=this.object;
+		this.goPlanetButton.parent=this;
+		this.goPlanetButton.doThings=function()
+		{
+			
+			if(!this.parent.planetBox) {return};
+			var sally=this.parent.planetBox.list[this.parent.planetBox.listTrack];
+			if(!sally) {return;}
+			this.object.orderOrbit(sally);
+			console.log(this.object.name+" heading to "+sally.name);
+		};
+		buttons.push(this.goPlanetButton);
+	}
 	this.update=function()
 	{
 	  //clicky buttons!!
@@ -733,12 +832,22 @@ function screenBox(obj)
 		this.turnPage();
 		console.log(this.object.name);
 	  }*/
-	  this.headingBox.update();
-	  this.planetBox.update();
-	  if((this.planetBox.hasFocus) && (this.page==2))//todo...
+	if((this.headingBox) && (this.systemBox) &&(this.planetBox))
+	{
+		this.headingBox.update();
+		var emily=this.systemBox.listTrack;
+		this.systemBox.update();
+		if(this.systemBox.listTrack!=emily)
+		{
+			this.planetBox.list=this.systemBox.list[this.systemBox.listTrack].planets;	
+			this.planetBox.listTrack=0;
+		}
+		this.planetBox.update();
+	}
+	  /*if((this.planetBox.hasFocus) && (this.page==2))//todo...
 		{
 				holdInput=true;
-		}
+		}*/
 
 	};
 	this.turnPage=function(back)
@@ -822,15 +931,24 @@ function screenBox(obj)
 				can.fillText("Speed: "+this.object.speed+"/"+this.object.maxSpeed,this.x+10,this.y+2+96);
 				
 				can.fillStyle="white"
-				can.fillText("Enter Heading:",this.x+10,this.y+2+124);
+				can.fillText("Enter Heading:",this.x+10,this.y+2+122);
 				this.headingBox.x=this.x+10+110;
 				this.headingBox.y=this.y+112;
 				this.headingBox.draw(can,camera);
 				
-				can.fillText("Enter Planet:",this.x+10,this.y+2+140);
+				can.fillText("Enter System:",this.x+10,this.y+2+144);
+				this.systemBox.x=this.x+10+90;
+				this.systemBox.y=this.y+132;
+				this.systemBox.draw(can,camera);
+				
+				can.fillText("Enter Planet:",this.x+10,this.y+2+160);
 				this.planetBox.x=this.x+10+90;
-				this.planetBox.y=this.y+132;
+				this.planetBox.y=this.y+152;
 				this.planetBox.draw(can,camera);
+				
+				this.goPlanetButton.x=this.x+10+160;
+				this.goPlanetButton.y=this.y+175;
+				this.goPlanetButton.draw(can,camera);
 				
 			}else if(this.page==3)//combat //somehow add list of nearby hostile ships.
 			{
@@ -955,7 +1073,7 @@ function newShip(iv,startworld,capt)
 	}
 	if(iv.civID==civIDs.Human)
 		{
-			var james=new starShip();
+			var james=new starShip(iv.CivID);
 			james.homeworld=Earth;
 			james.civ=iv;
 			james.class=shipClasses[0][0];
@@ -995,7 +1113,7 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Vulcan)
 		{
-			var james=new starShip();
+			var james=new starShip(iv.CivID);
 			james.homeworld=iv.homeworld;
 			james.class=shipClasses[civIDs.Vulcan][0];
 			james.civ=iv;
@@ -1017,7 +1135,7 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Klingon)
 		{
-			var james=new starShip();
+			var james=new starShip(iv.CivID);
 				james.class=shipClasses[civIDs.Klingon][0];
 				james.civ=iv;
 				james.classify();
@@ -1042,7 +1160,7 @@ function newShip(iv,startworld,capt)
 				return james;
 		}else if(iv.civID==civIDs.Dominion)
 		{
-			var james=new starShip();
+			var james=new starShip(iv.CivID);
 				james.class=shipClasses[civIDs.Dominion][0];
 				james.civ=iv;
 				james.classify();
@@ -1067,7 +1185,7 @@ function newShip(iv,startworld,capt)
 				return james;
 		}else if(iv.civID==civIDs.Cardassian)
 		{
-			var james=new starShip();
+			var james=new starShip(iv.CivID);
 			james.class=shipClasses[civIDs.Cardassian][0];
 			james.civ=iv;
 			james.classify();
@@ -1093,7 +1211,7 @@ function newShip(iv,startworld,capt)
 			
 		}else if(iv.civID==civIDs.Romulan)
 		{
-			var james=new starShip();
+			var james=new starShip(iv.CivID);
 			james.class=shipClasses[civIDs.Romulan][0];
 			james.civ=iv;
 			james.classify();
@@ -1116,7 +1234,7 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Hirogen)
 		{
-			var james=new starShip();
+			var james=new starShip(iv.CivID);
 			james.class=shipClasses[civIDs.Hirogen][0];
 			james.civ=iv;
 			james.classify();
@@ -1138,7 +1256,7 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Andorian)
 		{
-			var james=new starShip();
+			var james=new starShip(iv.CivID);
 			james.civ=iv;
 			james.class=shipClasses[civIDs.Andorian][0];
 			james.classify();
@@ -1163,7 +1281,7 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Tellarite)
 		{
-			var james=new starShip();
+			var james=new starShip(iv.CivID);
 			james.homeworld=iv.homeworld;
 			james.class=shipClasses[civIDs.Tellarite][0];
 			james.civ=civs[civIDs.Tellarite];
@@ -1188,7 +1306,7 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Breen)
 		{
-			var james=new starShip();
+			var james=new starShip(iv.CivID);
 			james.class=shipClasses[civIDs.Breen][0];
 			james.civ=iv;
 			james.classify();
@@ -1214,7 +1332,7 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Telaxian)
 		{
-			var james=new starShip();
+			var james=new starShip(iv.CivID);
 			james.class=shipClasses[civIDs.Telaxian][0];
 			james.civ=iv;
 			james.classify();
@@ -1240,7 +1358,7 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Vidiian)
 		{
-			var james=new starShip();
+			var james=new starShip(iv.CivID);
 			james.class=shipClasses[civIDs.Vidiian][0];
 			james.civ=civs[civIDs.Vidiian];
 			james.classify();
@@ -1266,7 +1384,7 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Pakled)
 		{
-			var james=new starShip();
+			var james=new starShip(iv.CivID);
 			james.class=shipClasses[civIDs.Pakled][0];
 			james.civ=iv;
 			james.classify();
@@ -1291,7 +1409,7 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Bajoran)
 		{
-			var james=new starShip();
+			var james=new starShip(iv.CivID);
 			james.class=shipClasses[civIDs.Bajoran][0];
 			james.civ=civs[civIDs.Bajoran];
 			james.classify();
@@ -1315,7 +1433,7 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Ferengi)
 		{
-			var james=new starShip();
+			var james=new starShip(iv.CivID);
 			james.class=shipClasses[civIDs.Ferengi][0];
 			james.civ=civs[civIDs.Ferengi];
 			james.classify();
@@ -1339,7 +1457,7 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Orion)
 		{
-			var james=new starShip();
+			var james=new starShip(iv.CivID);
 			james.class=shipClasses[civIDs.Orion][0];
 			james.civ=civs[civIDs.Orion];
 			james.classify();
@@ -1363,7 +1481,7 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Borg)
 		{
-			var james=new starShip();
+			var james=new starShip(iv.CivID);
 			james.class=shipClasses[civIDs.Borg][0];
 			james.civ=iv;
 			james.classify();
@@ -1425,8 +1543,13 @@ var selectedSpriteBig =Sprite("selectedbig");
 var shipSelSpriteB =Sprite("shipselectedbig");
 var shipSelSprite =Sprite("shipselected");
 
+var biblam="Marklar";
+if(!clean)
+{
+	biblam="Cat's Anus";
+}
 var starNames=new Array(90);
-starNames= ["Eridani","Cygnus","Ceti-Alpha","Omicron Ceti","Monac","Bringold","Alnitak", "Deneb", "Acamar","Rigel","Polaris","Praxillus","Proxima Centauri", "Omicron Persei","Canopus", "Romii", "Sirius","Tahal", "Mintaka", "Vega", "Wolf", "Tau-Ceti","Eminiar","Canaris","Hydra", "Questar", "Arneb", "Amargosa", "Altiar","Draconis","Theloni","Gezid","Indi","Canaris","Sigma", "Cassius","Melona","Minara","Cat's Anus","Detroit","Chicago","Miami","Albany","Providence","Augusta","Washington","Lexington","Moscow","Yemen","Tokyo","St. Petersburg","Berlin","New York","Patterson","Springfield","Great Neck","Manhaset","Port Washington","Honalulu","Vermont","New Hampshire","Kentucky","North Carolina","South Carolina","Florida","Texas","Huston","Oregon","Idaho","Kansas","Georgia","Arkansas","Louisiana","Ukraine","England","France","Goat land","Canada","Perth","India","Indiana","Oklahoma","Arizona","Nevada","Californa"];
+starNames= ["Eridani","Cygnus","Ceti-Alpha","Omicron Ceti","Monac","Bringold","Alnitak", "Deneb", "Acamar","Rigel","Polaris","Praxillus","Proxima Centauri", "Omicron Persei","Canopus", "Romii", "Sirius","Tahal", "Mintaka", "Vega", "Wolf", "Tau-Ceti","Eminiar","Canaris","Hydra", "Questar", "Arneb", "Amargosa", "Altiar","Draconis","Theloni","Gezid","Indi","Canaris","Sigma", "Cassius","Melona","Minara",biblam,"Detroit","Chicago","Miami","Albany","Providence","Augusta","Washington","Lexington","Moscow","Yemen","Tokyo","St. Petersburg","Berlin","New York","Patterson","Springfield","Great Neck","Manhaset","Port Washington","Honalulu","Vermont","New Hampshire","Kentucky","North Carolina","South Carolina","Florida","Texas","Huston","Oregon","Idaho","Kansas","Georgia","Arkansas","Louisiana","Ukraine","England","France","Goat land","Canada","Perth","India","Indiana","Oklahoma","Arizona","Nevada","Californa"];
 var starNamesUsed=new Array();
 
 var planetNames=new Array(40);
@@ -1993,7 +2116,7 @@ function killShip(targ,attacker)
 function newPlatform(wrld)
 {
 	var iv=wrld.civ;
-	var jilly=new starShip();
+	var jilly=new starShip(iv);
 	jilly.homeworld=iv.homeworld;
 	jilly.x=jilly.homeworld.x;
 	jilly.y=jilly.homeworld.y;
@@ -2132,7 +2255,7 @@ function newInitShips()
 		{
 			if(i==civIDs.Human)
 			{
-				var james=new starShip();
+				var james=new starShip(i);
 				james.class=shipClasses[civIDs.Human][0];
 				james.civ=civs[0];
 				james.classify();
@@ -2172,7 +2295,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Vulcan)
 			{
-				var james=new starShip();
+				var james=new starShip(i);
 				james.class=shipClasses[civIDs.Vulcan][0];
 				james.civ=civs[i];
 				james.classify();
@@ -2197,7 +2320,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Klingon)
 			{
-				var james=new starShip();
+				var james=new starShip(i);
 				james.class=shipClasses[civIDs.Klingon][0];
 				james.civ=civs[i];
 				james.classify();
@@ -2262,7 +2385,7 @@ function newInitShips()
 				}
 			}else if(i==civIDs.Dominion)
 			{
-				var james=new starShip();
+				var james=new starShip(i);
 				james.class=shipClasses[civIDs.Dominion][0];
 				james.civ=civs[i];
 				james.classify();
@@ -2326,7 +2449,7 @@ function newInitShips()
 				}
 			}else if(i==civIDs.Cardassian)
 			{
-				var james=new starShip();
+				var james=new starShip(i);
 				james.class=shipClasses[civIDs.Cardassian][0];
 				james.civ=civs[i];
 				james.classify();
@@ -2389,7 +2512,7 @@ function newInitShips()
 				}
 		}else if(i==civIDs.Romulan)
 			{
-				var james=new starShip();
+				var james=new starShip(i);
 				james.class=shipClasses[civIDs.Romulan][0];
 				james.civ=civs[i];
 				james.classify();
@@ -2416,7 +2539,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Andorian)
 			{
-				var james=new starShip();
+				var james=new starShip(i);
 				james.civ=civs[i];
 				james.class=shipClasses[civIDs.Andorian][0];
 				james.classify();
@@ -2443,7 +2566,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Tellarite)
 			{
-				var james=new starShip();
+				var james=new starShip(i);
 				james.civ=civs[i];
 				james.class=shipClasses[civIDs.Tellarite][0];
 				james.classify();
@@ -2469,7 +2592,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Breen)
 			{
-				var james=new starShip();
+				var james=new starShip(i);
 				james.civ=civs[i];
 				james.class=shipClasses[civIDs.Breen][0];
 				james.classify();
@@ -2495,7 +2618,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Telaxian)
 			{
-				var james=new starShip();
+				var james=new starShip(i);
 				james.civ=civs[i];
 				james.class=shipClasses[civIDs.Telaxian][0];
 				james.classify();
@@ -2521,7 +2644,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Vidiian)
 			{
-				var james=new starShip();
+				var james=new starShip(i);
 				james.civ=civs[i];
 				james.class=shipClasses[civIDs.Vidiian][0];
 				james.classify();
@@ -2547,7 +2670,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Pakled)
 			{
-				var james=new starShip();
+				var james=new starShip(i);
 				james.civ=civs[i];
 				james.class=shipClasses[civIDs.Pakled][0];
 				james.classify();
@@ -2574,7 +2697,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Hirogen)
 			{
-				var james=new starShip();
+				var james=new starShip(i);
 				james.civ=civs[i];
 				james.class=shipClasses[civIDs.Hirogen][0];
 				james.classify();
@@ -2599,7 +2722,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Bajoran)
 			{
-				var james=new starShip();
+				var james=new starShip(i);
 				james.civ=civs[i];
 				james.class=shipClasses[civIDs.Bajoran][0];
 				james.classify();
@@ -2624,7 +2747,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Ferengi)
 			{
-				var james=new starShip();
+				var james=new starShip(i);
 				james.civ=civs[i];
 				james.class=shipClasses[civIDs.Ferengi][0];
 				james.classify();
@@ -2649,7 +2772,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Orion)
 			{
-				var james=new starShip();
+				var james=new starShip(i);
 				james.civ=civs[i];
 				james.class=shipClasses[civIDs.Orion][0];
 				james.classify();
@@ -2674,7 +2797,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Borg)
 			{
-				var james=new starShip();
+				var james=new starShip(i);
 				james.civ=civs[i];
 				james.civ=civs[i];
 				james.class=shipClasses[civIDs.Borg][0];

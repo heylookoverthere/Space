@@ -43,8 +43,9 @@ for(var i=0;i<100;i++)
 	usedEvents.push(false);
 }
 
-function starShip(){
+function starShip(civid){
 	//this.class=baseClass
+	this.civ=civs[civid];
 	this.ship=true;
 	this.systems=new Array();
 	for(var i=0;i<NumSystems;i++)
@@ -95,11 +96,7 @@ function starShip(){
 	this.captainsLog=new Array();
 	this.maxMines=100;
 	this.maxTorpedos=100;
-	this.menu=new screenBox(this);
-	this.menu.x=20;
-	this.menu.y=350;
-	this.menu.width=256;
-	this.menu.height=250;
+
 	this.numTorpedos=100;
 	this.healCount=0;
 	this.numMines=this.maxMines;
@@ -192,7 +189,6 @@ function starShip(){
 	this.autoFireRate=40;
 	this.fixCount=0;
 	this.destx=0;
-	this.civ=null;
 	this.desty=0;
 	this.orby=0;
 	this.orbx=0;
@@ -241,7 +237,11 @@ function starShip(){
 	this.lastYear=2000;
 	this.windows=new Array();
 	this.items=new Array();
-	
+	this.menu=new screenBox(this);
+	this.menu.x=20;
+	this.menu.y=350;
+	this.menu.width=256;
+	this.menu.height=250;
 	this.layMine=function(){
 		if(this.numMines<1) {return;}
 		this.numMines--;
@@ -1267,7 +1267,13 @@ function starShip(){
 				ned.optionTrack=0;
 				civs[0].messages.push(ned);
 				usedEvents[hich]=true;
-				this.enterLog("We found a romulan officer in a stasis pod.  Prehaps if we returned him to his people, they might chill the fuck out a little.");
+				if(clean)
+				{
+					this.enterLog("We found a romulan officer in a stasis pod.  Prehaps if we returned him to his people, our relations might improve.");
+				}else
+				{
+					this.enterLog("We found a romulan officer in a stasis pod.  Prehaps if we returned him to his people, they might chill the fuck out a little.");
+				}
 			}
 		}else if(hich==4)//find tech
 		{

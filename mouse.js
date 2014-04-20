@@ -100,6 +100,28 @@ function mouseClick(e) {  //represents the mouse
 		{
 			case 1:
 				//screenfull.request(canvasElement);
+				
+				for(var i=0;i<textBoxes.length;i++)
+				{
+					if(isOver(textBoxes[i]))
+					{
+						clearFocus();
+						textBoxes[i].hasFocus=true;
+						return;
+					}
+				}
+				
+				for(var i=0;i<buttons.length;i++)
+				{
+					if(isOver(buttons[i]))
+					{
+						clearFocus();
+						buttons[i].doThings();
+						console.log("doing things.");
+						return;
+					}
+				}
+				
 				if((selectedShip) && (!selectedShip.adrift))
 				{
 					/*var mTY=mY+Math.abs(camera.y);
@@ -209,12 +231,25 @@ function drawmousetext(can,targ,cam) { //draws unit status info
 };
 
 isOver= function(targ,cam){ //is the mouse over the player/object 
-	if(targ.planet)
+	if(cam)
 	{
-		if((mX>((targ.x-targ.width/2)+cam.x)*cam.zoom) && (mX<(((targ.x-targ.width/2)+cam.x)+targ.width*targ.size)*cam.zoom) &&(mY>(((targ.y-targ.height/2)+cam.y))*cam.zoom) &&(mY<(((targ.y-targ.height/2)+cam.y)+targ.height)*cam.zoom)) {return true;}
+		if(targ.planet)
+		{
+			if((mX>((targ.x-targ.width/2)+cam.x)*cam.zoom) && (mX<(((targ.x-targ.width/2)+cam.x)+targ.width*targ.size)*cam.zoom) &&(mY>(((targ.y-targ.height/2)+cam.y))*cam.zoom) &&(mY<(((targ.y-targ.height/2)+cam.y)+targ.height)*cam.zoom)) {return true;}
+		}else
+		{
+			if((mX>((targ.x-targ.width/2)+cam.x)*cam.zoom) && (mX<(((targ.x-targ.width/2)+cam.x)+targ.width)*cam.zoom) &&(mY>(((targ.y-targ.height/2)+cam.y))*cam.zoom) &&(mY<(((targ.y-targ.height/2)+cam.y)+targ.height)*cam.zoom)) {return true;}
+		}
 	}else
 	{
-		if((mX>((targ.x-targ.width/2)+cam.x)*cam.zoom) && (mX<(((targ.x-targ.width/2)+cam.x)+targ.width)*cam.zoom) &&(mY>(((targ.y-targ.height/2)+cam.y))*cam.zoom) &&(mY<(((targ.y-targ.height/2)+cam.y)+targ.height)*cam.zoom)) {return true;}
+		if(targ.planet)
+		{
+			//if((mX>(targ.x-targ.width/2)) && (mX<(targ.x-targ.width/2)+targ.width*targ.size) &&(mY>(targ.y-targ.height/2)) &&(mY<(targ.y-targ.height/2)+targ.height)) {return true;}
+		}else
+		{
+			if((mX>targ.x-targ.width) && (mX<targ.x+targ.width) &&(mY>targ.y-targ.height) &&(mY<targ.y+targ.height)) {return true;}
+		}
+
 	}
     return false;
 };
