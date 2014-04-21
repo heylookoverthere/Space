@@ -723,6 +723,23 @@ function mainMenuUpdate(){
 			console.log("First Fleet established");
 		}*/
 	 }
+	 camera.update();
+	updateEscapes();
+	snoop=ships.concat(torpedos);
+	snoop=snoop.concat(escapes);
+	updateMines(snoop);
+	snoop=ships.concat(mines);
+	snoop=snoop.concat(escapes);
+	updateTorpedos(snoop);
+	theTime.update(Earth);
+	for(var i=0;i<civs.length;i++)
+	{
+		civs[i].update();
+		for(var j=0;j<civs[i].fleets.length;j++)
+		{
+			civs[i].fleets[j].orderShips();
+		}
+	}
 	if(this.holdInput) {return;}
 	if(crewscreenkey.check())
 	{
@@ -1022,23 +1039,7 @@ function mainMenuUpdate(){
 	{
 		mines[i].update(ships);
 	}*/
-	camera.update();
-	updateEscapes();
-	snoop=ships.concat(torpedos);
-	snoop=snoop.concat(escapes);
-	updateMines(snoop);
-	snoop=ships.concat(mines);
-	snoop=snoop.concat(escapes);
-	updateTorpedos(snoop);
-	theTime.update(Earth);
-	for(var i=0;i<civs.length;i++)
-	{
-		civs[i].update();
-		for(var j=0;j<civs[i].fleets.length;j++)
-		{
-			civs[i].fleets[j].orderShips();
-		}
-	}
+	
 	
 };
 

@@ -629,8 +629,8 @@ function button(pt)
 	this.hasFocus=false;
 	this.visible=false;
 	this.object=null;
-	this.width=64;
-	this.height=32;
+	this.width=40;
+	this.height=24;
 	this.blinkRate=30;
 	this.blink=false;
 	this.choice=null;
@@ -668,7 +668,7 @@ function button(pt)
 		can.fillStyle=this.backColor;
 		can.fillRect(this.x+this.borderSize,this.y+this.borderSize,this.width-this.borderSize,this.height-this.borderSize);
 		can.fillStyle="white";
-		can.fillText(this.text,this.x+this.width/2-(6*this.text.length),this.y+this.height/2)
+		can.fillText(this.text,this.x+this.width/2-8,this.y+this.height-8)
 	};
 	
 }
@@ -692,7 +692,7 @@ function textBox(pt)
 	this.choice=null;
 	this.text="";
 	this.blinkTrack=0;
-	this.backColor="blue";
+	this.backColor="white";
 	this.borderSize=2;
 	this.update=function()
 	{
@@ -750,7 +750,7 @@ function textBox(pt)
 	this.draw=function(can,cam)
 	{
 		if(!this.visible) {return;}
-		can.fillStyle="white";
+		can.fillStyle="grey";
 		if(this.hasFocus)
 		{
 			can.fillStyle="yellow";
@@ -758,13 +758,21 @@ function textBox(pt)
 		can.fillRect(this.x,this.y,this.width+this.borderSize,this.height+this.borderSize);
 		can.fillStyle=this.backColor;
 		can.fillRect(this.x+this.borderSize,this.y+this.borderSize,this.width-this.borderSize,this.height-this.borderSize);
-		can.fillStyle="white";
+		can.fillStyle="black";
+		if((this.list )&&(this.list[this.listTrack].civs) && (this.list[this.listTrack].civs.length>0))
+		{
+			can.fillStyle=this.list[this.listTrack].civs[0].color;
+		}else if((this.list )&&(this.list[this.listTrack].civ))
+		{
+			can.fillStyle=this.list[this.listTrack].civ.color;
+		}
 		var darry="";
 		if(this.blink)
 		{
 			darry="|";
 		}
 		can.fillText(this.text+darry,this.x+2,this.y+14)
+		can.fillStyle="white";
 	};
 	
 }
