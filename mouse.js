@@ -99,26 +99,37 @@ function mouseClick(e) {  //represents the mouse
 		switch (e.which)
 		{
 			case 1:
-				clearFocus();
+				
 				//screenfull.request(canvasElement);
 				
 				for(var i=0;i<textBoxes.length;i++)
 				{
 					if((isOver(textBoxes[i])) && (textBoxes[i].visible))
 					{
-						clearFocus();
-						textBoxes[i].hasFocus=true;
-						return;
+						if(textBoxes[i].hasFocus)
+						{
+							textBoxes[i].onClick();
+						}else
+						{
+							clearFocus();
+							textBoxes[i].hasFocus=true;
+							return;
+						}
 					}
 				}
-				
+				//clearFocus();
 				for(var i=0;i<buttons.length;i++)
 				{
 					if((isOver(buttons[i]))  && (buttons[i].visible))
 					{
 						clearFocus();
+						buttons[i].on=!buttons[i].on;
+						for(var k=0;k<buttons[i].linked.length;k++)
+						{
+							buttons[i].linked[k].on=false;
+						}
 						buttons[i].doThings();
-						console.log(buttons[i].object.name);
+						//console.log(buttons[i].object.name);
 	
 						return;
 					}

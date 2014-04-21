@@ -630,6 +630,7 @@ function button(pt)
 	this.visible=false;
 	this.object=null;
 	this.width=30;
+	this.onoff=true;//false;
 	this.height=24;
 	this.blinkRate=30;
 	this.blink=false;
@@ -638,6 +639,7 @@ function button(pt)
 	this.blinkTrack=0;
 	this.backColor="green";
 	this.borderSize=2;
+	this.linked=new Array(); //turn these off when this goes on.
 	this.doThings=function()
 	{
 		
@@ -664,6 +666,17 @@ function button(pt)
 		{
 			can.fillStyle="yellow";
 		}
+		if(this.onoff)
+		{
+			if(this.on)
+			{
+				this.backColor="green";
+			}else
+			{
+				this.backColor="red";
+			}
+		
+		}
 		can.fillRect(this.x,this.y,this.width+this.borderSize,this.height+this.borderSize);
 		can.fillStyle=this.backColor;
 		can.fillRect(this.x+this.borderSize,this.y+this.borderSize,this.width-this.borderSize,this.height-this.borderSize);
@@ -677,6 +690,7 @@ function textBox(pt)
 {
 	this.x=0;
 	this.y=0;
+	this.colorText=false;
 	this.limit=16;
 	if(pt){
 	this.parent=pt;
@@ -694,6 +708,30 @@ function textBox(pt)
 			this.object.destination=null;
 			this.object.desiredOrbitTarg=null;
 			this.object.desiredHeading=parseInt(this.text);
+		}
+	};
+	this.onClick=function()
+	{
+		if(this.type==1)
+		{
+			this.listTrack++;
+			if(this.listTrack>this.list.length-1)
+			{
+				this.listTrack=0;
+			}
+			if((this.list)  && (this.list.length>0))
+			{
+				if(this.listTrack>this.list.length-1)
+				{
+					this.listTrack=this.list.length-1;
+				}
+				this.text=this.list[this.listTrack].name;
+				//this.width=(this.text.length+2)*6+6;
+			}else
+			{
+				this.text="";
+			}
+
 		}
 	};
 	this.hasFocus=false;
@@ -794,12 +832,20 @@ function textBox(pt)
 						this.listTrack++;
 					}
 				}
-				if(this.list)
+				
+			}
+			if((this.list) && (this.list.length>0))
 				{
+					if(this.listTrack>this.list.length-1)
+					{
+						this.listTrack=this.list.length-1;
+					}
 					this.text=this.list[this.listTrack].name;
 					//this.width=(this.text.length+2)*6+6;
+				}else
+				{
+					this.text="";
 				}
-			}
 		}
 	};
 	this.draw=function(can,cam)
@@ -814,12 +860,15 @@ function textBox(pt)
 		can.fillStyle=this.backColor;
 		can.fillRect(this.x+this.borderSize,this.y+this.borderSize,this.width-this.borderSize,this.height-this.borderSize);
 		can.fillStyle="black";
-		if((this.list )&&(this.list[this.listTrack].civs) && (this.list[this.listTrack].civs.length>0))
-		{
-			can.fillStyle=this.list[this.listTrack].civs[0].color;
-		}else if((this.list )&&(this.list[this.listTrack].civ))
-		{
-			can.fillStyle=this.list[this.listTrack].civ.color;
+			if(this.colorText)
+			{
+			if((this.list ) && (this.list.length>0)&&(this.list[this.listTrack].civs) && (this.list[this.listTrack].civs.length>0))
+			{
+				can.fillStyle=this.list[this.listTrack].civs[0].color;
+			}else if((this.list ) && (this.list.length>0)&&(this.list[this.listTrack].civ))
+			{
+				can.fillStyle=this.list[this.listTrack].civ.color;
+			}
 		}
 		var darry="";
 		if((this.blink) && (this.hasFocus))
@@ -877,6 +926,8 @@ function screenBox(obj)
 		this.systemBox.width=150;
 		this.planetBox=new textBox(this);
 		this.planetBox.type=1;
+		this.planetBox.colorText=true;
+		this.systemBox.colorText=true;
 		//this.planetBox.hasFocus=true;
 		this.planetBox.width=150;
 		//this.planetBox.list=civs[0].knownWorlds;
@@ -948,6 +999,10 @@ function screenBox(obj)
 
 	if((this.headingBox) && (this.systemBox) &&(this.planetBox))
 	{
+		
+		
+		this.planetBox.list=this.systemBox.list[this.systemBox.listTrack].planets;
+		this.shipBox.list=this.raceBox.list[this.raceBox.listTrack].ships;
 		if((this.page==2)&&(this.object==selectedShip))
 		{
 			this.headingBox.visible=true;
