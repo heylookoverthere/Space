@@ -695,14 +695,12 @@ function mainMenuUpdate(){
 
 		}
 	}
-	
+	holdInput=false;
 	for(var i=0;i<textBoxes.length;i++)
 	{
-		holdInput=false
 		if((textBoxes[i].hasFocus))//todo...
 		{
 				holdInput=true;
-		
 		}
 	}
 	

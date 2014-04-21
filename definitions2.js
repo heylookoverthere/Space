@@ -749,6 +749,7 @@ function textBox(pt)
 	};
 	this.draw=function(can,cam)
 	{
+		if(!this.visible) {return;}
 		can.fillStyle="white";
 		if(this.hasFocus)
 		{
@@ -796,7 +797,6 @@ function screenBox(obj)
 		this.headingBox=new textBox(this);
 		this.systemBox=new textBox(this);
 		this.systemBox.type=1;
-		this.systemBox.hasFocus=true;
 		this.systemBox.width=150;
 		this.planetBox=new textBox(this);
 		this.planetBox.type=1;
@@ -832,8 +832,23 @@ function screenBox(obj)
 		this.turnPage();
 		console.log(this.object.name);
 	  }*/
+
 	if((this.headingBox) && (this.systemBox) &&(this.planetBox))
 	{
+		if((this.page==2)&&(this.object==selectedShip))
+		{
+			this.headingBox.visible=true;
+			this.systemBox.visible=true;
+			this.planetBox.visible=true;
+			this.goPlanetButton.visible=true;
+		}else
+		{
+			this.headingBox.visible=false;
+			this.systemBox.visible=false;
+			this.planetBox.visible=false;
+			this.goPlanetButton.visible=false;
+		}
+		
 		this.headingBox.update();
 		var emily=this.systemBox.listTrack;
 		this.systemBox.update();
@@ -869,9 +884,11 @@ function screenBox(obj)
 				this.page=this.pages-1;
 			}
 		}
+
 	}
 	this.draw=function(can,cam)
 	{
+
 		can.save();
 		can.font = "12pt Calibri";
 		can.fillStyle="white";
@@ -1859,7 +1876,7 @@ setupOurs=function(sun)
 	{
 			for (var po=0;po<pmoons[gop];po++)
 			{
-				monsta.startMoon(40,sun.planets[gop],Math.random()*35+15,((Math.random()*8)+1)/8,0,true,null);
+				monsta.startMoon(40,sun.planets[gop],(Math.random()*8+25)*sun.planets[gop].size,((Math.random()*8)+1)/8,0,true,null);
 			}
 	}
 	sun.planets[0].name="Mercury";
