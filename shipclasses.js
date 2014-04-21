@@ -12,7 +12,7 @@ function shipClass()
 	this.destination=null;
 	this.transportRange=200;
 	this.lifeSupport=true;
-	this.lifeSupportRate=.25;
+	this.lifeSupportRate=0.25;
 	this.maxMines=100;
 	this.maxTorpedos=100;
 	this.numTorpedos=100;
@@ -28,13 +28,13 @@ function shipClass()
 	this.warpSignature=0;
 	this.commandCode=1234;
 	this.prefixCode=Math.floor(Math.random()*9999); //that bullshit from WoKhan
-	this.escapePods=new Array();
+	this.escapePods=[];
 	this.acceltick=0;
 	this.accelrate=10;
 	this.weaponsHot=0;
-	this.phaserBanks=new Array();
+	this.phaserBanks=[];
 	this.numPhasers=1;
-	this.torpedoBays=new Array();
+	this.torpedoBays=[];
 	this.numTorpedoBays=0;
 	this.phaserBanks.push(new energyWeapon(this));
 	this.shields=0;
@@ -46,7 +46,7 @@ function shipClass()
 	this.tractorRange=200;
 	this.morale=70;
 	this.turnSpeed=2;
-	this.acceleration=.5;
+	this.acceleration=0.5;
 	this.hp=100;
 	this.prefix="U.S.S.";
 	this.name="Type-2 Shuttle";
@@ -65,7 +65,7 @@ function shipClass()
 	this.crewMax=0;
 	this.orbitDiameter=50;
 	this.captainFlees=false;
-	this.baseRepair=.25;
+	this.baseRepair=0.25;
 	this.autoFireRate=40;
 	
 	
@@ -124,10 +124,10 @@ birdOfPrey=new shipClass();
 warbird=new shipClass();
 
 
-shipClasses=new Array();
+shipClasses=[];
 for(var i=0;i<18;i++)
 {
-	shipClasses[i]=new Array();
+	shipClasses[i]=[];
 }
 
 shipClasses[civIDs.Human].push(galaxyClass);

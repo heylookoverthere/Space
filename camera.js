@@ -28,7 +28,7 @@ var camera = {  //represents the camera, aka what part of the map is on screen
 			//var tay=0-Math.floor(targ.y-CANVAS_HEIGHT/2);
 			var tax=-149550;
 			var tay=-149680;
-		}else if(this.zoomFactor==0)
+		}else if(this.zoomFactor===0)
 		{
 			var tax=-147835;
 			var tay=-148405;
@@ -76,7 +76,7 @@ var camera = {  //represents the camera, aka what part of the map is on screen
 		
 		
 		this.x=-targ.x-nax;
-		this.y=-targ.y-nay
+		this.y=-targ.y-nay;
     },
 	
 	adjForZoom: function() {

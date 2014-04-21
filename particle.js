@@ -40,8 +40,8 @@ function particle(){
 	this.raceID=-1;
 	this.civ=null;
 	this.numMoons=0;
-	this.moons=new Array();
-	this.buildings=new Array();
+	this.moons=[];
+	this.buildings=[];
 	this.maxBuildings=6;
 	this.population=5;
 	this.hasShipyard=false;
@@ -111,7 +111,7 @@ function particle(){
 		{
 			if(this.buildings[i].type==Buildings.Lab)
 			{
-				rate+=.5;
+				rate+=0.5;
 			}
 		}
 		return rate;
@@ -123,7 +123,7 @@ function particle(){
 		{
 			if(this.buildings[i].type==Buildings.Mine)
 			{
-				rate+=.5;
+				rate+=0.5;
 			}
 		}
 		return rate;
@@ -194,10 +194,10 @@ function particle(){
 
 
 	};
-};
+}
 
 function particleSystem(){
-	this.particles = new Array();
+	this.particles = [];
 	this.updateRate=1;
 	this.lastUpdate=0;
 	this.start=function(dur,x,y,xv,yv,color,gravity,exploader){
@@ -210,7 +210,7 @@ function particleSystem(){
 		tod.alive=true;
 		tod.counter=dur;
 		tod.color=color;
-		tod.gravity=gravity
+		tod.gravity=gravity;
 		tod.exploader=exploader;
 		var stamp = new Date();
 		tod.startTime=stamp.getTime();
@@ -229,7 +229,7 @@ function particleSystem(){
 		tod.sprite=Sprite(spt);
 		tod.counter=dur;
 		tod.color=color;
-		tod.gravity=gravity
+		tod.gravity=gravity;
 		tod.exploader=exploader;
 		var stamp = new Date();
 		tod.startTime=stamp.getTime();
@@ -347,7 +347,7 @@ function particleSystem(){
 		tod.shieldSprite=Sprite("planetshields");
 		tod.sun=son;
 		tod.numMoons=0;
-		tod.size=Math.floor(Math.random()*4)+1
+		tod.size=Math.floor(Math.random()*4)+1;
 		tod.planet=true;
 		tod.exploader=true;
 		tod.orbiting=true;
@@ -364,7 +364,7 @@ function particleSystem(){
 		tod.orbitSpeed=spd;
 		tod.textured=true;
 		
-		if(planettype==null)
+		if(planettype===null)
 		{
 			tod.type=Math.floor((Math.random()*6));
 		}else
@@ -375,7 +375,7 @@ function particleSystem(){
 		tod.height=32;
 		//tod.sprite=Sprite("earthsmall");
 		var twitch=Math.floor(Math.random()*4);
-		if (tod.type==0) {tod.sprite=Sprite("earthsmall");tod.shieldSprite=Sprite("planetshieldsmall");}
+		if (tod.type===0) {tod.sprite=Sprite("earthsmall");tod.shieldSprite=Sprite("planetshieldsmall");}
 		if (tod.type==1) {tod.sprite=Sprite("planetsmall");tod.shieldSprite=Sprite("planetshieldsmall");}
 		if (tod.type==2) {tod.sprite=Sprite("hotplanetsmall");tod.shieldSprite=Sprite("planetshieldsmall");}
 		if (tod.type==3) {tod.sprite=Sprite("iceplanetsmall");tod.shieldSprite=Sprite("planetshieldsmall");}
@@ -474,7 +474,7 @@ function particleSystem(){
 		tod.type=Math.floor((Math.random()*2)); //todo
 	
 		//tod.sprite=Sprite("earthsmall");
-		if (tod.type==0) {tod.sprite=Sprite("meteorsmall");}
+		if (tod.type===0) {tod.sprite=Sprite("meteorsmall");}
 		if (tod.type==1) {tod.sprite=Sprite("meteorlarge");}
 		tod.counter=dur;
 		tod.color="white";
@@ -509,7 +509,7 @@ function particleSystem(){
 		tod.orbitSpeed=spd;
 		tod.textured=true;
 		
-		if(planettype==null)
+		if(planettype===null)
 		{
 			tod.type=Math.floor((Math.random()*5));
 		}else
@@ -518,7 +518,7 @@ function particleSystem(){
 		}
 	
 		//tod.sprite=Sprite("earthsmall");
-		if (tod.type==0) {tod.sprite=Sprite("earthsmall");}
+		if (tod.type===0) {tod.sprite=Sprite("earthsmall");}
 		if (tod.type==1) {tod.sprite=Sprite("planetsmall");}
 		if (tod.type==2) {tod.sprite=Sprite("hotplanetsmall");}
 		if (tod.type==3) {tod.sprite=Sprite("iceplanetsmall");}
@@ -548,7 +548,7 @@ function particleSystem(){
 				this.particles[i].desty=y+dy;
 			}
 		}
-	}
+	};
 	this.unSwarm=function(){
 		for(var i=0;i<this.particles.length;i++)
 		{
@@ -559,7 +559,7 @@ function particleSystem(){
 				this.particles[i].desty=Math.floor(Math.random()*CANVAS_HEIGHT);
 			}
 		}
-	}
+	};
 	this.colonyCollapse=function(){
 		for(var i=0;i<this.particles.length;i++)
 		{
@@ -568,5 +568,5 @@ function particleSystem(){
 				this.particles[i].gravity=true;
 			}
 		}
-	}
-};
+	};
+}

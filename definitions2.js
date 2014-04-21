@@ -16,9 +16,9 @@ var Earth=null;
 var selectedShip=null;
 var Cube=null;
 var drawMap=false;
-//var things=new Array();
+//var things=[];
 var numCivilizations=18;
-var civs=new Array();
+var civs=[];
 for(var i=0;i<numCivilizations;i++)
 {
 	civs[i]=new civilization();
@@ -30,7 +30,7 @@ function clearTails()
 {
 	for(var i=0;i<ships.length;i++)
 	{
-		ships[i].tail=new Array();
+		ships[i].tail=[];
 	}
 }
 
@@ -129,8 +129,8 @@ civs[civIDs.Borg].allied=false; //for now.
 //civs[civIDs.Romulan].mode=AIModes.Defense;
 civs[civIDs.Dominion].mode=AIModes.Agressive;
 
-var ships=new Array();
-//var stations=new Array(); //todo add to civilization
+var ships=[];
+//var stations=[]; //todo add to civilization
 
 var curShip=0;
 var planetTypes = ["Class M","Class L","Class N","Class F","Class J","Class T","Demon Class"];
@@ -154,12 +154,13 @@ function drawLittleMap(can, cam)
 	can.fillRect(mapedgex,mapedgey,universeWidth/mapFactor,universeHeight/mapFactor);
 	can.fillStyle="white";
 	canvas.font = "8pt Calibri";
-	
+	var xp=0;
+	var yp=0;
 	var hostileMapMode=false;
 	for(var i=0;i<stars.length;i++)
 	{
-		var xp=stars[i].x/mapFactor-1;
-		var yp=stars[i].y/mapFactor-1;
+		xp=stars[i].x/mapFactor-1;
+		yp=stars[i].y/mapFactor-1;
 		can.fillRect(mapedgex+xp,mapedgey+yp,4,4);
 		if(stars[i].civs.length>0)
 		{
@@ -172,9 +173,9 @@ function drawLittleMap(can, cam)
 	for(var i=0;i<nebulas.length;i++)
 	{
 		can.fillStyle="pink";
-		var xp=nebulas[i].x/mapFactor-1;
-		var yp=nebulas[i].y/mapFactor-1;
-		can.globalAlpha=.50;
+		xp=nebulas[i].x/mapFactor-1;
+		yp=nebulas[i].y/mapFactor-1;
+		can.globalAlpha=0.50;
 		can.fillRect(mapedgex+xp,mapedgey+yp,6,6);
 		can.fillStyle="blue";
 		can.fillRect(mapedgex+xp-3,mapedgey+yp+2,6,6);
@@ -190,8 +191,8 @@ function drawLittleMap(can, cam)
 	}
 	for(var i=0;i<ships.length;i++)
 	{
-		var xp=ships[i].x/mapFactor;
-		var yp=ships[i].y/mapFactor;
+		xp=ships[i].x/mapFactor;
+		yp=ships[i].y/mapFactor;
 		can.fillStyle=ships[i].civ.color;
 		if(hostileMapMode)
 		{
@@ -214,7 +215,7 @@ function drawLittleMap(can, cam)
 		{
 			var txp=ships[i].tail[p].x/mapFactor;
 			var typ=ships[i].tail[p].y/mapFactor;
-			can.globalAlpha=.30;
+			can.globalAlpha=0.30;
 			can.fillRect(mapedgex+txp,mapedgey+typ,2,2);
 		}
 		can.globalAlpha=1;
@@ -250,11 +251,11 @@ function drawLittleMap(can, cam)
     can.stroke();
 	can.closePath();	
 	//can.fillRect(mapedgex+point1.x,mapedgey+point1.y,cam.width/(mapFactor*cam.zoom),cam.height/(mapFactor*cam.zoom));
-};
+}
 
 function honorDead(iv)
 {
-	if(!iv.deadShips) {return};
+	if(!iv.deadShips) {return;}
 	for(var i=0;i<iv.deadShips.length;i++){
 		console.log(iv.deadShips[i].prefix+iv.deadShips[i].name);
 		for(var j=0;j<iv.deadShips[i].crew.length;j++){
@@ -269,7 +270,7 @@ function timesavertwo()
 	{
 		civs[0].produceShip(1);
 	}
-};
+}
 
 function whoseleft()
 {
@@ -280,7 +281,7 @@ function whoseleft()
 			console.log(civs[i].name+ " "+civs[i].worlds.length+" worlds and "+civs[i].ships.length+" ships.");
 		}
 	}
-};
+}
 
 function howsitgoing(iv)
 {
@@ -342,6 +343,7 @@ statusModes.Overview=0;
 statusModes.CivView=1;
 statusModes.WarView=3;
 
+var reek="";
 
 function statusBox()
 {
@@ -365,7 +367,7 @@ function statusBox()
 	this.researchBar.y=70;
 	
 	this.scale=1;
-	this.height=550
+	this.height=550;
 	this.width=650;
 	this.backColor="blue";
 	this.borderSize=4;
@@ -436,7 +438,7 @@ function statusBox()
 				this.collumTrack=0;
 			}
 		}
-	}
+	};
 	this.draw=function(can,cam)
 	{
 		if(!this.visible)
@@ -449,7 +451,7 @@ function statusBox()
 		can.fillStyle=this.civ.color;
 		can.fillRect(this.x,this.y,this.width+this.borderSize,this.height+this.borderSize);
 		can.fillStyle=this.backColor;
-		can.globalAlpha=.80;
+		can.globalAlpha=0.80;
 		can.fillRect(this.x+this.borderSize,this.y+this.borderSize,this.width-this.borderSize,this.height-this.borderSize);
 		can.fillStyle="white";
 		if(this.mode==statusModes.Overview)
@@ -525,6 +527,7 @@ function statusBox()
 			{
 				elipsis=false;
 			}
+
 			for(var i=0;i<kim;i++)
 			{
 				var mike="";
@@ -536,7 +539,7 @@ function statusBox()
 				{
 					can.fillStyle="green";
 				}
-				var reek=this.civ.worlds[i].name+mike+", "+this.civ.worlds[i].sun.name+" system"
+				reek=this.civ.worlds[i].name+mike+", "+this.civ.worlds[i].sun.name+" system";
 				reek=elipseString(reek,50);
 				can.fillText(reek,this.x+10,this.y+2+128+i*16);
 				can.fillStyle="white";
@@ -613,16 +616,17 @@ function statusBox()
 		}
 		can.restore();
 	};
-};
+}
 
 var roland=new statusBox();
-var textBoxes=new Array();
-var buttons=new Array();
+var textBoxes=[];
+var buttons=[];
 
 function button(pt)
 {
 	this.x=0;
 	this.y=0;
+	this.font= "8pt Calibri";
 	if(pt){
 	this.parent=pt;
 	}
@@ -637,13 +641,13 @@ function button(pt)
 	this.height=24;
 	this.blinkRate=30;
 	this.blink=false;
-	this.textLimit=10;
+	this.textLimit=20;
 	this.choice=null;
 	this.text="Go!";
 	this.blinkTrack=0;
 	this.backColor="green";
 	this.borderSize=2;
-	this.linked=new Array(); //turn these off when this goes on.
+	this.linked=[]; //turn these off when this goes on.
 	this.doThings=function()
 	{
 		
@@ -665,6 +669,9 @@ function button(pt)
 	};
 	this.draw=function(can,cam)
 	{
+		if(!this.visible) {return;}
+		can.save();
+		can.font=this.font;
 		can.fillStyle="white";
 		if(this.hasFocus)
 		{
@@ -692,12 +699,13 @@ function button(pt)
 		can.fillStyle="white";
 		if(this.center)
 		{
-			can.fillText(this.text,this.x+this.width/2-8,this.y+this.height-8)
+			can.fillText(this.text,this.x+this.width/2-8,this.y+this.height-8);
 		}else
 		{
-			var peek=elipseString(this.text,10)
-			can.fillText(peek,this.x+6,this.y+14)
+			var peek=elipseString(this.text,this.textLimit);
+			can.fillText(peek,this.x+6,this.y+14);
 		}
+		can.restore();
 	};
 	
 }
@@ -706,6 +714,7 @@ function textBox(pt)
 {
 	this.x=0;
 	this.y=0;
+	this.font="14pt Calibri";
 	this.colorText=false;
 	this.limit=16;
 	if(pt){
@@ -721,9 +730,17 @@ function textBox(pt)
 		}
 		if(this.object)
 		{
-			this.object.destination=null;
-			this.object.desiredOrbitTarg=null;
-			this.object.desiredHeading=parseInt(this.text);
+			
+			var dole=parseInt(this.text);
+			if((dole<361) && (dole>-1))
+			{
+				this.object.desiredHeading=parseInt(this.text);
+				this.object.destination=null;
+				this.object.desiredOrbitTarg=null;
+			}else
+			{
+				console.log("Not a valid heading!");
+			}
 		}
 	};
 	this.onClick=function()
@@ -778,7 +795,7 @@ function textBox(pt)
 				this.blinkTrack=0;
 			}
 		}
-		if(this.type==0) //text
+		if(this.type===0) //text
 		{
 			if(this.hasFocus)
 			{
@@ -817,7 +834,7 @@ function textBox(pt)
 					}
 				}
 				
-				if((this.type==0) &&(startkey.check()))
+				if((this.type===0) &&(startkey.check()))
 				{
 					this.enter();
 				}
@@ -868,10 +885,13 @@ function textBox(pt)
 	this.draw=function(can,cam)
 	{
 		if(!this.visible) {return;}
+		
 		if((this.visibleOnlyFocus) && (!this.hasFocus))
 		{
 			return;
 		}
+		can.save();
+		//can.font=this.font;
 		can.fillStyle="grey";
 		if(this.hasFocus)
 		{
@@ -896,8 +916,9 @@ function textBox(pt)
 		{
 			darry="|";
 		}
-		can.fillText(this.text+darry,this.x+2,this.y+14)
+		can.fillText(this.text+darry,this.x+2,this.y+14);
 		can.fillStyle="white";
+		can.restore();
 	};
 	
 }
@@ -908,7 +929,7 @@ clearFocus=function()
 	{
 		textBoxes[i].hasFocus=false;
 	}
-}
+};
 
 function screenBox(obj)
 {
@@ -916,7 +937,7 @@ function screenBox(obj)
 	this.x=20;
 	this.y=350;
 	this.scale=1;
-	this.height=180
+	this.height=180;
 	this.width=80;
 	this.page=0;
 	this.pages=7;
@@ -981,8 +1002,8 @@ function screenBox(obj)
 		this.goPlanetButton.doThings=function()
 		{
 			
-			if(!this.parent.planetBox) {return};
-			if(!this.parent.planetBox.list) {return};
+			if(!this.parent.planetBox) {return;}
+			if(!this.parent.planetBox.list) {return;}
 			var sally=this.parent.planetBox.list[this.parent.planetBox.listTrack];
 			if(!sally) {return;}
 			this.object.orderOrbit(sally);
@@ -999,8 +1020,8 @@ function screenBox(obj)
 		this.goShipButton.doThings=function()
 		{
 			
-			if(!this.parent.shipBox) {return};
-			if(!this.parent.shipBox.list) {return};
+			if(!this.parent.shipBox) {return;}
+			if(!this.parent.shipBox.list) {return;}
 			var sally=this.parent.shipBox.list[this.parent.shipBox.listTrack];
 			if(!sally) {return;}
 			if(this.object.orbiting)
@@ -1011,21 +1032,21 @@ function screenBox(obj)
 			console.log(this.object.name+" heading to "+sally.name);
 		};
 		buttons.push(this.goShipButton);
-		this.sysButtons=new Array();
-		var i=0;
-		for(var g=0;((g<3)&&(i<this.object.systems.length));g++)
+		this.sysButtons=[];
+		var ip=0;
+		for(var g=0;((g<3)&&(ip<this.object.systems.length));g++)
 		{
-			for(var h=0;((h<7)&&(i<this.object.systems.length));h++)
+			for(var h=0;((h<7)&&(ip<this.object.systems.length));h++)
 			{
 				var liddle=new button(this);
 				liddle.object=this.object;
 				liddle.parent=this;
-				liddle.ID=i;
-				liddle.on=this.object.systems[i].on;
+				liddle.ID=ip;
+				liddle.on=this.object.systems[ip].on;
 				liddle.x=this.x+8+g*85;
 				liddle.y=this.y+38+h*32;
 				liddle.width=80;
-				liddle.text=this.object.systems[i].name;
+				liddle.text=this.object.systems[ip].name;
 				liddle.onoff=true;
 				liddle.doThings=function()
 				{
@@ -1039,7 +1060,7 @@ function screenBox(obj)
 					liddle.greyed=true;
 				}
 				this.sysButtons.push(liddle);
-				i++;
+				ip++;
 			}
 		}
 		
@@ -1075,93 +1096,78 @@ function screenBox(obj)
 	}
 	this.update=function()
 	{
-	  //clicky buttons!!
-	  /*if((debugkey.check()) && (selectedShip==this.object))
-	  {
-		this.turnPage();
-		console.log(this.object.name);
-	  }*/
-
-	if((this.headingBox) && (this.systemBox) &&(this.planetBox))
-	{
-		
-		
-		this.planetBox.list=this.systemBox.list[this.systemBox.listTrack].planets;
-		this.shipBox.list=this.raceBox.list[this.raceBox.listTrack].ships;
-		if((this.page==2)&&(this.object==selectedShip))
+		if((this.headingBox) && (this.systemBox) &&(this.planetBox))
 		{
-			this.headingBox.visible=true;
-			this.systemBox.visible=true;
-			this.planetBox.visible=true;
-			this.goPlanetButton.visible=true;
-			this.raceBox.visible=true;
-			this.shipBox.visible=true;
-			
-			this.goShipButton.visible=true;
-		}else
-		{
-			this.headingBox.visible=false;
-			this.systemBox.visible=false;
-			this.planetBox.visible=false;
-			this.goPlanetButton.visible=false;
-			this.raceBox.visible=false;
-			this.shipBox.visible=false;
-			
-			this.goShipButton.visible=false;
-		}
-		if((this.page==0)&&(this.object==selectedShip))
-		{
-			this.nameBox.visible=true;
-		}else
-		{
-			this.nameBox.visible=false;
-		}
-		if((this.page==4) && (this.object==selectedShip))
-		{
-			for(var i=0;i<this.sysButtons.length;i++)
+			this.planetBox.list=this.systemBox.list[this.systemBox.listTrack].planets;
+			this.shipBox.list=this.raceBox.list[this.raceBox.listTrack].ships;
+			if((this.page==2)&&(this.object==selectedShip)&&(this.object.systems[SystemIDs.Navigation].functional()))
 			{
-				this.sysButtons[i].visible=true;
-				this.sysButtons[i].update();
-			}
-		}else
-		{
-			for(var i=0;i<this.sysButtons.length;i++)
+				this.headingBox.visible=true;
+				this.systemBox.visible=true;
+				this.planetBox.visible=true;
+				this.goPlanetButton.visible=true;
+				this.raceBox.visible=true;
+				this.shipBox.visible=true;
+				
+				this.goShipButton.visible=true;
+			}else
 			{
-				this.sysButtons[i].visible=false;
+				this.headingBox.visible=false;
+				this.systemBox.visible=false;
+				this.planetBox.visible=false;
+				this.goPlanetButton.visible=false;
+				this.raceBox.visible=false;
+				this.shipBox.visible=false;
+				
+				this.goShipButton.visible=false;
 			}
-		}
-		this.headingBox.update();
-		var emily=this.systemBox.listTrack;
-		this.systemBox.update();
-		if(this.systemBox.listTrack!=emily)
-		{
-			this.planetBox.list=this.systemBox.list[this.systemBox.listTrack].planets;	
-			this.planetBox.listTrack=0;
-		}
+			if((this.page===0)&&(this.object==selectedShip))
+			{
+				this.nameBox.visible=true;
+			}else
+			{
+				this.nameBox.visible=false;
+			}
+			if((this.page==4) && (this.object==selectedShip))
+			{
+				for(var i=0;i<this.sysButtons.length;i++)
+				{
+					this.sysButtons[i].visible=true;
+					this.sysButtons[i].update();
+				}
+			}else
+			{
+				for(var i=0;i<this.sysButtons.length;i++)
+				{
+					this.sysButtons[i].visible=false;
+				}
+			}
+			this.headingBox.update();
+			var emily=this.systemBox.listTrack;
+			this.systemBox.update();
+			if(this.systemBox.listTrack!=emily)
+			{
+				this.planetBox.list=this.systemBox.list[this.systemBox.listTrack].planets;	
+				this.planetBox.listTrack=0;
+			}
 
-		emily=this.raceBox.listTrack;
-		this.raceBox.update();
-		if(this.raceBox.listTrack!=emily)
-		{
-			this.shipBox.list=this.raceBox.list[this.raceBox.listTrack].ships;	
-			this.shipBox.listTrack=0;
+			emily=this.raceBox.listTrack;
+			this.raceBox.update();
+			if(this.raceBox.listTrack!=emily)
+			{
+				this.shipBox.list=this.raceBox.list[this.raceBox.listTrack].ships;	
+				this.shipBox.listTrack=0;
+			}
+			this.shipBox.update();
+			this.planetBox.update();
+			this.nameBox.update();
 		}
-		this.shipBox.update();
-		this.planetBox.update();
-		this.nameBox.update();
-		
-	}
-	  /*if((this.planetBox.hasFocus) && (this.page==2))//todo...
-		{
-				holdInput=true;
-		}*/
-
 	};
 	this.turnPage=function(back)
 	{
 		if(!back)
 		{
-			this.page++
+			this.page++;
 			if(this.page>this.pages-1)
 			{
 				//this.page=this.pages-1;
@@ -1177,14 +1183,14 @@ function screenBox(obj)
 			}
 		}
 
-	}
+	};
 	this.draw=function(can,cam)
 	{
 
 		can.save();
 		can.font = "12pt Calibri";
 		can.fillStyle="white";
-		can.globalAlpha=.65;
+		can.globalAlpha=0.65;
 		can.fillRect(this.x,this.y,this.width+this.borderSize,this.height+this.borderSize);
 		can.fillStyle=this.backColor;
 
@@ -1192,7 +1198,7 @@ function screenBox(obj)
 		can.fillStyle="white";
 		if(this.object.ship)
 		{
-			if(this.page==0)
+			if(this.page===0)
 			{
 				
 				if(this.object.civ.name=="Humanity")
@@ -1212,21 +1218,35 @@ function screenBox(obj)
 				can.fillText("Shields: "+this.object.shields+"/"+this.object.maxShields,this.x+10,this.y+2+80);
 				
 				can.fillText("Phasers:"+this.object.phaserBanks.length+" Torpedos: "+this.object.numTorpedos+" Mines: "+this.object.numMines,this.x+10,this.y+2+96);
-				if(this.object.torpedoTarget)
+				if(this.object.systems[SystemIDs.Targeting].functional())
 				{
-					can.fillText("Targeting: "+this.object.torpedoTarget.name,this.x+10,this.y+2+108);
+					if(this.object.torpedoTarget)
+					{
+						can.fillText("Targeting: "+this.object.torpedoTarget.name,this.x+10,this.y+2+108);
+					}else
+					{
+						can.fillText("No Weapons Lock",this.x+10,this.y+2+108);
+					}
 				}else
 				{
-					can.fillText("No Weapons Lock",this.x+10,this.y+2+108);
+					can.fillStyle="red";
+					can.fillText("Weapons Offline!",this.x+10,this.y+2+108);
+					can.fillStyle="white";
 				}
 			}else if(this.page==1)
 			{
 				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
-				can.fillText("Crew: ",this.x+10,this.y+2+32);
+				can.fillText("Crew:    O2:"+(this.object.oxygen/10)+"%",this.x+10,this.y+2+32);
 				for(var i=0;i<this.object.crew.length;i++)
 				{
-					can.fillText(this.object.crew[i].title+" "+this.object.crew[i].name+" Lvl: "+this.object.crew[i].level,this.x+10,this.y+2+44+i*32);
-					can.fillText("   "+this.object.crew[i].hp+"/"+this.object.crew[i].maxHp,this.x+10,this.y+2+44+i*32+16);
+					can.fillText(this.object.crew[i].title+" "+this.object.crew[i].name+" Lvl: "+this.object.crew[i].level,this.x+10,this.y+2+46+i*32);
+					can.fillText("   "+this.object.crew[i].hp+"/"+this.object.crew[i].maxHp,this.x+10,this.y+2+46+i*32+16);
+				}
+				if(!this.object.systems[SystemIDs.LifeSupport].functional())
+				{
+					can.fillStyle="red";
+					can.fillText("LIFE SUPORT OFFLINE",this.x+128,this.y+2+32);
+					can.fillStyle="white";
 				}
 			}else if(this.page==2)//navigation
 			{
@@ -1250,9 +1270,9 @@ function screenBox(obj)
 				can.fillText("Distance: "+destdist+" AU",this.x+10,this.y+2+80);
 				can.fillText("Speed: "+this.object.speed+"/"+this.object.maxSpeed,this.x+10,this.y+2+96);
 				
-				if(this.object.civ.name=="Humanity")
+				if((this.object.civ.name=="Humanity") && (this.object.systems[SystemIDs.Navigation].functional()))
 				{
-					can.fillStyle="white"
+					can.fillStyle="white";
 					can.fillText("Enter Heading:",this.x+10,this.y+2+122);
 					this.headingBox.x=this.x+10+110;
 					this.headingBox.y=this.y+112;
@@ -1285,24 +1305,67 @@ function screenBox(obj)
 					this.goShipButton.x=this.x+10+208;
 					this.goShipButton.y=this.y+182;
 					this.goShipButton.draw(can,camera);
+				}else if((this.object.civ.name=="Humanity") && (!this.object.systems[SystemIDs.Navigation].functional()))
+				{
+					can.fillStyle="red";
+					can.fillText("NAVIGATION OFFLINE",this.x+10,this.y+2+122);
+					can.fillStyle="white";
 				}
 			}else if(this.page==3)//combat //somehow add list of nearby hostile ships.
 			{
 				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
 				can.fillText("Combat: ",this.x+10,this.y+2+32);
 				can.fillText(this.object.nearbyHostiles.length+" enemy ships in sensor range.",this.x+10,this.y+2+48);
-				if(this.object.torpedoTarget)
+				if(this.object.systems[SystemIDs.Targeting].functional())
 				{
-					can.fillText("Targeting: "+this.object.torpedoTarget.name,this.x+10,this.y+2+64);
-					can.fillText(this.object.torpedoTarget.civ.name+" "+this.object.torpedoTarget.class.name +" Starship",this.x+10,this.y+2+80); //todo class!
-					can.fillText("Target HP: "+this.object.torpedoTarget.hp+"/"+this.object.torpedoTarget.maxHp,this.x+10,this.y+2+96);
-					can.fillText("Target Shields: "+this.object.torpedoTarget.shields+"/"+this.object.torpedoTarget.maxShields,this.x+10,this.y+2+112);
-					can.fillText("Target Crew: "+this.object.torpedoTarget.crew.length,this.x+10,this.y+2+124);
-					//todo, list whats systems are offline
-			
+
+				
+					if(this.object.torpedoTarget)
+					{
+						can.fillText("Targeting: "+this.object.torpedoTarget.name,this.x+10,this.y+2+64);
+						can.fillText(this.object.torpedoTarget.civ.name+" "+this.object.torpedoTarget.class.name +" Starship",this.x+10,this.y+2+80); //todo class!
+						can.fillText("Target HP: "+this.object.torpedoTarget.hp+"/"+this.object.torpedoTarget.maxHp,this.x+10,this.y+2+96);
+						can.fillText("Target Shields: "+this.object.torpedoTarget.shields+"/"+this.object.torpedoTarget.maxShields,this.x+10,this.y+2+112);
+						can.fillText("Target Crew: "+this.object.torpedoTarget.crew.length,this.x+10,this.y+2+124);
+						//todo, list whats systems are offline
+				
+					}else
+					{
+						can.fillText("No Weapons Lock",this.x+10,this.y+2+64);
+					}
 				}else
 				{
-					can.fillText("No Weapons Lock",this.x+10,this.y+2+64);
+					can.fillStyle="red";
+					can.fillText("Targeting System Offline!",this.x+10,this.y+2+64);
+					can.fillStyle="white";
+				}
+				if(!this.object.systems[SystemIDs.Weapons].functional())
+				{
+					can.fillStyle="red";
+					can.fillText("Weapons Offline!",this.x+10,this.y+2+150);
+					can.fillStyle="white";
+				}
+				if((this.object.systems[SystemIDs.Shields].installed) && (!this.object.systems[SystemIDs.Shields].functional()))
+				{
+					can.fillStyle="red";
+					can.fillText("Shields Offline!",this.x+10,this.y+2+166);
+					can.fillStyle="white";
+				}
+				if(this.object.breaches>0)
+				{
+					can.fillStyle="red";
+				
+					if(this.object.breaches>1)
+					{
+						can.fillText("Multiple Hull Breaches!",this.x+10,this.y+2+178);
+					
+					}else
+					{
+						can.fillText("Hull Breached!",this.x+10,this.y+2+178);
+					
+					}
+					
+					can.fillStyle="white";
 				}
 			}else if(this.page==4)//Systems
 			{
@@ -1367,7 +1430,7 @@ function screenBox(obj)
 		}
 		can.restore();
 	};
-};
+}
 
 function fuckoff()
 {
@@ -1397,7 +1460,7 @@ function progressBar()
 		this.fillStyle="white";
 		var xoff=7*this.label.length;
 		can.fillRect(this.x+xoff,this.y,104,this.height+4);
-		can.fillText(this.label,this.x,this.y+13)
+		can.fillText(this.label,this.x,this.y+13);
 		
 		can.fillStyle=this.backColor;
 		can.fillRect(this.x+xoff+2,this.y+2,100,this.height);
@@ -1406,7 +1469,7 @@ function progressBar()
 		can.fillRect(this.x+xoff+3,this.y+3,percent,this.height-2);
 		can.restore();
 	};
-};
+}
 
 function newShip(iv,startworld,capt)
 {
@@ -1414,15 +1477,16 @@ function newShip(iv,startworld,capt)
 	{
 		startworld=iv.homeworld;
 	}
+	var james=null;
 	if(iv.civID==civIDs.Human)
 		{
-			var james=new starShip(iv.CivID);
+			james=new starShip(iv.CivID);
 			james.homeworld=Earth;
 			james.civ=iv;
 			james.class=shipClasses[0][0];
 			james.classify();
 			var bah=Math.floor(Math.random()*7);
-			james.x=startworld.x
+			james.x=startworld.x;
 			james.y=startworld.y;
 			james.orbit(startworld);
 			james.prefix="U.S.S.";
@@ -1457,12 +1521,12 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Vulcan)
 		{
-			var james=new starShip(iv.CivID);
+			james=new starShip(iv.CivID);
 			james.homeworld=iv.homeworld;
 			james.class=shipClasses[civIDs.Vulcan][0];
 			james.civ=iv;
 			james.classify();
-			james.x=startworld.x
+			james.x=startworld.x;
 			james.y=startworld.y;
 			james.prefix="Vulcan";
 			james.class.name="Capitol Ship";
@@ -1479,11 +1543,11 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Klingon)
 		{
-			var james=new starShip(iv.CivID);
+			james=new starShip(iv.CivID);
 				james.class=shipClasses[civIDs.Klingon][0];
 				james.civ=iv;
 				james.classify();
-				james.x=startworld.x
+				james.x=startworld.x;
 				james.y=startworld.y;
 				james.homeworld=iv.homeworld;
 				james.orbit(startworld);
@@ -1504,11 +1568,11 @@ function newShip(iv,startworld,capt)
 				return james;
 		}else if(iv.civID==civIDs.Dominion)
 		{
-			var james=new starShip(iv.CivID);
+			james=new starShip(iv.CivID);
 				james.class=shipClasses[civIDs.Dominion][0];
 				james.civ=iv;
 				james.classify();
-				james.x=startworld.x
+				james.x=startworld.x;
 				james.y=startworld.y;
 				james.homeworld=iv.homeworld;
 				james.orbit(startworld);
@@ -1529,11 +1593,11 @@ function newShip(iv,startworld,capt)
 				return james;
 		}else if(iv.civID==civIDs.Cardassian)
 		{
-			var james=new starShip(iv.CivID);
+			james=new starShip(iv.CivID);
 			james.class=shipClasses[civIDs.Cardassian][0];
 			james.civ=iv;
 			james.classify();
-			james.x=startworld.x
+			james.x=startworld.x;
 			james.y=startworld.y;
 			james.homeworld=iv.homeworld;
 			james.orbit(startworld);
@@ -1555,11 +1619,11 @@ function newShip(iv,startworld,capt)
 			
 		}else if(iv.civID==civIDs.Romulan)
 		{
-			var james=new starShip(iv.CivID);
+			james=new starShip(iv.CivID);
 			james.class=shipClasses[civIDs.Romulan][0];
 			james.civ=iv;
 			james.classify();
-			james.x=startworld.x
+			james.x=startworld.x;
 			james.y=startworld.y;
 			james.homeworld=iv.homeworld;
 			james.prefix="IRW";
@@ -1578,11 +1642,11 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Hirogen)
 		{
-			var james=new starShip(iv.CivID);
+			james=new starShip(iv.CivID);
 			james.class=shipClasses[civIDs.Hirogen][0];
 			james.civ=iv;
 			james.classify();
-			james.x=startworld.x
+			james.x=startworld.x;
 			james.y=startworld.y;
 			james.homeworld=iv.homeworld;
 			james.prefix="Hunter";
@@ -1600,12 +1664,12 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Andorian)
 		{
-			var james=new starShip(iv.CivID);
+			james=new starShip(iv.CivID);
 			james.civ=iv;
 			james.class=shipClasses[civIDs.Andorian][0];
 			james.classify();
 			james.homeworld=iv.homeworld;
-			james.x=startworld.x
+			james.x=startworld.x;
 			james.y=startworld.y;
 			james.desiredHeading=Math.floor(Math.random()*359);
 			
@@ -1625,12 +1689,12 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Tellarite)
 		{
-			var james=new starShip(iv.CivID);
+			james=new starShip(iv.CivID);
 			james.homeworld=iv.homeworld;
 			james.class=shipClasses[civIDs.Tellarite][0];
 			james.civ=civs[civIDs.Tellarite];
 			james.classify();
-			james.x=startworld.x
+			james.x=startworld.x;
 			james.y=startworld.y;
 			james.desiredHeading=Math.floor(Math.random()*359);
 			
@@ -1650,12 +1714,12 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Breen)
 		{
-			var james=new starShip(iv.CivID);
+			james=new starShip(iv.CivID);
 			james.class=shipClasses[civIDs.Breen][0];
 			james.civ=iv;
 			james.classify();
 			james.homeworld=iv.homeworld;
-			james.x=startworld.x
+			james.x=startworld.x;
 			james.y=startworld.y;
 			james.desiredHeading=Math.floor(Math.random()*359);
 			
@@ -1676,12 +1740,12 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Telaxian)
 		{
-			var james=new starShip(iv.CivID);
+			james=new starShip(iv.CivID);
 			james.class=shipClasses[civIDs.Telaxian][0];
 			james.civ=iv;
 			james.classify();
 			james.homeworld=iv.homeworld;
-			james.x=startworld.x
+			james.x=startworld.x;
 			james.y=startworld.y;
 			james.desiredHeading=Math.floor(Math.random()*359);
 			
@@ -1696,18 +1760,18 @@ function newShip(iv,startworld,capt)
 			
 			
 			james.crewVessel(capt);
-			james.civ=iv
+			james.civ=iv;
 			james.alive=true;
 			james.launchDate=Math.floor(theTime.years)+"."+Math.floor(theTime.days);
 			return james;
 		}else if(iv.civID==civIDs.Vidiian)
 		{
-			var james=new starShip(iv.CivID);
+			james=new starShip(iv.CivID);
 			james.class=shipClasses[civIDs.Vidiian][0];
 			james.civ=civs[civIDs.Vidiian];
 			james.classify();
 			james.homeworld=iv.homeworld;
-			james.x=startworld.x
+			james.x=startworld.x;
 			james.y=startworld.y;
 			james.desiredHeading=Math.floor(Math.random()*359);
 			
@@ -1728,12 +1792,12 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Pakled)
 		{
-			var james=new starShip(iv.CivID);
+			james=new starShip(iv.CivID);
 			james.class=shipClasses[civIDs.Pakled][0];
 			james.civ=iv;
 			james.classify();
 			james.homeworld=iv.homeworld;
-			james.x=startworld.x
+			james.x=startworld.x;
 			james.y=startworld.y;
 			james.desiredHeading=Math.floor(Math.random()*359);
 			
@@ -1753,12 +1817,12 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Bajoran)
 		{
-			var james=new starShip(iv.CivID);
+			james=new starShip(iv.CivID);
 			james.class=shipClasses[civIDs.Bajoran][0];
 			james.civ=civs[civIDs.Bajoran];
 			james.classify();
 			james.homeworld=iv.homeworld;
-			james.x=startworld.x
+			james.x=startworld.x;
 			james.y=startworld.y;
 			james.desiredHeading=Math.floor(Math.random()*359);
 			james.prefix="";
@@ -1777,12 +1841,12 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Ferengi)
 		{
-			var james=new starShip(iv.CivID);
+			james=new starShip(iv.CivID);
 			james.class=shipClasses[civIDs.Ferengi][0];
 			james.civ=civs[civIDs.Ferengi];
 			james.classify();
 			james.homeworld=iv.homeworld;
-			james.x=startworld.x
+			james.x=startworld.x;
 			james.y=startworld.y;
 			james.desiredHeading=Math.floor(Math.random()*359);
 			james.prefix="FAS";
@@ -1801,12 +1865,12 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Orion)
 		{
-			var james=new starShip(iv.CivID);
+			james=new starShip(iv.CivID);
 			james.class=shipClasses[civIDs.Orion][0];
 			james.civ=civs[civIDs.Orion];
 			james.classify();
 			james.homeworld=iv.homeworld;
-			james.x=startworld.x
+			james.x=startworld.x;
 			james.y=startworld.y;
 			james.desiredHeading=Math.floor(Math.random()*359);
 			james.prefix="Pirate";
@@ -1825,12 +1889,12 @@ function newShip(iv,startworld,capt)
 			return james;
 		}else if(iv.civID==civIDs.Borg)
 		{
-			var james=new starShip(iv.CivID);
+			james=new starShip(iv.CivID);
 			james.class=shipClasses[civIDs.Borg][0];
 			james.civ=iv;
 			james.classify();
 			james.homeworld=iv.homeworld;
-			james.x=startworld.x
+			james.x=startworld.x;
 			james.y=startworld.y;
 			james.prefix="Cube";
 			james.civID=9;
@@ -1860,12 +1924,12 @@ function newShip(iv,startworld,capt)
 			return james;
 		}
 		
-};
+}
 
 function addShip(hip,iv)
 {
 	iv.ships.push(hip);
-	ships=new Array();
+	ships=[];
 	for(var i=0;i<civs.length;i++)
 	{
 		//ships.concat(civs[i].ships);
@@ -1876,7 +1940,7 @@ function addShip(hip,iv)
 		}
 	}
 		//selectedShip=ships[0];
-};
+}
 var numSystems=80;
 var starsDrawn=0;
 
@@ -1894,7 +1958,7 @@ if(!clean)
 }
 var starNames=new Array(90);
 starNames= ["Eridani","Cygnus","Ceti-Alpha","Omicron Ceti","Monac","Bringold","Alnitak", "Deneb", "Acamar","Rigel","Polaris","Praxillus","Proxima Centauri", "Omicron Persei","Canopus", "Romii", "Sirius","Tahal", "Mintaka", "Vega", "Wolf", "Tau-Ceti","Eminiar","Canaris","Hydra", "Questar", "Arneb", "Amargosa", "Altiar","Draconis","Theloni","Gezid","Indi","Canaris","Sigma", "Cassius","Melona","Minara",biblam,"Detroit","Chicago","Miami","Albany","Providence","Augusta","Washington","Lexington","Moscow","Yemen","Tokyo","St. Petersburg","Berlin","New York","Patterson","Springfield","Great Neck","Manhaset","Port Washington","Honalulu","Vermont","New Hampshire","Kentucky","North Carolina","South Carolina","Florida","Texas","Huston","Oregon","Idaho","Kansas","Georgia","Arkansas","Louisiana","Ukraine","England","France","Goat land","Canada","Perth","India","Indiana","Oklahoma","Arizona","Nevada","Californa"];
-var starNamesUsed=new Array();
+var starNamesUsed=[];
 
 var planetNames=new Array(40);
 planetNames= ["Vulcan","Andoria","Arkaria","Benzar","Halii","Tellar","Teneebla","Trill","Draylax", "Coridan", "Aurelia","Ocampa","Talax","Enara Prime","Hoth","Endor","Tatooine","Carcosa","Sobaras"];
@@ -1917,7 +1981,7 @@ function getQuadrant(thingy){
 			quad="Beta";
 		}else
 		{
-			quad="Gamma"
+			quad="Gamma";
 		}
 	}
 	return quad;
@@ -1925,7 +1989,7 @@ function getQuadrant(thingy){
 
 function romanize(num) {
 	var str=" ";
-	if(num==0)
+	if(num===0)
 	{
 		str=" Prime";
 	}else if(num==1)
@@ -1973,7 +2037,7 @@ function romanize(num) {
 	}
 	
 	return str;
-};
+}
 
 
 
@@ -1988,7 +2052,7 @@ function planetInfo(){
 	//todo
 	};
 	
-};
+}
 
 function cloud(dense){
 	this.type=Math.floor(Math.random()*6);
@@ -1998,14 +2062,14 @@ function cloud(dense){
 	this.size=Math.random()*2+1;
 	this.alpha=0.5;
 	this.sprite=Sprite("neb"+this.type);
-};
+}
 
 function nebula(){
 	this.name="Some Nebula";
 	this.x=Math.random()*universeWidth;
 	this.y=Math.random()*universeHeight;
 	this.numClouds=Math.random()*100;
-	this.clouds=new Array();
+	this.clouds=[];
 	for(var i=0;i<this.numClouds;i++)
 	{
 		this.clouds[i]=new cloud(220);
@@ -2020,14 +2084,14 @@ function nebula(){
 				can.translate((this.x+this.clouds[i].xoffset+cam.x)*cam.zoom,(this.y+this.clouds[i].yoffset+cam.y)*cam.zoom);
 				can.rotate(this.clouds[i].heading*(Math.PI/180));
 				can.scale(this.clouds[i].size*cam.zoom,this.clouds[i].size*cam.zoom);
-				canvas.globalAlpha=.2;
+				canvas.globalAlpha=0.2;
 				this.clouds[i].sprite.draw(can, -64,-64);
 				can.restore();
 			}
 		}
 		
 	};
-};
+}
 //16.075
 function star(){
 	this.x=420;
@@ -2038,7 +2102,7 @@ function star(){
 	this.size=1;
 	this.height=96;
 	this.alive=true;
-	this.civs=new Array();
+	this.civs=[];
 	this.cloaked=false;
 	this.shields=0;
 	this.shieldSprite=Sprite("shields");
@@ -2053,8 +2117,8 @@ function star(){
     }
 	this.name=starNames[nami];
 	starNamesUsed[nami]=true;
-	this.planets=new Array();
-	this.planetDetails=new Array();
+	this.planets=[];
+	this.planetDetails=[];
 	this.numPlanets=0;
 	this.numAstroids=0;
 	this.selected=0;
@@ -2080,7 +2144,7 @@ function star(){
 		var ans=0;
 		for(var i=0;i<this.numPlanets;i++)
 		{
-			 ans+=this.planets[i].numMoons
+			 ans+=this.planets[i].numMoons;
 		}
 		return ans;
 	};
@@ -2156,7 +2220,7 @@ function star(){
 			//this.sprite.draw(can, this.x-cam.x-this.width/2,this.y-cam.y-this.height/2);
 		}
 	};
-};
+}
 
 //var sun=new star();
 
@@ -2171,7 +2235,7 @@ setupOurs=function(sun)
 	}
 
 	var qip=Math.floor(Math.random()*8);
-	var ptypes=new Array();
+	var ptypes=[];
 	ptypes[0]=2;
 	ptypes[1]=2;
 	ptypes[2]=0;
@@ -2182,7 +2246,7 @@ setupOurs=function(sun)
 	ptypes[7]=4;
 	ptypes[8]=3;
 	
-	var pmoons=new Array();
+	var pmoons=[];
 	pmoons[0]=0;
 	pmoons[1]=0;
 	pmoons[2]=1;
@@ -2224,7 +2288,7 @@ setupOurs=function(sun)
 	sun.planets[5].size=4;
 	sun.planets[6].size=3;
 	sun.planets[7].size=3;
-	sun.planets[8].size=.75;
+	sun.planets[8].size=0.75;
 	
 	sun.selected=2;
 	sun.discovered=true;
@@ -2396,7 +2460,7 @@ function initUniverse()
 		civs[i].knowAllWorlds();
 	}
 	
-};
+}
 
 function killShip(targ,attacker)
 {
@@ -2455,7 +2519,7 @@ function killShip(targ,attacker)
 		camera.unFollow();
 		civs[0].cycleShips();
 	}
-};
+}
 
 function newPlatform(wrld)
 {
@@ -2483,7 +2547,7 @@ function newPlatform(wrld)
 	jilly.alive=true;
 	jilly.civ=iv;
 	return jilly;
-};
+}
 
 function newInitShips()
 {
@@ -2595,11 +2659,12 @@ function newInitShips()
 		}
 		civs[i].homeworld.hasShipyard=true;
 		civs[i].homeworld.buildings.push(new building(Buildings.Shipyard,civs[i].homeworld));
+		var james=null;
 		for(var j=0;j<civs[i].numShipsStart;j++)
 		{
 			if(i==civIDs.Human)
 			{
-				var james=new starShip(i);
+				james=new starShip(i);
 				james.class=shipClasses[civIDs.Human][0];
 				james.civ=civs[0];
 				james.classify();
@@ -2640,7 +2705,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Vulcan)
 			{
-				var james=new starShip(i);
+				james=new starShip(i);
 				james.class=shipClasses[civIDs.Vulcan][0];
 				james.civ=civs[i];
 				james.classify();
@@ -2665,7 +2730,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Klingon)
 			{
-				var james=new starShip(i);
+				james=new starShip(i);
 				james.class=shipClasses[civIDs.Klingon][0];
 				james.civ=civs[i];
 				james.classify();
@@ -2730,7 +2795,7 @@ function newInitShips()
 				}
 			}else if(i==civIDs.Dominion)
 			{
-				var james=new starShip(i);
+				james=new starShip(i);
 				james.class=shipClasses[civIDs.Dominion][0];
 				james.civ=civs[i];
 				james.classify();
@@ -2794,7 +2859,7 @@ function newInitShips()
 				}
 			}else if(i==civIDs.Cardassian)
 			{
-				var james=new starShip(i);
+				james=new starShip(i);
 				james.class=shipClasses[civIDs.Cardassian][0];
 				james.civ=civs[i];
 				james.classify();
@@ -2857,7 +2922,7 @@ function newInitShips()
 				}
 		}else if(i==civIDs.Romulan)
 			{
-				var james=new starShip(i);
+				james=new starShip(i);
 				james.class=shipClasses[civIDs.Romulan][0];
 				james.civ=civs[i];
 				james.classify();
@@ -2884,7 +2949,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Andorian)
 			{
-				var james=new starShip(i);
+				james=new starShip(i);
 				james.civ=civs[i];
 				james.class=shipClasses[civIDs.Andorian][0];
 				james.classify();
@@ -2911,7 +2976,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Tellarite)
 			{
-				var james=new starShip(i);
+				james=new starShip(i);
 				james.civ=civs[i];
 				james.class=shipClasses[civIDs.Tellarite][0];
 				james.classify();
@@ -2937,7 +3002,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Breen)
 			{
-				var james=new starShip(i);
+				james=new starShip(i);
 				james.civ=civs[i];
 				james.class=shipClasses[civIDs.Breen][0];
 				james.classify();
@@ -2963,7 +3028,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Telaxian)
 			{
-				var james=new starShip(i);
+				james=new starShip(i);
 				james.civ=civs[i];
 				james.class=shipClasses[civIDs.Telaxian][0];
 				james.classify();
@@ -2989,7 +3054,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Vidiian)
 			{
-				var james=new starShip(i);
+				james=new starShip(i);
 				james.civ=civs[i];
 				james.class=shipClasses[civIDs.Vidiian][0];
 				james.classify();
@@ -3015,7 +3080,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Pakled)
 			{
-				var james=new starShip(i);
+				james=new starShip(i);
 				james.civ=civs[i];
 				james.class=shipClasses[civIDs.Pakled][0];
 				james.classify();
@@ -3042,7 +3107,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Hirogen)
 			{
-				var james=new starShip(i);
+				james=new starShip(i);
 				james.civ=civs[i];
 				james.class=shipClasses[civIDs.Hirogen][0];
 				james.classify();
@@ -3067,7 +3132,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Bajoran)
 			{
-				var james=new starShip(i);
+				james=new starShip(i);
 				james.civ=civs[i];
 				james.class=shipClasses[civIDs.Bajoran][0];
 				james.classify();
@@ -3092,7 +3157,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Ferengi)
 			{
-				var james=new starShip(i);
+				james=new starShip(i);
 				james.civ=civs[i];
 				james.class=shipClasses[civIDs.Ferengi][0];
 				james.classify();
@@ -3117,7 +3182,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Orion)
 			{
-				var james=new starShip(i);
+				james=new starShip(i);
 				james.civ=civs[i];
 				james.class=shipClasses[civIDs.Orion][0];
 				james.classify();
@@ -3142,7 +3207,7 @@ function newInitShips()
 				civs[i].ships.push(james);
 			}else if(i==civIDs.Borg)
 			{
-				var james=new starShip(i);
+				james=new starShip(i);
 				james.civ=civs[i];
 				james.civ=civs[i];
 				james.class=shipClasses[civIDs.Borg][0];
@@ -3198,7 +3263,7 @@ function newInitShips()
 	civs[0].ships[0].maxSpeed=7;
 	civs[0].ships[0].maxShields=0;
 
-	ships=new Array();
+	ships=[];
 	for(var i=0;i<civs.length;i++)
 	{
 		//ships.concat(civs[i].ships);
@@ -3240,7 +3305,7 @@ function newInitShips()
 	civs[0].captainQueue.push(sisko);	
 	//civs[0].crewPool.push(janeway);
 	//civs[0].captainQueue.push(janeway);
-};
+}
 function drawStarfield(canv,cam){
 	if(spinArt) {return;}
 	//fill
@@ -3265,4 +3330,4 @@ function drawStarfield(canv,cam){
 			//canv.fillRect((backStarsX[i]+cam.x), (backStarsY[i]+cam.y), backStarsS[i]+s, backStarsS[i]+s);
 		}
 	}
-};
+}

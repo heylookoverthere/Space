@@ -37,15 +37,15 @@ Flag={};
 Flag.MetTelaxianBountyHunters=0;
 Flag.LeftNeelix=1;
 
-var stars=new Array();
-var nebulas=new Array();
+var stars=[];
+var nebulas=[];
 
 var holdInput=false;
 
 
 var flashGUITick=0;
 var flashGUITrack=0;
-var arrowSprite=new Array();
+var arrowSprite=[];
 arrowSprite.push(Sprite("greenarrow"));
 arrowSprite.push(Sprite("yellowarrow"));
 arrowSprite.push(Sprite("redarrow"));
@@ -82,8 +82,8 @@ function textbox()
 	this.civil=null;
 	this.choicesStart=3;
 	this.optionTrack=0;//draw the liitle -
-	this.colors=new Array();
-	this.msg=new Array();
+	this.colors=[];
+	this.msg=[];
 	this.optionOne=function(civil1,civil2)
 	{
 		holdEverything=false;
@@ -134,7 +134,7 @@ function textbox()
 		}else if(startkey.check())
 		{
 			//this.response();
-			if(this.optionTrack-this.choicesStart==0)
+			if(this.optionTrack-this.choicesStart===0)
 			{
 				this.optionOne(this.civil,civs[0]);
 			}else if(this.optionTrack-this.choicesStart==1)
@@ -190,7 +190,7 @@ function textbox()
 		
 		can.restore();
 	};
-};
+}
 
 function shopItem(type)
 {
@@ -244,7 +244,7 @@ function shopItem(type)
 		}
 	}
 	this.num=1;
-};
+}
 
 function buyScreen(customer,sell) 
  {  //draws a text box
@@ -265,10 +265,10 @@ function buyScreen(customer,sell)
 	this.optionTrack=0;//draw the liitle -
 	this.columTrack=0;
 	this.colums=2;
-	this.colors=new Array();
-	this.msg=new Array();
-	this.itemList=new Array();
-	this.cart=new Array();
+	this.colors=[];
+	this.msg=[];
+	this.itemList=[];
+	this.cart=[];
 	this.onCheckout=false;
 	if(sell)
 	{
@@ -300,8 +300,8 @@ function buyScreen(customer,sell)
 	
 	this.clearCart=function()
 	{
-		this.cart=new Array();
-	}
+		this.cart=[];
+	};
 	
 	this.checkout=function()
 	{
@@ -365,7 +365,7 @@ function buyScreen(customer,sell)
 		}
 		if(upkey.check())
 		{
-			if(this.columTrack==0)
+			if(this.columTrack===0)
 			{
 				if(this.optionTrack>this.choicesStart)
 				{
@@ -380,7 +380,7 @@ function buyScreen(customer,sell)
 			}
 		}else if(downkey.check())
 		{
-			if(this.columTrack==0)
+			if(this.columTrack===0)
 			{
 				if(this.optionTrack<this.itemList.length-1)
 				{
@@ -395,7 +395,7 @@ function buyScreen(customer,sell)
 			}
 		}else if(rightkey.check())
 		{
-				if(this.columTrack==0)
+				if(this.columTrack===0)
 				{
 					if(this.optionTrack>this.cart.length-1)
 					{
@@ -423,7 +423,7 @@ function buyScreen(customer,sell)
 			}
 		}else if(startkey.check())
 		{
-			if(this.columTrack==0)
+			if(this.columTrack===0)
 			{
 				if(this.cart.length<20)
 				{
@@ -497,7 +497,7 @@ function buyScreen(customer,sell)
 			can.fillText("    "+this.itemList[i].name, this.x+16,this.y+12+(18*(i+1)));
 			
 			can.fillText(this.itemList[i].cost, this.x+196,this.y+12+(18*(i+1)));
-			if(this.columTrack==0)
+			if(this.columTrack===0)
 			{
 				if((this.options>0) && (this.optionTrack==i))
 				{
@@ -534,13 +534,13 @@ function buyScreen(customer,sell)
 		
 		can.restore();
 	};
-};
+}
 
 function timesaver()
 {
 
 	civs[1].generateMessage(civs[0]);
-};
+}
 
 var monsta= new particleSystem();
 
@@ -600,7 +600,7 @@ function drawSelBox(can){
 	}
     can.stroke();
 	can.closePath();
-};
+}
 function rectOverlap(r1,r2){
 	
 	if(r1.x> r2.x+2) {return false;}
@@ -609,12 +609,12 @@ function rectOverlap(r1,r2){
 	if(r1.y+r1.height< r2.y) {return false;}
 
 	return true;
-};
+}
 
 var numMapPoints=6;
 var mmcur=false;
-var bConsoleStr=new Array();
-var bConsoleClr=new Array();
+var bConsoleStr=[];
+var bConsoleClr=[];
 var bConsoleBox;
 var bMenuBox;
 var lastExplosion=0;

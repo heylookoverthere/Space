@@ -1,7 +1,7 @@
 var techNames=["Aeroponics","Emergency Rations","Waffle Fries","Microbrewed Beer","Printers That Dont Need Paper With Those Holes On Each Side","Sneakers With Lights On Them","Captioning Pictures Of Cats","Inertial Dampners","Warp Drive","TransWarp","Slipstream","Shitty Sensors","Sensors","Long Range Sensors","Astrometrics","DetectTacheons","DetectCloakythings","DetectWormholethings","ShittyCloak","Cloak","BestCloak","Lasers","Phasers","Disruptors","BestEnergyWeapon","Torpedos","PhotonTorpedos","QuantumTorpedos","TransPhasicTorpedos","PowerCells","Grapple","TractorBeam","StructualIntegrityBeam","Transporter","TransportEnhancer","EmergencyTransporter","AdvTransporter","thatbullshitfromthenewmovie","Energy Shields","AdvEnergyShields","MetaPhasicShields","Armor","AblatativeArmor","MicroCircutry","BioNeuralCircutry","Nanobots","Assimilation","AlienMedican","AlienSurgery","Cloning","GeneticResequencing","Synthahol","AdvEnviromentalControls","ContainmentField","SubspaceTheory","ImpulseProbe","WarpProbe","Statis","WarpEscapePods","AdvEscapePods","AI","Robotics","Androids","Cybernetics","PowerManagment","Replicators","PowerManagment","Capacitors","Holodecks","EMH","MobileEmiter","AdvMetallurgy","DeuteriumCollector","Deflector"];
-var hasItem=new Array();
+var hasItem=[];
 var numItems=2;
-var clean=true;
+var clean=false;//true;
 var Items={};
 Items.RomulanPrisoner=0;
 Items.Neelix=1;
@@ -131,15 +131,10 @@ function culture()
 	this.constitution=5;//how well they hold up before resorting to things.
 	this.slavery=false;
 	
-	/*this.taboo?
-	    canibilism
-		slavery
-		incest? //increases fertility and retardation?
-	*/
 	this.personality=Math.floor(Math.random()*5);
 	
 	
-};
+}
 
 function building(typ,wrld)
 {
@@ -179,12 +174,12 @@ function building(typ,wrld)
 	{
 		this.name="Orbital Defense Control";
 	}
-};
+}
 var numCivFlags=10;
 function civilization()
 {
 	this.civID=0;
-	this.knownWorlds=new Array();
+	this.knownWorlds=[];
 	this.color="purple";
 	this.player=false;
 	this.yearFlag=false;
@@ -193,10 +188,10 @@ function civilization()
 	this.hostileOnIncursion=false;
 	this.name="Humanity";
 	this.content=100;  //clf: they are happy.  They do not have 100 contents.
-	this.techs=new Array();
+	this.techs=[];
 	this.homeStar=0;
 	this.homePlanet=2;
-	this.flags=new Array();
+	this.flags=[];
 	this.maxShips=95;
 	for(var i=0;i<numCivFlags;i++)
 	{
@@ -211,38 +206,38 @@ function civilization()
 	this.mode=AIModes.Explore;
 	this.allied=false;
 	this.fallenBack=false;
-	this.targetWorlds=new Array();
-	this.crewPool=new Array();
+	this.targetWorlds=[];
+	this.crewPool=[];
 	this.targetPods=false;
 	this.fallingBack=false;
-	this.captainQueue=new Array();
+	this.captainQueue=[];
 	this.initialProduction=false;
-	this.prisoners=new Array();
+	this.prisoners=[];
 	this.numShipsStart=0;
 	this.researchProgress=0;
 	this.researchTick=0;
 	this.nextResearch=100;
 	this.numDefending=2;
-	this.productionQueue=new Array();
+	this.productionQueue=[];
 	this.productionTick=0;
 	this.productionRate=1;
 	this.nextProduction=100;
 	this.updateRate=100;
-	this.messages=new Array();
+	this.messages=[];
 	this.greeting="Greetings.";
 	this.curShip=0;
 	this.updateTick=0;
-	this.ships=new Array();
-	this.worlds=new Array();
-	this.fleets=new Array();
-	this.fContacted=new Array();
-	this.autoHostile=new Array();
-	this.deadShips=new Array();
+	this.ships=[];
+	this.worlds=[];
+	this.fleets=[];
+	this.fContacted=[];
+	this.autoHostile=[];
+	this.deadShips=[];
 	
 	for(var ipk=0;ipk<numRaces;ipk++){
 		this.fContacted[ipk]=false;
 	}
-	this.techs=new Array();
+	this.techs=[];
 	for(var i=0;i<100;i++)
 	{
 		this.techs.push(false);
@@ -274,11 +269,11 @@ function civilization()
 			}	
 		}
 		return false;
-	}
+	};
 	
 	this.knowAllHomeWorlds=function()
 	{
-		this.knownWorlds=new Array();
+		this.knownWorlds=[];
 		for(var i=0;i<civs.length;i++)
 		{
 			this.knownWorlds.push(civs[i].homeworld);
@@ -287,7 +282,7 @@ function civilization()
 	
 	this.knowAllWorlds=function()
 	{
-		this.knownWorlds=new Array();
+		this.knownWorlds=[];
 		for(var i=0;i<stars.length;i++)
 		{
 			for(var j=0;j<stars[i].planets.length;j++)
@@ -306,7 +301,7 @@ function civilization()
 			tax+=this.worlds[i].taxRate;
 		}
 		this.money+=tax;
-	}
+	};
 	
 	this.cleanUp=function()
 	{
@@ -322,8 +317,8 @@ function civilization()
 				//console.log("removed "+this.civ.name+ " from the "+this.sun.name + " System civ list");
 			}
 		}
-		this.ships=new Array();
-	}
+		this.ships=[];
+	};
 	
 	var justOnce=false;
 	
@@ -415,7 +410,7 @@ function civilization()
 					//this.ships[i].planetTarget=null;
 					//this.ships[i].orders=Orders.Explore;
 				}
-				if(this.ships[i].orders=Orders.Attack)
+				if(this.ships[i].orders==Orders.Attack)
 				{
 					//later.
 				}
@@ -470,7 +465,7 @@ function civilization()
 		{
 			for(var counter=this.numDefending;counter<this.ships.length;counter++)
 			{
-				this.ships[counter].AIMode==AIModes.Explore;
+				this.ships[counter].AIMode=AIModes.Explore;
 			}
 		}		
 		
@@ -802,7 +797,7 @@ function civilization()
 			return;
 		}
 		this.autoHostile.push(iv);
-	}
+	};
 	
 	this.update=function()
 	{
@@ -886,7 +881,7 @@ function civilization()
 							if((logAll) ||(this.name=="Humanity"))
 							{
 								console.log("Humanity produced the starship "+jerry.name);
-							};
+							}
 							jerry.launchDate=Math.floor(theTime.years)+"."+Math.floor(theTime.days);
 							this.ships.push(jerry);
 							ships.push(jerry);
@@ -895,7 +890,7 @@ function civilization()
 							if((logAll) ||(this.name=="Humanity"))
 							{
 								console.log("Humanity produced an orbital defense platform on "+jerry.orbitTarg.name);
-							};
+							}
 							//this.ships.push(jerry);
 							ships.push(jerry);
 						}else if(jerry.building)
@@ -1116,11 +1111,11 @@ function civilization()
 					civil2.autoHostile.push(civil1);
 					hed.civil=civil1;
 					civil2.messages.push(hed);
-				}
+				};
 				ped.optionTwo=function(civil1,civil2)
 				{
 					holdEverything=false;
-				}
+				};
 				ped.civil=civil1;
 				civil2.messages.push(ped);
 				holdEverything=true;
@@ -1428,4 +1423,4 @@ function civilization()
 			other.messages.push(ned);
 		}
 	};
-};
+}

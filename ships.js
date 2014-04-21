@@ -24,20 +24,20 @@ function logEntry(date,author,ship,data)
 		this.data=data;
 	}
 	
-};
+}
 
 var Orders={};
 Orders.whatever=0;
 Orders.Explore=1;
 Orders.Colonize=2;
 Orders.Escort=3;
-Orders.Fleet=4
+Orders.Fleet=4;
 Orders.LeadFleet=5;
 Orders.Attack=6;
 Orders.Tractor=7;
 
 var borgTrack=0;
-var usedEvents=new Array();
+var usedEvents=[];
 for(var i=0;i<100;i++)
 {
 	usedEvents.push(false);
@@ -47,11 +47,11 @@ function starShip(civid){
 	//this.class=baseClass
 	this.civ=civs[civid];
 	this.ship=true;
-	this.systems=new Array();
+	this.systems=[];
 	for(var i=0;i<NumSystems;i++)
 	{
 		var wynn=new shipSystem(this,i);
-		if((wynn.type==SystemIDs.Weapons) ||(wynn.type==SystemIDs.LifeSupport)||(wynn.type==SystemIDs.DamageControl)||(wynn.type==SystemIDs.MedicalBay)||(wynn.type==SystemIDs.ImpulseEngines)||(wynn.type==SystemIDs.WarpEngines) ||(wynn.type==SystemIDs.Scanners)||(wynn.type==SystemIDs.Targeting)||(wynn.type==SystemIDs.Navigation))
+		if((wynn.type==SystemIDs.Weapons) ||(wynn.type==SystemIDs.LifeSupport)||(wynn.type==SystemIDs.DamageControl)||(wynn.type==SystemIDs.MedicalBay)||(wynn.type==SystemIDs.ImpulseEngines)||(wynn.type==SystemIDs.WarpEngines) ||(wynn.type==SystemIDs.Scanners)||(wynn.type==SystemIDs.Targeting)||(wynn.type==SystemIDs.Navigation)||(wynn.type==SystemIDs.Tractor)||(wynn.type==SystemIDs.EscapePods)||(wynn.type==SystemIDs.Transporter))
 		{
 			wynn.installed=true;
 			wynn.on=true;
@@ -63,7 +63,7 @@ function starShip(civid){
 	//todo
 	this.rooms=6;
 	this.maxSystems=6;
-	this.tail=new Array();
+	this.tail=[];
 	this.tailLength=100;
 	this.platform=false;
 	this.planetBeamTrack=0;
@@ -72,13 +72,14 @@ function starShip(civid){
 	this.orders=0;
 	this.civID=0;
 	this.kills=0;
+	this.adrift=false;
 	this.tailCount=0;
 	this.AIMode=AIModes.Explore;
 	this.x=0;
 	this.y=0;
 	this.xv=0;
 	this.yv=0;
-	this.nearbyHostiles=new Array();
+	this.nearbyHostiles=[];
 	this.surrendered=false;
 	this.colony=false;
 	this.spawnPlanet=null;
@@ -87,12 +88,12 @@ function starShip(civid){
 	this.frieghter=false;
 	this.phaserRange=500;
 	this.torpedoRange=500;
-	this.passengers=new Array();
+	this.passengers=[];
 	this.destination=null;
 	this.transportRange=200;
 	this.lifeSupport=true;
-	this.lifeSupportRate=.25;
-	this.captainsLog=new Array();
+	this.lifeSupportRate=0.25;
+	this.captainsLog=[];
 	this.maxMines=100;
 	this.maxTorpedos=100;
 
@@ -119,18 +120,18 @@ function starShip(civid){
 	this.warpSignature=0;
 	this.commandCode=1234;
 	this.prefixCode=Math.floor(Math.random()*9999); //that bullshit from WoKhan
-	this.escapePods=new Array();
+	this.escapePods=[];
 	this.acceltick=0;
 	this.accelrate=10;
 	this.weaponsHot=0;
-	this.phaserBanks=new Array();
+	this.phaserBanks=[];
 	this.numPhasers=1;
-	this.torpedoBays=new Array();
+	this.torpedoBays=[];
 	this.numTorpedoBays=0;
 	this.phaserBanks.push(new energyWeapon(this));
 	this.shields=0;
 	this.tractorDist=80;
-	this.actionText="Idle."
+	this.actionText="Idle.";
 	this.maxShields=0;
 	this.activeShields=false;
 	this.activeWeapons=true;
@@ -141,7 +142,7 @@ function starShip(civid){
 	this.morale=70;
 	this.cloaked=false;
 	this.turnSpeed=2;
-	this.acceleration=.5;
+	this.acceleration=0.5;
 	this.hp=100;
 	this.prefix="U.S.S.";
 	this.class=shipClasses[0][0];
@@ -164,8 +165,8 @@ function starShip(civid){
 	}
 	this.crewCapacity=5;
 	this.crewMax=0;
-	this.crew=new Array();
-	this.awayTeam=new Array();
+	this.crew=[];
+	this.awayTeam=[];
 	this.orbiting=false;
 	this.orbitDiameter=50;
 	this.captainFlees=false;
@@ -183,7 +184,7 @@ function starShip(civid){
 	this.dest=null;
 	this.homeworld=null;
 	this.refitOrdered=false;
-	this.baseRepair=.25;
+	this.baseRepair=1;
 	this.autoFireTick=0;
 	this.autoFireRate=40;
 	this.fixCount=0;
@@ -205,7 +206,7 @@ function starShip(civid){
 	this.sensors=0;
 	this.torpedoTubes=2;
 	this.sprite=Sprite("ship1");
-	this.artilery=new Array();
+	this.artilery=[];
 	this.artilery[0]=0;
 	this.artilery[1]=0;
 	this.impulseEngine=0;
@@ -224,18 +225,18 @@ function starShip(civid){
 	this.warpEngine=0;
 	this.stores=0;
 	this.cafe=0;
-	this.nearbySystems=new Array();
-	this.nearbyVessels=new Array();
-	this.nearbyPods=new Array();
-	this.nearbyPlanets=new Array();
+	this.nearbySystems=[];
+	this.nearbyVessels=[];
+	this.nearbyPods=[];
+	this.nearbyPlanets=[];
 	this.lightyearsTraveled=0;
 	this.crewLost=0;
 	this.maxTeamSize=4;
 	this.awayTeamAt=null;
 	this.launchDate=0;
 	this.lastYear=2000;
-	this.windows=new Array();
-	this.items=new Array();
+	this.windows=[];
+	this.items=[];
 	this.menu=new screenBox(this);
 	this.menu.x=20;
 	this.menu.y=350;
@@ -246,7 +247,7 @@ function starShip(civid){
 		this.numMines--;
 		var minny=new mine();
 		minny.ship=this;
-		minny.x=this.x-minny.width/2
+		minny.x=this.x-minny.width/2;
 		minny.y=this.y-minny.height/2;
 		minny.active=true;
 		minny.range=10;
@@ -286,7 +287,7 @@ function starShip(civid){
 			this.phaserBanks.push(new energyWeapon(this));
 		}
 		this.breatheTick=0;
-		this.breatheRate=400;
+		this.breatheRate=40;
 		this.shields=this.class.shields;
 		this.tractorDist=this.class.tractorDist;
 		this.maxShields=this.class.maxShields;
@@ -363,12 +364,12 @@ function starShip(civid){
 	
 	this.beamDown=function(target){
 		if(!this.systems[SystemIDs.Transporter].functional(false)) {return;}
-		if(this.awayTeamAt!=null)
+		if(this.awayTeamAt!==null)
 		{
 			console.log("Away team already away!");
 			return;
 		}
-		 /*if(this.awayTeam.length<1)
+		/*if(this.awayTeam.length<1)
 		{
 			console.log("You don't have an away team!");
 			return;
@@ -557,7 +558,7 @@ function starShip(civid){
 			}
 		}
 		//if(!this.bearbyVessels) {return;}
-		if(this.beamTarget==null)
+		if(this.beamTarget===null)
 		{
 			//console.log("targeting selfyar?");
 			this.beamTarget=toon[0];
@@ -597,7 +598,7 @@ function starShip(civid){
 			}
 		}
 		//if(!this.bearbyVessels) {return;}
-		if(this.tractorTarget==null)
+		if(this.tractorTarget===null)
 		{
 			//console.log("targeting selfyar?");
 			this.tractorTarget=toon[0];
@@ -624,14 +625,15 @@ function starShip(civid){
 	
 	this.cycleTarget=function()
 	{
+		var bearbyVessels=null;
 		if(!this.nearbyVessels) {return;}
 		
 		if(this.civ.targetPods)
 		{
-			var bearbyVessels=this.nearbyVessels.concat(this.nearbyPods);
+			bearbyVessels=this.nearbyVessels.concat(this.nearbyPods);
 		}else
 		{
-			var bearbyVessels=this.nearbyVessels
+			bearbyVessels=this.nearbyVessels;
 		}
 		for(var i=0;i<bearbyVessels.length;i++)
 		{
@@ -644,7 +646,7 @@ function starShip(civid){
 		}
 		
 		//if(!this.bearbyVessels) {return;}
-		if(this.torpedoTarget==null)
+		if(this.torpedoTarget===null)
 		{
 			//console.log("targeting selfyar?");
 			this.torpedoTarget=bearbyVessels[0];
@@ -805,7 +807,7 @@ function starShip(civid){
 			}
 		}else
 		{
-			wound=-amt
+			wound=-amt;
 		}
 		wound+=this.armor;//CHECK
 		this.hp+=wound;
@@ -860,17 +862,17 @@ function starShip(civid){
 	};
 	
 	this.killRandomCrew=function(cause){
-		if(cause==null) {cause=".";}
+		if(cause===null) {cause=".";}
 		if(this.checkCrew()){
 			var vict=null;
 			for(var i=0;i<this.crew.length;i++)
 			{
-				if(this.crew[i].hasItem[Item.RedShirt]==true)
+				if(this.crew[i].hasItem[Item.RedShirt]===true)
 				{
 					vict=i;
 				}
 			}
-			if(vict==null)
+			if(vict===null)
 			{
 				vict=Math.floor(Math.random()*this.crew.length);	
 			}
@@ -912,7 +914,7 @@ function starShip(civid){
 		this.orbitTarg=null;
 		this.heading=this.orbitTrack;
 		this.desiredHeading=this.heading;
-		this.desiredSpeed=this.cruisingSpeed;;
+		this.desiredSpeed=this.cruisingSpeed;
 		//this.speed=1;
 	};
 	
@@ -935,7 +937,7 @@ function starShip(civid){
 	this.generateEvent=function(){
 		var j=Math.floor(Math.random()*9);
 		var aRace=races[Math.floor(Math.random()*numRaces)];
-		if(j==0){
+		if(j===0){
 			if((aRace=="Vulcan") && (this.civ.fContacted[1]))
 			{
 				console.log("You can tell the enemy crew is sodomizing you with their eyes, but in the end they abide by the treaty.");
@@ -1052,7 +1054,7 @@ function starShip(civid){
 		}
 		this.acceltick=0;
 		this.speed-=this.acceleration*gameSpeed;
-		if (this.speed<.1)
+		if (this.speed<0.1)
 		{
 			this.speed=0;
 		}
@@ -1075,21 +1077,21 @@ function starShip(civid){
 	};
 	
 	this.inSensorRange=function(thangs){
-		var thongs=new Array();
+		var thongs=[];
 		for(var i=0;i<thangs.length;i++){
 			if ((Math.abs(thangs[i].x-this.x)<this.sensorRange) && (Math.abs(thangs[i].y-this.y)<this.sensorRange))
 			{
 				if((thangs[i]!=this) && (!thangs[i].cloaked) && (thangs[i].alive)){  //todo, sensors that can detect cloaked ships.
 					thongs.push(thangs[i]);	
-					if((thangs[i].discovered==false)  && (this.civID==0)){
+					if((thangs[i].discovered===false)  && (this.civID===0)){
 						thangs[i].discovered=true;
 						console.log("The "+this.prefix+ " "+this.name+ " discoverd the "+thangs[i].name+" System");
 						this.enterLog("Today we discoverd the "+thangs[i].name+" System.");
 						
 					}
-					if((this.civ.fContacted[thangs[i].civID]==false) && (this.civID==0)){
+					if((this.civ.fContacted[thangs[i].civID]===false) && (this.civID===0)){
 						this.civ.fContacted[thangs[i].civID]=true;
-						if((thangs[i].civID>0) && (thangs[i].alive) && (this.civ.civID==0))
+						if((thangs[i].civID>0) && (thangs[i].alive) && (this.civ.civID===0))
 						{
 							console.log("The "+this.prefix+ " "+this.name+ " made first contact with the "+races[thangs[i].civID]+"s.");
 							this.enterLog("Today we made first contact with the "+races[thangs[i].civID]+"s.");
@@ -1112,13 +1114,13 @@ function starShip(civid){
 			hich=Math.floor(Math.random()*numPlanetEvents);
 		}
 		
-		if(hich==0)//find chest.
+		if(hich===0)//find chest.
 		{
 			var cont=0;//Math.floor(Math.random()*3);
-			if(cont==0)
+			if(cont===0)
 			{
 				var amt=Math.floor(Math.random()*6+4)*10;
-				this.civ.money+=amt
+				this.civ.money+=amt;
 				var ned=new textbox();
 				ned.setup("You find $"+amt+ " in a space chest.",150,370);
 				ned.civil=this;
@@ -1154,7 +1156,7 @@ function starShip(civid){
 		}else if(hich==2)//find Neelix.
 		{
 			var cont=0;//Math.floor(Math.random()*3);
-			if(cont==0)
+			if(cont===0)
 			{
 				var ned=new textbox();
 				ned.setup("You find a Tellaxian named Neelix. ",150,370);
@@ -1261,7 +1263,7 @@ function starShip(civid){
 								civil2.messages.push(hed);
 								holdEverything=true;
 							};
-							civil2.messages.push(led)
+							civil2.messages.push(led);
 					}else
 					{
 						led.label="Neelix:";
@@ -1280,7 +1282,7 @@ function starShip(civid){
 		}else if(hich==3)//find Romulan
 		{
 			var cont=0;//Math.floor(Math.random()*3);
-			if(cont==0)
+			if(cont===0)
 			{
 				var ned=new textbox();
 				hasItem[Items.RomulanPrisoner]=true;
@@ -1302,7 +1304,7 @@ function starShip(civid){
 		}else if(hich==4)//find tech
 		{
 			var cont=0;//Math.floor(Math.random()*3);
-			if(cont==0)
+			if(cont===0)
 			{
 				var ned=new textbox();
 				var hurh=Math.floor(Math.random()*civs[0].techs.length);
@@ -1363,8 +1365,8 @@ function starShip(civid){
 	};
 	
 	this.cancelEscort=function(){
-		this.escorting=null
-	}
+		this.escorting=null;
+	};
 	
 	this.offerSurrender=function(iv)
 	{
@@ -1386,7 +1388,7 @@ function starShip(civid){
 		{
 			this.crew[i].grantXp(amt);
 		}
-	}
+	};
 	
 	this.enterLog=function(txt){
 		this.captainsLog.push(new logEntry(theTime.years+"."+theTime.days,this.crew[0],this,txt));
@@ -1414,12 +1416,12 @@ function starShip(civid){
 			this.healTick=0;
 			this.shields+=this.shieldChargeRate;
 		}
-	}
+	};
 	
 	this.sortNearbyVessels=function()
 	{
 		if(!this.nearbyVessels) {return;}
-		var closest=0
+		var closest=0;
 		var swapped=true;
 		while(swapped){
 			swapped=false;
@@ -1434,11 +1436,11 @@ function starShip(civid){
 				}
 			}
 		}
-	}
+	};
 	
 	this.scanNearby=function(thangs)
 	{
-		this.nearbyHostiles=new Array()
+		this.nearbyHostiles=[];
 		this.nearbyVessels=this.inSensorRange(thangs);
 		for(var i=0;i<this.nearbyVessels.length;i++)
 		{
@@ -1468,7 +1470,7 @@ function starShip(civid){
 		{
 			if(!this.crew[i].alive)
 			{
-				this.crew.splice(i,1)
+				this.crew.splice(i,1);
 				i--;
 			}
 		}
@@ -1604,7 +1606,7 @@ function starShip(civid){
 					looseCrew.push(this.awayTeam.pop());
 				}
 				this.awayTeamAt=null;
-				this.awayTeam=new Array();
+				this.awayTeam=[];
 				this.awayTeam.length=0;
 			}
 		}
@@ -1856,7 +1858,7 @@ function starShip(civid){
 					console.log("You flew into the sun moron.");
 				}
 				//if((this.shrinking) && (this.orbitDiameter>1)) {this.orbitDiameter--;}
-				/*if(this.leavingProgress!=null) 
+				/*if(this.leavingProgress!==null) 
 				{
 					this.leavingProgress+=1*gameSpeed;
 					this.actionText="Breaking Orbit";
@@ -2038,7 +2040,7 @@ function starShip(civid){
 			}
 		}
 		this.tillEvent-=1*gameSpeed;
-		if((this.tillEvent<1) && (this.civID==0)) //todo race vs civ
+		if((this.tillEvent<1) && (this.civID===0)) //todo race vs civ
 		{
 			//this.generateEvent();
 			this.tillEvent=Math.random()*8000;
@@ -2083,6 +2085,7 @@ function starShip(civid){
 						if(this.crew.length<1)
 						{
 							console.log("The "+this.prefix+ " "+this.name+" has been evacuated");
+							this.adrift=true;
 						}else if(this.crew.length<2){
 							console.log("The "+this.prefix+ " "+this.name+" has been evacuated, except for the captain.");
 						}
@@ -2093,11 +2096,12 @@ function starShip(civid){
 		if(this.oxygen>0)
 		{
 			this.oxygen-=Math.floor(this.breaches*2*gameSpeed);
+			if(this.oxygen<0) {this.oxygen=0;}
 		}else
 		{
 			for(var n=0;n<this.crew.length;n++)
 			{
-				var phillip=this.crew[n].hurt(5," of suffocation")
+				var phillip=this.crew[n].hurt(5," of suffocation");
 				if(phillip)
 				{
 					this.enterLog("Today we lost "+phillip.title+ " "+phillip.name+" to suffocation.");
@@ -2116,7 +2120,7 @@ function starShip(civid){
 					if((!this.nearbyVessels[i].surrendered)  && (!this.surrendered)&& (this.isInTorpedoRange(this.nearbyVessels[i])))
 					{
 						this.torpedoTarget=this.nearbyVessels[i];
-						if((this.civID==0) || (this.nearbyVessels[i].civID==0))
+						if((this.civID===0) || (this.nearbyVessels[i].civID===0))
 						{
 							//console.log(this.nearbyVessels[i].surrendered,this.surrendered);
 						}
@@ -2191,7 +2195,7 @@ function starShip(civid){
 					}
 					this.actionText="Attacking "+doof+ " colony on "+this.planetTarget.name;
 				}
-				if(this.planetTarget.civ==null)
+				if(this.planetTarget.civ===null)
 				{
 					this.civ.conquer(this.planetTarget);
 					this.leaveOrbit();
@@ -2229,7 +2233,7 @@ function starShip(civid){
 			}
 			this.tailCount++;
 			var taleRate=150;
-			if(gameSpeed<.5)
+			if(gameSpeed<0.5)
 			{
 				taleRate=5000;
 			}else if(gameSpeed<1)
@@ -2264,7 +2268,7 @@ function starShip(civid){
 			}
 			if(this.tailCount>taleRate)
 			{
-				var til={}
+				var til={};
 				til.x=this.x;
 				til.y=this.y;
 				this.tail.push(til);
@@ -2369,13 +2373,13 @@ function starShip(civid){
 				{
 			
 					can.strokeStyle = tractorColors[Math.floor(Math.random()*7)];
-					can.globalAlpha=.50;
+					can.globalAlpha=0.50;
 					can.beginPath();
 					can.lineWidth = (Math.random()*3)*cam.zoom;
 					var xoffs=(Math.random()*this.tractorClient.width)-this.tractorClient.width/2;
 					var yoffs=(Math.random()*this.tractorClient.height)-this.tractorClient.height/2;
 					can.moveTo((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
-					can.lineTo((this.tractorClient.x+xoffs+cam.x)*cam.zoom,(this.tractorClient.y+yoffs+cam.y)*cam.zoom)
+					can.lineTo((this.tractorClient.x+xoffs+cam.x)*cam.zoom,(this.tractorClient.y+yoffs+cam.y)*cam.zoom);
 					
 					can.closePath();
 					can.stroke();
@@ -2391,13 +2395,13 @@ function starShip(civid){
 					{
 				
 						can.strokeStyle = assimilationColors[Math.floor(Math.random()*7)];
-						can.globalAlpha=.50;
+						can.globalAlpha=0.50;
 						can.beginPath();
 						can.lineWidth = (Math.random()*3)*cam.zoom;
 						var xoffs=(Math.random()*this.attackingPlanet.width)-this.attackingPlanet.width/2;
 						var yoffs=(Math.random()*this.attackingPlanet.height)-this.attackingPlanet.height/2;
 						can.moveTo((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
-						can.lineTo((this.attackingPlanet.x+xoffs+cam.x)*cam.zoom,(this.attackingPlanet.y+yoffs+cam.y)*cam.zoom)
+						can.lineTo((this.attackingPlanet.x+xoffs+cam.x)*cam.zoom,(this.attackingPlanet.y+yoffs+cam.y)*cam.zoom);
 						
 						can.closePath();
 						can.stroke();
@@ -2407,14 +2411,14 @@ function starShip(civid){
 				{
 					can.save();
 					can.strokeStyle = bColors[Math.floor(Math.random()*7)];
-					can.globalAlpha=.50;
+					can.globalAlpha=0.50;
 					can.beginPath();
 					can.lineWidth = ((Math.random()*3)+3)*cam.zoom;
 					var xoffs=this.planetBeamX+this.planetBeamTrack;
 					var yoffs=this.planetBeamY+this.planetBeamTrack;
 					can.moveTo((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
 					
-					can.lineTo((this.attackingPlanet.x+xoffs+cam.x)*cam.zoom,(this.attackingPlanet.y+yoffs+cam.y)*cam.zoom)
+					can.lineTo((this.attackingPlanet.x+xoffs+cam.x)*cam.zoom,(this.attackingPlanet.y+yoffs+cam.y)*cam.zoom);
 					//monsta.shootTextured(this.attackingPlanet.x+xoffs,this.attackingPlanet.y+yoffs,270,.5,"explosion0");
 
 					can.closePath();
@@ -2442,11 +2446,11 @@ function starShip(civid){
 						k=0;
 					}else if(this.civ.autoHostile.indexOf(nicky.civ)>-1)
 					{
-						k=2
+						k=2;
 					}
 					var peta=Math.atan2(nicky.y-this.y,nicky.x-this.x)* (180 / Math.PI);
 					can.save();
-					can.globalAlpha=.40;
+					can.globalAlpha=0.40;
 					can.translate((this.x+cam.x)*cam.zoom,(this.y+cam.y+6)*cam.zoom);
 					can.rotate((peta)* (Math.PI / 180));
 					//can.rotate((this.beamTarget.heading-90)* (Math.PI / 180));//todo negatives.
@@ -2457,10 +2461,10 @@ function starShip(civid){
 			}	
 		}
 	};
-};
+}
 
 function fleet(){
-	this.ships=new Array();
+	this.ships=[];
 	this.x=0;
 	this.y=0;
 	this.xv=0;
@@ -2484,17 +2488,17 @@ function fleet(){
 		}
 		this.ships.push(shoap);
 
-	}
+	};
 	
 	this.orderAttack=function(){
 		
 	};
 	
 	this.getFormationCoords=function(){
-		//if(this.formation==0){
+		//if(this.formation===0){
 		for(var i=0;i<this.ships.length;i++)
 		{
-			if(this.i==0){
+			if(this.i===0){
 				this.ships[i].formationCoords.x=0;
 				this.ships[i].formationCoords.y=0;
 			}else if(this.i==1){
@@ -2579,4 +2583,4 @@ function fleet(){
 		}
 		return persons;
 	};
-};
+}

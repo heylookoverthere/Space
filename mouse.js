@@ -1,7 +1,7 @@
 //Mouse stuff.
 $(document).bind("contextmenu",function(e){
 	
-	if(mode==0)
+	if(mode===0)
 	{
 		mX = e.pageX - canvasElement.get(0).offsetLeft;
 		mY = e.pageY - canvasElement.get(0).offsetTop;
@@ -33,13 +33,13 @@ $(document).bind("contextmenu",function(e){
 						if(this.object.planet)
 						{
 							civs[0].orderColonize(this.object);
-						};	
+						}
 						holdEverything=false;
 					};
 					ned.optionTwo=function(civil1,civil2)
 					{
 						holdEverything=false;
-					}
+					};
 					ned.optionTrack=1;
 					civs[0].messages.push(ned);
 				}
@@ -84,7 +84,7 @@ function mouseWheel(e){
 	if (e.preventDefault)
 			e.preventDefault();
 	e.returnValue = false;
-};
+}
 
 function mouseClick(e) {  //represents the mouse
 	e.preventDefault();    
@@ -200,7 +200,7 @@ function mouseClick(e) {  //represents the mouse
 						}
 					}
 				}
-			    break;
+				break;
 			case 2:
 				alert('Middle mouse button pressed');
 				break;
@@ -210,7 +210,7 @@ function mouseClick(e) {  //represents the mouse
 			default:
 				alert('You have a strange mouse');
 		}
-};
+}
 
 mouseXY= function(e) {
     if (!e) var e = event;
@@ -247,7 +247,7 @@ function drawmousetext(can,targ,cam) { //draws unit status info
     can.fillText(tempstr, (targ.x+cam.x)*cam.zoom, (targ.y+cam.y)*cam.zoom+targ.height+8);
     
     can.restore();
-};
+}
 
 isOver= function(targ,cam){ //is the mouse over the player/object 
 	if(cam)

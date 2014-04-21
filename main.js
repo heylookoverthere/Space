@@ -1,6 +1,6 @@
 
 var gameSpeed=.3;
-var snoop=new Array();
+var snoop=[];
 
 document.body.addEventListener("click", mouseClick, false);
 //document.body.addEventListener("dblclick", mouseDblClick, false);
@@ -137,7 +137,7 @@ var shieldskey=new akey("7");
 var mapkey=new akey("8");
 var cleartailskey=new akey("9");
 var maxspeedkey=new akey("0");
-var letterkeys=new Array();
+var letterkeys=[];
 letterkeys.push(new akey("a"));
 letterkeys.push(new akey("b"));
 letterkeys.push(new akey("c"));
@@ -165,7 +165,7 @@ letterkeys.push(new akey("x"));
 letterkeys.push(new akey("y"));
 letterkeys.push(new akey("z"));
 
-var numberkeys=new Array();
+var numberkeys=[];
 numberkeys.push(new akey("0"));
 numberkeys.push(new akey("1"));
 numberkeys.push(new akey("2"));
@@ -181,7 +181,7 @@ backkey=new akey(8);
 backkey.key=8;
 function merp() {
 requestAnimationFrame(merp,canvas);
-	if(mode==0){
+	if(mode===0){
 		mainMenuUpdate();
 		mainMenuDraw();
 	}else if(mode==1){
@@ -294,7 +294,7 @@ function drawDebug()
 	canvas.fillText(getQuadrant(stars[curSystem])+" Quadrant",25,130);
 	if(stars[curSystem].numPlanets>0){
 		var typestr="Class M!";
-		if (stars[curSystem].planets[stars[curSystem].selected].type==0) {typestr="Earthy!"}
+		if (stars[curSystem].planets[stars[curSystem].selected].type===0) {typestr="Earthy!"}
 		if (stars[curSystem].planets[stars[curSystem].selected].type==1) {typestr="Rocky";}
 		if (stars[curSystem].planets[stars[curSystem].selected].type==2) {typestr="Hot";}
 		if (stars[curSystem].planets[stars[curSystem].selected].type==3) {typestr="Icey";}
@@ -619,9 +619,9 @@ function mainMenuDraw(){
 			drawmousetext(canvas,ships[i],camera);
 			var larry=new screenBox(ships[i]);
 			larry.x=20;
-			larry.y=350;
-			larry.width=256;
-			larry.height=250;
+			larry.y=50;
+			larry.width=270;
+			larry.height=270;
 			larry.draw(canvas,camera);
 		}
 	}
@@ -700,7 +700,7 @@ function mainMenuUpdate(){
 		}
 	}
 	if(this.holdEverything) {return;}
-	var allworlds=new Array();
+	var allworlds=[];
 	for (var i=0;i<stars.length;i++)
 	{
 		for(var j=0;j<stars[i].planets.length;j++)
@@ -819,18 +819,24 @@ function mainMenuUpdate(){
 				selectedShip.selfDestructActive=true;
 			}else
 			{
-				selectedShip.Evac(selectedShip.civ.homeworld);
-				if(selectedShip.crew.length>1)
+				if(selectedShip.systems[SystemIDs.EscapePods].functional())
 				{
-					console.log(selectedShip.name+ "'s crew is abandoning ship.");
-				}else if(selectedShip.crew.length>0)
+					selectedShip.Evac(selectedShip.civ.homeworld);
+					if(selectedShip.crew.length>1)
+					{
+						console.log(selectedShip.name+ "'s crew is abandoning ship.");
+					}else if(selectedShip.crew.length>0)
+					{
+						console.log(selectedShip.name+ "'s captain is abandoning ship.");
+					}else if(selectedShip.crew.length<0)
+					{
+						console.log(selectedShip.name+ "Confirm self destruct?");
+					}
+					//selectedShip.captainFlees=true;
+				}else
 				{
-					console.log(selectedShip.name+ "'s captain is abandoning ship.");
-				}else if(selectedShip.crew.length<0)
-				{
-					console.log(selectedShip.name+ "Confirm self destruct?");
+				 //todo some way to self destruct without escape pods?
 				}
-				//selectedShip.captainFlees=true;
 			}
 		}
 	if((selectedShip) &&(!selectedShip.adrift) && (selectedShip.crew.length>0))
@@ -1048,7 +1054,7 @@ function mainMenuUpdate(){
 	}
 	if(beamkey.check())
 	{
-		if(selectedShip.awayTeamAt!=null)
+		if(selectedShip.awayTeamAt!==null)
 		{
 			selectedShip.beamUpAwayTeam();
 		}else if(selectedShip.awayTeamAt==null)

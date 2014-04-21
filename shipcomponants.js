@@ -10,7 +10,7 @@ var shipNamesTrack=new Array(40);
 }*/
 for (var q=0;q<18;q++)
 {
-	shipNames[q]=new Array();
+	shipNames[q]=[];
 }
 
 var niblam="Rio Grand";
@@ -35,10 +35,10 @@ for (var q=0;q<18;q++)
 		
 }
 
-var escapes=new Array();
-var mines=new Array();
-var torpedos=new Array();
-var looseCrew=new Array(); //crew stranded on a planet or in the mirror universe
+var escapes=[];
+var mines=[];
+var torpedos=[];
+var looseCrew=[]; //crew stranded on a planet or in the mirror universe
 
 var targetSprite=Sprite("shiptargetedbig");
 
@@ -80,32 +80,32 @@ function shipSystem(hip,t)
 	this.installed=false;
 	this.ship=hip;
 	this.type=t;
-	if(t==0) {this.name="Life Support"};
-	if(t==1) {this.name="Damage Control"};
-	if(t==2) {this.name="Shields"};
-	if(t==3) {this.name="Medical Bay"};
-	if(t==4) {this.name="Weapons"};
-	if(t==5) {this.name="Targeting"};
-	if(t==6) {this.name="Scanners"};
-	if(t==7) {this.name="LRScanners"};
-	if(t==8) {this.name="Impulse Engines"};
-	if(t==9) {this.name="Warp Engines"};
-	if(t==10) {this.name="Bidet"};
-	if(t==11) {this.name="Main Computer"};
-	if(t==12) {this.name="Science Lab"};
-	if(t==13) {this.name="Cargo Bay"};
-	if(t==14) {this.name="Passanger Bay"};
-	if(t==15) {this.name="Shuttle Bay"};
-	if(t==16) {this.name="Transorter"};
-	if(t==17) {this.name="Navigation"};
-	if(t==18) {this.name="Holodeck"};
-	if(t==19) {this.name="Escape Pods"};
-	if(t==20) {this.name="Tractor Beam"};
-	if(t==21) {this.name=""};
+	if(t===0) {this.name="Life Support";}
+	if(t==1) {this.name="Dmg. Control";}
+	if(t==2) {this.name="Shields";}
+	if(t==3) {this.name="Medical";}
+	if(t==4) {this.name="Weapons";}
+	if(t==5) {this.name="Targeting";}
+	if(t==6) {this.name="Scanners";}
+	if(t==7) {this.name="LRScanners";}
+	if(t==8) {this.name="Impulse Eng.";}
+	if(t==9) {this.name="Warp Eng.";}
+	if(t==10) {this.name="Bidet";}
+	if(t==11) {this.name="Computer";}
+	if(t==12) {this.name="Science";}
+	if(t==13) {this.name="Cargo Bay";}
+	if(t==14) {this.name="Passanger Bay";}
+	if(t==15) {this.name="Shuttle Bay";}
+	if(t==16) {this.name="Transporter";}
+	if(t==17) {this.name="Navigation";}
+	if(t==18) {this.name="Holodeck";}
+	if(t==19) {this.name="Escape Pods";}
+	if(t==20) {this.name="Tractor Beam";}
+	if(t==21) {this.name="";}
 	this.alive=true;
 	this.active=false;
 	this.on=false;//this is the player disabling things
-	this.installed=false
+	this.installed=false;
 	this.learningCurve=1; //eventually.
 	this.boobyTrapped=false;//eventually.
 	this.overloadChance=0;//eventually.
@@ -118,29 +118,29 @@ function shipSystem(hip,t)
 	this.maxPower=0; //"Thanks, I got it off a hair dryer."
 	this.turnOff=function(alert)
 	{
-		this.power=0
-		this.on=false
+		this.power=0;
+		this.on=false;
 		this.active=false;
 		if(alert)
 		{
 			console.log(this.ship.name+"'s "+this.name+" turned off");
 		}
-	}
+	};
 	this.turnOn=function(alert)
 	{
-		this.power=1
-		this.active=true
+		this.power=1;
+		this.active=true;
 		this.on=true;
-	}
+	};
 	this.disable=function(alert)
 	{
-		this.power=0
+		this.power=0;
 		this.active=false;
 		if(alert)
 		{
 			console.log(this.ship.name+"'s "+this.name+" disabled.");
 		}
-	}
+	};
 	this.takeHit=function(dmg)
 	{
 		this.hp-=dmg;
@@ -159,7 +159,7 @@ function shipSystem(hip,t)
 		{
 			if(manned)
 			{
-				if(this.manned!=null)
+				if(this.manned!==null)
 				{
 					return true;
 				}else
@@ -189,9 +189,9 @@ function shipSystem(hip,t)
 			}
 		}else if(this.type==SystemIDs.DamageControl)
 		{
+			var fixrate=this.ship.getRepairRate();
 			if(this.ship.breaches>0)//repairs!
 			{
-				var fixrate=this.ship.getRepairRate();
 				this.ship.fixCount+=fixrate*gameSpeed;
 				if(this.ship.fixCount>100)
 				{
@@ -201,13 +201,13 @@ function shipSystem(hip,t)
 						this.ship.breaches--;
 					}
 				}
-			}else if(this.ship.hp<this.ship.maxHp)//repair hull
+			}else if((this.ship.hp<this.ship.maxHp)&&(!this.ship.torpedoTarget))//repair hull
 			{
-				var fixrate=this.ship.getRepairRate();
 				this.ship.fixCount+=fixrate*gameSpeed;
-				if(this.ship.fixCount>2000)
+				if(this.ship.fixCount>1000)
 				{
-					this.ship.hp++
+					this.ship.hp++;
+					this.ship.fixCount=0;
 				}
 			}
 		}else if(this.type==SystemIDs.MedicalBay)
@@ -240,7 +240,7 @@ function shipWindow()
 	this.colors=yellowColors;
 	this.blinkRate=Math.random()*100;
 	this.colorTrack=Math.floor(Math.random()*this.colors.length);
-	this.size=1
+	this.size=1;
 	this.update=function()
 	{
 		this.blinkTrack+=1*gameSpeed;
@@ -270,7 +270,7 @@ function shipWindow()
 		can.fillRect((this.x+cam.x)*camera.zoom, (this.y+cam.y)*camera.zoom, this.x+this.size, this.y+this.size);
 		can.restore();
 	};*/
-};
+}
 
 updateEscapes=function()
 {
@@ -340,13 +340,13 @@ civIDs.Ferengi=12;
 civIDs.Pakled=13;
 civIDs.Bajoran=14;
 civIDs.Breen=15;
-civIDs.Hirogen=16
+civIDs.Hirogen=16;
 civIDs.Dominion=17;
 var numRaces=18;
-var shipNamesUsed=new Array();
+var shipNamesUsed=[];
 
 for(var ipk=0;ipk<numRaces;ipk++){
-	shipNamesUsed[ipk]=new Array();
+	shipNamesUsed[ipk]=[];
 }
 var totalItems=9;
 Item={};
@@ -370,7 +370,7 @@ function dude()
 	this.station=0;
 	this.level=1;
 	this.moveSpeed=1;
-	this.hasItem=new Array();
+	this.hasItem=[];
 	for(var i=0;i<totalItems;i++)
 	{
 		this.hasItem.push(false);
@@ -400,7 +400,7 @@ function dude()
 		{
 			return false;
 		}
-	}
+	};
 	this.hurt=function(amt,because)
 	{
 		if(!this.alive){return;}
@@ -424,7 +424,7 @@ function dude()
 	
 	this.setTitle=function()
 	{
-		if (this.rank==0)
+		if (this.rank===0)
 		{
 			this.title="Crewman";
 		}else if (this.rank==1)
@@ -464,7 +464,7 @@ function dude()
 			{
 				console.log(this,"Doesn't have a civ?");
 			}
-			if((this.level%5==0) && (this.rank<4))
+			if((this.level%5===0) && (this.rank<4))
 			{
 				this.rank++;
 				this.setTitle();
@@ -480,7 +480,7 @@ function dude()
 		}
 	
 	};
-};
+}
 
 function energyWeapon(hip)
 {
@@ -555,23 +555,23 @@ function energyWeapon(hip)
 			can.strokeStyle = bColors[Math.floor(this.colorTrack)];
 			can.beginPath();
 			can.lineWidth = 4*cam.zoom;
-			can.globalAlpha=.40;
+			can.globalAlpha=0.40;
 			can.moveTo((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
-			can.lineTo((this.target.x+cam.x)*cam.zoom,(this.target.y+cam.y)*cam.zoom)
+			can.lineTo((this.target.x+cam.x)*cam.zoom,(this.target.y+cam.y)*cam.zoom);
 		
 		}
 		can.closePath();
 		can.stroke();
 		can.restore();
 	};
-};
+}
 
 function torpedo(){
 	this.x=0;
 	this.y=0;
 	this.xv=0;
 	this.yv=0;
-	this.acceltick=0
+	this.acceltick=0;
 	this.accelrate=10;
 	this.acceleration=10;
 	this.maxxv=50;
@@ -645,7 +645,7 @@ function torpedo(){
 		}
 		this.acceltick=0;
 		this.speed-=this.acceleration*gameSpeed;
-		if (this.speed<.1)
+		if (this.speed<0.1)
 		{
 			this.speed=0;
 		}
@@ -708,7 +708,7 @@ function torpedo(){
 			this.delayTick-=1*gameSpeed;
 		}else
 		{
-			var thongs=new Array();
+			var thongs=[];
 			for(var i=0;i<thangs.length;i++){
 				//if ((Math.abs(thangs[i].x-this.x)<this.range) && (Math.abs(thangs[i].y-this.y)<this.range))
 				var centerx=thangs[i].x-thangs[i].width/2;
@@ -727,7 +727,7 @@ function torpedo(){
 		monsta.explosionTextured(100,this.x,this.y,2,"explosionsmall");
 		this.active=false;
 	};
-};
+}
 
 function mine(){
 	this.x=0;
@@ -741,7 +741,7 @@ function mine(){
 	this.active=false;
 	this.sprite=Sprite("mine");
 	this.armedsprite=Sprite("minearmed");
-	this.magnetic=false//todo!
+	this.magnetic=false;//todo!
 	this.draw=function(can,cam){
 		if(this.active)
 		{
@@ -776,7 +776,7 @@ function mine(){
 			this.delayTick-=1*gameSpeed;
 		}else
 		{
-			var thongs=new Array();
+			var thongs=[];
 			for(var i=0;i<thangs.length;i++){
 				//if ((Math.abs(thangs[i].x-this.x)<this.range) && (Math.abs(thangs[i].y-this.y)<this.range))
 				var centerx=thangs[i].x-thangs[i].width/2;
@@ -797,7 +797,7 @@ function mine(){
 		console.log("boom");
 		this.active=false;
 	};
-};
+}
 
 function escapePod(){
 	this.x=0;
@@ -824,7 +824,7 @@ function escapePod(){
 	this.passenger=null;
 	this.crewCapacity=1;
 	this.seatsFull=0;
-	this.seats=new Array();
+	this.seats=[];
 	this.acceltick=0;
 	this.acceleration=.5;
 	this.cloak=false;
@@ -914,7 +914,7 @@ function escapePod(){
 		if(this.tractorHost)
 		{
 			this.heading=this.tractorHost.heading;
-			this.speed=this.tractorHost.speed
+			this.speed=this.tractorHost.speed;
 			//this.yv=this.tractorHost.yv;
 		}else
 		{
@@ -1046,4 +1046,4 @@ function escapePod(){
 			//this.sprite.draw(can, this.x-cam.x-this.width/2,this.y-cam.y-this.height/2);
 		}
 	};
-};
+}
