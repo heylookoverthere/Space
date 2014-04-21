@@ -629,7 +629,7 @@ function button(pt)
 	this.hasFocus=false;
 	this.visible=false;
 	this.object=null;
-	this.width=40;
+	this.width=30;
 	this.height=24;
 	this.blinkRate=30;
 	this.blink=false;
@@ -691,6 +691,8 @@ function textBox(pt)
 		}
 		if(this.object)
 		{
+			this.object.destination=null;
+			this.object.desiredOrbitTarg=null;
 			this.object.desiredHeading=parseInt(this.text);
 		}
 	};
@@ -910,7 +912,7 @@ function screenBox(obj)
 			var sally=this.parent.planetBox.list[this.parent.planetBox.listTrack];
 			if(!sally) {return;}
 			this.object.orderOrbit(sally);
-			this.destination=null;
+			this.object.destination=null;
 			console.log(this.object.name+" heading to "+sally.name);
 		};
 		buttons.push(this.goPlanetButton);
@@ -1101,31 +1103,31 @@ function screenBox(obj)
 					this.headingBox.draw(can,camera);
 					
 					can.fillText("System:",this.x+10,this.y+2+144);
-					this.systemBox.x=this.x+10+90;
+					this.systemBox.x=this.x+10+50;
 					this.systemBox.y=this.y+132;
 					this.systemBox.draw(can,camera);
 					
 					can.fillText("Planet:",this.x+10,this.y+2+160);
-					this.planetBox.x=this.x+10+90;
+					this.planetBox.x=this.x+10+50;
 					this.planetBox.y=this.y+152;
 					this.planetBox.draw(can,camera);
 					
-					this.goPlanetButton.x=this.x+10+130;
-					this.goPlanetButton.y=this.y+218;
+					this.goPlanetButton.x=this.x+10+208;
+					this.goPlanetButton.y=this.y+136;
 					this.goPlanetButton.draw(can,camera);
 					
 					can.fillText("Civ:",this.x+10,this.y+2+184);
-					this.raceBox.x=this.x+10+90;
+					this.raceBox.x=this.x+10+50;
 					this.raceBox.y=this.y+174;
 					this.raceBox.draw(can,camera);
 					
 					can.fillText("Ship:",this.x+10,this.y+2+204);
-					this.shipBox.x=this.x+10+90;
+					this.shipBox.x=this.x+10+50;
 					this.shipBox.y=this.y+194;
 					this.shipBox.draw(can,camera);
 					
-					this.goShipButton.x=this.x+10+180;
-					this.goShipButton.y=this.y+218;
+					this.goShipButton.x=this.x+10+208;
+					this.goShipButton.y=this.y+182;
 					this.goShipButton.draw(can,camera);
 				}
 			}else if(this.page==3)//combat //somehow add list of nearby hostile ships.

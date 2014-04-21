@@ -82,6 +82,7 @@ distance=function(one,two){
 
 initUniverse();
 newInitShips();
+camera.follow(selectedShip);
 var debugText=false;
 
 var ksavekey=new akey("o"); //define the different keys
