@@ -1050,16 +1050,20 @@ function screenBox(obj)
 				liddle.onoff=true;
 				liddle.doThings=function()
 				{
+			
 					if(this.object.systems[this.ID].installed)//also check power!
 					{
+						
 						if(this.object.systems[this.ID].on)
 						{
 							this.object.systems[this.ID].turnOff();
 							this.on=false
 						}else
 						{
-							this.object.systems[this.ID].turnOn();
-							this.on=true;
+							if(this.object.systems[this.ID].turnOn())
+							{
+								this.on=true;
+							}
 						}
 						
 						//this.object.systems[this.ID].on=!this.object.systems[this.ID].on;

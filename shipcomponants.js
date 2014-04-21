@@ -54,7 +54,7 @@ SystemIDs.Medical=3;
 SystemIDs.Weapons=4;
 SystemIDs.Targeting=5;
 SystemIDs.Scanners=6;
-SystemIDs.LongRangeScanners=7;//?
+SystemIDs.LongRangeScanners=17;//?
 SystemIDs.ImpulseEngines=8;
 SystemIDs.WarpEngines=9;
 SystemIDs.TransWarpEngines=10;//?
@@ -64,7 +64,7 @@ SystemIDs.CargoBay=13;
 SystemIDs.PassengerBay=14;
 SystemIDs.ShuttleBay=15;
 SystemIDs.Transporter=16;
-SystemIDs.Navigation=17;
+SystemIDs.Navigation=7;
 SystemIDs.Holodeck=18;
 SystemIDs.EscapePods=19;
 SystemIDs.Tractor=20;
@@ -87,7 +87,7 @@ function shipSystem(hip,t)
 	if(t==4) {this.name="Weapons";}
 	if(t==5) {this.name="Targeting";}
 	if(t==6) {this.name="Scanners";}
-	if(t==7) {this.name="LRScanners";}
+	if(t==7) {this.name="Navigation";}
 	if(t==8) {this.name="Impulse Eng.";}
 	if(t==9) {this.name="Warp Eng.";}
 	if(t==10) {this.name="Bidet";}
@@ -97,7 +97,7 @@ function shipSystem(hip,t)
 	if(t==14) {this.name="Passanger Bay";}
 	if(t==15) {this.name="Shuttle Bay";}
 	if(t==16) {this.name="Transporter";}
-	if(t==17) {this.name="Navigation";}
+	if(t==17) {this.name="LRScanners";}
 	if(t==18) {this.name="Holodeck";}
 	if(t==19) {this.name="Escape Pods";}
 	if(t==20) {this.name="Tractor Beam";}
@@ -135,7 +135,7 @@ function shipSystem(hip,t)
 			return true;
 		}else
 		{
-			console.log("Not enough power!");
+			//console.log("Not enough power!");
 			return false;
 		}
 	};

@@ -48,8 +48,7 @@ function starShip(civid){
 	this.civ=civs[civid];
 	this.ship=true;
 	this.systems=[];
-	this.power=30;
-	this.maxPower=30;
+	this.power=this.maxPower=7;
 	
 	//todo
 	this.rooms=6;
@@ -702,7 +701,7 @@ function starShip(civid){
 	{
 		//todo 
 		this.systems[id].installed=true;
-		this.systems[id].power=1;
+		this.systems[id].power=0;
 		//this.systems[id].on=true;
 		if(this.menu.sysButtons)
 		{
@@ -1724,7 +1723,7 @@ function starShip(civid){
 			{
 				this.decelerate();
 			}
-			if((!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (this.speed>0))
+			if((!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (!this.systems[SystemIDs.WarpEngines].functional(false)) && (this.speed>0))
 			{
 				this.decelerate();
 			}
@@ -1812,7 +1811,7 @@ function starShip(civid){
 				{
 					this.decelerate();
 				}
-				if((!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (this.speed>0))
+				if((!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (!this.systems[SystemIDs.WarpEngines].functional(false)) && (this.speed>0))
 				{
 					this.decelerate();
 				}
@@ -1952,7 +1951,7 @@ function starShip(civid){
 				{
 					this.decelerate();
 				}		
-				if((!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (this.speed>0))
+				if((!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (!this.systems[SystemIDs.WarpEngines].functional(false)) && (this.speed>0))
 				{
 					this.decelerate();
 				}				
@@ -2001,7 +2000,7 @@ function starShip(civid){
 			{
 				this.decelerate();
 			}
-			if((!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (this.speed>0))
+			if((!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (!this.systems[SystemIDs.WarpEngines].functional(false)) && (this.speed>0))
 			{
 				this.decelerate();
 			}
