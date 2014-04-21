@@ -626,14 +626,17 @@ function button(pt)
 	if(pt){
 	this.parent=pt;
 	}
+	this.ID=0;
+	this.center=false;
 	this.hasFocus=false;
 	this.visible=false;
 	this.object=null;
 	this.width=30;
-	this.onoff=true;//false;
+	this.onoff=false;
 	this.height=24;
 	this.blinkRate=30;
 	this.blink=false;
+	this.textLimit=10;
 	this.choice=null;
 	this.text="Go!";
 	this.blinkTrack=0;
@@ -681,7 +684,14 @@ function button(pt)
 		can.fillStyle=this.backColor;
 		can.fillRect(this.x+this.borderSize,this.y+this.borderSize,this.width-this.borderSize,this.height-this.borderSize);
 		can.fillStyle="white";
-		can.fillText(this.text,this.x+this.width/2-8,this.y+this.height-8)
+		if(this.center)
+		{
+			can.fillText(this.text,this.x+this.width/2-8,this.y+this.height-8)
+		}else
+		{
+			var peek=elipseString(this.text,10)
+			can.fillText(peek,this.x+6,this.y+14)
+		}
 	};
 	
 }
@@ -736,6 +746,7 @@ function textBox(pt)
 	};
 	this.hasFocus=false;
 	this.visible=false;
+	this.visibleOnlyFocus=false;
 	this.width=80;
 	this.object=null;
 	this.height=16;
@@ -851,6 +862,10 @@ function textBox(pt)
 	this.draw=function(can,cam)
 	{
 		if(!this.visible) {return;}
+		if((this.visibleOnlyFocus) && (!this.hasFocus))
+		{
+			return;
+		}
 		can.fillStyle="grey";
 		if(this.hasFocus)
 		{
@@ -892,11 +907,11 @@ clearFocus=function()
 function screenBox(obj)
 {
 	this.object=obj;
-	this.x=0;
-	this.y=0;
+	this.x=20;
+	this.y=350;
 	this.scale=1;
-	this.height=150
-	this.width=60;
+	this.height=180
+	this.width=80;
 	this.page=0;
 	this.pages=7;
 	
@@ -911,6 +926,7 @@ function screenBox(obj)
 		this.nameBox.object=this.object;
 		this.nameBox.width=120;
 		this.nameBox.type=0;
+		this.nameBox.visibleOnlyFocus=true;
 		this.nameBox.text=this.object.name;
 		this.nameBox.limit=21;
 		this.nameBox.enter=function()
@@ -955,6 +971,7 @@ function screenBox(obj)
 		this.goPlanetButton.y=this.y+145;
 		this.goPlanetButton.object=this.object;
 		this.goPlanetButton.parent=this;
+		this.goPlanetButton.center=true;
 		this.goPlanetButton.doThings=function()
 		{
 			
@@ -972,6 +989,7 @@ function screenBox(obj)
 		this.goShipButton.y=this.y+145;
 		this.goShipButton.object=this.object;
 		this.goShipButton.parent=this;
+		this.goShipButton.center=true;
 		this.goShipButton.doThings=function()
 		{
 			
@@ -987,6 +1005,60 @@ function screenBox(obj)
 			console.log(this.object.name+" heading to "+sally.name);
 		};
 		buttons.push(this.goShipButton);
+		this.sysButtons=new Array();
+		var i=0;
+		for(var g=0;((g<3)&&(i<this.object.systems.length));g++)
+		{
+			for(var h=0;((h<7)&&(i<this.object.systems.length));h++)
+			{
+				var liddle=new button(this);
+				liddle.object=this.object;
+				liddle.parent=this;
+				liddle.ID=i;
+				liddle.on=this.object.systems[i].on;
+				liddle.x=this.x+8+g*85;
+				liddle.y=this.y+38+h*32;
+				liddle.width=80;
+				liddle.text=this.object.systems[i].name;
+				liddle.onoff=true;
+				liddle.doThings=function()
+				{
+					this.object.systems[this.ID].on=!this.object.systems[this.ID].on;
+				};
+				this.sysButtons.push(liddle);
+				i++;
+			}
+		}
+		
+		/*for(var i=0;i<this.object.systems.length;i++)
+		{
+			var liddle=new button(this);
+			liddle.object=this.object;
+			liddle.parent=this;
+			liddle.ID=i;
+			liddle.x=this.x+(Math.floor((i)/4)+1)*65;
+			liddle.y=this.y+40+(Math.floor(i/7)+1)*32;
+			liddle.width=60;
+			liddle.text=this.object.systems[i].name;
+			liddle.onoff=true;
+			liddle.doThings=function()
+			{
+				this.object.systems[this.ID].on=!this.object.systems[this.ID].on;
+			};
+			this.sysButtons.push(liddle);
+		}*/
+		
+		for(var i=0;i<this.sysButtons.length;i++)
+		{
+			/*for(var j=0;j<this.sysButtons.length;j++) //only for radio buttons!
+			{
+				if(i!=j)
+				{
+					this.sysButtons[i].linked.push(this.sysButtons[j]);
+				}
+			}*/
+			buttons.push(this.sysButtons[i]);
+		}
 	}
 	this.update=function()
 	{
@@ -1031,6 +1103,20 @@ function screenBox(obj)
 		{
 			this.nameBox.visible=false;
 		}
+		if((this.page==4) && (this.object==selectedShip))
+		{
+			for(var i=0;i<this.sysButtons.length;i++)
+			{
+				this.sysButtons[i].visible=true;
+				this.sysButtons[i].update();
+			}
+		}else
+		{
+			for(var i=0;i<this.sysButtons.length;i++)
+			{
+				this.sysButtons[i].visible=false;
+			}
+		}
 		this.headingBox.update();
 		var emily=this.systemBox.listTrack;
 		this.systemBox.update();
@@ -1050,6 +1136,7 @@ function screenBox(obj)
 		this.shipBox.update();
 		this.planetBox.update();
 		this.nameBox.update();
+		
 	}
 	  /*if((this.planetBox.hasFocus) && (this.page==2))//todo...
 		{
@@ -1097,7 +1184,7 @@ function screenBox(obj)
 				
 				if(this.object.civ.name=="Humanity")
 				{
-					can.fillText(this.object.prefix+" ",this.x+10,this.y+2+16);
+					can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
 					this.nameBox.x=this.x+50;
 					this.nameBox.y=this.y+4;
 					this.nameBox.draw(can,cam);
@@ -1141,11 +1228,11 @@ function screenBox(obj)
 				}
 				if(this.object.desiredOrbitTarg) 
 				{
-					destext=this.object.desiredOrbitTarg.name+","+this.object.desiredOrbitTarg.sun.name+ " system";
-					destext=elipseString(destext,27);
+					destext="Destination: "+this.object.desiredOrbitTarg.name+","+this.object.desiredOrbitTarg.sun.name+ " system";
+					destext=elipseString(destext,37);
 					destdist=Math.floor(distance(this.object,this.object.desiredOrbitTarg));
 				}
-				can.fillText("Destination: "+destext,this.x+10,this.y+2+64);
+				can.fillText(destext,this.x+10,this.y+2+64);
 				can.fillText("Distance: "+destdist+" AU",this.x+10,this.y+2+80);
 				can.fillText("Speed: "+this.object.speed+"/"+this.object.maxSpeed,this.x+10,this.y+2+96);
 				
@@ -1207,6 +1294,13 @@ function screenBox(obj)
 			{
 				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
 				can.fillText("Ships Systems: ",this.x+10,this.y+2+32);
+				if(this.object.civ.name=="Humanity")
+				{
+					for(var i=0;i<this.sysButtons.length;i++)
+					{
+						this.sysButtons[i].draw(can,cam);
+					}
+				}
 			}else if(this.page==5)
 			{
 				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
@@ -1325,7 +1419,9 @@ function newShip(iv,startworld,capt)
 			james.civID=0;
 			james.sprite=Sprite("ship2");
 			james.maxSpeed=9;
-			james.activeShields=true;
+			//james.activeShields=true;
+			james.systems[SystemIDs.Shields].installed=true;
+			james.systems[SystemIDs.Shields].power=1;
 			james.hasShields=true;
 			james.maxShields=70;
 			james.shields=70;
@@ -2031,7 +2127,7 @@ function star(){
 				canvas.globalAlpha=0.30;
 			}
 			this.sprite.draw(can, -this.width/2,-this.height/2);
-			if((this.shields>0) && (this.activeShields))
+			if((this.shields>0) &&  (this.systems[SystemIDs.Shields].functional()))
 			{
 				canvas.globalAlpha=this.shields/100;
 				if(this.width<32)
@@ -2368,7 +2464,7 @@ function newPlatform(wrld)
 	jilly.class="orbitalDefense";
 	jilly.sprite=Sprite("platform");
 	jilly.maxSpeed=0;
-	jilly.activeShields=true;
+	//jilly.activeShields=true;
 	jilly.maxShields=0;
 	jilly.shields=0;
 	jilly.alive=true;
@@ -2502,10 +2598,12 @@ function newInitShips()
 				console.log(james.prefix+" "+james.name+" is now orbiting " +stars[0].planets[bah].name);
 				james.class.name="Galaxy Class";
 				james.civID=0;
-				
+							//james.activeShields=true;
+				james.systems[SystemIDs.Shields].installed=true;
+				james.systems[SystemIDs.Shields].power=1;
 				james.sprite=Sprite("ship2");
 				james.maxSpeed=9;
-				james.activeShields=true;
+				//james.activeShields=true;
 				james.crusingSpeed=7;
 				james.desiredSpeed=james.cruisingSpeed;
 				james.hasShields=true;
@@ -3044,10 +3142,14 @@ function newInitShips()
 				james.prefix="Borg ";
 				james.civID=9;
 				james.civ=civs[civIDs.Borg];
+							//james.activeShields=true;
+				james.systems[SystemIDs.Shields].installed=true;
+				james.systems[SystemIDs.Shields].power=1;
+				james.systems[SystemIDs.Shields].on=true;
 				james.christen();
 				james.hp=1500;
 				james.maxHp=1500;
-				james.activeShields=true;
+				//james.activeShields=true;
 				james.hasShields=true;
 				james.maxShields=100;
 				james.shields=100;

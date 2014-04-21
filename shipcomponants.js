@@ -74,12 +74,34 @@ var NumSystems=21;
 
 
 
-function shipSystem(hip)
+function shipSystem(hip,t)
 {
 	this.name="Billy.";
 	this.installed=false;
 	this.ship=hip;
-	this.type=-1;
+	this.type=t;
+	if(t==0) {this.name="Life Support"};
+	if(t==1) {this.name="Damage Control"};
+	if(t==2) {this.name="Shields"};
+	if(t==3) {this.name="Medical Bay"};
+	if(t==4) {this.name="Weapons"};
+	if(t==5) {this.name="Targeting"};
+	if(t==6) {this.name="Scanners"};
+	if(t==7) {this.name="LRScanners"};
+	if(t==8) {this.name="Impulse Engines"};
+	if(t==9) {this.name="Warp Engines"};
+	if(t==10) {this.name="Bidet"};
+	if(t==11) {this.name="Main Computer"};
+	if(t==12) {this.name="Science Lab"};
+	if(t==13) {this.name="Cargo Bay"};
+	if(t==14) {this.name="Passanger Bay"};
+	if(t==15) {this.name="Shuttle Bay"};
+	if(t==16) {this.name="Transorter"};
+	if(t==17) {this.name="Navigation"};
+	if(t==18) {this.name="Holodeck"};
+	if(t==19) {this.name="Escape Pods"};
+	if(t==20) {this.name="Tractor Beam"};
+	if(t==21) {this.name=""};
 	this.alive=true;
 	this.active=false;
 	this.on=false;//this is the player disabling things
@@ -133,7 +155,7 @@ function shipSystem(hip)
 	
 	this.functional=function(manned)
 	{
-		if((this.power>0) && (this.on)&& (this.installed)&& (this.alive)&& (this.active))
+		if((this.power>0) && (this.on)&& (this.installed)&& (this.alive))//&& (this.active))
 		{
 			if(manned)
 			{

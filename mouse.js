@@ -101,7 +101,7 @@ function mouseClick(e) {  //represents the mouse
 			case 1:
 				
 				//screenfull.request(canvasElement);
-				
+				var hitone=false;
 				for(var i=0;i<textBoxes.length;i++)
 				{
 					if((isOver(textBoxes[i])) && (textBoxes[i].visible))
@@ -109,12 +109,14 @@ function mouseClick(e) {  //represents the mouse
 						if(textBoxes[i].hasFocus)
 						{
 							textBoxes[i].onClick();
+							return;
 						}else
 						{
 							clearFocus();
 							textBoxes[i].hasFocus=true;
 							return;
 						}
+						
 					}
 				}
 				//clearFocus();
@@ -134,7 +136,7 @@ function mouseClick(e) {  //represents the mouse
 						return;
 					}
 				}
-				
+				clearFocus();
 				if((selectedShip) && (!selectedShip.adrift))
 				{
 					/*var mTY=mY+Math.abs(camera.y);

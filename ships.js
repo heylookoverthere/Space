@@ -50,7 +50,7 @@ function starShip(civid){
 	this.systems=new Array();
 	for(var i=0;i<NumSystems;i++)
 	{
-		var wynn=new shipSystem(this);
+		var wynn=new shipSystem(this,i);
 		wynn.type=i;
 		if((wynn.type==SystemIDs.Weapons) ||(wynn.type==SystemIDs.LifeSupport)||(wynn.type==SystemIDs.DamageControl)||(wynn.type==SystemIDs.MedicalBay)||(wynn.type==SystemIDs.ImpulseEngines)||(wynn.type==SystemIDs.WarpEngines) ||(wynn.type==SystemIDs.Scanners)||(wynn.type==SystemIDs.Targeting)||(wynn.type==SystemIDs.Navigation))
 		{
@@ -240,8 +240,8 @@ function starShip(civid){
 	this.menu=new screenBox(this);
 	this.menu.x=20;
 	this.menu.y=350;
-	this.menu.width=256;
-	this.menu.height=250;
+	this.menu.width=270;
+	this.menu.height=270;
 	this.layMine=function(){
 		if(this.numMines<1) {return;}
 		this.numMines--;
@@ -372,12 +372,12 @@ function starShip(civid){
 			console.log("You don't have an away team!");
 			return;
 		}*/
-		if((this.shields>0) && (this.activeShields))
+		if((this.shields>0) && (this.systems[SystemIDs.Shields].functional()))
 		{
 			console.log("Cannot beam down with shields up.");
 			return;
 		}
-		if((target.shields>0)&& (target.activeShields))
+		if((target.shields>0) && (target.ship)&& (this.target.systems[SystemIDs.Shields].functional()))//todo planet shields block them?
 		{
 			console.log("Cannot beam through enemy shields.");
 			return;
@@ -403,12 +403,12 @@ function starShip(civid){
 	
 	this.beamUpAwayTeam=function(){
 		if(!this.systems[SystemIDs.Transporter].functional(false)) {return;}
-		if((this.shields>0) && (this.activeShields))
+		if((this.shields>0)  && (this.systems[SystemIDs.Shields].functional()))
 		{
 			console.log("Cannot beam away team back with shields up.");
 			return;
 		}
-		if((this.awayTeamAt.shields>0)&& (this.awayTeamAt.activeShields))
+		if((this.awayTeamAt.shields>0)&& (this.awayTeamAt.ship)&&  (this.awayTeamAt.systems[SystemIDs.Shields].functional()))
 		{
 			console.log("Cannot beam through enemy shields.");
 			return;
@@ -420,12 +420,12 @@ function starShip(civid){
 	
 	this.beamUp=function(unt){
 		if(!this.systems[SystemIDs.Transporter].functional(false)) {return;}
-		if((this.shields>0) && (this.activeShields))
+		if((this.shields>0) && (this.systems[SystemIDs.Shields].functional()))
 		{
 			console.log("Cannot beam away team back with shields up.");
 			return;
 		}
-		if((this.awayTeamAt.shields>0) && (this.awayTeamAt.activeShields))
+		if((this.awayTeamAt.shields>0) && (this.awayTeamAt.ship)&&  (this.awayTeamAt.systems[SystemIDs.Shields].functional()))
 		{
 			console.log("Cannot beam through enemy shields.");
 			return;
@@ -453,7 +453,7 @@ function starShip(civid){
 		{
 			console.log("Out of tractor range");
 			return;
-		}if((something.shields>0) && (something.activeShields))
+		}if((something.shields>0) && (something.systems[SystemIDs.Shields].functional()))
 		{
 			console.log("Cannoy tractor while their shields are up.");
 			return;
@@ -549,7 +549,7 @@ function starShip(civid){
 		//go through toon and remove ones out of tractor range!
 		for(var i=0;i<toon.length;i++)
 		{
-			if((!this.inTractorRange(toon[i])) || ((toon[i].shields>0) && (toon[i].activeShields)))
+			if((!this.inTractorRange(toon[i])) || ((toon[i].shields>0)  && (this.systems[SystemIDs.Shields].functional())))
 			{
 				toon.splice(i,1);
 				i--;
@@ -772,7 +772,7 @@ function starShip(civid){
 	};
 	
 	this.getDamaged=function(amt,phaser,attacker){
-		if(this.activeShields)
+		if(this.systems[SystemIDs.Shields].functional())
 		{
 			this.shields-=amt;
 			var wound=0;
@@ -2255,7 +2255,7 @@ function starShip(civid){
 			{
 				this.windows[i].draw(can,cam);
 			}
-			if((this.shields>0) && (this.activeShields))
+			if((this.shields>0) && (this.systems[SystemIDs.Shields].functional()))
 			{
 				canvas.globalAlpha=this.shields/100;
 				if(this.width<32)

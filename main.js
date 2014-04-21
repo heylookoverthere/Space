@@ -886,7 +886,8 @@ function mainMenuUpdate(){
 		}
 		if(shieldskey.check())
 		{
-			selectedShip.activeShields=!selectedShip.activeShields;
+			//selectedShip.activeShields=!selectedShip.activeShields;
+			 selectedShip.systems[SystemIDs.Shields].on=! selectedShip.systems[SystemIDs.Shields].on
 		}
 		if(gokey.check())
 		{
