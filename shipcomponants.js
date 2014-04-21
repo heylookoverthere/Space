@@ -175,6 +175,7 @@ function shipSystem(hip,t)
 	};
 	this.update=function()
 	{
+		if(!this.functional()) {return;}
 		//switch case for all passive effects.
 		if(this.type==SystemIDs.LifeSupport)
 		{

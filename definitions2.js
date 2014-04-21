@@ -630,6 +630,7 @@ function button(pt)
 	this.center=false;
 	this.hasFocus=false;
 	this.visible=false;
+	this.greyed=false;
 	this.object=null;
 	this.width=30;
 	this.onoff=false;
@@ -669,6 +670,7 @@ function button(pt)
 		{
 			can.fillStyle="yellow";
 		}
+		
 		if(this.onoff)
 		{
 			if(this.on)
@@ -679,6 +681,10 @@ function button(pt)
 				this.backColor="red";
 			}
 		
+		}
+		if(this.greyed)
+		{
+			this.backColor="grey";
 		}
 		can.fillRect(this.x,this.y,this.width+this.borderSize,this.height+this.borderSize);
 		can.fillStyle=this.backColor;
@@ -1023,8 +1029,15 @@ function screenBox(obj)
 				liddle.onoff=true;
 				liddle.doThings=function()
 				{
-					this.object.systems[this.ID].on=!this.object.systems[this.ID].on;
+					if(this.object.systems[this.ID].installed)//also check power!
+					{
+						this.object.systems[this.ID].on=!this.object.systems[this.ID].on;
+					}
 				};
+				if(!liddle.object.systems[liddle.ID].installed)
+				{
+					liddle.greyed=true;
+				}
 				this.sysButtons.push(liddle);
 				i++;
 			}
@@ -1212,7 +1225,8 @@ function screenBox(obj)
 				can.fillText("Crew: ",this.x+10,this.y+2+32);
 				for(var i=0;i<this.object.crew.length;i++)
 				{
-					can.fillText(this.object.crew[i].title+" "+this.object.crew[i].name+" Lvl: "+this.object.crew[i].level,this.x+10,this.y+2+64+i*16);
+					can.fillText(this.object.crew[i].title+" "+this.object.crew[i].name+" Lvl: "+this.object.crew[i].level,this.x+10,this.y+2+44+i*32);
+					can.fillText("   "+this.object.crew[i].hp+"/"+this.object.crew[i].maxHp,this.x+10,this.y+2+44+i*32+16);
 				}
 			}else if(this.page==2)//navigation
 			{
@@ -1420,8 +1434,7 @@ function newShip(iv,startworld,capt)
 			james.sprite=Sprite("ship2");
 			james.maxSpeed=9;
 			//james.activeShields=true;
-			james.systems[SystemIDs.Shields].installed=true;
-			james.systems[SystemIDs.Shields].power=1;
+			james.installSystem(SystemIDs.Shields);
 			james.hasShields=true;
 			james.maxShields=70;
 			james.shields=70;
@@ -2599,8 +2612,7 @@ function newInitShips()
 				james.class.name="Galaxy Class";
 				james.civID=0;
 							//james.activeShields=true;
-				james.systems[SystemIDs.Shields].installed=true;
-				james.systems[SystemIDs.Shields].power=1;
+				james.installSystem(SystemIDs.Shields);
 				james.sprite=Sprite("ship2");
 				james.maxSpeed=9;
 				//james.activeShields=true;
@@ -3143,8 +3155,7 @@ function newInitShips()
 				james.civID=9;
 				james.civ=civs[civIDs.Borg];
 							//james.activeShields=true;
-				james.systems[SystemIDs.Shields].installed=true;
-				james.systems[SystemIDs.Shields].power=1;
+				james.installSystem(SystemIDs.Shields);
 				james.systems[SystemIDs.Shields].on=true;
 				james.christen();
 				james.hp=1500;
@@ -3180,7 +3191,8 @@ function newInitShips()
 	civs[0].ships[0].height=16;
 	civs[0].ships[0].numTorpedos=0;
 	civs[0].ships[0].shieldSprite=Sprite("shields");
-	civs[0].ships[0].class="Shuttlecraft";
+	civs[0].ships[0].class=shuttlecraft;
+	civs[0].ships[0].unInstallSystem(SystemIDs.Shields);
 	civs[0].ships[0].shields=0;
 	civs[0].ships[0].sprite=Sprite("ship1");
 	civs[0].ships[0].maxSpeed=7;

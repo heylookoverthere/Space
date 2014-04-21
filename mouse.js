@@ -124,14 +124,18 @@ function mouseClick(e) {  //represents the mouse
 				{
 					if((isOver(buttons[i]))  && (buttons[i].visible))
 					{
-						clearFocus();
-						buttons[i].on=!buttons[i].on;
-						for(var k=0;k<buttons[i].linked.length;k++)
-						{
-							buttons[i].linked[k].on=false;
+						if(!buttons[i].greyed){
+							clearFocus();
+							
+							
+							buttons[i].on=!buttons[i].on;
+							for(var k=0;k<buttons[i].linked.length;k++)
+							{
+								buttons[i].linked[k].on=false;
+							}
+							buttons[i].doThings();
+							//console.log(buttons[i].object.name);
 						}
-						buttons[i].doThings();
-						//console.log(buttons[i].object.name);
 	
 						return;
 					}

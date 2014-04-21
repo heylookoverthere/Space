@@ -51,7 +51,6 @@ function starShip(civid){
 	for(var i=0;i<NumSystems;i++)
 	{
 		var wynn=new shipSystem(this,i);
-		wynn.type=i;
 		if((wynn.type==SystemIDs.Weapons) ||(wynn.type==SystemIDs.LifeSupport)||(wynn.type==SystemIDs.DamageControl)||(wynn.type==SystemIDs.MedicalBay)||(wynn.type==SystemIDs.ImpulseEngines)||(wynn.type==SystemIDs.WarpEngines) ||(wynn.type==SystemIDs.Scanners)||(wynn.type==SystemIDs.Targeting)||(wynn.type==SystemIDs.Navigation))
 		{
 			wynn.installed=true;
@@ -286,6 +285,8 @@ function starShip(civid){
 		for(var v=1;v<this.numPhasers;v++){ //they already have one
 			this.phaserBanks.push(new energyWeapon(this));
 		}
+		this.breatheTick=0;
+		this.breatheRate=400;
 		this.shields=this.class.shields;
 		this.tractorDist=this.class.tractorDist;
 		this.maxShields=this.class.maxShields;
@@ -668,9 +669,28 @@ function starShip(civid){
 		}
 	};
 
-	this.installSystem=function(micheal)
+	this.installSystem=function(id)
 	{
 		//todo 
+		this.systems[id].installed=true;
+		this.systems[id].power=1;
+		//this.systems[id].on=true;
+		if(this.menu.sysButtons)
+		{
+			this.menu.sysButtons[id].greyed=false;
+		}
+	};
+	
+	this.unInstallSystem=function(id)
+	{
+		//todo 
+		this.systems[id].installed=false;
+		this.systems[id].power=0;
+		this.systems[id].on=false;
+		if(this.menu.sysButtons)
+		{
+			this.menu.sysButtons[id].greyed=true;
+		}
 	};
 
 	this.fireTorpedo=function(){
@@ -1429,11 +1449,38 @@ function starShip(civid){
 		}
 	};
 	
+	this.breathe=function()
+	{
+		this.breatheTick+=1*gameSpeed;
+		if(this.breatheTick<this.breatheRate) {return;}
+		this.breatheTick=0;
+		var peet=this.crew.length;
+		if(!this.systems[SystemIDs.LifeSupport].functional())
+		{
+			this.oxygen-=peet;
+			if(this.oxygen<0) {this.oxygen=0;}
+		}
+	};
+	
+	this.bodyDisposal=function()
+	{
+		for(var i=0;i<this.crew.length;i++)
+		{
+			if(!this.crew[i].alive)
+			{
+				this.crew.splice(i,1)
+				i--;
+			}
+		}
+	};
+	
 	this.update=function(){
 		if(!this.alive){return;}
 		if(!this.systems[SystemIDs.Shields].functional(false)) {this.activeSheilds=false;}
 		if(!this.systems[SystemIDs.Tractor].functional(false)) {this.unTractorSomething();}
 		this.menu.update();
+		this.breathe();
+		this.bodyDisposal();
 		if(theTime.years>this.lastYear)
 		{
 			this.lastYear=theTime.years;
