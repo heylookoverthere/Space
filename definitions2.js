@@ -650,7 +650,7 @@ function button(pt)
 	this.linked=[]; //turn these off when this goes on.
 	this.doThings=function()
 	{
-		
+		this.on=!this.on;
 	};
 	this.update=function()
 	{
@@ -1052,7 +1052,17 @@ function screenBox(obj)
 				{
 					if(this.object.systems[this.ID].installed)//also check power!
 					{
-						this.object.systems[this.ID].on=!this.object.systems[this.ID].on;
+						if(this.object.systems[this.ID].on)
+						{
+							this.object.systems[this.ID].turnOff();
+							this.on=false
+						}else
+						{
+							this.object.systems[this.ID].turnOn();
+							this.on=true;
+						}
+						
+						//this.object.systems[this.ID].on=!this.object.systems[this.ID].on;
 					}
 				};
 				if(!liddle.object.systems[liddle.ID].installed)
@@ -1352,7 +1362,7 @@ function screenBox(obj)
 			}else if(this.page==4)//Systems
 			{
 				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
-				can.fillText("Ships Systems: ",this.x+10,this.y+2+32);
+				can.fillText("Ships Systems:   Power: "+this.object.power+"/"+this.object.maxPower,this.x+10,this.y+2+32);
 				if(this.object.civ.name=="Humanity")
 				{
 					for(var i=0;i<this.sysButtons.length;i++)

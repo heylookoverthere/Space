@@ -128,7 +128,7 @@ function mouseClick(e) {  //represents the mouse
 							clearFocus();
 							
 							
-							buttons[i].on=!buttons[i].on;
+							//buttons[i].on=!buttons[i].on;
 							for(var k=0;k<buttons[i].linked.length;k++)
 							{
 								buttons[i].linked[k].on=false;

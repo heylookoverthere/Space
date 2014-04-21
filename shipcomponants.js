@@ -118,7 +118,7 @@ function shipSystem(hip,t)
 	this.maxPower=0; //"Thanks, I got it off a hair dryer."
 	this.turnOff=function(alert)
 	{
-		this.power=0;
+		this.ship.powerDown(this);
 		this.on=false;
 		this.active=false;
 		if(alert)
@@ -128,9 +128,16 @@ function shipSystem(hip,t)
 	};
 	this.turnOn=function(alert)
 	{
-		this.power=1;
-		this.active=true;
-		this.on=true;
+		if(this.ship.routePower(this))
+		{
+			this.active=true;
+			this.on=true;
+			return true;
+		}else
+		{
+			console.log("Not enough power!");
+			return false;
+		}
 	};
 	this.disable=function(alert)
 	{

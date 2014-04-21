@@ -48,18 +48,9 @@ function starShip(civid){
 	this.civ=civs[civid];
 	this.ship=true;
 	this.systems=[];
-	for(var i=0;i<NumSystems;i++)
-	{
-		var wynn=new shipSystem(this,i);
-		if((wynn.type==SystemIDs.Weapons) ||(wynn.type==SystemIDs.LifeSupport)||(wynn.type==SystemIDs.DamageControl)||(wynn.type==SystemIDs.MedicalBay)||(wynn.type==SystemIDs.ImpulseEngines)||(wynn.type==SystemIDs.WarpEngines) ||(wynn.type==SystemIDs.Scanners)||(wynn.type==SystemIDs.Targeting)||(wynn.type==SystemIDs.Navigation)||(wynn.type==SystemIDs.Tractor)||(wynn.type==SystemIDs.EscapePods)||(wynn.type==SystemIDs.Transporter))
-		{
-			wynn.installed=true;
-			wynn.on=true;
-			wynn.active=true;
-			wynn.power=wynn.minPower;
-		}
-		this.systems.push(wynn);
-	}
+	this.power=30;
+	this.maxPower=30;
+	
 	//todo
 	this.rooms=6;
 	this.maxSystems=6;
@@ -237,6 +228,40 @@ function starShip(civid){
 	this.lastYear=2000;
 	this.windows=[];
 	this.items=[];
+	this.routePower=function(sys)
+	{
+		if(sys.power>0) {return;}
+		if(this.power-sys.minPower>-1)
+		{
+			this.power-=sys.minPower;
+			sys.power=sys.minPower;
+			//playASound
+			return true;
+		}
+		return false;
+	};
+	
+	this.powerDown=function(sys)
+	{
+		if(sys.power<1) {return;}
+		this.power+=sys.power;
+		sys.power=0;
+		sys.on=false;
+		//playASound
+	};
+	for(var i=0;i<NumSystems;i++)
+	{
+		var wynn=new shipSystem(this,i);
+		if((wynn.type==SystemIDs.Weapons) ||(wynn.type==SystemIDs.LifeSupport)||(wynn.type==SystemIDs.DamageControl)||(wynn.type==SystemIDs.MedicalBay)||(wynn.type==SystemIDs.ImpulseEngines)||(wynn.type==SystemIDs.WarpEngines) ||(wynn.type==SystemIDs.Scanners)||(wynn.type==SystemIDs.Targeting)||(wynn.type==SystemIDs.Navigation)||(wynn.type==SystemIDs.Tractor)||(wynn.type==SystemIDs.EscapePods)||(wynn.type==SystemIDs.Transporter))
+		{
+			wynn.installed=true;
+			wynn.turnOn();
+			wynn.active=true;
+		
+		}
+		this.systems.push(wynn);
+	}
+	
 	this.menu=new screenBox(this);
 	this.menu.x=20;
 	this.menu.y=350;
@@ -560,7 +585,7 @@ function starShip(civid){
 			}
 		}
 		//if(!this.bearbyVessels) {return;}
-		if(this.beamTarget==null)
+		if(this.beamTarget==null) //todo problem with ===
 		{
 			//console.log("targeting selfyar?");
 			this.beamTarget=toon[0];
@@ -589,7 +614,6 @@ function starShip(civid){
 	{
 		if(!this.nearbyVessels) {return;}
 		this.unTractorSomething();
-		console.log("yaar");
 		var toon=this.nearbyVessels.concat(this.nearbyPods);
 		//go through toon and remove ones out of tractor range!
 		for(var i=0;i<toon.length;i++)
@@ -600,7 +624,6 @@ function starShip(civid){
 				i--;
 			}
 		}
-		console.log(toon);
 		//if(!this.bearbyVessels) {return;}
 		if(this.tractorTarget==null)
 		{

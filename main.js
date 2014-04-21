@@ -34,7 +34,7 @@ requestAnimationFrame(blurp,canvas);
 loadscreen.draw(canvas,0,0);
 }
 blurp();
-console.log(canvas);
+
 function playSound(name){
     
     nerp=document.getElementById(name);
