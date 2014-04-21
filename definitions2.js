@@ -681,6 +681,19 @@ function textBox(pt)
 	if(pt){
 	this.parent=pt;
 	}
+	this.enter=function()
+	{
+		this.finalText=this.text;
+		this.hasFocus=false;
+		if((this.object) && (this.object.orbiting))
+		{
+			this.object.orderLeaveOrbit();
+		}
+		if(this.object)
+		{
+			this.object.desiredHeading=parseInt(this.text);
+		}
+	};
 	this.hasFocus=false;
 	this.visible=false;
 	this.width=80;
@@ -716,7 +729,13 @@ function textBox(pt)
 				{
 					if((letterkeys[i].check()) &&(this.text.length<this.limit))
 					{
-						this.text+=letterkeys[i].key;
+						if(keydown.shift)
+						{
+							this.text+=letterkeys[i].key.toUpperCase();
+						}else
+						{
+							this.text+=letterkeys[i].key;
+						}
 					}
 				}
 				for(var i=0;i<numberkeys.length;i++)
@@ -743,16 +762,7 @@ function textBox(pt)
 				
 				if((this.type==0) &&(startkey.check()))
 				{
-					this.finalText=this.text;
-					this.hasFocus=false;
-					if((this.object) && (this.object.orbiting))
-					{
-						this.object.orderLeaveOrbit();
-					}
-					if(this.object)
-					{
-						this.object.desiredHeading=parseInt(this.text);
-					}
+					this.enter();
 				}
 			}
 		}else if(this.type==1) //dropdown basically.
@@ -846,6 +856,18 @@ function screenBox(obj)
 	{
 
 		this.headingBox=new textBox(this);
+		this.nameBox=new textBox(this);
+		this.nameBox.object=this.object;
+		this.nameBox.width=120;
+		this.nameBox.type=0;
+		this.nameBox.text=this.object.name;
+		this.nameBox.limit=21;
+		this.nameBox.enter=function()
+		{
+			this.finalText=this.text;
+			this.hasFocus=false;
+			this.object.name=this.text;
+		};
 		this.headingBox.object=this.object;
 		this.headingBox.limit=3;
 		this.systemBox=new textBox(this);
@@ -874,6 +896,7 @@ function screenBox(obj)
 		textBoxes.push(this.planetBox);
 		textBoxes.push(this.raceBox);
 		textBoxes.push(this.shipBox);
+		textBoxes.push(this.nameBox);
 		this.goPlanetButton=new button(this);
 		this.goPlanetButton.x=this.x+10+120;
 		this.goPlanetButton.y=this.y+145;
@@ -931,6 +954,7 @@ function screenBox(obj)
 			this.goPlanetButton.visible=true;
 			this.raceBox.visible=true;
 			this.shipBox.visible=true;
+			
 			this.goShipButton.visible=true;
 		}else
 		{
@@ -940,9 +964,16 @@ function screenBox(obj)
 			this.goPlanetButton.visible=false;
 			this.raceBox.visible=false;
 			this.shipBox.visible=false;
+			
 			this.goShipButton.visible=false;
 		}
-		
+		if((this.page==0)&&(this.object==selectedShip))
+		{
+			this.nameBox.visible=true;
+		}else
+		{
+			this.nameBox.visible=false;
+		}
 		this.headingBox.update();
 		var emily=this.systemBox.listTrack;
 		this.systemBox.update();
@@ -961,6 +992,7 @@ function screenBox(obj)
 		}
 		this.shipBox.update();
 		this.planetBox.update();
+		this.nameBox.update();
 	}
 	  /*if((this.planetBox.hasFocus) && (this.page==2))//todo...
 		{
@@ -1005,7 +1037,17 @@ function screenBox(obj)
 		{
 			if(this.page==0)
 			{
-				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
+				
+				if(this.object.civ.name=="Humanity")
+				{
+					can.fillText(this.object.prefix+" ",this.x+10,this.y+2+16);
+					this.nameBox.x=this.x+50;
+					this.nameBox.y=this.y+4;
+					this.nameBox.draw(can,cam);
+				}else
+				{
+					can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
+				}
 				can.fillText(this.object.civ.name+ " Lanch Date: " +this.object.launchDate,this.x+10,this.y+2+32);
 				var reek=elipseString(this.object.actionText,60);
 				can.fillText(reek,this.x+10,this.y+2+48);
@@ -1050,40 +1092,42 @@ function screenBox(obj)
 				can.fillText("Distance: "+destdist+" AU",this.x+10,this.y+2+80);
 				can.fillText("Speed: "+this.object.speed+"/"+this.object.maxSpeed,this.x+10,this.y+2+96);
 				
-				can.fillStyle="white"
-				can.fillText("Enter Heading:",this.x+10,this.y+2+122);
-				this.headingBox.x=this.x+10+110;
-				this.headingBox.y=this.y+112;
-				this.headingBox.draw(can,camera);
-				
-				can.fillText("System:",this.x+10,this.y+2+144);
-				this.systemBox.x=this.x+10+90;
-				this.systemBox.y=this.y+132;
-				this.systemBox.draw(can,camera);
-				
-				can.fillText("Planet:",this.x+10,this.y+2+160);
-				this.planetBox.x=this.x+10+90;
-				this.planetBox.y=this.y+152;
-				this.planetBox.draw(can,camera);
-				
-				this.goPlanetButton.x=this.x+10+130;
-				this.goPlanetButton.y=this.y+218;
-				this.goPlanetButton.draw(can,camera);
-				
-				can.fillText("Civ:",this.x+10,this.y+2+184);
-				this.raceBox.x=this.x+10+90;
-				this.raceBox.y=this.y+174;
-				this.raceBox.draw(can,camera);
-				
-				can.fillText("Ship:",this.x+10,this.y+2+204);
-				this.shipBox.x=this.x+10+90;
-				this.shipBox.y=this.y+194;
-				this.shipBox.draw(can,camera);
-				
-				this.goShipButton.x=this.x+10+180;
-				this.goShipButton.y=this.y+218;
-				this.goShipButton.draw(can,camera);
-				
+				if(this.object.civ.name=="Humanity")
+				{
+					can.fillStyle="white"
+					can.fillText("Enter Heading:",this.x+10,this.y+2+122);
+					this.headingBox.x=this.x+10+110;
+					this.headingBox.y=this.y+112;
+					this.headingBox.draw(can,camera);
+					
+					can.fillText("System:",this.x+10,this.y+2+144);
+					this.systemBox.x=this.x+10+90;
+					this.systemBox.y=this.y+132;
+					this.systemBox.draw(can,camera);
+					
+					can.fillText("Planet:",this.x+10,this.y+2+160);
+					this.planetBox.x=this.x+10+90;
+					this.planetBox.y=this.y+152;
+					this.planetBox.draw(can,camera);
+					
+					this.goPlanetButton.x=this.x+10+130;
+					this.goPlanetButton.y=this.y+218;
+					this.goPlanetButton.draw(can,camera);
+					
+					can.fillText("Civ:",this.x+10,this.y+2+184);
+					this.raceBox.x=this.x+10+90;
+					this.raceBox.y=this.y+174;
+					this.raceBox.draw(can,camera);
+					
+					can.fillText("Ship:",this.x+10,this.y+2+204);
+					this.shipBox.x=this.x+10+90;
+					this.shipBox.y=this.y+194;
+					this.shipBox.draw(can,camera);
+					
+					this.goShipButton.x=this.x+10+180;
+					this.goShipButton.y=this.y+218;
+					this.goShipButton.draw(can,camera);
+				}
 			}else if(this.page==3)//combat //somehow add list of nearby hostile ships.
 			{
 				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);

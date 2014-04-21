@@ -535,6 +535,10 @@ function starShip(civid){
 		}
 		this.name=shipNames[this.civID][nami];
 		shipNamesUsed[this.civID][nami]=true;
+		if(this.civ.name=="Humanity")
+		{
+			this.menu.nameBox.text=String(this.name);
+		}
 	};
 	
 	this.cycleBeamTarget=function()
