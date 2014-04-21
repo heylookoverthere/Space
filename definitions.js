@@ -1,3 +1,28 @@
+var backspaced=false;
+
+// Prevent the backspace key from navigating back.
+$(document).unbind('keydown').bind('keydown', function (event) {
+    var doPrevent = false;
+    if (event.keyCode === 8) {
+        var d = event.srcElement || event.target;
+        if ((d.tagName.toUpperCase() === 'INPUT' && (d.type.toUpperCase() === 'TEXT' || d.type.toUpperCase() === 'PASSWORD' || d.type.toUpperCase() === 'FILE' || d.type.toUpperCase() === 'EMAIL' )) 
+             || d.tagName.toUpperCase() === 'TEXTAREA') {
+            doPrevent = d.readOnly || d.disabled;
+        }else if(holdInput)
+		{
+			doPrevent = true;
+			backspaced=true;
+		}
+        else {
+            doPrevent = true;
+        }
+    }
+
+    if (doPrevent) {
+        event.preventDefault();
+    }
+});
+
 var starting=false;
 var bColors = ["#008000","#006400", "#FF4500", "#000080", "#696969", "#800080", "#808000", "#A52A2A", "#8B4513", "#FFDEAD", "#FFFF40","#000080" , "#FFFF80"]; //list of colors for radar/a few 
 var yellowColors=["#F3F781","#F2F5A9","#FFFF00","#D7DF01","#AEB404"];
@@ -9,6 +34,9 @@ Flag.LeftNeelix=1;
 
 var stars=new Array();
 var nebulas=new Array();
+
+var holdInput=false;
+
 
 var flashGUITick=0;
 var flashGUITrack=0;

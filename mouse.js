@@ -249,7 +249,7 @@ isOver= function(targ,cam){ //is the mouse over the player/object
 			//if((mX>(targ.x-targ.width/2)) && (mX<(targ.x-targ.width/2)+targ.width*targ.size) &&(mY>(targ.y-targ.height/2)) &&(mY<(targ.y-targ.height/2)+targ.height)) {return true;}
 		}else
 		{
-			if((mX>targ.x-targ.width) && (mX<targ.x+targ.width) &&(mY>targ.y-targ.height) &&(mY<targ.y+targ.height)) {return true;}
+			if((mX>targ.x) && (mX<targ.x+targ.width) &&(mY>targ.y) &&(mY<targ.y+targ.height)) {return true;}
 		}
 
 	}

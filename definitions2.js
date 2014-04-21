@@ -677,16 +677,19 @@ function textBox(pt)
 {
 	this.x=0;
 	this.y=0;
+	this.limit=16;
 	if(pt){
 	this.parent=pt;
 	}
 	this.hasFocus=false;
 	this.visible=false;
 	this.width=80;
+	this.object=null;
 	this.height=16;
 	this.blinkRate=30;
 	this.blink=false;
 	this.finalText=null;
+	this.type=0;
 	this.listTrack=0;
 	this.list=null;//civs[0].knownWorlds;
 	this.choice=null;
@@ -704,15 +707,55 @@ function textBox(pt)
 				this.blink=!this.blink;
 				this.blinkTrack=0;
 			}
-			
-			if((this.type==0) &&(startkey.check()))
-			{
-				this.finalText=this.text;
-				this.hasFocus=false;
-			}
 		}
-		
-		if(this.type==1) //dropdown basically.
+		if(this.type==0) //text
+		{
+			if(this.hasFocus)
+			{
+				for(var i=0;i<letterkeys.length;i++)
+				{
+					if((letterkeys[i].check()) &&(this.text.length<this.limit))
+					{
+						this.text+=letterkeys[i].key;
+					}
+				}
+				for(var i=0;i<numberkeys.length;i++)
+				{
+					if((numberkeys[i].check()) &&(this.text.length<this.limit))
+					{
+						this.text+=numberkeys[i].key;
+					}
+				}
+				
+				if((pausekey.check())  &&(this.text.length<this.limit))
+				{
+					this.text+=" ";
+				}
+				
+				if(backspaced)
+				{
+					backspaced=false;
+					if(this.text.length>0)
+					{
+						this.text=this.text.substring(0,this.text.length-1);
+					}
+				}
+				
+				if((this.type==0) &&(startkey.check()))
+				{
+					this.finalText=this.text;
+					this.hasFocus=false;
+					if((this.object) && (this.object.orbiting))
+					{
+						this.object.orderLeaveOrbit();
+					}
+					if(this.object)
+					{
+						this.object.desiredHeading=parseInt(this.text);
+					}
+				}
+			}
+		}else if(this.type==1) //dropdown basically.
 		{
 			if(this.hasFocus)
 			{
@@ -742,7 +785,7 @@ function textBox(pt)
 				if(this.list)
 				{
 					this.text=this.list[this.listTrack].name;
-					this.width=(this.text.length+2)*6+6;
+					//this.width=(this.text.length+2)*6+6;
 				}
 			}
 		}
@@ -767,7 +810,7 @@ function textBox(pt)
 			can.fillStyle=this.list[this.listTrack].civ.color;
 		}
 		var darry="";
-		if(this.blink)
+		if((this.blink) && (this.hasFocus))
 		{
 			darry="|";
 		}
@@ -803,6 +846,8 @@ function screenBox(obj)
 	{
 
 		this.headingBox=new textBox(this);
+		this.headingBox.object=this.object;
+		this.headingBox.limit=3;
 		this.systemBox=new textBox(this);
 		this.systemBox.type=1;
 		this.systemBox.width=150;
@@ -813,9 +858,22 @@ function screenBox(obj)
 		//this.planetBox.list=civs[0].knownWorlds;
 		this.systemBox.list=stars;
 		this.planetBox.list=this.systemBox.list[this.systemBox.listTrack].planets;
+		this.raceBox=new textBox(this);
+		this.raceBox.type=1;
+		this.raceBox.width=150;
+		this.shipBox=new textBox(this);
+		this.shipBox.type=1;
+		//this.planetBox.hasFocus=true;
+		this.shipBox.width=150;
+		//this.planetBox.list=civs[0].knownWorlds;
+		this.raceBox.list=civs;
+
+		this.shipBox.list=this.raceBox.list[this.raceBox.listTrack].ships;
 		textBoxes.push(this.headingBox);
 		textBoxes.push(this.systemBox);
 		textBoxes.push(this.planetBox);
+		textBoxes.push(this.raceBox);
+		textBoxes.push(this.shipBox);
 		this.goPlanetButton=new button(this);
 		this.goPlanetButton.x=this.x+10+120;
 		this.goPlanetButton.y=this.y+145;
@@ -825,12 +883,34 @@ function screenBox(obj)
 		{
 			
 			if(!this.parent.planetBox) {return};
+			if(!this.parent.planetBox.list) {return};
 			var sally=this.parent.planetBox.list[this.parent.planetBox.listTrack];
 			if(!sally) {return;}
 			this.object.orderOrbit(sally);
+			this.destination=null;
 			console.log(this.object.name+" heading to "+sally.name);
 		};
 		buttons.push(this.goPlanetButton);
+		this.goShipButton=new button(this);
+		this.goShipButton.x=this.x+10+120;
+		this.goShipButton.y=this.y+145;
+		this.goShipButton.object=this.object;
+		this.goShipButton.parent=this;
+		this.goShipButton.doThings=function()
+		{
+			
+			if(!this.parent.shipBox) {return};
+			if(!this.parent.shipBox.list) {return};
+			var sally=this.parent.shipBox.list[this.parent.shipBox.listTrack];
+			if(!sally) {return;}
+			if(this.object.orbiting)
+			{
+				this.object.orderLeaveOrbit();
+			}
+			this.object.destination=sally;
+			console.log(this.object.name+" heading to "+sally.name);
+		};
+		buttons.push(this.goShipButton);
 	}
 	this.update=function()
 	{
@@ -849,12 +929,18 @@ function screenBox(obj)
 			this.systemBox.visible=true;
 			this.planetBox.visible=true;
 			this.goPlanetButton.visible=true;
+			this.raceBox.visible=true;
+			this.shipBox.visible=true;
+			this.goShipButton.visible=true;
 		}else
 		{
 			this.headingBox.visible=false;
 			this.systemBox.visible=false;
 			this.planetBox.visible=false;
 			this.goPlanetButton.visible=false;
+			this.raceBox.visible=false;
+			this.shipBox.visible=false;
+			this.goShipButton.visible=false;
 		}
 		
 		this.headingBox.update();
@@ -865,6 +951,15 @@ function screenBox(obj)
 			this.planetBox.list=this.systemBox.list[this.systemBox.listTrack].planets;	
 			this.planetBox.listTrack=0;
 		}
+
+		emily=this.raceBox.listTrack;
+		this.raceBox.update();
+		if(this.raceBox.listTrack!=emily)
+		{
+			this.shipBox.list=this.raceBox.list[this.raceBox.listTrack].ships;	
+			this.shipBox.listTrack=0;
+		}
+		this.shipBox.update();
 		this.planetBox.update();
 	}
 	  /*if((this.planetBox.hasFocus) && (this.page==2))//todo...
@@ -961,19 +1056,33 @@ function screenBox(obj)
 				this.headingBox.y=this.y+112;
 				this.headingBox.draw(can,camera);
 				
-				can.fillText("Enter System:",this.x+10,this.y+2+144);
+				can.fillText("System:",this.x+10,this.y+2+144);
 				this.systemBox.x=this.x+10+90;
 				this.systemBox.y=this.y+132;
 				this.systemBox.draw(can,camera);
 				
-				can.fillText("Enter Planet:",this.x+10,this.y+2+160);
+				can.fillText("Planet:",this.x+10,this.y+2+160);
 				this.planetBox.x=this.x+10+90;
 				this.planetBox.y=this.y+152;
 				this.planetBox.draw(can,camera);
 				
-				this.goPlanetButton.x=this.x+10+160;
-				this.goPlanetButton.y=this.y+175;
+				this.goPlanetButton.x=this.x+10+130;
+				this.goPlanetButton.y=this.y+218;
 				this.goPlanetButton.draw(can,camera);
+				
+				can.fillText("Civ:",this.x+10,this.y+2+184);
+				this.raceBox.x=this.x+10+90;
+				this.raceBox.y=this.y+174;
+				this.raceBox.draw(can,camera);
+				
+				can.fillText("Ship:",this.x+10,this.y+2+204);
+				this.shipBox.x=this.x+10+90;
+				this.shipBox.y=this.y+194;
+				this.shipBox.draw(can,camera);
+				
+				this.goShipButton.x=this.x+10+180;
+				this.goShipButton.y=this.y+218;
+				this.goShipButton.draw(can,camera);
 				
 			}else if(this.page==3)//combat //somehow add list of nearby hostile ships.
 			{

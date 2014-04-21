@@ -136,8 +136,48 @@ var shieldskey=new akey("7");
 var mapkey=new akey("8");
 var cleartailskey=new akey("9");
 var maxspeedkey=new akey("0");
+var letterkeys=new Array();
+letterkeys.push(new akey("a"));
+letterkeys.push(new akey("b"));
+letterkeys.push(new akey("c"));
+letterkeys.push(new akey("d"));
+letterkeys.push(new akey("e"));
+letterkeys.push(new akey("f"));
+letterkeys.push(new akey("g"));
+letterkeys.push(new akey("h"));
+letterkeys.push(new akey("i"));
+letterkeys.push(new akey("j"));
+letterkeys.push(new akey("k"));
+letterkeys.push(new akey("l"));
+letterkeys.push(new akey("m"));
+letterkeys.push(new akey("n"));
+letterkeys.push(new akey("o"));
+letterkeys.push(new akey("p"));
+letterkeys.push(new akey("q"));
+letterkeys.push(new akey("r"));
+letterkeys.push(new akey("s"));
+letterkeys.push(new akey("t"));
+letterkeys.push(new akey("u"));
+letterkeys.push(new akey("v"));
+letterkeys.push(new akey("w"));
+letterkeys.push(new akey("x"));
+letterkeys.push(new akey("y"));
+letterkeys.push(new akey("z"));
 
+var numberkeys=new Array();
+numberkeys.push(new akey("0"));
+numberkeys.push(new akey("1"));
+numberkeys.push(new akey("2"));
+numberkeys.push(new akey("3"));
+numberkeys.push(new akey("4"));
+numberkeys.push(new akey("5"));
+numberkeys.push(new akey("6"));
+numberkeys.push(new akey("7"));
+numberkeys.push(new akey("8"));
+numberkeys.push(new akey("9"));
 
+backkey=new akey(8);
+backkey.key=8;
 function merp() {
 requestAnimationFrame(merp,canvas);
 	if(mode==0){
@@ -636,26 +676,28 @@ function mainMenuUpdate(){
 		civs[i].update();
 	}
 	
-	if(mapkey.check())
+	if(!holdInput)
 	{
-		drawMap=!drawMap;
+		if(mapkey.check())
+		{
+			drawMap=!drawMap;
+		}
+		
+		if(infokey.check())
+		{
+			roland.visible=!roland.visible;
+		}
+		
+		if(toggleinfokey.check())
+		{
+			roland.cycleCiv();
+		}
+		
+		if(roland.visible)
+		{
+			roland.update();
+		}
 	}
-	
-	if(infokey.check())
-	{
-		roland.visible=!roland.visible;
-	}
-	
-	if(toggleinfokey.check())
-	{
-		roland.cycleCiv();
-	}
-	
-	if(roland.visible)
-	{
-		roland.update();
-	}
-	
 	if(this.holdEverything) {return;}
 	var allworlds=new Array();
 	for (var i=0;i<stars.length;i++)
