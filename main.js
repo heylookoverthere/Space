@@ -913,6 +913,11 @@ function mainMenuUpdate(){
 	
 	if(toggleshipkey.check()) //todo!
 	{
+		//civs[0].cycleShips(camera);
+	}
+	if(tabbed)
+	{
+		tabbed=false;
 		civs[0].cycleShips(camera);
 	}
 	

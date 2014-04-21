@@ -1,5 +1,5 @@
 var backspaced=false;
-
+var tabbed=false;
 // Prevent the backspace key from navigating back.
 $(document).unbind('keydown').bind('keydown', function (event) {
     var doPrevent = false;
@@ -16,12 +16,17 @@ $(document).unbind('keydown').bind('keydown', function (event) {
         else {
             doPrevent = true;
         }
+    }else  if (event.keyCode === 9) {
+       
+			doPrevent = true;
+			tabbed=true;
     }
 
     if (doPrevent) {
         event.preventDefault();
     }
 });
+
 
 var starting=false;
 var bColors = ["#008000","#006400", "#FF4500", "#000080", "#696969", "#800080", "#808000", "#A52A2A", "#8B4513", "#FFDEAD", "#FFFF40","#000080" , "#FFFF80"]; //list of colors for radar/a few 
