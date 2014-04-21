@@ -450,7 +450,9 @@ function starShip(civid){
 	
 	this.tractorSomething=function(something){
 		//if somethign not in range return;
-		if(!this.systems[SystemIDs.Tractor].functional(false)) {return;}
+		if(!this.systems[SystemIDs.Tractor].functional()) {
+			console.log("no functional tractor beam");
+		return;}
 		if(!this.inTractorRange(something)) 
 		{
 			console.log("Out of tractor range");
@@ -558,7 +560,7 @@ function starShip(civid){
 			}
 		}
 		//if(!this.bearbyVessels) {return;}
-		if(this.beamTarget===null)
+		if(this.beamTarget==null)
 		{
 			//console.log("targeting selfyar?");
 			this.beamTarget=toon[0];
@@ -587,6 +589,7 @@ function starShip(civid){
 	{
 		if(!this.nearbyVessels) {return;}
 		this.unTractorSomething();
+		console.log("yaar");
 		var toon=this.nearbyVessels.concat(this.nearbyPods);
 		//go through toon and remove ones out of tractor range!
 		for(var i=0;i<toon.length;i++)
@@ -597,8 +600,9 @@ function starShip(civid){
 				i--;
 			}
 		}
+		console.log(toon);
 		//if(!this.bearbyVessels) {return;}
-		if(this.tractorTarget===null)
+		if(this.tractorTarget==null)
 		{
 			//console.log("targeting selfyar?");
 			this.tractorTarget=toon[0];
@@ -646,7 +650,7 @@ function starShip(civid){
 		}
 		
 		//if(!this.bearbyVessels) {return;}
-		if(this.torpedoTarget===null)
+		if(this.torpedoTarget==null)
 		{
 			//console.log("targeting selfyar?");
 			this.torpedoTarget=bearbyVessels[0];
@@ -706,7 +710,7 @@ function starShip(civid){
 			var beta=this.heading;
 		}else
 		{			
-			if(this.homing)
+			if((this.homing) &&(this.systems[SystemIDs.Targeting].functional()))
 			{
 				torpy.targ=this.torpedoTarget;
 			}
@@ -862,7 +866,7 @@ function starShip(civid){
 	};
 	
 	this.killRandomCrew=function(cause){
-		if(cause===null) {cause=".";}
+		if(cause==null) {cause=".";}
 		if(this.checkCrew()){
 			var vict=null;
 			for(var i=0;i<this.crew.length;i++)
@@ -872,7 +876,7 @@ function starShip(civid){
 					vict=i;
 				}
 			}
-			if(vict===null)
+			if(vict==null)
 			{
 				vict=Math.floor(Math.random()*this.crew.length);	
 			}
@@ -1478,8 +1482,8 @@ function starShip(civid){
 	
 	this.update=function(){
 		if(!this.alive){return;}
-		if(!this.systems[SystemIDs.Shields].functional(false)) {this.activeSheilds=false;}
-		if(!this.systems[SystemIDs.Tractor].functional(false)) {this.unTractorSomething();}
+		//if(!this.systems[SystemIDs.Shields].functional(false)) {this.activeSheilds=false;}
+		if(!this.systems[SystemIDs.Tractor].functional()) {this.unTractorSomething();}
 		this.menu.update();
 		this.breathe();
 		this.bodyDisposal();
@@ -2195,7 +2199,7 @@ function starShip(civid){
 					}
 					this.actionText="Attacking "+doof+ " colony on "+this.planetTarget.name;
 				}
-				if(this.planetTarget.civ===null)
+				if(this.planetTarget.civ==null)
 				{
 					this.civ.conquer(this.planetTarget);
 					this.leaveOrbit();

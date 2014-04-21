@@ -364,7 +364,7 @@ function particleSystem(){
 		tod.orbitSpeed=spd;
 		tod.textured=true;
 		
-		if(planettype===null)
+		if(planettype==null)
 		{
 			tod.type=Math.floor((Math.random()*6));
 		}else
@@ -509,7 +509,7 @@ function particleSystem(){
 		tod.orbitSpeed=spd;
 		tod.textured=true;
 		
-		if(planettype===null)
+		if(planettype==null)
 		{
 			tod.type=Math.floor((Math.random()*5));
 		}else

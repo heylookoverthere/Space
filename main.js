@@ -2,6 +2,8 @@
 var gameSpeed=.3;
 var snoop=[];
 
+var loadscreen=Sprite("loading");
+
 document.body.addEventListener("click", mouseClick, false);
 //document.body.addEventListener("dblclick", mouseDblClick, false);
 document.body.addEventListener("mousewheel",mouseWheel,false);
@@ -27,6 +29,12 @@ canvasElement.css("position", "absolute").css("z-index", "1").css("top", canvasE
 
 canvasElement.get(0).addEventListener("mousemove", mouseXY, false);
 
+function blurp(){
+requestAnimationFrame(blurp,canvas);
+loadscreen.draw(canvas,0,0);
+}
+blurp();
+console.log(canvas);
 function playSound(name){
     
     nerp=document.getElementById(name);
@@ -36,6 +44,9 @@ function playSound(name){
     }
     
 }
+
+
+
 var productionBar=new progressBar();
 var researchBar=new progressBar();
 
@@ -206,7 +217,6 @@ requestAnimationFrame(merp,canvas);
 
 function menuDraw()
 {
-
     battletick++;
     //canvas.save();
     canvas.globalAlpha=0.80;

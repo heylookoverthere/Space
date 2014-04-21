@@ -1044,7 +1044,7 @@ function screenBox(obj)
 				liddle.ID=ip;
 				liddle.on=this.object.systems[ip].on;
 				liddle.x=this.x+8+g*85;
-				liddle.y=this.y+38+h*32;
+				liddle.y=this.y+40+h*32;
 				liddle.width=80;
 				liddle.text=this.object.systems[ip].name;
 				liddle.onoff=true;
@@ -1063,24 +1063,6 @@ function screenBox(obj)
 				ip++;
 			}
 		}
-		
-		/*for(var i=0;i<this.object.systems.length;i++)
-		{
-			var liddle=new button(this);
-			liddle.object=this.object;
-			liddle.parent=this;
-			liddle.ID=i;
-			liddle.x=this.x+(Math.floor((i)/4)+1)*65;
-			liddle.y=this.y+40+(Math.floor(i/7)+1)*32;
-			liddle.width=60;
-			liddle.text=this.object.systems[i].name;
-			liddle.onoff=true;
-			liddle.doThings=function()
-			{
-				this.object.systems[this.ID].on=!this.object.systems[this.ID].on;
-			};
-			this.sysButtons.push(liddle);
-		}*/
 		
 		for(var i=0;i<this.sysButtons.length;i++)
 		{
