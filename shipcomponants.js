@@ -47,17 +47,17 @@ var tractorTargetSprite=Sprite("tractortargetedbig");
 var beamTargetSprite=Sprite("beamtargetedbig");
 
 SystemIDs={};
-SystemIDs.LifeSupport=0;
+SystemIDs.LifeSupport=10;
 SystemIDs.DamageControl=1;
 SystemIDs.Shields=2;
 SystemIDs.Medical=3;
 SystemIDs.Weapons=4;
 SystemIDs.Targeting=5;
 SystemIDs.Scanners=6;
-SystemIDs.LongRangeScanners=17;//?
+SystemIDs.AuxPower=17;//?
 SystemIDs.ImpulseEngines=8;
 SystemIDs.WarpEngines=9;
-SystemIDs.TransWarpEngines=10;//?
+SystemIDs.MainPower=0;//?
 SystemIDs.ComputerCore=11; //the computer! 
 SystemIDs.ScienceLab=12;
 SystemIDs.CargoBay=13;
@@ -80,7 +80,7 @@ function shipSystem(hip,t)
 	this.installed=false;
 	this.ship=hip;
 	this.type=t;
-	if(t===0) {this.name="Life Support";}
+	if(t===0) {this.name="Main Power";}
 	if(t==1) {this.name="Dmg. Control";}
 	if(t==2) {this.name="Shields";}
 	if(t==3) {this.name="Medical";}
@@ -90,14 +90,14 @@ function shipSystem(hip,t)
 	if(t==7) {this.name="Navigation";}
 	if(t==8) {this.name="Impulse Eng.";}
 	if(t==9) {this.name="Warp Eng.";}
-	if(t==10) {this.name="Bidet";}
+	if(t==10) {this.name="Life Support";}
 	if(t==11) {this.name="Computer";}
 	if(t==12) {this.name="Science";}
 	if(t==13) {this.name="Cargo Bay";}
 	if(t==14) {this.name="Passanger Bay";}
 	if(t==15) {this.name="Shuttle Bay";}
 	if(t==16) {this.name="Transporter";}
-	if(t==17) {this.name="LRScanners";}
+	if(t==17) {this.name="Aux Power";}
 	if(t==18) {this.name="Holodeck";}
 	if(t==19) {this.name="Escape Pods";}
 	if(t==20) {this.name="Tractor Beam";}
@@ -114,10 +114,21 @@ function shipSystem(hip,t)
 	this.hitChange=10;
 	this.manned=null;
 	this.power=0;
+	this.val=7; //when this was one it was getting reset to one each frame...
 	this.minPower=1;
 	this.maxPower=0; //"Thanks, I got it off a hair dryer."
 	this.turnOff=function(alert)
 	{
+		if(!this.on){return;}
+		if(this.type==SystemIDs.MainPower)
+		{
+			this.on=false;
+			//this.power=0;
+			this.ship.maxPower-=this.val;
+			this.ship.power-=this.val;
+			this.ship.checkSystemPower();
+			//return;
+		}
 		this.ship.powerDown(this);
 		this.on=false;
 		this.active=false;
@@ -128,13 +139,30 @@ function shipSystem(hip,t)
 	};
 	this.turnOn=function(alert)
 	{
+		
+
+		if(this.on) {return;}
+		if(this.type==SystemIDs.MainPower)
+		{
+			this.active=true;
+			this.on=true;
+			this.ship.maxPower+=this.val;
+			this.ship.power+=this.val;
+			return true;
+		}
 		if(this.ship.routePower(this))
 		{
 			this.active=true;
 			this.on=true;
+			if((this.ship.civ)&&(this.ship.civ.name=="Humanity")){
+				console.log("turning on "+this.ship.name+"s "+this.name);
+			}
 			return true;
 		}else
 		{
+					if((this.ship.civ)&&(this.ship.civ.name=="Humanity")){
+			console.log("Not enough power for "+this.ship.name+"s "+this.name);
+		}
 			//console.log("Not enough power!");
 			return false;
 		}
@@ -162,26 +190,61 @@ function shipSystem(hip,t)
 	
 	this.functional=function(manned)
 	{
-		if((this.power>0) && (this.on)&& (this.installed)&& (this.alive))//&& (this.active))
+		if(this.type==SystemIDs.MainPower)
 		{
-			if(manned)
-			{
-				if(this.manned!==null)
-				{
-					return true;
-				}else
-				{
-					return false;
-				}
-			}else
+			//return true;//todo
+			if((this.power>this.minPower-1) && (this.installed)&& (this.alive) && (this.on))
 			{
 				return true;
+			}else
+			{
+				return false;
 			}
+		}else
+		{
+			
+			if((this.power>this.minPower-1) && (this.on)&& (this.installed)&& (this.alive))//&& (this.active))
+			{
+				if(manned)
+				{
+					if(this.manned!==null)
+					{
+						return true;
+					}else
+					{
+						return false;
+					}
+				}else
+				{
+					return true;
+				}
+			}
+				return false;
 		}
-		return false;
+	
 	};
+	var leela=false;
 	this.update=function()
 	{
+		if((this.type==SystemIDs.MainPower) && (!this.functional())&&(true))
+		{
+			if(!leela)
+			{
+				console.log(this.alive,this.power,this.installed,this.on); //true true 0 false.
+				leela=true;
+			}
+			this.ship.maxPower=0;
+			
+			var elaine=this.ship.maxPower;
+			for(var i=1;i<this.ship.systems.length;i++)
+			{
+				if(true)//(elaine<this.ship.systems[i].power)
+				{
+					this.ship.powerDown(this.ship.systems[i]);
+				}
+			}
+			this.ship.power=elaine;
+		}
 		if(!this.functional()) {return;}
 		//switch case for all passive effects.
 		if(this.type==SystemIDs.LifeSupport)
@@ -194,6 +257,16 @@ function shipSystem(hip,t)
 					this.ship.oxygen=1000;
 				}
 			}
+		}if(this.type==SystemIDs.MainPower)
+		{
+			this.ship.maxPower=this.val;
+			//console.log(this.val);
+			var elaine=this.ship.maxPower;
+			for(var i=0;i<this.ship.systems.length;i++)
+			{
+				elaine-=this.ship.systems[i].power;
+			}
+			this.ship.power=elaine;
 		}else if(this.type==SystemIDs.DamageControl)
 		{
 			var fixrate=this.ship.getRepairRate();

@@ -631,6 +631,7 @@ function button(pt)
 	this.parent=pt;
 	}
 	this.ID=0;
+	this.onlink=false;
 	this.center=false;
 	this.hasFocus=false;
 	this.visible=false;
@@ -677,7 +678,10 @@ function button(pt)
 		{
 			can.fillStyle="yellow";
 		}
-		
+		if((this.object) && (this.onlink))
+		{
+			this.on=this.object.systems[this.ID].on;
+		}
 		if(this.onoff)
 		{
 			if(this.on)
@@ -1048,6 +1052,7 @@ function screenBox(obj)
 				liddle.width=80;
 				liddle.text=this.object.systems[ip].name;
 				liddle.onoff=true;
+				//liddle.onlink=true;
 				liddle.doThings=function()
 				{
 			
@@ -1057,15 +1062,15 @@ function screenBox(obj)
 						if(this.object.systems[this.ID].on)
 						{
 							this.object.systems[this.ID].turnOff();
-							this.on=false
+							//this.on=false
 						}else
 						{
 							if(this.object.systems[this.ID].turnOn())
 							{
-								this.on=true;
+								//this.on=true;
 							}
 						}
-						
+						this.on=this.object.systems[this.ID].on;
 						//this.object.systems[this.ID].on=!this.object.systems[this.ID].on;
 					}
 				};

@@ -48,7 +48,7 @@ function starShip(civid){
 	this.civ=civs[civid];
 	this.ship=true;
 	this.systems=[];
-	this.power=this.maxPower=7;
+	this.power=this.maxPower=1;
 	
 	//todo
 	this.rooms=6;
@@ -229,33 +229,66 @@ function starShip(civid){
 	this.items=[];
 	this.routePower=function(sys)
 	{
-		if(sys.power>0) {return;}
-		if(this.power-sys.minPower>-1)
+		if(sys.on) {console.log("alerady on"); return false;}
+		//if(this.power-sys.minPower>-1)
+		var belly=this.power-sys.minPower;
+		console.log(belly);
+		if(belly>-1)
 		{
-			this.power-=sys.minPower;
+			this.power=belly;
 			sys.power=sys.minPower;
 			//playASound
+			console.log("wwwa");
 			return true;
 		}
 		return false;
 	};
 	
+	this.checkSystemPower=function()
+	{
+		var b=this.maxPower;
+		for(var i=0;i<this.systems.length;i++)
+		{
+			if(this.systems[i].on)
+			{
+				b-=this.systems[i].power;
+				this.systems[i].turnOff();
+				this.menu.sysButtons[this.systems[i].type].on=false;
+				if(b<0)
+				{
+					
+				}
+			}
+		}
+	};
+	
 	this.powerDown=function(sys)
 	{
+		sys.on=false;
 		if(sys.power<1) {return;}
 		this.power+=sys.power;
 		sys.power=0;
-		sys.on=false;
+		
 		//playASound
 	};
 	for(var i=0;i<NumSystems;i++)
 	{
 		var wynn=new shipSystem(this,i);
-		if((wynn.type==SystemIDs.Weapons) ||(wynn.type==SystemIDs.LifeSupport)||(wynn.type==SystemIDs.DamageControl)||(wynn.type==SystemIDs.MedicalBay)||(wynn.type==SystemIDs.ImpulseEngines)||(wynn.type==SystemIDs.WarpEngines) ||(wynn.type==SystemIDs.Scanners)||(wynn.type==SystemIDs.Targeting)||(wynn.type==SystemIDs.Navigation)||(wynn.type==SystemIDs.Tractor)||(wynn.type==SystemIDs.EscapePods)||(wynn.type==SystemIDs.Transporter))
+		if((wynn.type==SystemIDs.Weapons) ||(wynn.type==SystemIDs.LifeSupport)||(wynn.type==SystemIDs.DamageControl)||(wynn.type==SystemIDs.MedicalBay)||(wynn.type==SystemIDs.ImpulseEngines)||(wynn.type==SystemIDs.WarpEngines) ||(wynn.type==SystemIDs.Scanners)||(wynn.type==SystemIDs.Targeting)||(wynn.type==SystemIDs.Navigation)||(wynn.type==SystemIDs.Tractor)||(wynn.type==SystemIDs.EscapePods)||(wynn.type==SystemIDs.Transporter)||(wynn.type==SystemIDs.MainPower))
 		{
 			wynn.installed=true;
-			wynn.turnOn();
+			
 			wynn.active=true;
+			if(wynn.type==SystemIDs.MainPower)
+			{
+				wynn.val=7;
+				//wynn.on=true;
+				wynn.minPower=0;
+				wynn.turnOn();
+			}else
+			{
+				
+			}
 		
 		}
 		this.systems.push(wynn);
