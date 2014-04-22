@@ -229,16 +229,14 @@ function starShip(civid){
 	this.items=[];
 	this.routePower=function(sys)
 	{
-		if(sys.on) {console.log("alerady on"); return false;}
+		if(sys.on) { return false;} //todo check this?
 		//if(this.power-sys.minPower>-1)
 		var belly=this.power-sys.minPower;
-		console.log(belly);
 		if(belly>-1)
 		{
 			this.power=belly;
 			sys.power=sys.minPower;
 			//playASound
-			console.log("wwwa");
 			return true;
 		}
 		return false;

@@ -154,15 +154,15 @@ function shipSystem(hip,t)
 		{
 			this.active=true;
 			this.on=true;
-			if((this.ship.civ)&&(this.ship.civ.name=="Humanity")){
+			/*if((this.ship.civ)&&(this.ship.civ.name=="Humanity")){
 				console.log("turning on "+this.ship.name+"s "+this.name);
-			}
+			}*/
 			return true;
 		}else
 		{
-					if((this.ship.civ)&&(this.ship.civ.name=="Humanity")){
-			console.log("Not enough power for "+this.ship.name+"s "+this.name);
-		}
+			if((this.ship.civ)&&(this.ship.civ.name=="Humanity")){
+				console.log("Not enough power for "+this.ship.name+"s "+this.name);
+			}
 			//console.log("Not enough power!");
 			return false;
 		}
@@ -228,11 +228,11 @@ function shipSystem(hip,t)
 	{
 		if((this.type==SystemIDs.MainPower) && (!this.functional())&&(true))
 		{
-			if(!leela)
+			/*if(!leela)
 			{
 				console.log(this.alive,this.power,this.installed,this.on); //true true 0 false.
 				leela=true;
-			}
+			}*/
 			this.ship.maxPower=0;
 			
 			var elaine=this.ship.maxPower;
