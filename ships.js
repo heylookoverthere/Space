@@ -232,20 +232,23 @@ function starShip(civid){
 		if(sys.on) { return false;} //todo check this?
 		//if(this.power-sys.minPower>-1)
 		var belly=this.power-sys.minPower;
-		if(belly>-1)
+		if(belly>-1) //PROBLEM
 		{
+			//if(belly<0) {belly=0;}
 			this.power=belly;
 			sys.power=sys.minPower;
 			//playASound
 			return true;
+		}else
+		{
+			return false;
 		}
-		return false;
 	};
 	
 	this.checkSystemPower=function()
 	{
 		var b=this.maxPower;
-		for(var i=0;i<this.systems.length;i++)
+		for(var i=1;i<this.systems.length;i++)
 		{
 			if(this.systems[i].on)
 			{
@@ -285,7 +288,10 @@ function starShip(civid){
 				wynn.turnOn();
 			}else
 			{
-				
+				if(this.power>wynn.minPower)
+				{
+					wynn.turnOn();
+				}
 			}
 		
 		}

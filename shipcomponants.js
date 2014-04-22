@@ -114,7 +114,7 @@ function shipSystem(hip,t)
 	this.hitChange=10;
 	this.manned=null;
 	this.power=0;
-	this.val=7; //when this was one it was getting reset to one each frame...
+	this.val=0; //when this was one it was getting reset to one each frame...
 	this.minPower=1;
 	this.maxPower=0; //"Thanks, I got it off a hair dryer."
 	this.turnOff=function(alert)
@@ -233,7 +233,13 @@ function shipSystem(hip,t)
 				console.log(this.alive,this.power,this.installed,this.on); //true true 0 false.
 				leela=true;
 			}*/
-			this.ship.maxPower=0;
+			if(!this.ship.systems[SystemIDs.AuxPower].functional())
+			{
+				this.ship.maxPower=0;
+			}else
+			{
+				this.ship.maxPower=this.ship.systems[SystemIDs.AuxPower].val;
+			}
 			
 			var elaine=this.ship.maxPower;
 			for(var i=1;i<this.ship.systems.length;i++)
@@ -498,6 +504,7 @@ function dude()
 		{
 			cause=" of unkown causes";
 		}
+		if((this.civ.name=="Humanity") || (logAll))
 		console.log(this.title+" "+this.name+ " has died"+cause);
 		this.alive=false;
 	};
