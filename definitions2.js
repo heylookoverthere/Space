@@ -671,7 +671,7 @@ function button(pt)
 	};
 	this.draw=function(can,cam)
 	{
-		//if(!this.visible) {return;}
+		if(!this.visible) {return;}
 		can.save();
 		can.font=this.font;
 		can.fillStyle="white";
@@ -694,12 +694,14 @@ function button(pt)
 			}
 		
 		}
+		can.fillRect(this.x,this.y,this.width+this.borderSize,this.height+this.borderSize);
 		if(this.greyed)
 		{
-			this.backColor="grey";
+			can.fillStyle="grey";
+		}else
+		{
+			can.fillStyle=this.backColor;
 		}
-		can.fillRect(this.x,this.y,this.width+this.borderSize,this.height+this.borderSize);
-		can.fillStyle=this.backColor;
 		can.fillRect(this.x+this.borderSize,this.y+this.borderSize,this.width-this.borderSize,this.height-this.borderSize);
 		can.fillStyle="white";
 		if(this.center)
@@ -708,7 +710,7 @@ function button(pt)
 		}else
 		{
 			var peek=elipseString(this.text,this.textLimit);
-			can.fillText(peek,this.x+6,this.y+14);
+			can.fillText(peek,this.x+4,this.y+14);
 		}
 		can.restore();
 	};
@@ -1005,6 +1007,7 @@ function screenBox(obj)
 	this.page=0;
 	this.visible=false;
 	this.targetScreen=false;
+	this.awayTeamScreen=false;
 	this.pages=7;
 	this.tabs=[];
 	this.type=0;
@@ -1216,6 +1219,105 @@ function screenBox(obj)
 		};
 		buttons.push(this.backButton);
 		
+		this.awayTeamButton=new button(this);
+		this.awayTeamButton.x=this.x+10+210;
+		this.awayTeamButton.y=this.y+8;
+		this.awayTeamButton.width+=10;
+		this.awayTeamButton.text="Away";
+		this.awayTeamButton.object=this.object;
+		this.awayTeamButton.parent=this;
+		this.awayTeamButton.doThings=function()
+		{
+			this.on=!this.on;
+			this.parent.awayTeamScreen=!this.parent.awayTeamScreen;
+			if(this.parent.awayTeamScreen)
+			{
+				this.text="Back";
+			}else
+			{
+				this.text="Away";
+			}
+		};
+		buttons.push(this.awayTeamButton);
+		
+		this.awayBeamButton=new button(this);
+		this.awayBeamButton.x=this.x+10+210;
+		this.awayBeamButton.y=this.y+240;
+		this.awayBeamButton.width+=10;
+		this.awayBeamButton.text="Beam";
+		this.awayBeamButton.object=this.object;
+		this.awayBeamButton.parent=this;
+		this.awayBeamButton.update=function()
+		{
+			
+			
+			if((this.object.awayTeam.length>0) && (this.object.systems[SystemIDs.Transporter].functional()) && (this.object.beamTarget))
+			{
+				this.greyed=false;
+			}else
+			{
+				this.greyed=true;
+			}
+		};
+		this.awayBeamButton.doThings=function()
+		{
+			//beam back!, if no target, retur
+			if(this.object.awayTeamAt!==null)
+			{
+				this.object.beamUpAwayTeam();
+			}else if(this.object.beamTarget)
+			{
+				this.object.beamDown(this.object.beamTarget);
+			}
+			if(this.object.awayTeamAt)
+			{
+				this.text="Recall";
+			}else
+			{
+				this.text="Beam";
+			}
+		};
+		buttons.push(this.awayBeamButton);
+		
+		this.awayFormButton=new button(this);
+		this.awayFormButton.x=this.x+10+160;
+		this.awayFormButton.y=this.y+8;
+		this.awayFormButton.width+=10;
+		this.awayFormButton.text="Prep";
+		this.awayFormButton.object=this.object;
+		this.awayFormButton.parent=this;
+		this.awayFormButton.update=function()
+		{
+			if((this.object.awayTeamAt))
+			{
+				this.greyed=true;
+			}else
+			{
+				this.greyed=false;
+			}
+		};
+		this.awayFormButton.doThings=function()
+		{
+			
+			//console.log(this.object.awayTeam.length);
+			if((!this.object.awayTeam)||(this.object.awayTeam.length<1))
+			{
+				console.log("forming away team");
+				this.object.prepareAwayTeam(this.object.crew.length-2);
+				this.text="Disband";
+			}else
+			{
+				if(this.object.awayTeam)
+				{
+					this.object.recallAwayTeam();
+					console.log("disbanding away team");
+				}
+				this.text="Form";
+			}
+		};
+		buttons.push(this.awayFormButton);
+		
+		
 		this.goPlanetButton=new button(this);
 		this.goPlanetButton.x=this.x+10+120;
 		this.goPlanetButton.y=this.y+145;
@@ -1348,6 +1450,26 @@ function screenBox(obj)
 				}
 				this.backButton.visible=false;
 			}
+			if((this.page==1) && (this.object==selectedShip)) //yaar?
+			{
+				this.awayTeamButton.visible=true;
+				if(this.awayTeamScreen)
+				{
+					this.awayBeamButton.visible=true;
+					this.awayBeamButton.update();
+					this.awayFormButton.visible=true;
+					this.awayFormButton.update();
+				}else
+				{
+					this.awayBeamButton.visible=false;
+					this.awayFormButton.visible=false;
+				}
+			}else
+			{
+				this.awayTeamButton.visible=false;
+				this.awayFormButton.visible=false;
+				this.awayBeamButton.visible=false;
+			}
 			this.headingBox.update();
 			var emily=this.systemBox.listTrack;
 			this.systemBox.update();
@@ -1449,17 +1571,69 @@ function screenBox(obj)
 			}else if(this.page==1)
 			{
 				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
-				can.fillText("Crew:    O2:"+(this.object.oxygen/10)+"%",this.x+10,this.y+2+32);
-				for(var i=0;i<this.object.crew.length;i++)
+				
+				if(!this.awayTeamScreen)
 				{
-					can.fillText(this.object.crew[i].title+" "+this.object.crew[i].name+" Lvl: "+this.object.crew[i].level,this.x+10,this.y+2+46+i*32);
-					can.fillText("   "+this.object.crew[i].hp+"/"+this.object.crew[i].maxHp,this.x+10,this.y+2+46+i*32+16);
+					can.fillText("O2:"+(this.object.oxygen/10)+"%",this.x+10,this.y+2+32);
+					for(var i=0;i<this.object.crew.length;i++)
+					{
+						can.fillText(this.object.crew[i].title+" "+this.object.crew[i].name+" Lvl: "+this.object.crew[i].level,this.x+10,this.y+2+46+i*32);
+						can.fillText("   "+this.object.crew[i].hp+"/"+this.object.crew[i].maxHp,this.x+10,this.y+2+46+i*32+16);
+					}
+
+				}else
+				{
+					if(!this.object.systems[SystemIDs.Transporter].functional())
+					{	
+						can.fillStyle="red";
+						can.fillText("Transporter Offline!",this.x+10,this.y+2+260);
+						can.fillStyle="white";
+					}else
+					{
+						var gt=can.font;
+						can.font== "8pt Calibri";
+						can.fillText("hit A to choose a target",this.x+10,this.y+2+242);
+						if(this.object.beamTarget)
+						{
+							can.fillText("Targeting "+this.object.beamTarget.name,this.x+10,this.y+2+262);
+						}
+						can.font=gt;
+					}
+					for(var i=0;i<this.object.awayTeam.length;i++)
+					{
+						var poole="ship.";
+						var snoole=(this.object.oxygen/10)+"%";
+						if(this.object.awayTeamAt)
+						{
+							poole=this.object.awayTeamAt.name+".";
+							if(this.object.awayTeamAt.ship) 
+							{
+								snoole=this.object.awayTeamAt.oxygen/10+"%";
+							}else if(this.object.awayTeamAt.planet) 
+							{
+								snoole=this.object.awayTeamAt.oxygen/10+"%";
+							}else
+							{
+								snoole="110%";
+							}
+						}
+						can.fillText("Away team on "+poole,this.x+10,this.y+2+32);
+						can.fillText("O2: "+snoole,this.x+10,this.y+2+48);
+						can.fillText(this.object.awayTeam[i].title+" "+this.object.awayTeam[i].name+" Lvl: "+this.object.awayTeam[i].level,this.x+10,this.y+2+64+i*32);
+						can.fillText("   "+this.object.awayTeam[i].hp+"/"+this.object.awayTeam[i].maxHp,this.x+10,this.y+2+64+i*32+16);
+					}
 				}
 				if(!this.object.systems[SystemIDs.LifeSupport].functional())
 				{
 					can.fillStyle="red";
 					can.fillText("LIFE SUPORT OFFLINE",this.x+128,this.y+2+32);
 					can.fillStyle="white";
+				}
+				if(this.object.civ.name=="Humanity")
+				{
+					this.awayTeamButton.draw(can,cam);
+					this.awayBeamButton.draw(can,cam);
+					this.awayFormButton.draw(can,cam);
 				}
 			}else if(this.page==2)//navigation
 			{

@@ -14,6 +14,7 @@ function particle(){
 	this.x=0;
 	this.y=0;
 	this.sun=null;
+	this.oxygen=100;
 	this.colonizeDate=2000.00;
 	this.evented=false;
 	this.width=1;

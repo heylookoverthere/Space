@@ -204,6 +204,7 @@ function starShip(civid){
 	this.armor=0;
 	this.shields=0;
 	this.numEscapePods=10;
+	this.nameTrack=0;
 	for(var i=0;i<this.numEscapePods;i++)
 	{
 		this.escapePods[i]=new escapePod();
@@ -416,11 +417,12 @@ function starShip(civid){
 	
 	this.recallAwayTeam=function(){
 		//beam them, check range and all?
-		if(!this.systems[SystemIDs.Transporter].functional(false)) {return;}
+		//if(!this.systems[SystemIDs.Transporter].functional(false)) {return;}
 		for(var i=0;i<this.awayTeam.length;i++)
 		{
-			this.crew.push(this.awayTeam.pop());
+			this.crew.push(this.awayTeam[i]);//.pop());
 		}
+		this.awayTeam=[];
 	};
 	
 	this.beamDown=function(target){
@@ -478,7 +480,7 @@ function starShip(civid){
 		}
 		console.log("Away team beamed back to the ship");
 		this.awayTeamAt=null;
-		this.recallAwayTeam();
+		//this.recallAwayTeam();
 	};
 	
 	this.beamUp=function(unt){
@@ -593,13 +595,14 @@ function starShip(civid){
 	}
 		var nami=Math.floor(Math.random()*shipNames[this.civID].length);
 		while(true) {
-			if(shipNamesUsed[this.civID][nami]) 
+			if(shipNamesUsed[this.civID][this.nameTrack]) 
 			{
-				nami=Math.floor(Math.random()*shipNames[this.civID].length);
+				//nami=Math.floor(Math.random()*shipNames[this.civID].length);
+				this.nameTrack++;
 			}else {break;}
 		}
-		this.name=shipNames[this.civID][nami];
-		shipNamesUsed[this.civID][nami]=true;
+		this.name=shipNames[this.civID][this.nameTrack];
+		shipNamesUsed[this.civID][this.nameTrack]=true;
 		if(this.civ.name=="Humanity")
 		{
 			this.menu.nameBox.text=String(this.name);
