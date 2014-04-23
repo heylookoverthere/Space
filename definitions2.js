@@ -935,6 +935,57 @@ clearFocus=function()
 	}
 };
 
+function boxTab(parent,page,label)
+{
+	this.parent=parent;
+	this.page=page;
+	this.width=100;
+	this.height=20;
+	this.active=false;
+	this.backColor=parent.backColor;
+	this.label=label;
+	this.doThing=function()
+	{
+		this.active=true;
+		this.parent.page=this.page;
+		//others.active=false;
+		//each screenbox has a tab for each page.  pages don't have tabs.  scan box is a screen box with a page/tab for each detected object.
+	};
+	this.ID=this.parent.tabs.length;
+	this.parent.tabs.push(this);
+	this.draw=function(can,cam)
+	{
+		return;
+		this.x=this.parent.x+(12*this.ID);
+		this.y=this.parent.y-this.height;
+		if(this.parent.page==this.page)//(this.active)
+		{
+			can.globalAlpha=0;
+		}else
+		{
+			can.globalAlpha=.60;
+		}
+		can.fillStyle="blue";
+		can.fillRect(this.x,this.y,this.width,this.height);
+		can.fillStyle="white";
+		can.strokeStyle="white";
+		can.beginPath();
+		
+	
+		
+		can.moveTo(this.x,this.y);
+		can.lineTo(this.x+this.width,this.y);
+		can.lineTo(this.x+this.width,this.y+this.height)
+		can.moveTo(this.x,this.y);
+		can.lineTo(this.x,this.y+this.height);
+
+
+		can.stroke();
+		can.closePath();
+	
+	}
+}
+
 function screenBox(obj)
 {
 	this.object=obj;
@@ -945,10 +996,23 @@ function screenBox(obj)
 	this.width=80;
 	this.page=0;
 	this.pages=7;
-	
+	this.tabs=[];
 	this.type=0;
 	this.backColor="blue";
 	this.borderSize=4;
+	for(var i=0;i<this.pages;i++)
+	{
+		var smurt="";
+		if(i==0) {smurt="Overview";}
+		if(i==1) {smurt="Crew";}
+		if(i==2) {smurt="Navigation";}
+		if(i==3) {smurt="Combat";} //tactical?
+		if(i==4) {smurt="Power";}
+		
+		dilly=new boxTab(this,i,smurt);
+		dilly.width=this.width/this.pages; //really suprised if this works
+		this.tabs.push(dilly);
+	}
 	if((this.object.ship) && (this.object.civ) &&(this.object.civ.name=="Humanity"))
 	{
 
@@ -1199,6 +1263,13 @@ function screenBox(obj)
 		can.fillStyle="white";
 		if(this.object.ship)
 		{
+			for(var i=0;i<this.tabs.length;i++)
+			{
+				if(this.page==this.tabs[i].page)
+				{
+					this.tabs[i].draw(can,cam);
+				}
+			}
 			if(this.page===0)
 			{
 				
@@ -1429,6 +1500,7 @@ function screenBox(obj)
 				can.fillText("No Weapons Lock",this.x+10,this.y+2+96);
 			}
 		}
+
 		can.restore();
 	};
 }
