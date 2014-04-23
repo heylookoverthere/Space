@@ -133,7 +133,7 @@ function mouseClick(e) {  //represents the mouse
 				{
 					if((isOver(buttons[i]))  && (buttons[i].visible))
 					{
-						if(!buttons[i].greyed){
+						if((!buttons[i].greyed) && (!buttons[i].decorative)){
 							clearFocus();
 							
 							

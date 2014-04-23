@@ -636,6 +636,7 @@ function button(pt)
 	this.hasFocus=false;
 	this.visible=false;
 	this.greyed=false;
+	this.decorative=false;
 	this.object=null;
 	this.width=30;
 	this.onoff=false;
@@ -670,7 +671,7 @@ function button(pt)
 	};
 	this.draw=function(can,cam)
 	{
-		if(!this.visible) {return;}
+		//if(!this.visible) {return;}
 		can.save();
 		can.font=this.font;
 		can.fillStyle="white";
@@ -1003,6 +1004,7 @@ function screenBox(obj)
 	this.width=80;
 	this.page=0;
 	this.visible=false;
+	this.targetScreen=false;
 	this.pages=7;
 	this.tabs=[];
 	this.type=0;
@@ -1023,9 +1025,131 @@ function screenBox(obj)
 		boxTabs.push(dilly);
 		this.tabs.push(dilly);
 	}
+	
+	if(this.object.ship)
+	{
+		this.sysButtons=[];
+		var ip=0;
+		for(var g=0;((g<3)&&(ip<this.object.systems.length));g++)
+		{
+			for(var h=0;((h<7)&&(ip<this.object.systems.length));h++)
+			{
+				var liddle=new button(this);
+				liddle.object=this.object;
+				liddle.parent=this;
+				liddle.ID=ip;
+				liddle.on=this.object.systems[ip].on;
+				liddle.x=this.x+8+g*85;
+				liddle.y=this.y+40+h*32;
+				liddle.width=80;
+				liddle.text=this.object.systems[ip].name;
+				liddle.onoff=true;
+				//liddle.onlink=true;
+				if((this.object.civ) &&(this.object.civ.name!="Humanity"))
+				{
+					liddle.decorative=true;
+				}
+				
+				liddle.doThings=function()
+				{
+			
+					if(this.object.systems[this.ID].installed)//also check power!
+					{
+						
+						if(this.object.systems[this.ID].on)
+						{
+							this.object.systems[this.ID].turnOff();
+							//this.on=false
+						}else
+						{
+							if(this.object.systems[this.ID].turnOn())
+							{
+								//this.on=true;
+							}
+						}
+						this.on=this.object.systems[this.ID].on;
+						//this.object.systems[this.ID].on=!this.object.systems[this.ID].on;
+					}
+				};
+				if(!liddle.object.systems[liddle.ID].installed)
+				{
+					liddle.greyed=true;
+				}
+				this.sysButtons.push(liddle);
+				ip++;
+			}
+		}
+	}
+	
 	if((this.object.ship) && (this.object.civ) &&(this.object.civ.name=="Humanity"))
 	{
+		this.targButtons=[];
+		var ip=0;
+		for(var g=0;((g<3)&&(ip<this.object.systems.length));g++)
+		{
+			for(var h=0;((h<7)&&(ip<this.object.systems.length));h++)
+			{
+				var liddle=new button(this);
+				liddle.object=this.object;
+				liddle.parent=this;
+				liddle.ID=ip;
+				liddle.on=false;
+				liddle.x=this.x+8+g*85;
+				liddle.y=this.y+40+h*32;
+				liddle.width=80;
+				liddle.greyed=true;
+				liddle.text=this.object.systems[ip].name;
+				liddle.onoff=true;
+				//liddle.onlink=true;
+				liddle.update=function()
+				{
+					if(this.object.torpedoTarget)
+					{
+						if(this.object.torpedoTarget.systems[this.ID].installed)
+						{
+							this.greyed=false;
+	
+							
+						}else
+						{
+							this.greyed=true;
+						}
+					}else
+					{
+						this.greyed=true;
+					}
+				};
+				liddle.doThings=function()
+				{
+					if(this.object.torpedoTarget)
+					{
+						if(this.object.torpedoTarget.systems[this.ID].installed)
+						{
+							this.greyed=false;
+							if(!this.on)
+							{
+								this.on=true
+								//do targeting!
+							}else
+							{
+								this.on=false;	
+							}
+							
+						}else
+						{
+							this.greyed=true;
+						}
+					}else
+					{
+						this.greyed=false
+					}
 
+				};
+
+				this.targButtons.push(liddle);
+				ip++;
+			}
+		}
 		this.headingBox=new textBox(this);
 		this.nameBox=new textBox(this);
 		this.nameBox.object=this.object;
@@ -1071,6 +1195,27 @@ function screenBox(obj)
 		textBoxes.push(this.raceBox);
 		textBoxes.push(this.shipBox);
 		textBoxes.push(this.nameBox);
+		
+		this.backButton=new button(this);
+		this.backButton.x=this.x+10+214;
+		this.backButton.y=this.y+8;
+		this.backButton.width+=6;
+		this.backButton.text="Target";
+		this.backButton.object=this.object;
+		this.backButton.parent=this;
+		this.backButton.doThings=function()
+		{
+			this.parent.targetScreen=!this.parent.targetScreen;
+			if(this.parent.targetScreen)
+			{
+				this.text="Back";
+			}else
+			{
+				this.text="Target";
+			}
+		};
+		buttons.push(this.backButton);
+		
 		this.goPlanetButton=new button(this);
 		this.goPlanetButton.x=this.x+10+120;
 		this.goPlanetButton.y=this.y+145;
@@ -1110,63 +1255,19 @@ function screenBox(obj)
 			console.log(this.object.name+" heading to "+sally.name);
 		};
 		buttons.push(this.goShipButton);
-		this.sysButtons=[];
-		var ip=0;
-		for(var g=0;((g<3)&&(ip<this.object.systems.length));g++)
-		{
-			for(var h=0;((h<7)&&(ip<this.object.systems.length));h++)
-			{
-				var liddle=new button(this);
-				liddle.object=this.object;
-				liddle.parent=this;
-				liddle.ID=ip;
-				liddle.on=this.object.systems[ip].on;
-				liddle.x=this.x+8+g*85;
-				liddle.y=this.y+40+h*32;
-				liddle.width=80;
-				liddle.text=this.object.systems[ip].name;
-				liddle.onoff=true;
-				//liddle.onlink=true;
-				liddle.doThings=function()
-				{
-			
-					if(this.object.systems[this.ID].installed)//also check power!
-					{
-						
-						if(this.object.systems[this.ID].on)
-						{
-							this.object.systems[this.ID].turnOff();
-							//this.on=false
-						}else
-						{
-							if(this.object.systems[this.ID].turnOn())
-							{
-								//this.on=true;
-							}
-						}
-						this.on=this.object.systems[this.ID].on;
-						//this.object.systems[this.ID].on=!this.object.systems[this.ID].on;
-					}
-				};
-				if(!liddle.object.systems[liddle.ID].installed)
-				{
-					liddle.greyed=true;
-				}
-				this.sysButtons.push(liddle);
-				ip++;
-			}
-		}
+
 		
 		for(var i=0;i<this.sysButtons.length;i++)
 		{
-			/*for(var j=0;j<this.sysButtons.length;j++) //only for radio buttons!
+			for(var j=0;j<this.targButtons.length;j++) //only for radio buttons!
 			{
 				if(i!=j)
 				{
-					this.sysButtons[i].linked.push(this.sysButtons[j]);
+					this.targButtons[i].linked.push(this.targButtons[j]);
 				}
-			}*/
+			}
 			buttons.push(this.sysButtons[i]);
+			buttons.push(this.targButtons[i]);
 		}
 	}
 	this.update=function()
@@ -1215,7 +1316,8 @@ function screenBox(obj)
 			{
 				this.nameBox.visible=false;
 			}
-			if((this.page==4) && (this.object==selectedShip))
+			if((this.page==4) && (this.object==selectedShip)) //yaar?
+			
 			{
 				for(var i=0;i<this.sysButtons.length;i++)
 				{
@@ -1228,6 +1330,23 @@ function screenBox(obj)
 				{
 					this.sysButtons[i].visible=false;
 				}
+			}
+			if((this.page==3) && (this.object==selectedShip)) //yaar?
+			
+			{
+				for(var i=0;i<this.targButtons.length;i++)
+				{
+					this.targButtons[i].visible=true;
+					this.targButtons[i].update();
+				}
+				this.backButton.visible=true;
+			}else
+			{
+				for(var i=0;i<this.targButtons.length;i++)
+				{
+					this.targButtons[i].visible=false;
+				}
+				this.backButton.visible=false;
 			}
 			this.headingBox.update();
 			var emily=this.systemBox.listTrack;
@@ -1408,13 +1527,17 @@ function screenBox(obj)
 			}else if(this.page==3)//combat //somehow add list of nearby hostile ships.
 			{
 				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
-				can.fillText("Combat: ",this.x+10,this.y+2+32);
-				can.fillText(this.object.nearbyHostiles.length+" enemy ships in sensor range.",this.x+10,this.y+2+48);
+				can.fillText(this.object.nearbyHostiles.length+" enemy ships in sensor range.",this.x+10,this.y+2+32);
 				if(this.object.systems[SystemIDs.Targeting].functional())
 				{
-
-				
-					if(this.object.torpedoTarget)
+					this.backButton.draw(can,cam);
+					if(this.targetScreen)
+					{
+						for(var i=0;i<this.targButtons.length;i++)
+						{
+							this.targButtons[i].draw(can,cam);
+						}
+					}else if(this.object.torpedoTarget)
 					{
 						can.fillText("Targeting: "+this.object.torpedoTarget.name,this.x+10,this.y+2+64);
 						can.fillText(this.object.torpedoTarget.civ.name+" "+this.object.torpedoTarget.class.name +" Starship",this.x+10,this.y+2+80); //todo class!
@@ -1465,7 +1588,7 @@ function screenBox(obj)
 			{
 				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
 				can.fillText("Ships Systems:   Power: "+this.object.power+"/"+this.object.maxPower,this.x+10,this.y+2+32);
-				if(this.object.civ.name=="Humanity")
+				if(true)//(this.object.civ.name=="Humanity")
 				{
 					for(var i=0;i<this.sysButtons.length;i++)
 					{
