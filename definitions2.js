@@ -935,16 +935,19 @@ clearFocus=function()
 	}
 };
 
+var boxTabs=[];
+
 function boxTab(parent,page,label)
 {
 	this.parent=parent;
 	this.page=page;
 	this.width=100;
 	this.height=20;
+	this.visible=false;
 	this.active=false;
 	this.backColor=parent.backColor;
 	this.label=label;
-	this.doThing=function()
+	this.onClick=function()
 	{
 		this.active=true;
 		this.parent.page=this.page;
@@ -955,20 +958,24 @@ function boxTab(parent,page,label)
 	this.parent.tabs.push(this);
 	this.draw=function(can,cam)
 	{
-		return;
-		this.x=this.parent.x+(12*this.ID);
+		//return; //sic provomkalmas
+		this.width=this.parent.width/this.parent.pages;
+		this.x=this.parent.x+(this.width/2*this.ID)+2;
 		this.y=this.parent.y-this.height;
+		can.save();
+		canvas.font = "8pt Calibri";
 		if(this.parent.page==this.page)//(this.active)
 		{
-			can.globalAlpha=0;
+			can.globalAlpha=1;
 		}else
 		{
-			can.globalAlpha=.60;
+			can.globalAlpha=.20;
 		}
 		can.fillStyle="blue";
 		can.fillRect(this.x,this.y,this.width,this.height);
 		can.fillStyle="white";
 		can.strokeStyle="white";
+		can.fillText(this.label, this.x+2,this.y+14);
 		can.beginPath();
 		
 	
@@ -982,7 +989,7 @@ function boxTab(parent,page,label)
 
 		can.stroke();
 		can.closePath();
-	
+		can.restore();
 	}
 }
 
@@ -995,6 +1002,7 @@ function screenBox(obj)
 	this.height=180;
 	this.width=80;
 	this.page=0;
+	this.visible=false;
 	this.pages=7;
 	this.tabs=[];
 	this.type=0;
@@ -1003,14 +1011,16 @@ function screenBox(obj)
 	for(var i=0;i<this.pages;i++)
 	{
 		var smurt="";
-		if(i==0) {smurt="Overview";}
+		if(i==0) {smurt="Main";}
 		if(i==1) {smurt="Crew";}
-		if(i==2) {smurt="Navigation";}
+		if(i==2) {smurt="Nav.";}
 		if(i==3) {smurt="Combat";} //tactical?
 		if(i==4) {smurt="Power";}
-		
+		if(i==5) {smurt="Damage";}
+		if(i==6) {smurt="Orders";}
 		dilly=new boxTab(this,i,smurt);
 		dilly.width=this.width/this.pages; //really suprised if this works
+		boxTabs.push(dilly);
 		this.tabs.push(dilly);
 	}
 	if((this.object.ship) && (this.object.civ) &&(this.object.civ.name=="Humanity"))
@@ -1161,6 +1171,18 @@ function screenBox(obj)
 	}
 	this.update=function()
 	{
+		if(this.visible){
+			for(var i=0;i<this.tabs.length;i++)
+			{
+				this.tabs[i].visible=true;
+			}
+		}else
+		{
+			for(var i=0;i<this.tabs.length;i++)
+			{
+				this.tabs[i].visible=false;
+			}
+		}
 		if((this.headingBox) && (this.systemBox) &&(this.planetBox))
 		{
 			this.planetBox.list=this.systemBox.list[this.systemBox.listTrack].planets;
@@ -1255,20 +1277,20 @@ function screenBox(obj)
 		can.save();
 		can.font = "12pt Calibri";
 		can.fillStyle="white";
-		can.globalAlpha=0.65;
+		can.globalAlpha=0.45;
 		can.fillRect(this.x,this.y,this.width+this.borderSize,this.height+this.borderSize);
 		can.fillStyle=this.backColor;
-
+		can.globalAlpha=0.65;
 		can.fillRect(this.x+this.borderSize,this.y+this.borderSize,this.width-this.borderSize,this.height-this.borderSize);
 		can.fillStyle="white";
 		if(this.object.ship)
 		{
 			for(var i=0;i<this.tabs.length;i++)
 			{
-				if(this.page==this.tabs[i].page)
-				{
+				//if(this.page==this.tabs[i].page)
+				//{
 					this.tabs[i].draw(can,cam);
-				}
+				//}
 			}
 			if(this.page===0)
 			{

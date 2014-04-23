@@ -100,6 +100,15 @@ function mouseClick(e) {  //represents the mouse
 		{
 			case 1:
 				
+				for(var i=0;i<boxTabs.length;i++)
+				{
+					if((isOver(boxTabs[i])) && (boxTabs[i].visible))
+					{
+						boxTabs[i].onClick();
+					}
+					
+				}
+				
 				//screenfull.request(canvasElement);
 				var hitone=false;
 				for(var i=0;i<textBoxes.length;i++)

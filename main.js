@@ -624,6 +624,7 @@ function mainMenuDraw(){
 	for(var i=0;i<ships.length;i++)
 	{
 		ships[i].draw(canvas,camera);
+		ships[i].menu.visible=false;
 		if((isOver(ships[i],camera)) && (ships[i]!=selectedShip))
 		{
 			drawmousetext(canvas,ships[i],camera);
@@ -632,12 +633,18 @@ function mainMenuDraw(){
 			larry.y=50;
 			larry.width=270;
 			larry.height=270;
+			larry.visible=true;
 			larry.draw(canvas,camera);
+		}else
+		{
+			//larry.visible=false;
 		}
 	}
 	//draw messages
 	//for (var i=0;i<civs[0].messages.length;i++)
 	
+	
+	selectedShip.menu.visible=true;
 	selectedShip.menu.draw(canvas,camera)
 	
 	if(civs[0].messages.length>0)
