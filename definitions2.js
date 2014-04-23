@@ -2403,7 +2403,7 @@ function star(){
 				var pip=Math.floor(Math.random()*8);
 				for (var po=0;po<pip;po++)
 				{
-					monsta.startMoon(40,this.planets[gop],Math.random()*35+15,((Math.random()*8)+1)/8,0,true,null);
+					monsta.startMoon(40,this.planets[gop],(Math.random()*12+11)*this.planets[gop].size,((Math.random()*8)+1)/8,0,true,null);
 				}
 			}
 			
@@ -2481,13 +2481,7 @@ setupOurs=function(sun)
 		monsta.startPlanet(40,sun,pobt,((Math.random()*4)+1)/16,0,true,ptypes[p]);
 	}
 	
-	for (var gop=0;gop<sun.numPlanets;gop++)
-	{
-			for (var po=0;po<pmoons[gop];po++)
-			{
-				monsta.startMoon(40,sun.planets[gop],(Math.random()*8+25)*sun.planets[gop].size,((Math.random()*8)+1)/8,0,true,null);
-			}
-	}
+
 	sun.planets[0].name="Mercury";
 	sun.planets[1].name="Venus";
 	sun.planets[2].name="Earth";
@@ -2507,6 +2501,15 @@ setupOurs=function(sun)
 	sun.planets[6].size=3;
 	sun.planets[7].size=3;
 	sun.planets[8].size=0.75;
+	
+		for (var gop=0;gop<sun.numPlanets;gop++)
+		{
+			for (var po=0;po<pmoons[gop];po++)
+			{
+				monsta.startMoon(40,sun.planets[gop],(Math.random()*12+10)*sun.planets[gop].size,((Math.random()*8)+1)/8,0,true,null);
+				//console.log(sun.planets[gop].name,sun.planets[gop].moons[po].orbitDiameter,sun.planets[gop].size);
+			}
+		}
 	
 	sun.selected=2;
 	sun.discovered=true;
