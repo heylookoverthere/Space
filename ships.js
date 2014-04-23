@@ -275,7 +275,7 @@ function starShip(civid){
 	for(var i=0;i<NumSystems;i++)
 	{
 		var wynn=new shipSystem(this,i);
-		if((wynn.type==SystemIDs.Weapons) ||(wynn.type==SystemIDs.LifeSupport)||(wynn.type==SystemIDs.DamageControl)||(wynn.type==SystemIDs.MedicalBay)||(wynn.type==SystemIDs.ImpulseEngines)||(wynn.type==SystemIDs.WarpEngines) ||(wynn.type==SystemIDs.Scanners)||(wynn.type==SystemIDs.Targeting)||(wynn.type==SystemIDs.Navigation)||(wynn.type==SystemIDs.Tractor)||(wynn.type==SystemIDs.EscapePods)||(wynn.type==SystemIDs.Transporter)||(wynn.type==SystemIDs.MainPower))
+		if((wynn.type==SystemIDs.Weapons) ||(wynn.type==SystemIDs.LifeSupport)||(wynn.type==SystemIDs.DamageControl)||(wynn.type==SystemIDs.MedicalBay)||(wynn.type==SystemIDs.ImpulseEngines)||(wynn.type==SystemIDs.WarpEngines) ||(wynn.type==SystemIDs.Scanners)||(wynn.type==SystemIDs.Targeting)||(wynn.type==SystemIDs.Navigation)||(wynn.type==SystemIDs.Tractor)||(wynn.type==SystemIDs.EscapePods)||(wynn.type==SystemIDs.Transporter)||(wynn.type==SystemIDs.MainPower)||(wynn.type==SystemIDs.Cloak))
 		{
 			wynn.installed=true;
 			
@@ -1546,6 +1546,13 @@ function starShip(civid){
 		this.menu.update();
 		this.breathe();
 		this.bodyDisposal();
+		if(this.systems[SystemIDs.Cloak].functional())
+		{
+			this.cloaked=true;
+		}else
+		{
+			this.cloaked=false;
+		}
 		if(theTime.years>this.lastYear)
 		{
 			this.lastYear=theTime.years;
@@ -1579,6 +1586,13 @@ function starShip(civid){
 			{
 				this.phaserBanks[i].firing=false;
 				this.phaserBanks[i].target=null;
+			}
+		}
+		if(!this.systems[SystemIDs.Weapons].functional())
+		{
+			for(var i=0;i<this.phaserBanks.length;i++)
+			{
+				this.phaserBanks[i].firing=false;
 			}
 		}
 		if(this.selfDestructActive)
@@ -2359,7 +2373,7 @@ function starShip(civid){
 			}
 			if(this.cloaked)
 			{
-				canvas.globalAlpha=0.30;
+				canvas.globalAlpha=0.18;
 			}
 			can.scale(cam.zoom,cam.zoom);
 			canvas.fillStyle = "red";

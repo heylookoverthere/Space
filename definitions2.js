@@ -1528,7 +1528,7 @@ function screenBox(obj)
 			{
 				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
 				can.fillText(this.object.nearbyHostiles.length+" enemy ships in sensor range.",this.x+10,this.y+2+32);
-				if(this.object.systems[SystemIDs.Targeting].functional())
+				if((this.object.systems[SystemIDs.Targeting].functional()) && (this.object.civ.name=="Humanity"))
 				{
 					this.backButton.draw(can,cam);
 					if(this.targetScreen)

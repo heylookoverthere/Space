@@ -61,7 +61,7 @@ SystemIDs.MainPower=0;//?
 SystemIDs.ComputerCore=11; //the computer! 
 SystemIDs.ScienceLab=12;
 SystemIDs.CargoBay=13;
-SystemIDs.PassengerBay=14;
+SystemIDs.Cloak=14;
 SystemIDs.ShuttleBay=15;
 SystemIDs.Transporter=16;
 SystemIDs.Navigation=7;
@@ -94,7 +94,7 @@ function shipSystem(hip,t)
 	if(t==SystemIDs.ComputerCore) {this.name="Computer";}
 	if(t==SystemIDs.ScienceLab) {this.name="Science";}
 	if(t==SystemIDs.CargoBay) {this.name="Cargo Bay";}
-	if(t==SystemIDs.PassengerBay) {this.name="Passenger Bay";}
+	if(t==SystemIDs.Cloak) {this.name="Cloak";}
 	if(t==SystemIDs.ShuttleBay) {this.name="Shuttle Bay";}
 	if(t==SystemIDs.Transporter) {this.name="Transporter";}
 	if(t==SystemIDs.AuxPower) {this.name="Aux Power";}
