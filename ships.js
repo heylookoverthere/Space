@@ -397,22 +397,23 @@ function starShip(civid){
 		if(this.crew.length<3)
 		{
 			console.log("not enough crew to form an away team");
-			return;
+			return false;
 		}
 		if(this.awayTeam.length>0)
 		{
 			console.log("alreay have an away team.");
-			return;
+			return false;
 		}
 		for(var i=0;i<num;i++)
 		{
 			if((this.crew.length<2) || (this.awayTeam.length>this.maxTeamSize))
 			{
-				return;
+				return false;
 			}
 			this.awayTeam.push(this.crew.pop());
 		}
 		console.log("Away team ready");
+		return true;
 	};
 	
 	this.recallAwayTeam=function(){

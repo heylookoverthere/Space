@@ -1312,6 +1312,34 @@ function screenBox(obj)
 		};
 		buttons.push(this.awayTeamButton);
 		
+		this.evacButton=new button(this);
+		this.evacButton.x=this.x+10+210;
+		this.evacButton.y=this.y+240;
+		this.evacButton.width+=10;
+		this.evacButton.text="Evac";
+		this.evacButton.object=this.object;
+		this.evacButton.parent=this;
+		this.evacButton.update=function()
+		{
+			
+			
+			if((!this.object.evacDone) && (this.object.systems[SystemIDs.EscapePods].functional()))
+			{
+				this.greyed=false;
+			}else
+			{
+				this.greyed=true;
+			}
+		};
+		this.evacButton.doThings=function()
+		{
+			selectedShip.Evac(selectedShip.civ.homeworld);
+			//captain?
+		};
+		buttons.push(this.evacButton);
+		
+		
+		
 		this.awayBeamButton=new button(this);
 		this.awayBeamButton.x=this.x+10+210;
 		this.awayBeamButton.y=this.y+240;
@@ -1355,7 +1383,7 @@ function screenBox(obj)
 		this.awayFormButton.x=this.x+10+160;
 		this.awayFormButton.y=this.y+8;
 		this.awayFormButton.width+=10;
-		this.awayFormButton.text="Prep";
+		this.awayFormButton.text="Form";
 		this.awayFormButton.object=this.object;
 		this.awayFormButton.parent=this;
 		this.awayFormButton.update=function()
@@ -1375,8 +1403,10 @@ function screenBox(obj)
 			if((!this.object.awayTeam)||(this.object.awayTeam.length<1))
 			{
 				console.log("forming away team");
-				this.object.prepareAwayTeam(this.object.crew.length-2);
-				this.text="Disband";
+				if(this.object.prepareAwayTeam(this.object.crew.length-2))
+				{
+					this.text="Disband";
+				}
 			}else
 			{
 				if(this.object.awayTeam)
@@ -1505,7 +1535,7 @@ function screenBox(obj)
 				{
 					this.sysButtons[i].visible=false;
 				}
-				this.damageControlButton.visible=true;
+				this.damageControlButton.visible=false;
 			}
 			if((this.page==3) && (this.object==selectedShip)) //yaar?
 			
@@ -1533,16 +1563,20 @@ function screenBox(obj)
 					this.awayBeamButton.update();
 					this.awayFormButton.visible=true;
 					this.awayFormButton.update();
+					this.evacButton.visible=false;
 				}else
 				{
 					this.awayBeamButton.visible=false;
 					this.awayFormButton.visible=false;
+					this.evacButton.visible=true;
+					this.evacButton.update();
 				}
 			}else
 			{
 				this.awayTeamButton.visible=false;
 				this.awayFormButton.visible=false;
 				this.awayBeamButton.visible=false;
+				this.evacButton.visible=false;
 			}
 			this.headingBox.update();
 			var emily=this.systemBox.listTrack;
@@ -1631,15 +1665,15 @@ function screenBox(obj)
 				{
 					if(this.object.torpedoTarget)
 					{
-						can.fillText("Targeting: "+this.object.torpedoTarget.name,this.x+10,this.y+2+108);
+						can.fillText("Targeting: "+this.object.torpedoTarget.name,this.x+10,this.y+2+112);
 					}else
 					{
-						can.fillText("No Weapons Lock",this.x+10,this.y+2+108);
+						can.fillText("No Weapons Lock",this.x+10,this.y+2+112);
 					}
 				}else
 				{
 					can.fillStyle="red";
-					can.fillText("Weapons Offline!",this.x+10,this.y+2+108);
+					can.fillText("Weapons Offline!",this.x+10,this.y+2+112);
 					can.fillStyle="white";
 				}
 				var gt=can.font;
@@ -1661,7 +1695,7 @@ function screenBox(obj)
 						can.fillText(this.object.crew[i].title+" "+this.object.crew[i].name+" Lvl: "+this.object.crew[i].level,this.x+10,this.y+2+46+i*32);
 						can.fillText("   "+this.object.crew[i].hp+"/"+this.object.crew[i].maxHp,this.x+10,this.y+2+46+i*32+16);
 					}
-
+					this.evacButton.draw(can,cam);
 				}else
 				{
 					if(!this.object.systems[SystemIDs.Transporter].functional())
@@ -1720,7 +1754,9 @@ function screenBox(obj)
 			{
 				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
 				can.fillText("Navigation: ",this.x+10,this.y+2+32);
-				can.fillText("Heading: "+this.object.heading,this.x+10,this.y+2+48);
+				var cindy=Math.floor(this.object.heading);
+				if(cindy>360) {cindy-=360;}
+				can.fillText("Heading: "+cindy,this.x+10,this.y+2+48);
 				var destext="Nowhere";
 				var destdist=0;
 				if(this.object.destination) 
