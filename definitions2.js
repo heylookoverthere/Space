@@ -714,6 +714,51 @@ function button(pt)
 		}
 		can.restore();
 	};
+	this.specialDraw=function(can,cam,thing)
+	{
+			if(!this.visible) {return;}
+		can.save();
+		can.font=this.font;
+		can.fillStyle="white";
+		if(this.hasFocus)
+		{
+			can.fillStyle="yellow";
+		}
+		if((this.object) && (this.onlink))
+		{
+			this.on=this.object.systems[this.ID].on;
+		}
+		if(this.onoff)
+		{
+			if(this.on)
+			{
+				this.backColor="green";
+			}else
+			{
+				this.backColor="red";
+			}
+		
+		}
+		can.fillRect(this.x,this.y,this.width+this.borderSize,this.height+this.borderSize);
+		if(this.greyed)
+		{
+			can.fillStyle="grey";
+		}else
+		{
+			can.fillStyle=this.backColor;
+		}
+		can.fillRect(this.x+this.borderSize,this.y+this.borderSize,this.width-this.borderSize,this.height-this.borderSize);
+		can.fillStyle="white";
+		if(this.center)
+		{
+			can.fillText(this.text,this.x+this.width/2-8,this.y+this.height-8);
+		}else
+		{
+			var peek=elipseString(this.text,this.textLimit);
+			can.fillText(peek,this.x+4,this.y+14);
+		}
+		can.restore();
+	};
 	
 }
 
@@ -972,7 +1017,7 @@ function boxTab(parent,page,label)
 			can.globalAlpha=1;
 		}else
 		{
-			can.globalAlpha=.20;
+			can.globalAlpha=.30;
 		}
 		can.fillStyle="blue";
 		can.fillRect(this.x,this.y,this.width,this.height);
@@ -1008,7 +1053,7 @@ function screenBox(obj)
 	this.visible=false;
 	this.targetScreen=false;
 	this.awayTeamScreen=false;
-	this.pages=7;
+	this.pages=6;
 	this.tabs=[];
 	this.type=0;
 	this.backColor="blue";
@@ -1018,11 +1063,11 @@ function screenBox(obj)
 		var smurt="";
 		if(i==0) {smurt="Main";}
 		if(i==1) {smurt="Crew";}
-		if(i==2) {smurt="Nav.";}
+		if(i==2) {smurt="Helm";}
 		if(i==3) {smurt="Combat";} //tactical?
-		if(i==4) {smurt="Power";}
-		if(i==5) {smurt="Damage";}
-		if(i==6) {smurt="Orders";}
+		if(i==4) {smurt="Systems";}
+		if(i==5) {smurt="Orders";}
+		if(i==6) {smurt="???";}
 		dilly=new boxTab(this,i,smurt);
 		dilly.width=this.width/this.pages; //really suprised if this works
 		boxTabs.push(dilly);
@@ -1055,23 +1100,28 @@ function screenBox(obj)
 				
 				liddle.doThings=function()
 				{
-			
-					if(this.object.systems[this.ID].installed)//also check power!
+					if(this.parent.damageControlScreen)
 					{
-						
-						if(this.object.systems[this.ID].on)
+						//repair?!
+					}else
+					{
+						if(this.object.systems[this.ID].installed)//also check power!
 						{
-							this.object.systems[this.ID].turnOff();
-							//this.on=false
-						}else
-						{
-							if(this.object.systems[this.ID].turnOn())
+							
+							if(this.object.systems[this.ID].on)
 							{
-								//this.on=true;
+								this.object.systems[this.ID].turnOff();
+								//this.on=false
+							}else
+							{
+								if(this.object.systems[this.ID].turnOn())
+								{
+									//this.on=true;
+								}
 							}
+							this.on=this.object.systems[this.ID].on;
+							//this.object.systems[this.ID].on=!this.object.systems[this.ID].on;
 						}
-						this.on=this.object.systems[this.ID].on;
-						//this.object.systems[this.ID].on=!this.object.systems[this.ID].on;
 					}
 				};
 				if(!liddle.object.systems[liddle.ID].installed)
@@ -1218,6 +1268,28 @@ function screenBox(obj)
 			}
 		};
 		buttons.push(this.backButton);
+		
+		this.damageControlButton=new button(this);
+		this.damageControlButton.x=this.x+10+205;
+		this.damageControlButton.y=this.y+8;
+		this.damageControlButton.width+=15;
+		this.damageControlButton.text="Damage";
+		this.damageControlButton.object=this.object;
+		this.damageControlButton.parent=this;
+		this.damageControlButton.doThings=function()
+		{
+		
+			this.parent.damageControlScreen=!this.parent.damageControlScreen;
+			if(this.parent.damageControlScreen)
+			{
+				//do damage shit?
+				this.text="Power";
+			}else
+			{
+				this.text="Damage";
+			}
+		};
+		buttons.push(this.damageControlButton);
 		
 		this.awayTeamButton=new button(this);
 		this.awayTeamButton.x=this.x+10+210;
@@ -1426,12 +1498,14 @@ function screenBox(obj)
 					this.sysButtons[i].visible=true;
 					this.sysButtons[i].update();
 				}
+				this.damageControlButton.visible=true;
 			}else
 			{
 				for(var i=0;i<this.sysButtons.length;i++)
 				{
 					this.sysButtons[i].visible=false;
 				}
+				this.damageControlButton.visible=true;
 			}
 			if((this.page==3) && (this.object==selectedShip)) //yaar?
 			
@@ -1518,7 +1592,7 @@ function screenBox(obj)
 		can.save();
 		can.font = "12pt Calibri";
 		can.fillStyle="white";
-		can.globalAlpha=0.45;
+		can.globalAlpha=0.75;
 		can.fillRect(this.x,this.y,this.width+this.borderSize,this.height+this.borderSize);
 		can.fillStyle=this.backColor;
 		can.globalAlpha=0.65;
@@ -1568,6 +1642,13 @@ function screenBox(obj)
 					can.fillText("Weapons Offline!",this.x+10,this.y+2+108);
 					can.fillStyle="white";
 				}
+				var gt=can.font;
+				can.font== "8pt Calibri";
+				if(this.object.awayTeamAt)
+				{
+					can.fillText("Away team on "+this.object.awayTeamAt.name,this.x+10,this.y+2+262);
+				}
+				can.font=gt;
 			}else if(this.page==1)
 			{
 				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
@@ -1701,18 +1782,28 @@ function screenBox(obj)
 			}else if(this.page==3)//combat //somehow add list of nearby hostile ships.
 			{
 				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
-				can.fillText(this.object.nearbyHostiles.length+" enemy ships in sensor range.",this.x+10,this.y+2+32);
+				
 				if((this.object.systems[SystemIDs.Targeting].functional()) && (this.object.civ.name=="Humanity"))
 				{
 					this.backButton.draw(can,cam);
 					if(this.targetScreen)
 					{
+						
+						if(this.object.torpedoTarget)
+						{
+							can.fillText("Targeting "+this.object.torpedoTarget.name,this.x+10,this.y+2+32);
+						}else
+						{
+							can.fillText(this.object.nearbyHostiles.length+" enemy ships in sensor range.",this.x+10,this.y+2+32);
+						}
+						
 						for(var i=0;i<this.targButtons.length;i++)
 						{
 							this.targButtons[i].draw(can,cam);
 						}
 					}else if(this.object.torpedoTarget)
 					{
+						can.fillText(this.object.nearbyHostiles.length+" enemy ships in sensor range.",this.x+10,this.y+2+32);
 						can.fillText("Targeting: "+this.object.torpedoTarget.name,this.x+10,this.y+2+64);
 						can.fillText(this.object.torpedoTarget.civ.name+" "+this.object.torpedoTarget.class.name +" Starship",this.x+10,this.y+2+80); //todo class!
 						can.fillText("Target HP: "+this.object.torpedoTarget.hp+"/"+this.object.torpedoTarget.maxHp,this.x+10,this.y+2+96);
@@ -1722,6 +1813,7 @@ function screenBox(obj)
 				
 					}else
 					{
+						can.fillText(this.object.nearbyHostiles.length+" enemy ships in sensor range.",this.x+10,this.y+2+32);
 						can.fillText("No Weapons Lock",this.x+10,this.y+2+64);
 					}
 				}else
@@ -1761,22 +1853,36 @@ function screenBox(obj)
 			}else if(this.page==4)//Systems
 			{
 				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
-				can.fillText("Ships Systems:   Power: "+this.object.power+"/"+this.object.maxPower,this.x+10,this.y+2+32);
+				this.damageControlButton.draw(can,camera);this.damageControlButton.visible=true;
+				if(!this.damageControlScreen)
+				{
+					can.fillText("Power Managment  Power: "+this.object.power+"/"+this.object.maxPower,this.x+10,this.y+2+32);
+				}else
+				{
+					can.fillText("Damage Control  Power: "+this.object.power+"/"+this.object.maxPower,this.x+10,this.y+2+32);
+				}
 				if(true)//(this.object.civ.name=="Humanity")
 				{
 					for(var i=0;i<this.sysButtons.length;i++)
 					{
-						this.sysButtons[i].draw(can,cam);
+						if(this.damageControlScreen)
+						{
+							this.sysButtons[i].specialDraw(can,cam,false);
+						
+						}else
+						{
+							this.sysButtons[i].draw(can,cam);
+						}
 					}
 				}
 			}else if(this.page==5)
 			{
 				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
-				can.fillText("Damage Control: ",this.x+10,this.y+2+32);
-			}else if(this.page==6)
+				can.fillText("Orders & Policies: ",this.x+10,this.y+2+32);
+			}else if(this.page==6) //unused
 			{
 				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
-				can.fillText("Orders & Policies: ",this.x+10,this.y+2+32);
+				can.fillText("????",this.x+10,this.y+2+32);
 			}
 		}else if(this.object.planet)
 		{

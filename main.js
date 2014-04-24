@@ -256,10 +256,7 @@ function drawGUI()
 	//canvas.fillText("Particles: "+ monsta.particles.length,755,100);
 	//canvas.fillText("Stars drawn: "+ starsDrawn,755,115);
 	canvas.fillText("Stardate: "+ Math.floor(theTime.years)+"."+Math.floor(theTime.days) ,755,40);
-	canvas.fillText("Zoom: "+camera.zoom ,755,55);
-	canvas.fillText("Your Ships: "+civs[0].ships.length ,755,70);
-	canvas.fillText("Total Ships: "+ships.length ,755,85);
-	canvas.fillText("Money: $"+civs[0].money ,755,100);
+	canvas.fillText("Money: $"+civs[0].money ,755,55);
 	
 	productionBar.val=civs[0].productionTick;
 	productionBar.maxVal=civs[0].nextProduction;
@@ -292,9 +289,9 @@ function drawDebug()
 	canvas.fillText("Particles: "+ monsta.particles.length,755,130);
 	canvas.fillText("Stars drawn: "+ starsDrawn,755,115);
 	//canvas.fillText("Stardate: "+ Math.floor(theTime.years)+"."+Math.floor(theTime.days) ,755,70);
-	//canvas.fillText("Zoom: "+camera.zoom ,755,85);
-	//canvas.fillText("Your Ships: "+civs[0].ships.length ,755,100);
-	//canvas.fillText("Total Ships: "+ships.length ,755,115);
+	canvas.fillText("Zoom: "+camera.zoom ,755,100);
+	canvas.fillText("Your Ships: "+civs[0].ships.length ,755,70);
+	canvas.fillText("Total Ships: "+ships.length ,755,85);
 	
 	canvas.fillText("System: "+stars[curSystem].name,25,55);
 	canvas.fillText("Planets: "+ stars[curSystem].numPlanets,25,70);
@@ -384,7 +381,7 @@ function drawDebug()
 		}
 	}
 	canvas.fillText("Ship: "+selectedShip.prefix+" "+selectedShip.name,755,250);
-	canvas.fillText("Class: "+ selectedShip.class,755,265);
+	canvas.fillText("Class: "+ selectedShip.class.name,755,265);
 	if(selectedShip.destination)
 	{
 		var dost=Math.floor(distance(selectedShip,selectedShip.destination));
@@ -511,7 +508,7 @@ function drawDebug()
 		canvas.fillStyle = "white";
 	}
 	canvas.fillText("Crew Compliment: "+ selectedShip.torpedoTarget.crew.length+"/"+selectedShip.torpedoTarget.crewMax,55,470);
-	canvas.fillText("Class: "+ selectedShip.torpedoTarget.class,55,485);
+	canvas.fillText("Class: "+ selectedShip.torpedoTarget.class.name,55,485);
 	canvas.fillText(actionText,55,500);
 	canvas.fillText("Coords: "+Math.floor(selectedShip.torpedoTarget.x)+","+Math.floor(selectedShip.torpedoTarget.y),55,515);
 	canvas.fillText("Heading: "+ Math.floor(selectedShip.torpedoTarget.heading),55,530);
