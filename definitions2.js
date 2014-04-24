@@ -15,7 +15,10 @@ var numNebulas=50;
 var Earth=null;
 var selectedShip=null;
 var Cube=null;
-var drawMap=false;
+	var mapFactor=1000;
+	var mapedgex=140;
+	var mapedgey=20;
+//var drawMap=false;
 //var things=[];
 var numCivilizations=18;
 var civs=[];
@@ -145,15 +148,191 @@ function isTurnCCW(hdg, newHdg) { // should a new heading turn left ie. CCW?
    return diff > 0 ? diff > 180 : diff >= -180;
 }
 
+var buttons=[];
+
+function button(pt)
+{
+	this.x=0;
+	this.y=0;
+	this.font= "8pt Calibri";
+	if(pt){
+	this.parent=pt;
+	}
+	this.ID=0;
+	this.onlink=false;
+	this.center=false;
+	this.hasFocus=false;
+	this.visible=false;
+	this.greyed=false;
+	this.decorative=false;
+	this.yCenter=true;
+	this.object=null;
+	this.width=30;
+	this.onoff=false;
+	this.height=24;
+	this.blinkRate=30;
+	this.blink=false;
+	this.textLimit=20;
+	this.choice=null;
+	this.text="Go!";
+	this.blinkTrack=0;
+	this.backColor="green";
+	this.borderSize=2;
+	this.linked=[]; //turn these off when this goes on.
+	this.doThings=function()
+	{
+		this.on=!this.on;
+	};
+	this.update=function()
+	{
+		
+		if(this.hasFocus)
+		{
+			//holdInput=true;
+			
+			if(startkey.check())
+			{
+				this.doThings();
+				//somehow order ship to move there.
+			}
+	}	
+
+	};
+	this.draw=function(can,cam)
+	{
+		if(!this.visible) {return;}
+		can.save();
+		can.font=this.font;
+		can.fillStyle="white";
+		if(this.hasFocus)
+		{
+			can.fillStyle="yellow";
+		}
+		if((this.object) && (this.onlink))
+		{
+			this.on=this.object.systems[this.ID].on;
+		}
+		if(this.onoff)
+		{
+			if(this.on)
+			{
+				this.backColor="green";
+			}else
+			{
+				this.backColor="red";
+			}
+		
+		}
+		can.fillRect(this.x,this.y,this.width+this.borderSize,this.height+this.borderSize);
+		if(this.greyed)
+		{
+			can.fillStyle="grey";
+		}else
+		{
+			can.fillStyle=this.backColor;
+		}
+		can.fillRect(this.x+this.borderSize,this.y+this.borderSize,this.width-this.borderSize,this.height-this.borderSize);
+		can.fillStyle="white";
+		if(this.center)
+		{
+			can.fillText(this.text,this.x+this.width/2-8,this.y+this.height-8);
+		}else if(this.yCenter)
+		{
+			var peek=elipseString(this.text,this.textLimit);
+			can.fillText(peek,this.x+4,this.y+14);
+		}else
+		{
+			var peek=elipseString(this.text,this.textLimit);
+			can.fillText(peek,this.x+4,this.y+10);
+		}
+		can.restore();
+	};
+	this.specialDraw=function(can,cam,thing)
+	{
+			if(!this.visible) {return;}
+		can.save();
+		can.font=this.font;
+		can.fillStyle="white";
+		if(this.hasFocus)
+		{
+			can.fillStyle="yellow";
+		}
+		if((this.object) && (this.onlink))
+		{
+			this.on=this.object.systems[this.ID].on;
+		}
+		if(this.onoff)
+		{
+			if(this.on)
+			{
+				this.backColor="green";
+			}else
+			{
+				this.backColor="red";
+			}
+		
+		}
+		can.fillRect(this.x,this.y,this.width+this.borderSize,this.height+this.borderSize);
+		if(this.greyed)
+		{
+			can.fillStyle="grey";
+		}else
+		{
+			can.fillStyle=this.backColor;
+		}
+		can.fillRect(this.x+this.borderSize,this.y+this.borderSize,this.width-this.borderSize,this.height-this.borderSize);
+		can.fillStyle="white";
+		if(this.center)
+		{
+			can.fillText(this.text,this.x+this.width/2-8,this.y+this.height-8);
+		}else if(this.yCenter)
+		{
+			var peek=elipseString(this.text,this.textLimit);
+			can.fillText(peek,this.x+4,this.y+14);
+		}else
+		{
+			var peek=elipseString(this.text,this.textLimit);
+			can.fillText(peek,this.x+4,this.y+10);
+		}
+		can.restore();
+	};
+	
+}
+	var Map={};
+	var mapXButton=new button();
+	mapXButton.text="X";
+
+	mapXButton.x=mapedgex+universeWidth/mapFactor-14;
+	mapXButton.y=mapedgey;
+	mapXButton.object=Map;
+	mapXButton.width-=18;
+	mapXButton.height-=12;
+	mapXButton.yCenter=false;
+	mapXButton.on=false;
+	mapXButton.onoff=true;
+	mapXButton.doThings=function()
+	{
+		if(this.object)
+		{
+			this.object.visible=false;
+		}
+		this.visible=false;
+	};
+	buttons.push(mapXButton);
+
+
+Map.visible=false;
+	
 function drawLittleMap(can, cam)
 {
-	var mapFactor=1000;
+
 	can.fillStyle="black";
 	var mapedgex=140;
 	var mapedgey=20;
 	can.fillRect(mapedgex,mapedgey,universeWidth/mapFactor,universeHeight/mapFactor);
 	can.fillStyle="white";
 	canvas.font = "8pt Calibri";
+	mapXButton.visible=true;
 	var xp=0;
 	var yp=0;
 	var hostileMapMode=false;
@@ -250,6 +429,7 @@ function drawLittleMap(can, cam)
 
     can.stroke();
 	can.closePath();	
+	mapXButton.draw(can,camera);
 	//can.fillRect(mapedgex+point1.x,mapedgey+point1.y,cam.width/(mapFactor*cam.zoom),cam.height/(mapFactor*cam.zoom));
 }
 
@@ -620,147 +800,7 @@ function statusBox()
 
 var roland=new statusBox();
 var textBoxes=[];
-var buttons=[];
 
-function button(pt)
-{
-	this.x=0;
-	this.y=0;
-	this.font= "8pt Calibri";
-	if(pt){
-	this.parent=pt;
-	}
-	this.ID=0;
-	this.onlink=false;
-	this.center=false;
-	this.hasFocus=false;
-	this.visible=false;
-	this.greyed=false;
-	this.decorative=false;
-	this.object=null;
-	this.width=30;
-	this.onoff=false;
-	this.height=24;
-	this.blinkRate=30;
-	this.blink=false;
-	this.textLimit=20;
-	this.choice=null;
-	this.text="Go!";
-	this.blinkTrack=0;
-	this.backColor="green";
-	this.borderSize=2;
-	this.linked=[]; //turn these off when this goes on.
-	this.doThings=function()
-	{
-		this.on=!this.on;
-	};
-	this.update=function()
-	{
-		
-		if(this.hasFocus)
-		{
-			//holdInput=true;
-			
-			if(startkey.check())
-			{
-				this.doThings();
-				//somehow order ship to move there.
-			}
-	}	
-
-	};
-	this.draw=function(can,cam)
-	{
-		if(!this.visible) {return;}
-		can.save();
-		can.font=this.font;
-		can.fillStyle="white";
-		if(this.hasFocus)
-		{
-			can.fillStyle="yellow";
-		}
-		if((this.object) && (this.onlink))
-		{
-			this.on=this.object.systems[this.ID].on;
-		}
-		if(this.onoff)
-		{
-			if(this.on)
-			{
-				this.backColor="green";
-			}else
-			{
-				this.backColor="red";
-			}
-		
-		}
-		can.fillRect(this.x,this.y,this.width+this.borderSize,this.height+this.borderSize);
-		if(this.greyed)
-		{
-			can.fillStyle="grey";
-		}else
-		{
-			can.fillStyle=this.backColor;
-		}
-		can.fillRect(this.x+this.borderSize,this.y+this.borderSize,this.width-this.borderSize,this.height-this.borderSize);
-		can.fillStyle="white";
-		if(this.center)
-		{
-			can.fillText(this.text,this.x+this.width/2-8,this.y+this.height-8);
-		}else
-		{
-			var peek=elipseString(this.text,this.textLimit);
-			can.fillText(peek,this.x+4,this.y+14);
-		}
-		can.restore();
-	};
-	this.specialDraw=function(can,cam,thing)
-	{
-			if(!this.visible) {return;}
-		can.save();
-		can.font=this.font;
-		can.fillStyle="white";
-		if(this.hasFocus)
-		{
-			can.fillStyle="yellow";
-		}
-		if((this.object) && (this.onlink))
-		{
-			this.on=this.object.systems[this.ID].on;
-		}
-		if(this.onoff)
-		{
-			if(this.on)
-			{
-				this.backColor="green";
-			}else
-			{
-				this.backColor="red";
-			}
-		
-		}
-		can.fillRect(this.x,this.y,this.width+this.borderSize,this.height+this.borderSize);
-		if(this.greyed)
-		{
-			can.fillStyle="grey";
-		}else
-		{
-			can.fillStyle=this.backColor;
-		}
-		can.fillRect(this.x+this.borderSize,this.y+this.borderSize,this.width-this.borderSize,this.height-this.borderSize);
-		can.fillStyle="white";
-		if(this.center)
-		{
-			can.fillText(this.text,this.x+this.width/2-8,this.y+this.height-8);
-		}else
-		{
-			var peek=elipseString(this.text,this.textLimit);
-			can.fillText(peek,this.x+4,this.y+14);
-		}
-		can.restore();
-	};
-	
-}
 
 function textBox(pt)
 {

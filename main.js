@@ -651,7 +651,7 @@ function mainMenuDraw(){
 	
 	
 	
-	if(drawMap)//keydown[mapkey.key])
+	if(Map.visible)//keydown[mapkey.key])
 	{
 		drawLittleMap(canvas,camera);
 	}
@@ -695,7 +695,11 @@ function mainMenuUpdate(){
 	{
 		if(mapkey.check())
 		{
-			drawMap=!drawMap;
+			Map.visible=!Map.visible;
+			if(Map.visible)
+			{
+				mapXButton.visible=true;
+			}
 		}
 		
 		if(infokey.check())
