@@ -166,6 +166,7 @@ function button(pt)
 	this.greyed=false;
 	this.decorative=false;
 	this.yCenter=true;
+	this.yTop=false
 	this.object=null;
 	this.width=30;
 	this.onoff=false;
@@ -198,9 +199,9 @@ function button(pt)
 	}	
 
 	};
-	this.draw=function(can,cam)
+	this.draw=function(can,cam,nerf)
 	{
-		if(!this.visible) {return;}
+		if((!nerf) && (!this.visible)) {return;}
 		can.save();
 		can.font=this.font;
 		can.fillStyle="white";
@@ -236,6 +237,10 @@ function button(pt)
 		if(this.center)
 		{
 			can.fillText(this.text,this.x+this.width/2-8,this.y+this.height-8);
+		}else if(this.yTop)
+		{
+			var peek=elipseString(this.text,this.textLimit);
+			can.fillText(peek,this.x+4,this.y+10);
 		}else if(this.yCenter)
 		{
 			var peek=elipseString(this.text,this.textLimit);
@@ -249,7 +254,7 @@ function button(pt)
 	};
 	this.specialDraw=function(can,cam,thing)
 	{
-			if(!this.visible) {return;}
+		//if(!this.visible) {return;} //todo, right now visibe means clickible and not visible.
 		can.save();
 		can.font=this.font;
 		can.fillStyle="white";
@@ -282,13 +287,13 @@ function button(pt)
 		}
 		can.fillRect(this.x+this.borderSize,this.y+this.borderSize,this.width-this.borderSize,this.height-this.borderSize);
 		can.fillStyle="white";
-		if(this.center)
-		{
-			can.fillText(this.text,this.x+this.width/2-8,this.y+this.height-8);
-		}else if(this.yCenter)
+		if(this.yCenter)
 		{
 			var peek=elipseString(this.text,this.textLimit);
 			can.fillText(peek,this.x+4,this.y+14);
+		}else if(this.center)
+		{
+			can.fillText(this.text,this.x+this.width/2-8,this.y+this.height-8);
 		}else
 		{
 			var peek=elipseString(this.text,this.textLimit);
@@ -1174,6 +1179,28 @@ function screenBox(obj)
 		}
 	}
 	
+	this.damageControlButton=new button(this);
+	this.damageControlButton.x=this.x+10+205;
+	this.damageControlButton.y=this.y+8;
+	this.damageControlButton.width+=15;
+	this.damageControlButton.text="Damage";
+	this.damageControlButton.object=this.object;
+	this.damageControlButton.parent=this;
+	this.damageControlButton.doThings=function()
+	{
+	
+		this.parent.damageControlScreen=!this.parent.damageControlScreen;
+		if(this.parent.damageControlScreen)
+		{
+			//do damage shit?
+			this.text="Power";
+		}else
+		{
+			this.text="Damage";
+		}
+	};
+	buttons.push(this.damageControlButton);
+		
 	if((this.object.ship) && (this.object.civ) &&(this.object.civ.name=="Humanity"))
 	{
 		this.targButtons=[];
@@ -1308,28 +1335,6 @@ function screenBox(obj)
 			}
 		};
 		buttons.push(this.backButton);
-		
-		this.damageControlButton=new button(this);
-		this.damageControlButton.x=this.x+10+205;
-		this.damageControlButton.y=this.y+8;
-		this.damageControlButton.width+=15;
-		this.damageControlButton.text="Damage";
-		this.damageControlButton.object=this.object;
-		this.damageControlButton.parent=this;
-		this.damageControlButton.doThings=function()
-		{
-		
-			this.parent.damageControlScreen=!this.parent.damageControlScreen;
-			if(this.parent.damageControlScreen)
-			{
-				//do damage shit?
-				this.text="Power";
-			}else
-			{
-				this.text="Damage";
-			}
-		};
-		buttons.push(this.damageControlButton);
 		
 		this.awayTeamButton=new button(this);
 		this.awayTeamButton.x=this.x+10+210;
@@ -1500,6 +1505,44 @@ function screenBox(obj)
 		};
 		buttons.push(this.goShipButton);
 
+		this.speedPlusButton=new button(this);
+		this.speedPlusButton.x=this.x+10+120,this.y+2+96;
+		this.speedPlusButton.y=this.y+86;
+		this.speedPlusButton.width=12;
+		this.speedPlusButton.height=12;
+		this.speedPlusButton.text="+";
+		this.speedPlusButton.object=this.object;
+		this.speedPlusButton.parent=this;
+		this.speedPlusButton.yCenter=false;
+		this.speedPlusButton.doThings=function()
+		{
+			this.object.desiredSpeed++;
+			if(this.object.desiredSpeed>this.object.maxSpeed)
+			{
+				this.object.desiredSpeed=this.object.maxSpeed;
+			}
+		};
+		buttons.push(this.speedPlusButton);
+		
+		this.speedMinusButton=new button(this);
+		this.speedMinusButton.x=this.x+10+46,this.y+2+96;
+		this.speedMinusButton.y=this.y+86;
+		this.speedMinusButton.text="-";
+		this.speedMinusButton.width=12;
+		this.speedMinusButton.height=12;
+		this.speedMinusButton.object=this.object;
+		this.speedMinusButton.parent=this;
+		this.speedMinusButton.yCenter=false;
+		this.speedMinusButton.doThings=function()
+		{
+			this.object.desiredSpeed--;
+			if(this.object.desiredSpeed<1)
+			{
+				this.object.desiredSpeed=0;
+			}
+		};
+		
+		buttons.push(this.speedMinusButton);
 		
 		for(var i=0;i<this.sysButtons.length;i++)
 		{
@@ -1542,6 +1585,8 @@ function screenBox(obj)
 				this.shipBox.visible=true;
 				
 				this.goShipButton.visible=true;
+				this.speedPlusButton.visible=true;
+				this.speedMinusButton.visible=true;
 			}else
 			{
 				this.headingBox.visible=false;
@@ -1550,7 +1595,8 @@ function screenBox(obj)
 				this.goPlanetButton.visible=false;
 				this.raceBox.visible=false;
 				this.shipBox.visible=false;
-				
+				this.speedPlusButton.visible=false;
+				this.speedMinusButton.visible=false;
 				this.goShipButton.visible=false;
 			}
 			if((this.page===0)&&(this.object==selectedShip))
@@ -1735,7 +1781,10 @@ function screenBox(obj)
 						can.fillText(this.object.crew[i].title+" "+this.object.crew[i].name+" Lvl: "+this.object.crew[i].level,this.x+10,this.y+2+46+i*32);
 						can.fillText("   "+this.object.crew[i].hp+"/"+this.object.crew[i].maxHp,this.x+10,this.y+2+46+i*32+16);
 					}
-					this.evacButton.draw(can,cam);
+					if(this.evacButton)
+					{
+						this.evacButton.draw(can,cam);
+					}
 				}else
 				{
 					if(!this.object.systems[SystemIDs.Transporter].functional())
@@ -1812,7 +1861,14 @@ function screenBox(obj)
 				}
 				can.fillText(destext,this.x+10,this.y+2+64);
 				can.fillText("Distance: "+destdist+" AU",this.x+10,this.y+2+80);
-				can.fillText("Speed: "+this.object.speed+"/"+this.object.maxSpeed,this.x+10,this.y+2+96);
+				var neeep=Math.round(this.object.speed*10)/10;
+				can.fillText("Speed:      "+neeep+"/"+this.object.maxSpeed,this.x+10,this.y+2+96); //todo add decimal place
+				
+				if(this.object.civ.name=="Humanity")
+				{
+					this.speedPlusButton.draw(can,cam);
+					this.speedMinusButton.draw(can,cam);
+				}
 				
 				if((this.object.civ.name=="Humanity") && (this.object.systems[SystemIDs.Navigation].functional()))
 				{
@@ -1929,7 +1985,8 @@ function screenBox(obj)
 			}else if(this.page==4)//Systems
 			{
 				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
-				this.damageControlButton.draw(can,camera);this.damageControlButton.visible=true;
+				this.damageControlButton.visible=true;
+				this.damageControlButton.draw(can,camera);
 				if(!this.damageControlScreen)
 				{
 					can.fillText("Power Managment  Power: "+this.object.power+"/"+this.object.maxPower,this.x+10,this.y+2+32);
@@ -1947,7 +2004,7 @@ function screenBox(obj)
 						
 						}else
 						{
-							this.sysButtons[i].draw(can,cam);
+							this.sysButtons[i].draw(can,cam,true);
 						}
 					}
 				}

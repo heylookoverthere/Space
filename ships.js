@@ -1932,6 +1932,7 @@ function starShip(civid){
 				this.orby=this.orbitTarg.y;
 				this.heading=this.orbitTrack+90;//TODO
 				this.orbitTrack+=this.orbitSpeed*gameSpeed;
+				this.speed=1;//this.orbitSpeed;
 				this.orbitDiameter-=this.orbitDecay*this.orbitSpeed*gameSpeed;
 				if(this.orbitDiameter<1) 
 				{
@@ -2046,7 +2047,6 @@ function starShip(civid){
 				
 		}else if(!this.orbiting)
 		{
-			
 				//accel or decel to desired speed
 			if(this.speed<this.desiredSpeed)
 			{
@@ -2059,6 +2059,8 @@ function starShip(civid){
 			{
 				this.decelerate();
 			}
+			
+			
 			var differenceHeading = Math.abs(this.desiredHeading - this.heading);
 			//if we need to turn clockwise
 			if(differenceHeading>2)
