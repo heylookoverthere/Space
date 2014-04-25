@@ -2002,14 +2002,7 @@ function screenBox(obj)
 					{
 						can.fillText(this.object.nearbyHostiles.length+" enemy ships in sensor range.",this.x+10,this.y+2+32);
 						can.fillText("No Weapons Lock",this.x+10,this.y+2+64);
-					}
-				}else
-				{
-					can.fillStyle="red";
-					can.fillText("Targeting System Offline!",this.x+10,this.y+2+64);
-					can.fillStyle="white";
-				}
-				if(!this.object.systems[SystemIDs.Weapons].functional())
+						if(!this.object.systems[SystemIDs.Weapons].functional())
 				{
 					can.fillStyle="red";
 					can.fillText("Weapons Offline!",this.x+10,this.y+2+150);
@@ -2037,6 +2030,14 @@ function screenBox(obj)
 					
 					can.fillStyle="white";
 				}
+					}
+				}else
+				{
+					can.fillStyle="red";
+					can.fillText("Targeting System Offline!",this.x+10,this.y+2+64);
+					can.fillStyle="white";
+				}
+				
 			}else if(this.page==4)//Systems
 			{
 				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);

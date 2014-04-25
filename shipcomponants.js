@@ -88,8 +88,8 @@ function shipSystem(hip,t)
 	if(t==SystemIDs.Targeting) {this.name="Targeting";}
 	if(t==SystemIDs.Scanners) {this.name="Scanners";}
 	if(t==SystemIDs.Navigation) {this.name="Navigation";}
-	if(t==SystemIDs.Engines) {this.name="Impulse Eng.";}
-	if(t==SystemIDs.Engines) {this.name="Communication";}
+	if(t==SystemIDs.Engines) {this.name="Engines";}
+	if(t==SystemIDs.Communication) {this.name="Communication";}
 	if(t==SystemIDs.LifeSupport) {this.name="Life Support";}
 	if(t==SystemIDs.ComputerCore) {this.name="Computer";}
 	if(t==SystemIDs.ScienceLab) {this.name="Science";}
