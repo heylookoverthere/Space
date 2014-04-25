@@ -148,6 +148,8 @@ var shieldskey=new akey("7");
 var mapkey=new akey("8");
 var cleartailskey=new akey("9");
 var maxspeedkey=new akey("0");
+var shipscreenkey=new akey("2");
+
 var letterkeys=[];
 letterkeys.push(new akey("a"));
 letterkeys.push(new akey("b"));
@@ -370,13 +372,17 @@ function drawDebug()
 			selectedShip.actionText="Enroute to "+selectedShip.destination.name;
 		}else if(selectedShip.destination.ship)
 		{
-			if(selectedShip.orders=Orders.Attack)
-			{
-				selectedShip.actionText="Enroute to attack "+selectedShip.destination.name;
-			}else
-			{
-				selectedShip.actionText="Enroute to "+selectedShip.destination.name;
-			}
+			if(selectedShip.orders==Orders.MeetFleet)
+				{
+					selectedShip.actionText="Enroute to meet with the fleet";
+				}else if(selectedShip.civ.autoHostile.indexOf(selectedShip.destination.civ)>-1)
+				{
+					selectedShip.actionText="Enroute to attack "+selectedShip.destination.prefix+" "+selectedShip.destination.name;
+					selectedShip.orders==Orders.Attack
+				}else 
+				{
+					selectedShip.actionText="Enroute to rendezvous with the "+selectedShip.destination.prefix+" "+selectedShip.destination.name;
+				}
 			
 		}
 	}
@@ -641,7 +647,10 @@ function mainMenuDraw(){
 	//for (var i=0;i<civs[0].messages.length;i++)
 	
 	
-	selectedShip.menu.visible=true;
+	if(showShipScreen)
+	{
+		selectedShip.menu.visible=true;
+	}
 	selectedShip.menu.draw(canvas,camera)
 	
 	if(civs[0].messages.length>0)
@@ -693,6 +702,11 @@ function mainMenuUpdate(){
 	
 	if(!holdInput)
 	{
+		if(shipscreenkey.check())
+		{
+			showShipScreen=!showShipScreen;
+		}
+		
 		if(mapkey.check())
 		{
 			Map.visible=!Map.visible;

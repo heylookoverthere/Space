@@ -49,7 +49,7 @@ function starShip(civid){
 	this.ship=true;
 	this.systems=[];
 	this.power=this.maxPower=1;
-	
+	this.matchSpeed=false;
 	//todo
 	this.rooms=6;
 	this.maxSystems=6;
@@ -276,7 +276,7 @@ function starShip(civid){
 	for(var i=0;i<NumSystems;i++)
 	{
 		var wynn=new shipSystem(this,i);
-		if((wynn.type==SystemIDs.Weapons) ||(wynn.type==SystemIDs.LifeSupport)||(wynn.type==SystemIDs.DamageControl)||(wynn.type==SystemIDs.MedicalBay)||(wynn.type==SystemIDs.ImpulseEngines)||(wynn.type==SystemIDs.WarpEngines) ||(wynn.type==SystemIDs.Scanners)||(wynn.type==SystemIDs.Targeting)||(wynn.type==SystemIDs.Navigation)||(wynn.type==SystemIDs.Tractor)||(wynn.type==SystemIDs.EscapePods)||(wynn.type==SystemIDs.Transporter)||(wynn.type==SystemIDs.MainPower)||(wynn.type==SystemIDs.Cloak))
+		if((wynn.type==SystemIDs.Weapons) ||(wynn.type==SystemIDs.LifeSupport)||(wynn.type==SystemIDs.DamageControl)||(wynn.type==SystemIDs.MedicalBay)||(wynn.type==SystemIDs.Engines) ||(wynn.type==SystemIDs.Scanners)||(wynn.type==SystemIDs.Targeting)||(wynn.type==SystemIDs.Navigation)||(wynn.type==SystemIDs.Tractor)||(wynn.type==SystemIDs.EscapePods)||(wynn.type==SystemIDs.Transporter)||(wynn.type==SystemIDs.MainPower)||(wynn.type==SystemIDs.Cloak))
 		{
 			wynn.installed=true;
 			
@@ -1091,7 +1091,7 @@ function starShip(civid){
 	
 	this.accelerate=function()
 	{
-		if((!this.systems[SystemIDs.ImpulseEngines].functional(false)) &&(!this.systems[SystemIDs.WarpEngines].functional(false))) {return;}
+		if(!this.systems[SystemIDs.Engines].functional(false))  {return;}
 		this.acceltick++;
 		if(this.acceltick<this.accelrate)
 		{
@@ -1120,7 +1120,7 @@ function starShip(civid){
 			return;
 		}
 		this.acceltick=0;
-		this.speed-=this.acceleration*gameSpeed;
+		this.speed-=this.acceleration*gameSpeed*2;
 		if (this.speed<0.1)
 		{
 			this.speed=0;
@@ -1778,7 +1778,7 @@ function starShip(civid){
 			{
 				this.decelerate();
 			}
-			if((!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (!this.systems[SystemIDs.WarpEngines].functional(false)) && (this.speed>0))
+			if((!this.systems[SystemIDs.Engines].functional(false))  && (this.speed>0))
 			{
 				this.decelerate();
 			}
@@ -1818,7 +1818,7 @@ function starShip(civid){
 				//this.desiredSpeed=0;
 			}else
 			{
-				this.heading=beta;
+				this.desiredHeading=beta;
 				this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
 				this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
 				this.x+=this.xv*gameSpeed*this.speed;
@@ -1832,9 +1832,13 @@ function starShip(civid){
 				if(this.orders==Orders.MeetFleet)
 				{
 					this.actionText="Enroute to meet with the fleet";
-				}else if(this.orders==Orders.Attack)
+				}else if(this.civ.autoHostile.indexOf(this.destination.civ)>-1)
 				{
 					this.actionText="Enroute to attack "+this.destination.prefix+" "+this.destination.name;
+					this.orders==Orders.Attack
+				}else 
+				{
+					this.actionText="Enroute to rendezvous with the "+this.destination.prefix+" "+this.destination.name;
 				}
 				var beta=Math.atan2(this.destination.y-this.y,this.destination.x-this.x)* (180 / Math.PI);
 				
@@ -1843,10 +1847,11 @@ function starShip(civid){
 				else if (beta > 360.0)
 					beta -= 360;
 				this.desiredHeading=beta;
-				if(distance(this,this.destination)>50)
+				/*if(distance(this,this.destination)>50)
 				{
 					this.desiredSpeed=this.maxSpeed;
-				}else
+				}else*/
+				if(this.matchSpeed)
 				{
 					if(this.destination.speed)
 					{
@@ -1866,7 +1871,7 @@ function starShip(civid){
 				{
 					this.decelerate();
 				}
-				if((!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (!this.systems[SystemIDs.WarpEngines].functional(false)) && (this.speed>0))
+				if((!this.systems[SystemIDs.Engines].functional(false)) && (this.speed>0))
 				{
 					this.decelerate();
 				}
@@ -1899,7 +1904,7 @@ function starShip(civid){
 				}
 
 
-				if((Math.abs(this.x-this.destination.x)<100) && (Math.abs(this.y-this.destination.y)<100) && (this.destination!=this)) 
+				if((Math.abs(this.x-this.destination.x)<500) && (Math.abs(this.y-this.destination.y)<100) && (this.destination!=this)) 
 				{
 					//console.log(this.name+ " met with fleet.");
 					this.destination=null;
@@ -1908,7 +1913,7 @@ function starShip(civid){
 					this.desiredSpeed=0;
 				}else
 				{
-					this.heading=beta;
+					this.desiredHeading=beta;
 					this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
 					this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
 					this.x+=this.xv*gameSpeed*this.speed;
@@ -2007,7 +2012,7 @@ function starShip(civid){
 				{
 					this.decelerate();
 				}		
-				if((!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (!this.systems[SystemIDs.WarpEngines].functional(false)) && (this.speed>0))
+				if((!this.systems[SystemIDs.Engines].functional(false)) && (this.speed>0))
 				{
 					this.decelerate();
 				}				
@@ -2015,10 +2020,10 @@ function starShip(civid){
 				this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
 				this.x+=this.xv*gameSpeed*this.speed;
 				this.y+=this.yv*gameSpeed*this.speed;
-				if(this.speed<1)
+				/*if(this.speed<1)
 				{
 					this.desiredSpeed=this.cruisingSpeed;
-				}
+				}*/
 				if((Math.abs(this.x-this.desiredOrbitTarg.x)<50) && (Math.abs(this.y-this.desiredOrbitTarg.y)<50)) 
 				{
 					if((logAll) ||(this.civ.name=="Humanity"))
@@ -2055,7 +2060,7 @@ function starShip(civid){
 			{
 				this.decelerate();
 			}
-			if((!this.systems[SystemIDs.ImpulseEngines].functional(false)) && (!this.systems[SystemIDs.WarpEngines].functional(false)) && (this.speed>0))
+			if((!this.systems[SystemIDs.Engines].functional(false)) && (this.speed>0))
 			{
 				this.decelerate();
 			}

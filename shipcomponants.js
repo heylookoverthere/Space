@@ -55,8 +55,8 @@ SystemIDs.Weapons=4;
 SystemIDs.Targeting=5;
 SystemIDs.Scanners=6;
 SystemIDs.AuxPower=17;//?
-SystemIDs.ImpulseEngines=8;
-SystemIDs.WarpEngines=9;
+SystemIDs.Engines=8;
+SystemIDs.Communication=9;
 SystemIDs.MainPower=0;//?
 SystemIDs.ComputerCore=11; //the computer! 
 SystemIDs.ScienceLab=12;
@@ -88,8 +88,8 @@ function shipSystem(hip,t)
 	if(t==SystemIDs.Targeting) {this.name="Targeting";}
 	if(t==SystemIDs.Scanners) {this.name="Scanners";}
 	if(t==SystemIDs.Navigation) {this.name="Navigation";}
-	if(t==SystemIDs.ImpulseEngines) {this.name="Impulse Eng.";}
-	if(t==SystemIDs.WarpEngines) {this.name="Warp Eng.";}
+	if(t==SystemIDs.Engines) {this.name="Impulse Eng.";}
+	if(t==SystemIDs.Engines) {this.name="Communication";}
 	if(t==SystemIDs.LifeSupport) {this.name="Life Support";}
 	if(t==SystemIDs.ComputerCore) {this.name="Computer";}
 	if(t==SystemIDs.ScienceLab) {this.name="Science";}
@@ -101,7 +101,7 @@ function shipSystem(hip,t)
 	if(t==SystemIDs.Holodeck) {this.name="Holodeck";}
 	if(t==SystemIDs.EscapePods) {this.name="Escape Pods";}
 	if(t==SystemIDs.Tractor) {this.name="Tractor Beam";}
-	if(t==21.) {this.name="";}
+	if(t==21) {this.name="";}
 	this.alive=true;
 	this.active=false;
 	this.on=false;//this is the player disabling things

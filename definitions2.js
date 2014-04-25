@@ -1,4 +1,4 @@
-
+var showShipScreen=true;
 var cuntx=-149550;
 var cunty=-149680;
 var universeWidth=600000;
@@ -1501,6 +1501,7 @@ function screenBox(obj)
 				this.object.orderLeaveOrbit();
 			}
 			this.object.destination=sally;
+			this.object.desiredOrbitTarg=null;
 			console.log(this.object.name+" heading to "+sally.name);
 		};
 		buttons.push(this.goShipButton);
@@ -1514,9 +1515,19 @@ function screenBox(obj)
 		this.speedPlusButton.object=this.object;
 		this.speedPlusButton.parent=this;
 		this.speedPlusButton.yCenter=false;
+		this.speedPlusButton.update=function()
+		{
+			if((this.object.orbiting) || (!this.object.systems[SystemIDs.Engines].functional()) || (this.object.desiredSpeed==this.object.maxSpeed))
+			{
+				this.greyed=true;
+			}else
+			{
+				this.greyed=false;
+			}
+		}
 		this.speedPlusButton.doThings=function()
 		{
-			this.object.desiredSpeed++;
+			this.object.desiredSpeed+=0.5;
 			if(this.object.desiredSpeed>this.object.maxSpeed)
 			{
 				this.object.desiredSpeed=this.object.maxSpeed;
@@ -1533,9 +1544,20 @@ function screenBox(obj)
 		this.speedMinusButton.object=this.object;
 		this.speedMinusButton.parent=this;
 		this.speedMinusButton.yCenter=false;
+		
+		this.speedMinusButton.update=function()
+		{
+			if((this.object.orbiting) || (!this.object.systems[SystemIDs.Engines].functional()) ||(this.object.desiredSpeed===0))
+			{
+				this.greyed=true;
+			}else
+			{
+				this.greyed=false;
+			}
+		}
 		this.speedMinusButton.doThings=function()
 		{
-			this.object.desiredSpeed--;
+			this.object.desiredSpeed-=0.5;
 			if(this.object.desiredSpeed<1)
 			{
 				this.object.desiredSpeed=0;
@@ -1559,10 +1581,124 @@ function screenBox(obj)
 	}
 	this.update=function()
 	{
-		if(this.visible){
+		if((this.visible) && (showShipScreen)){
 			for(var i=0;i<this.tabs.length;i++)
 			{
 				this.tabs[i].visible=true;
+			}
+			if((this.headingBox) && (this.systemBox) &&(this.planetBox))
+			{
+				this.planetBox.list=this.systemBox.list[this.systemBox.listTrack].planets;
+				this.shipBox.list=this.raceBox.list[this.raceBox.listTrack].ships;
+				if((this.page==2)&&(this.object==selectedShip)&&(this.object.systems[SystemIDs.Navigation].functional()))
+				{
+					this.headingBox.visible=true;
+					this.systemBox.visible=true;
+					this.planetBox.visible=true;
+					this.goPlanetButton.visible=true;
+					this.raceBox.visible=true;
+					this.shipBox.visible=true;
+					this.speedPlusButton.update();
+					this.speedMinusButton.update();
+					this.goShipButton.visible=true;
+					this.speedPlusButton.visible=true;
+					this.speedMinusButton.visible=true;
+				}else
+				{
+					this.headingBox.visible=false;
+					this.systemBox.visible=false;
+					this.planetBox.visible=false;
+					this.goPlanetButton.visible=false;
+					this.raceBox.visible=false;
+					this.shipBox.visible=false;
+					this.speedPlusButton.visible=false;
+					this.speedMinusButton.visible=false;
+					this.goShipButton.visible=false;
+				}
+				if((this.page===0)&&(this.object==selectedShip))
+				{
+					this.nameBox.visible=true;
+				}else
+				{
+					this.nameBox.visible=false;
+				}
+				if((this.page==4) && (this.object==selectedShip)) //yaar?
+				
+				{
+					for(var i=0;i<this.sysButtons.length;i++)
+					{
+						this.sysButtons[i].visible=true;
+						this.sysButtons[i].update();
+					}
+					this.damageControlButton.visible=true;
+				}else
+				{
+					for(var i=0;i<this.sysButtons.length;i++)
+					{
+						this.sysButtons[i].visible=false;
+					}
+					this.damageControlButton.visible=false;
+				}
+				if((this.page==3) && (this.object==selectedShip)) //yaar?
+				
+				{
+					for(var i=0;i<this.targButtons.length;i++)
+					{
+						this.targButtons[i].visible=true;
+						this.targButtons[i].update();
+					}
+					this.backButton.visible=true;
+				}else
+				{
+					for(var i=0;i<this.targButtons.length;i++)
+					{
+						this.targButtons[i].visible=false;
+					}
+					this.backButton.visible=false;
+				}
+				if((this.page==1) && (this.object==selectedShip)) //yaar?
+				{
+					this.awayTeamButton.visible=true;
+					if(this.awayTeamScreen)
+					{
+						this.awayBeamButton.visible=true;
+						this.awayBeamButton.update();
+						this.awayFormButton.visible=true;
+						this.awayFormButton.update();
+						this.evacButton.visible=false;
+					}else
+					{
+						this.awayBeamButton.visible=false;
+						this.awayFormButton.visible=false;
+						this.evacButton.visible=true;
+						this.evacButton.update();
+					}
+				}else
+				{
+					this.awayTeamButton.visible=false;
+					this.awayFormButton.visible=false;
+					this.awayBeamButton.visible=false;
+					this.evacButton.visible=false;
+				}
+				this.headingBox.update();
+				var emily=this.systemBox.listTrack;
+				this.systemBox.update();
+				if(this.systemBox.listTrack!=emily)
+				{
+					this.planetBox.list=this.systemBox.list[this.systemBox.listTrack].planets;	
+					this.planetBox.listTrack=0;
+				}
+
+				emily=this.raceBox.listTrack;
+				this.raceBox.update();
+				if(this.raceBox.listTrack!=emily)
+				{
+					this.shipBox.list=this.raceBox.list[this.raceBox.listTrack].ships;	
+					this.shipBox.listTrack=0;
+				}
+				this.shipBox.update();
+				this.planetBox.update();
+				this.nameBox.update();
 			}
 		}else
 		{
@@ -1570,24 +1706,7 @@ function screenBox(obj)
 			{
 				this.tabs[i].visible=false;
 			}
-		}
-		if((this.headingBox) && (this.systemBox) &&(this.planetBox))
-		{
-			this.planetBox.list=this.systemBox.list[this.systemBox.listTrack].planets;
-			this.shipBox.list=this.raceBox.list[this.raceBox.listTrack].ships;
-			if((this.page==2)&&(this.object==selectedShip)&&(this.object.systems[SystemIDs.Navigation].functional()))
-			{
-				this.headingBox.visible=true;
-				this.systemBox.visible=true;
-				this.planetBox.visible=true;
-				this.goPlanetButton.visible=true;
-				this.raceBox.visible=true;
-				this.shipBox.visible=true;
-				
-				this.goShipButton.visible=true;
-				this.speedPlusButton.visible=true;
-				this.speedMinusButton.visible=true;
-			}else
+			if((this.headingBox) && (this.systemBox) &&(this.planetBox))
 			{
 				this.headingBox.visible=false;
 				this.systemBox.visible=false;
@@ -1598,92 +1717,28 @@ function screenBox(obj)
 				this.speedPlusButton.visible=false;
 				this.speedMinusButton.visible=false;
 				this.goShipButton.visible=false;
-			}
-			if((this.page===0)&&(this.object==selectedShip))
-			{
-				this.nameBox.visible=true;
-			}else
-			{
+				
 				this.nameBox.visible=false;
-			}
-			if((this.page==4) && (this.object==selectedShip)) //yaar?
-			
-			{
-				for(var i=0;i<this.sysButtons.length;i++)
-				{
-					this.sysButtons[i].visible=true;
-					this.sysButtons[i].update();
-				}
-				this.damageControlButton.visible=true;
-			}else
-			{
+		
 				for(var i=0;i<this.sysButtons.length;i++)
 				{
 					this.sysButtons[i].visible=false;
 				}
 				this.damageControlButton.visible=false;
-			}
-			if((this.page==3) && (this.object==selectedShip)) //yaar?
-			
-			{
-				for(var i=0;i<this.targButtons.length;i++)
-				{
-					this.targButtons[i].visible=true;
-					this.targButtons[i].update();
-				}
-				this.backButton.visible=true;
-			}else
-			{
+				
 				for(var i=0;i<this.targButtons.length;i++)
 				{
 					this.targButtons[i].visible=false;
 				}
 				this.backButton.visible=false;
-			}
-			if((this.page==1) && (this.object==selectedShip)) //yaar?
-			{
-				this.awayTeamButton.visible=true;
-				if(this.awayTeamScreen)
-				{
-					this.awayBeamButton.visible=true;
-					this.awayBeamButton.update();
-					this.awayFormButton.visible=true;
-					this.awayFormButton.update();
-					this.evacButton.visible=false;
-				}else
-				{
-					this.awayBeamButton.visible=false;
-					this.awayFormButton.visible=false;
-					this.evacButton.visible=true;
-					this.evacButton.update();
-				}
-			}else
-			{
+		
 				this.awayTeamButton.visible=false;
 				this.awayFormButton.visible=false;
 				this.awayBeamButton.visible=false;
 				this.evacButton.visible=false;
 			}
-			this.headingBox.update();
-			var emily=this.systemBox.listTrack;
-			this.systemBox.update();
-			if(this.systemBox.listTrack!=emily)
-			{
-				this.planetBox.list=this.systemBox.list[this.systemBox.listTrack].planets;	
-				this.planetBox.listTrack=0;
-			}
-
-			emily=this.raceBox.listTrack;
-			this.raceBox.update();
-			if(this.raceBox.listTrack!=emily)
-			{
-				this.shipBox.list=this.raceBox.list[this.raceBox.listTrack].ships;	
-				this.shipBox.listTrack=0;
-			}
-			this.shipBox.update();
-			this.planetBox.update();
-			this.nameBox.update();
 		}
+		
 	};
 	this.turnPage=function(back)
 	{
@@ -1708,7 +1763,7 @@ function screenBox(obj)
 	};
 	this.draw=function(can,cam)
 	{
-
+		if(!this.visible){return;}
 		can.save();
 		can.font = "12pt Calibri";
 		can.fillStyle="white";
