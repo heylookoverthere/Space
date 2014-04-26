@@ -50,6 +50,22 @@ function playSound(name){
 var productionBar=new progressBar();
 var researchBar=new progressBar();
 
+var civScreenButton=new button(this);
+civScreenButton.x=10;
+civScreenButton.y=60;
+civScreenButton.width=80;
+civScreenButton.object=this.object;
+civScreenButton.text="   Civilizations";
+civScreenButton.on=false;
+civScreenButton.parent=null;
+civScreenButton.doThings=function()
+{
+	//this.on=!this.on;
+	roland.visible=!roland.visible;
+};
+civScreenButton.visible=true;
+buttons.push(civScreenButton);
+
 productionBar.x=10;
 productionBar.label="Production:";
 productionBar.y=8;
@@ -266,6 +282,7 @@ function drawGUI()
 	researchBar.val=civs[playerCiv].researchTick;
 	researchBar.maxVal=civs[playerCiv].nextResearch;
 	researchBar.draw(canvas,camera);
+	civScreenButton.draw(canvas,camera);
 }
 function drawDebug()
 {
@@ -295,13 +312,14 @@ function drawDebug()
 	canvas.fillText("Your Ships: "+civs[playerCiv].ships.length ,755,70);
 	canvas.fillText("Total Ships: "+ships.length ,755,85);
 	
-	canvas.fillText("System: "+stars[curSystem].name,25,55);
+	/*canvas.fillText("System: "+stars[curSystem].name,25,55);
 	canvas.fillText("Planets: "+ stars[curSystem].numPlanets,25,70);
 	canvas.fillText("moons: "+ stars[curSystem].countMoons(),25,85);
 	canvas.fillText("Astroids: "+ stars[curSystem].numAstroids,25,100);
 	canvas.fillText("Coords: "+stars[curSystem].x+","+stars[curSystem].y,25,115);
 	canvas.fillText(getQuadrant(stars[curSystem])+" Quadrant",25,130);
-	if(stars[curSystem].numPlanets>0){
+	if(stars[curSystem].numPlanets>0)
+	{
 		var typestr="Class M!";
 		if (stars[curSystem].planets[stars[curSystem].selected].type===0) {typestr="Earthy!"}
 		if (stars[curSystem].planets[stars[curSystem].selected].type==1) {typestr="Rocky";}
@@ -314,9 +332,8 @@ function drawDebug()
 		canvas.fillText("Planet Name: "+ stars[curSystem].planets[stars[curSystem].selected].name,25,145);
 		canvas.fillText("Planet Type: "+ typestr,25,160);
 		canvas.fillText("Planet HP: "+stars[curSystem].planets[stars[curSystem].selected].hp,25,175);
-		if((Cube) && (Cube.alive) &&(Cube.planetTarget)){
-		canvas.fillText("Cube "+Math.floor(distance(Cube.planetTarget,Cube))+" AU from "+Cube.planetTarget.name,25,190);
 		}
+
 		if(stars[curSystem].planets[stars[curSystem].selected].orbitDecay>0)
 		{
 			canvas.fillStyle = "red";
@@ -324,7 +341,11 @@ function drawDebug()
 			canvas.fillStyle = "white";
 		
 		}
-	}
+		
+	}		*/
+		if((Cube) && (Cube.alive) &&(Cube.planetTarget)){
+		canvas.fillText("Cube "+Math.floor(distance(Cube.planetTarget,Cube))+" AU from "+Cube.planetTarget.name,25,190);
+		}
 	//ship info
 	if(!selectedShip) {canvas.restore(); return;}
 	selectedShip.actionText="Full Stop";

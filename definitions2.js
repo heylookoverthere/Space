@@ -4,6 +4,32 @@ var cunty=-149680;
 var universeWidth=600000;
 var universeHeight=600000;
 var numStars=950000;
+function starQuadrant()
+{
+	this.stars=[];
+	this.x=0;
+	this.y=0;
+	
+}
+var starQuads=[];
+for(var i=0;i<4;i++)
+{
+	for(var j=0;j<4;j++)
+	{
+		var lemmy=new starQuadrant();
+		lemmy.x=i
+		lemmy.y=j;
+		starQuads.push(lemmy);
+	}
+}
+
+function getStarQuad(thing)
+{
+	var sx=this.x/universeWidth;
+	var sy=this.y/universeWidth;
+	
+};
+
 var backStarsX=new Array(numStars);
 var backStarsY=new Array(numStars);
 var backStarsS=new Array(numStars);
@@ -546,30 +572,121 @@ function statusBox()
 	this.productionBar.x=550;
 	this.productionBar.label="Production:";
 	this.productionBar.y=50;
-
-	this.researchBar.x=550;
-	this.researchBar.label="Research:  ";
-	this.researchBar.y=70;
-	
 	this.scale=1;
 	this.height=550;
 	this.width=650;
 	this.backColor="blue";
 	this.borderSize=4;
-	this.cycleCiv=function()
+	this.researchBar.x=550;
+	this.researchBar.label="Research:  ";
+	this.researchBar.y=70;
+
+	this.nextCivButton=new button(this);
+	this.nextCivButton.x=this.x+10+624;
+	this.nextCivButton.y=this.y+532;
+	this.nextCivButton.width=12;
+	this.nextCivButton.height=12;
+	this.nextCivButton.text="+";
+	this.nextCivButton.object=this;
+	this.nextCivButton.parent=this;
+	this.nextCivButton.yCenter=false;
+	this.nextCivButton.update=function()
 	{
-		this.civTrack++;
-		if(this.civTrack>17)
+	
+	};
+	this.nextCivButton.doThings=function()
+	{
+		if(this.parent.visible)
 		{
-			this.civTrack=0;
+			this.object.cycleCiv();
 		}
-		this.worldTrack=0;
-		this.shipTrack=0;
-		this.collumTrack=0;
-		this.civ=civs[this.civTrack];
+	};
+	buttons.push(this.nextCivButton);
+	
+	this.prevCivButton=new button(this);
+	this.prevCivButton.x=this.x+6;
+	this.prevCivButton.y=this.y+532;
+	this.prevCivButton.width=12;
+	this.prevCivButton.height=12;
+	this.prevCivButton.text="-";
+	this.prevCivButton.object=this;
+	this.prevCivButton.parent=this;
+	this.prevCivButton.yCenter=false;
+	this.prevCivButton.update=function()
+	{
+	
+	};
+	this.prevCivButton.doThings=function()
+	{
+		if(this.parent.visible)
+		{
+			this.object.cycleCiv(true);
+		}
+	};
+	buttons.push(this.prevCivButton);
+		
+	this.XButton=new button();
+	this.XButton.text="X";
+
+	this.XButton.x=this.x+this.width-14;
+	this.XButton.y=this.y+2;
+	this.XButton.object=this;
+	this.XButton.parent=this;
+	this.XButton.width-=18;
+	this.XButton.height-=12;
+	this.XButton.yCenter=false;
+	this.XButton.on=false;
+	this.XButton.onoff=true;
+	this.XButton.doThings=function()
+	{
+		if(this.object)
+		{
+			this.object.visible=false;
+		}
+		this.visible=false;
+	};
+	buttons.push(this.XButton);
+	
+
+	this.cycleCiv=function(neg)
+	{
+		if(neg)
+		{
+			this.civTrack--;
+			if(this.civTrack<0)
+			{
+				this.civTrack=17;
+			}
+			this.worldTrack=0;
+			this.shipTrack=0;
+			this.collumTrack=0;
+			this.civ=civs[this.civTrack];
+		}else
+		{
+			this.civTrack++;
+			if(this.civTrack>17)
+			{
+				this.civTrack=0;
+			}
+			this.worldTrack=0;
+			this.shipTrack=0;
+			this.collumTrack=0;
+			this.civ=civs[this.civTrack];
+		}
 	};
 	this.update=function()
 	{
+		if(this.visible)
+		{
+			this.nextCivButton.visible=true;
+			this.prevCivButton.visible=true;
+			this.XButton.visible=true;
+		}else
+		{
+			this.nextCivButton.visible=false;
+			this.prevCivButton.visible=false;
+			this.XButton.visible=false;
+		}
 		if(leftkey.check())
 		{
 			if(this.collumTrack>0)
@@ -644,6 +761,9 @@ function statusBox()
 		
 		}else if(this.mode==statusModes.CivView)
 		{
+			this.nextCivButton.draw(can,cam);
+			this.prevCivButton.draw(can,cam);
+			this.XButton.draw(can,cam);
 			//can.fillStyle=this.civ.color;
 			can.fillText(this.civ.name,this.x+10,this.y+2+16);
 			//can.fillStyle="white";
@@ -1464,6 +1584,18 @@ function screenBox(obj)
 		};
 		buttons.push(this.awayFormButton);
 		
+		this.mapShowButton=new button(this);
+		this.mapShowButton.x=this.x+10+210;
+		this.mapShowButton.y=this.y+45;
+		this.mapShowButton.object=this.object;
+		this.mapShowButton.text="Map";
+		this.mapShowButton.parent=this;
+		this.mapShowButton.center=true;
+		this.mapShowButton.doThings=function()
+		{
+			Map.visible=true;
+		};
+		buttons.push(this.mapShowButton);
 		
 		this.goPlanetButton=new button(this);
 		this.goPlanetButton.x=this.x+10+120;
@@ -1506,7 +1638,7 @@ function screenBox(obj)
 		buttons.push(this.goShipButton);
 
 		this.speedPlusButton=new button(this);
-		this.speedPlusButton.x=this.x+10+120,this.y+2+96;
+		this.speedPlusButton.x=this.x+10+120;
 		this.speedPlusButton.y=this.y+86;
 		this.speedPlusButton.width=12;
 		this.speedPlusButton.height=12;
@@ -1535,7 +1667,7 @@ function screenBox(obj)
 		buttons.push(this.speedPlusButton);
 		
 		this.speedMinusButton=new button(this);
-		this.speedMinusButton.x=this.x+10+46,this.y+2+96;
+		this.speedMinusButton.x=this.x+10+46;
 		this.speedMinusButton.y=this.y+86;
 		this.speedMinusButton.text="-";
 		this.speedMinusButton.width=12;
@@ -1602,12 +1734,14 @@ function screenBox(obj)
 					this.goShipButton.visible=true;
 					this.speedPlusButton.visible=true;
 					this.speedMinusButton.visible=true;
+					this.mapShowButton.visible=true;
 				}else
 				{
 					this.headingBox.visible=false;
 					this.systemBox.visible=false;
 					this.planetBox.visible=false;
 					this.goPlanetButton.visible=false;
+					this.mapShowButton.visible=false;
 					this.raceBox.visible=false;
 					this.shipBox.visible=false;
 					this.speedPlusButton.visible=false;
@@ -1711,6 +1845,7 @@ function screenBox(obj)
 				this.systemBox.visible=false;
 				this.planetBox.visible=false;
 				this.goPlanetButton.visible=false;
+				this.mapShowButton.visible=false;
 				this.raceBox.visible=false;
 				this.shipBox.visible=false;
 				this.speedPlusButton.visible=false;
@@ -1945,6 +2080,8 @@ function screenBox(obj)
 					this.goPlanetButton.x=this.x+10+208;
 					this.goPlanetButton.y=this.y+136;
 					this.goPlanetButton.draw(can,camera);
+					
+					this.mapShowButton.draw(can,camera);
 					
 					can.fillText("Civ:",this.x+10,this.y+2+184);
 					this.raceBox.x=this.x+10+50;
