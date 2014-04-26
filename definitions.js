@@ -138,13 +138,13 @@ function textbox()
 			//this.response();
 			if(this.optionTrack-this.choicesStart===0)
 			{
-				this.optionOne(this.civil,[playerCiv]);
+				this.optionOne(this.civil,civs[playerCiv]);
 			}else if(this.optionTrack-this.choicesStart==1)
 			{
-				this.optionTwo(this.civil,[playerCiv]);
+				this.optionTwo(this.civil,civs[playerCiv]);
 			}else if(this.optionTrack-this.choicesStart==2)
 			{
-				this.optionThree(this.civil,[playerCiv]);
+				this.optionThree(this.civil,civs[playerCiv]);
 			}else{
 				holdEverything=false;
 			}
@@ -541,7 +541,7 @@ function buyScreen(customer,sell)
 function timesaver()
 {
 
-	civs[1].generateMessage([playerCiv]);
+	civs[1].generateMessage(civs[playerCiv]);
 }
 
 var monsta= new particleSystem();

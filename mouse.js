@@ -32,7 +32,7 @@ $(document).bind("contextmenu",function(e){
 					{
 						if(this.object.planet)
 						{
-							[playerCiv].orderColonize(this.object);
+							civs[playerCiv].orderColonize(this.object);
 						}
 						holdEverything=false;
 					};
@@ -41,7 +41,7 @@ $(document).bind("contextmenu",function(e){
 						holdEverything=false;
 					};
 					ned.optionTrack=1;
-					[playerCiv].messages.push(ned);
+					civs[playerCiv].messages.push(ned);
 				}
 			}
 		}
@@ -237,13 +237,13 @@ function drawmousetext(can,targ,cam) { //draws unit status info
     if(targ.civ)
 	{
 
-		if(targ.civ==[playerCiv]) 
+		if(targ.civ==civs[playerCiv]) 
 		{  
 			can.fillStyle = "blue";
 		}else
 		{
 			canvas.fillStyle = "green";
-			if(targ.civ.autoHostile.indexOf([playerCiv])>-1)
+			if(targ.civ.autoHostile.indexOf(civs[playerCiv])>-1)
 			{
 				canvas.fillStyle = "red";
 			}

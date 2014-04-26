@@ -1491,7 +1491,7 @@ function screenBox(obj)
 		this.goShipButton.center=true;
 		this.goShipButton.doThings=function()
 		{
-			
+			console.log(this.object.name,this.visible,this.parent.visible);
 			if(!this.parent.shipBox) {return;}
 			if(!this.parent.shipBox.list) {return;}
 			var sally=this.parent.shipBox.list[this.parent.shipBox.listTrack];

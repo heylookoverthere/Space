@@ -606,7 +606,7 @@ function starShip(civid){
 		shipNamesUsed[this.civID][this.nameTrack]=true;
 		if((this.civ===civs[playerCiv]))
 		{
-			console.log(this.civ);
+			//console.log(this.civ);
 			if(this.civ.name=="Humanity")
 			{
 				this.menu.nameBox.text=String(this.name);
@@ -872,7 +872,7 @@ function starShip(civid){
 			if(this.shields<0){
 				wound+=this.shields;
 				this.shields=0;
-				if(this.civ==[playerCiv]){
+				if(this.civ==civs[playerCiv]){
 					flashGUITick=5;
 				}
 			}
@@ -1008,6 +1008,10 @@ function starShip(civid){
 	this.generateEvent=function(){
 		var j=Math.floor(Math.random()*9);
 		var aRace=races[Math.floor(Math.random()*numRaces)];
+		if(playerCiv>0)
+		{
+			return; //until we can make a system that adapts events for each race.
+		}	
 		if(j===0){
 			if((aRace=="Vulcan") && (this.civ.fContacted[1]))
 			{
@@ -1197,7 +1201,7 @@ function starShip(civid){
 				ned.civil=this;
 				ned.choicesStart=1;
 				ned.optionTrack=0;
-				[playerCiv].messages.push(ned);
+				civs[playerCiv].messages.push(ned);
 				this.enterLog("We found $"+amt+ " in a space chest.");
 			}
 		}if(hich==1) //find dude
@@ -1210,7 +1214,7 @@ function starShip(civid){
 				ned.civil=this;
 				ned.choicesStart=1;
 				ned.optionTrack=0;
-				[playerCiv].messages.push(ned);
+				civs[playerCiv].messages.push(ned);
 				this.enterLog("We a dude and he agreed to join our crew.");
 			}else
 			{
@@ -1221,7 +1225,7 @@ function starShip(civid){
 				ned.civil=this;
 				ned.choicesStart=1;
 				ned.optionTrack=0;
-				[playerCiv].messages.push(ned);
+				civs[playerCiv].messages.push(ned);
 				this.enterLog("We a dude and he agreed to join our crew, but since the ship was full we sent him back to earth");
 			}
 		}else if(hich==2)//find Neelix.
@@ -1347,7 +1351,7 @@ function starShip(civid){
 				};
 				
 				ned.civil=this;
-				[playerCiv].messages.push(ned);
+				civs[playerCiv].messages.push(ned);
 				usedEvents[hich]=true;
 			}
 		}else if(hich==3)//find Romulan
@@ -1362,7 +1366,7 @@ function starShip(civid){
 				ned.choicesStart=0;
 				ned.choices=0;
 				ned.optionTrack=0;
-				[playerCiv].messages.push(ned);
+				civs[playerCiv].messages.push(ned);
 				usedEvents[hich]=true;
 				if(clean)
 				{
@@ -1378,15 +1382,15 @@ function starShip(civid){
 			if(cont===0)
 			{
 				var ned=new textbox();
-				var hurh=Math.floor(Math.random()*[playerCiv].techs.length);
-				[playerCiv].techs[hurh]=true;
+				var hurh=Math.floor(Math.random()*civs[playerCiv].techs.length);
+				civs[playerCiv].techs[hurh]=true;
 				ned.setup("You find alien blueprints that help you develop",150,370);
 				ned.addText("the technology of "+techNames[hurh]);
 				ned.civil=this;
 				ned.choicesStart=0;
 				ned.choices=0;
 				ned.optionTrack=0;
-				[playerCiv].messages.push(ned);
+				civs[playerCiv].messages.push(ned);
 				this.enterLog("We found alien blueprints that helped us develop the technology of "+techNames[hurh]);
 			}
 		}else if(hich==5)
@@ -1397,7 +1401,7 @@ function starShip(civid){
 			ned.civil=this;
 			ned.choicesStart=1;
 			ned.optionTrack=0;
-			[playerCiv].messages.push(ned);
+			civs[playerCiv].messages.push(ned);
 			usedEvents[hich]=true;
 			this.enterLog("We found an old Romulan artifact.");
 		}else if(hich==6)
@@ -1408,7 +1412,7 @@ function starShip(civid){
 			ned.civil=this;
 			ned.choicesStart=1;
 			ned.optionTrack=0;
-			[playerCiv].messages.push(ned);
+			civs[playerCiv].messages.push(ned);
 			usedEvents[hich]=true;
 			this.enterLog("We found an old Klingon artifact, the Sword of Khaless");
 		}else if(hich==7)
@@ -1419,7 +1423,7 @@ function starShip(civid){
 			ned.civil=this;
 			ned.choicesStart=1;
 			ned.optionTrack=0;
-			[playerCiv].messages.push(ned);
+			civs[playerCiv].messages.push(ned);
 			usedEvents[hich]=true;
 			this.enterLog("We found an old Cardassian artifact.");
 		}

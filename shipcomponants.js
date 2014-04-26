@@ -462,7 +462,7 @@ function dude()
 		this.hasItem.push(false);
 	}
 	this.hasItem[0]=true;//everyone gets a phaser!
-	this.civ=[playerCiv];
+	this.civ=civs[playerCiv];
 	this.xp=0;
 	this.nextLevel=100;
 	this.ID=0;

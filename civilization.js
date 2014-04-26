@@ -422,7 +422,7 @@ function civilization()
 		}
 		
 		if(this.allied) {
-			if(![playerCiv].alive)
+			if(!civs[playerCiv].alive)
 			{
 				this.allied=false;
 			}
@@ -932,10 +932,14 @@ function civilization()
 	};
 	this.generateMessage=function(other) //run on contact with other ships (with month or so break in between)
 	{
-		if([playerCiv].AI)
+		if(civs[playerCiv].AI)
 		{
 			return;
 		}
+		if(playerCiv>0)
+		{
+			return; //until we can make a system that adapts events for each race.
+		}	
 		if(this.civID==civIDs.Vulcan)
 		{
 			var ned=new textbox();
@@ -1144,7 +1148,7 @@ function civilization()
 			other.messages.push(ned);
 		}else if(this.civID==civIDs.Telaxian)
 		{
-			[playerCiv].flags[Flag.MetTelaxianBountyHunters]=true;
+			civs[playerCiv].flags[Flag.MetTelaxianBountyHunters]=true;
 			console.log(this.flags);
 			var ned=new textbox();
 			ned.label="Telaxian Captain:";
@@ -1273,7 +1277,7 @@ function civilization()
 			var ned=new textbox();
 			ned.label="Vidiian Captain:";
 			ned.setup("Nothing personal, but we need your organs to live.",150,370);
-			this.autoHostile.push([playerCiv]);
+			this.autoHostile.push(civs[playerCiv]);
 			ned.options=0;
 			ned.civil=this;
 			other.messages.push(ned);
@@ -1282,7 +1286,7 @@ function civilization()
 			var ned=new textbox();
 			ned.label="Pakled Captain:";
 			ned.setup("We need things.  Things to make us go.",150,370);
-			//this.autoHostile.push([playerCiv]);
+			//this.autoHostile.push(civs[playerCiv]);
 			ned.options=0;
 			ned.civil=this;
 			other.messages.push(ned);

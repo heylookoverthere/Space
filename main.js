@@ -1073,7 +1073,10 @@ function mainMenuUpdate(){
 		camera.center(stars[0]);
 		curSystem=0;
 		//camera.unFollow();
-		camera.follow(Earth);
+		if(civs[playerCiv].homeworld)
+		{
+			camera.follow(civs[playerCiv].homeworld);
+		}
 		/*for(var i=0;i<ships.length;i++)
 		{
 			ships[i].Evac();
