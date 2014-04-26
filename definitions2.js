@@ -4005,6 +4005,7 @@ function drawStarfield(canv,cam){
 	canv.fillStyle="#00001E";
 	canvas.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
 	canv.fillStyle="#FFFFB2";//"#FFFF00";
+	//return;
 	starsDrawn=0;
 	for(var i=0;i<numStars;i++)
 	{

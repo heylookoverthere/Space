@@ -288,8 +288,10 @@ function starShip(civid){
 				//wynn.on=true;
 				wynn.minPower=0;
 				wynn.turnOn();
-			}else
+			}else if(wynn.type==SystemIDs.Cloak)
 			{
+				wynn.minPower=4;
+			}else{
 				if(this.power>wynn.minPower)
 				{
 					wynn.turnOn();

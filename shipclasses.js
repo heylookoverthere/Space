@@ -110,6 +110,7 @@ andorianWarship=new shipClass();
 cubeClass=new shipClass();
 cubeClass.numTorpedos=200;
 cubeClass.hasShields=true;
+cubeClass.autoEvac=false;
 
 tellariteWarship=new shipClass();
 
