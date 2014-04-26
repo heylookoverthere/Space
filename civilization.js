@@ -381,10 +381,11 @@ function civilization()
 					var bobert = this.ships[i].nearestSpecificShip(this.enemyCiv);
 					if(bobert)
 					{
-						this.ships[i].setDestination(bobert,this.ships[i].maxSpeed);
+						this.ships[i].orders=Orders.Attack;
+						this.ships[i].setDestination(bobert,3);//this.ships[i].maxSpeed);
 							
 						//this.ships[i].orbiting=false;
-						this.ships[i].orders=Orders.Attack;
+						
 					}
 				}else if((this.enemyCiv.homeworld.civ==this.enemyCiv) && (this.ships[i].orbitTarg!=this.enemyCiv.homeworld)&& (this.ships[i].desiredOrbitTarg!=this.enemyCiv.homeworld))
 				{

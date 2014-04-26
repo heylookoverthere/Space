@@ -51,6 +51,7 @@ function starShip(civid){
 	this.power=this.maxPower=1;
 	this.matchSpeed=false;
 	//todo
+	this.crusingSpeed=4.5;
 	this.rooms=6;
 	this.maxSystems=6;
 	this.tail=[];
@@ -590,6 +591,13 @@ function starShip(civid){
 	
 	this.setDestination=function(targ,speed)
 	{
+		if(targ==this) 
+		{	
+			console.log(this.name+" tried to rendevou with itslef!");
+
+			return false;
+			
+		}
 		if(targ.planet)
 		{
 			this.desiredOrbitTarg=targ;
@@ -606,10 +614,10 @@ function starShip(civid){
 			{
 				if(this.orders==Orders.Attak)
 				{
-					console.log(this.name+" heading to attack"+targ.name);
+					console.log(this.name+" heading to attack "+targ.name);
 				}else
 				{
-					console.log(this.name+" heading to meet"+targ.name);
+					console.log(this.name+" heading to meet "+targ.name);
 				}
 			}
 		}
@@ -618,6 +626,7 @@ function starShip(civid){
 			this.orderLeaveOrbit();
 		}
 		this.desiredSpeed=speed;
+		return true;
 	};
 	
 	this.christen=function(){
@@ -1021,10 +1030,11 @@ function starShip(civid){
 		//this.speed=1;
 	};
 	
-	this.orderLeaveOrbit=function(){
+	this.orderLeaveOrbit=function(){ //probably not neaded anymore if you use setDestination
 		this.leavingProgress=0;
 		this.orbiting=false;
 		this.orbitTarg=null;
+		this.desiredSpeed=this.cruisingSpeed;
 		this.actionText="Breaking Orbit";
 	};
 	
