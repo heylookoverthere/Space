@@ -82,7 +82,7 @@ function particle(){
 				this.sun.civs.splice(pt,1);
 				//console.log("removed "+this.civ.name+ " from the "+this.sun.name + " System civ list");
 			}
-			if((logAll) ||(this.civ.name=="Humanity"))
+			if((logAll) ||(this.civ==civs[playerCiv]))
 			{
 				if(this==this.civ.homeworld)
 				{

@@ -21,7 +21,7 @@ var Cube=null;
 //var drawMap=false;
 //var things=[];
 var numCivilizations=18;
-var civs=[];
+
 for(var i=0;i<numCivilizations;i++)
 {
 	civs[i]=new civilization();
@@ -74,7 +74,7 @@ for(var j=0;j<civs.length;j++)
 	//civs[j].autoHostile.push(civs[civIDs.Borg]);
 	
 }
-civs[0].autoHostile.push(civs[civIDs.Borg]);
+civs[playerCiv].autoHostile.push(civs[civIDs.Borg]);
 civs[civIDs.Klingon].autoHostile.push(civs[civIDs.Romulan]);
 civs[civIDs.Romulan].autoHostile.push(civs[civIDs.Klingon]);
 civs[civIDs.Cardassian].autoHostile.push(civs[civIDs.Bajoran]);
@@ -125,8 +125,8 @@ civs[civIDs.Breen].color="#003366";
 civs[civIDs.Hirogen].color="#FFFF66";
 civs[civIDs.Dominion].color="#666699";
 
-civs[0].AI=false;
-civs[0].player=true;
+civs[playerCiv].AI=false;
+civs[playerCiv].player=true;
 civs[civIDs.Borg].AI=true; //for now.
 civs[civIDs.Borg].allied=false; //for now.
 //civs[civIDs.Romulan].mode=AIModes.Defense;
@@ -380,10 +380,10 @@ function drawLittleMap(can, cam)
 		can.fillStyle=ships[i].civ.color;
 		if(hostileMapMode)
 		{
-			if(ships[i].civ.name=="Humanity")
+			if(ships[i].civ==civs[playerCiv])
 			{
 				can.fillStyle="green";
-			}else if(civs[0].autoHostile.indexOf(ships[i].civ)>-1)
+			}else if(civs[playerCiv].autoHostile.indexOf(ships[i].civ)>-1)
 			{
 				can.fillStyle="red";
 			}else if(ships[i].civ.allied)
@@ -453,7 +453,7 @@ function timesavertwo()
 {
 	for(var i=0;i<10;i++)
 	{
-		civs[0].produceShip(1);
+		civs[playerCiv].produceShip(1);
 	}
 }
 
@@ -532,7 +532,7 @@ var reek="";
 
 function statusBox()
 {
-	this.civ=civs[0];
+	this.civ=civs[playerCiv];
 	this.civTrack=0;
 	this.visible=false;
 	this.mode=statusModes.CivView;
@@ -875,7 +875,7 @@ function textBox(pt)
 	this.finalText=null;
 	this.type=0;
 	this.listTrack=0;
-	this.list=null;//civs[0].knownWorlds;
+	this.list=null;//civs[playerCiv].knownWorlds;
 	this.choice=null;
 	this.text="";
 	this.blinkTrack=0;
@@ -1138,7 +1138,7 @@ function screenBox(obj)
 				liddle.text=this.object.systems[ip].name;
 				liddle.onoff=true;
 				//liddle.onlink=true;
-				if((this.object.civ) &&(this.object.civ.name!="Humanity"))
+				if((this.object.civ) &&(this.object.civ!=civs[playerCiv]))
 				{
 					liddle.decorative=true;
 				}
@@ -1201,7 +1201,7 @@ function screenBox(obj)
 	};
 	buttons.push(this.damageControlButton);
 		
-	if((this.object.ship) && (this.object.civ) &&(this.object.civ.name=="Humanity"))
+	if((this.object.ship) && (this.object.civ) &&(this.object.civ==civs[playerCiv]))
 	{
 		this.targButtons=[];
 		var ip=0;
@@ -1295,7 +1295,7 @@ function screenBox(obj)
 		this.systemBox.colorText=true;
 		//this.planetBox.hasFocus=true;
 		this.planetBox.width=150;
-		//this.planetBox.list=civs[0].knownWorlds;
+		//this.planetBox.list=civs[playerCiv].knownWorlds;
 		this.systemBox.list=stars;
 		this.planetBox.list=this.systemBox.list[this.systemBox.listTrack].planets;
 		this.raceBox=new textBox(this);
@@ -1305,7 +1305,7 @@ function screenBox(obj)
 		this.shipBox.type=1;
 		//this.planetBox.hasFocus=true;
 		this.shipBox.width=150;
-		//this.planetBox.list=civs[0].knownWorlds;
+		//this.planetBox.list=civs[playerCiv].knownWorlds;
 		this.raceBox.list=civs;
 
 		this.shipBox.list=this.raceBox.list[this.raceBox.listTrack].ships;
@@ -1785,7 +1785,7 @@ function screenBox(obj)
 			if(this.page===0)
 			{
 				
-				if(this.object.civ.name=="Humanity")
+				if(this.object.civ==civs[playerCiv])
 				{
 					can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
 					this.nameBox.x=this.x+50;
@@ -1796,7 +1796,7 @@ function screenBox(obj)
 					can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
 				}
 				can.fillText(this.object.civ.name+ " Lanch Date: " +this.object.launchDate,this.x+10,this.y+2+32);
-				var reek=elipseString(this.object.actionText,60);
+				var reek=elipseString(this.object.actionText,38);
 				can.fillText(reek,this.x+10,this.y+2+48);
 				can.fillText("HP: "+this.object.hp+"/"+this.object.maxHp,this.x+10,this.y+2+64);
 				can.fillText("Shields: "+this.object.shields+"/"+this.object.maxShields,this.x+10,this.y+2+80);
@@ -1888,7 +1888,7 @@ function screenBox(obj)
 					can.fillText("LIFE SUPORT OFFLINE",this.x+128,this.y+2+32);
 					can.fillStyle="white";
 				}
-				if(this.object.civ.name=="Humanity")
+				if(this.object.civ==civs[playerCiv])
 				{
 					this.awayTeamButton.draw(can,cam);
 					this.awayBeamButton.draw(can,cam);
@@ -1919,13 +1919,13 @@ function screenBox(obj)
 				var neeep=Math.round(this.object.speed*10)/10;
 				can.fillText("Speed:      "+neeep+"/"+this.object.maxSpeed,this.x+10,this.y+2+96); //todo add decimal place
 				
-				if(this.object.civ.name=="Humanity")
+				if(this.object.civ==civs[playerCiv])
 				{
 					this.speedPlusButton.draw(can,cam);
 					this.speedMinusButton.draw(can,cam);
 				}
 				
-				if((this.object.civ.name=="Humanity") && (this.object.systems[SystemIDs.Navigation].functional()))
+				if((this.object.civ==civs[playerCiv]) && (this.object.systems[SystemIDs.Navigation].functional()))
 				{
 					can.fillStyle="white";
 					can.fillText("Enter Heading:",this.x+10,this.y+2+122);
@@ -1960,7 +1960,7 @@ function screenBox(obj)
 					this.goShipButton.x=this.x+10+208;
 					this.goShipButton.y=this.y+182;
 					this.goShipButton.draw(can,camera);
-				}else if((this.object.civ.name=="Humanity") && (!this.object.systems[SystemIDs.Navigation].functional()))
+				}else if((this.object.civ==civs[playerCiv]) && (!this.object.systems[SystemIDs.Navigation].functional()))
 				{
 					can.fillStyle="red";
 					can.fillText("NAVIGATION OFFLINE",this.x+10,this.y+2+122);
@@ -1970,7 +1970,7 @@ function screenBox(obj)
 			{
 				can.fillText(this.object.prefix+" "+this.object.name,this.x+10,this.y+2+16);
 				
-				if((this.object.systems[SystemIDs.Targeting].functional()) && (this.object.civ.name=="Humanity"))
+				if((this.object.systems[SystemIDs.Targeting].functional()) && (this.object.civ==civs[playerCiv]))
 				{
 					this.backButton.draw(can,cam);
 					if(this.targetScreen)
@@ -2031,7 +2031,7 @@ function screenBox(obj)
 					can.fillStyle="white";
 				}
 					}
-				}else
+				}else if(this.object.civ===civs[playerCiv])
 				{
 					can.fillStyle="red";
 					can.fillText("Targeting System Offline!",this.x+10,this.y+2+64);
@@ -2050,7 +2050,7 @@ function screenBox(obj)
 				{
 					can.fillText("Damage Control  Power: "+this.object.power+"/"+this.object.maxPower,this.x+10,this.y+2+32);
 				}
-				if(true)//(this.object.civ.name=="Humanity")
+				if(true)//(this.object.civ==civs[playerCiv])
 				{
 					for(var i=0;i<this.sysButtons.length;i++)
 					{
@@ -2126,7 +2126,7 @@ function fuckoff()
 	var goat=new buyScreen(selectedShip,true);
 	goat.setup();
 	goat.defaultItemList();
-	civs[0].messages.push(goat);
+	civs[playerCiv].messages.push(goat);
 }
 
 function progressBar()
@@ -3005,7 +3005,7 @@ function initUniverse()
 	stars[0].name="Sol";
 	stars[0].x=universeWidth/4;
 	stars[0].y=universeHeight/4;
-	stars[0].civs.push(civs[0]);
+	stars[0].civs.push(civs[playerCiv]);
 	camera.x=universeWidth/4;
 	camera.y=universeHeight/4;
 	setupOurs(stars[0]);
@@ -3175,9 +3175,9 @@ function killShip(targ,attacker)
 			if(targ==selectedShip)
 			{
 				camera.unFollow();
-				if(civs[0].ships.length>1)
+				if(civs[playerCiv].ships.length>1)
 				{
-					civs[0].cycleShips(camera);
+					civs[playerCiv].cycleShips(camera);
 				}else if(ships.length>1)
 				{
 					curShip++;
@@ -3191,7 +3191,7 @@ function killShip(targ,attacker)
 				{
 					selectedShip=null;
 					//console.log("no more ships exist!");
-					camera.follow(civs[0].homeworld);
+					camera.follow(civs[playerCiv].homeworld);
 				}
 				//after delay
 				
@@ -3207,7 +3207,7 @@ function killShip(targ,attacker)
 	if(selectedShip==targ)
 	{
 		camera.unFollow();
-		civs[0].cycleShips();
+		civs[playerCiv].cycleShips();
 	}
 }
 
@@ -3343,7 +3343,7 @@ function newInitShips()
 		}else
 		{
 			civs[i].homeworld=stars[0].planets[2];
-			stars[0].planets[2].civ=civs[0];
+			stars[0].planets[2].civ=civs[playerCiv];
 			civs[i].worlds.push(stars[0].planets[2]);
 			stars[0].planets[2].colonized=true;
 		}
@@ -3356,7 +3356,7 @@ function newInitShips()
 			{
 				james=new starShip(i);
 				james.class=shipClasses[civIDs.Human][0];
-				james.civ=civs[0];
+				james.civ=civs[playerCiv];
 				james.classify();
 				james.homeworld=Earth;
 				var bah=Math.floor(Math.random()*7);
@@ -3942,16 +3942,20 @@ function newInitShips()
 	}
 	
 	
-	civs[0].ships[0].width=16;
-	civs[0].ships[0].height=16;
-	civs[0].ships[0].numTorpedos=0;
-	civs[0].ships[0].shieldSprite=Sprite("shields");
-	civs[0].ships[0].class=shuttlecraft;
-	civs[0].ships[0].unInstallSystem(SystemIDs.Shields);
-	civs[0].ships[0].shields=0;
-	civs[0].ships[0].sprite=Sprite("ship1");
-	civs[0].ships[0].maxSpeed=7;
-	civs[0].ships[0].maxShields=0;
+	if(playerCiv==0)
+	{
+	//hack
+	civs[playerCiv].ships[0].width=16;
+	civs[playerCiv].ships[0].height=16;
+	civs[playerCiv].ships[0].numTorpedos=0;
+	civs[playerCiv].ships[0].shieldSprite=Sprite("shields");
+	civs[playerCiv].ships[0].class=shuttlecraft;
+	civs[playerCiv].ships[0].unInstallSystem(SystemIDs.Shields);
+	civs[playerCiv].ships[0].shields=0;
+	civs[playerCiv].ships[0].sprite=Sprite("ship1");
+	civs[playerCiv].ships[0].maxSpeed=7;
+	civs[playerCiv].ships[0].maxShields=0;
+	}
 
 	ships=[];
 	for(var i=0;i<civs.length;i++)
@@ -3963,7 +3967,7 @@ function newInitShips()
 			ships.push(civs[i].ships[j]);
 		}
 	}
-	selectedShip=ships[0];
+	selectedShip=civs[playerCiv].ships[0];
 	var kirk=new dude();
 	var picard=new dude();
 	var sisko=new dude();
@@ -3973,10 +3977,10 @@ function newInitShips()
 	sisko.name="Sisko";
 	janeway.name="Janeway";
 	
-	kirk.civ=civs[0];
-	picard.civ=civs[0];
-	sisko.civ=civs[0];
-	janeway.civ=civs[0];
+	kirk.civ=civs[playerCiv];
+	picard.civ=civs[playerCiv];
+	sisko.civ=civs[playerCiv];
+	janeway.civ=civs[playerCiv];
 	
 	kirk.title="Commander";
 	picard.title="Commander";
@@ -3987,14 +3991,14 @@ function newInitShips()
 	picard.rank=4;
 	sisko.rank=4;
 	janeway.rank=4;
-	civs[0].crewPool.push(kirk);
-	civs[0].captainQueue.push(kirk);
-	civs[0].crewPool.push(picard);
-	civs[0].captainQueue.push(picard);
-	civs[0].crewPool.push(sisko);
-	civs[0].captainQueue.push(sisko);	
-	//civs[0].crewPool.push(janeway);
-	//civs[0].captainQueue.push(janeway);
+	civs[playerCiv].crewPool.push(kirk);
+	civs[playerCiv].captainQueue.push(kirk);
+	civs[playerCiv].crewPool.push(picard);
+	civs[playerCiv].captainQueue.push(picard);
+	civs[playerCiv].crewPool.push(sisko);
+	civs[playerCiv].captainQueue.push(sisko);	
+	//civs[playerCiv].crewPool.push(janeway);
+	//civs[playerCiv].captainQueue.push(janeway);
 }
 function drawStarfield(canv,cam){
 	if(spinArt) {return;}

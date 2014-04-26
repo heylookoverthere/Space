@@ -258,13 +258,13 @@ function drawGUI()
 	//canvas.fillText("Particles: "+ monsta.particles.length,755,100);
 	//canvas.fillText("Stars drawn: "+ starsDrawn,755,115);
 	canvas.fillText("Stardate: "+ Math.floor(theTime.years)+"."+Math.floor(theTime.days) ,755,40);
-	canvas.fillText("Money: $"+civs[0].money ,755,55);
+	canvas.fillText("Money: $"+civs[playerCiv].money ,755,55);
 	
-	productionBar.val=civs[0].productionTick;
-	productionBar.maxVal=civs[0].nextProduction;
+	productionBar.val=civs[playerCiv].productionTick;
+	productionBar.maxVal=civs[playerCiv].nextProduction;
 	productionBar.draw(canvas,camera);
-	researchBar.val=civs[0].researchTick;
-	researchBar.maxVal=civs[0].nextResearch;
+	researchBar.val=civs[playerCiv].researchTick;
+	researchBar.maxVal=civs[playerCiv].nextResearch;
 	researchBar.draw(canvas,camera);
 }
 function drawDebug()
@@ -292,7 +292,7 @@ function drawDebug()
 	canvas.fillText("Stars drawn: "+ starsDrawn,755,115);
 	//canvas.fillText("Stardate: "+ Math.floor(theTime.years)+"."+Math.floor(theTime.days) ,755,70);
 	canvas.fillText("Zoom: "+camera.zoom ,755,100);
-	canvas.fillText("Your Ships: "+civs[0].ships.length ,755,70);
+	canvas.fillText("Your Ships: "+civs[playerCiv].ships.length ,755,70);
 	canvas.fillText("Total Ships: "+ships.length ,755,85);
 	
 	canvas.fillText("System: "+stars[curSystem].name,25,55);
@@ -644,7 +644,7 @@ function mainMenuDraw(){
 		}
 	}
 	//draw messages
-	//for (var i=0;i<civs[0].messages.length;i++)
+	//for (var i=0;i<civs[playerCiv].messages.length;i++)
 	
 	
 	if(showShipScreen)
@@ -653,9 +653,9 @@ function mainMenuDraw(){
 	}
 	selectedShip.menu.draw(canvas,camera)
 	
-	if(civs[0].messages.length>0)
+	if(civs[playerCiv].messages.length>0)
 	{
-		civs[0].messages[0].draw(canvas,camera);
+		civs[playerCiv].messages[0].draw(canvas,camera);
 	}
 	
 	
@@ -787,10 +787,10 @@ function mainMenuUpdate(){
 		document.getElementById("titleAudio").pause();*/
 		/*if(!neddard){
 			neddard=true;
-			civs[0].fleets.push(new fleet());
+			civs[playerCiv].fleets.push(new fleet());
 			for(var i=0;i<3;i++)
 			{
-				civs[0].fleets[0].addShip(ships[i]);
+				civs[playerCiv].fleets[0].addShip(ships[i]);
 				if(ships[i].orbiting){
 					//ships[i].orderLeaveOrbit();
 				}
@@ -842,7 +842,7 @@ function mainMenuUpdate(){
 	
 	if(fleetattackkey.check())
 	{
-		civs[0].fleets[0].attacking=!civs[0].fleets[0].attacking;
+		civs[playerCiv].fleets[0].attacking=!civs[playerCiv].fleets[0].attacking;
 	}
 	if(evackey.check())
 		{
@@ -953,12 +953,12 @@ function mainMenuUpdate(){
 	
 	if(toggleshipkey.check()) //todo!
 	{
-		//civs[0].cycleShips(camera);
+		//civs[playerCiv].cycleShips(camera);
 	}
 	if(tabbed)
 	{
 		tabbed=false;
-		civs[0].cycleShips(camera);
+		civs[playerCiv].cycleShips(camera);
 	}
 	
 	if(maxspeedkey.check())
@@ -1005,7 +1005,7 @@ function mainMenuUpdate(){
 	}
 	if(colonizekey.check())
 	{
-		civs[0].orderColonize(stars[curSystem].planets[stars[curSystem].selected]);
+		civs[playerCiv].orderColonize(stars[curSystem].planets[stars[curSystem].selected]);
 	}
 	
 	if(pageupkey.checkDown())
@@ -1152,9 +1152,9 @@ function crewScreenUpdate(){
 	ed.width=700;
 	ed.height=600;
 	ed.msg[0]="Crew: "
-	for(var i=0;i<civs[0].crewPool.length;i++)
+	for(var i=0;i<civs[playerCiv].crewPool.length;i++)
 	{
-		ed.msg[0]+=civs[0].crewPool[i].title+" "+civs[0].crewPool[i].name+", ";
+		ed.msg[0]+=civs[playerCiv].crewPool[i].title+" "+civs[playerCiv].crewPool[i].name+", ";
 	}
 	ed.msg[0]=ed.msg[0].substring(0,ed.msg[0].length-2);
 

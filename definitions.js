@@ -1,5 +1,7 @@
 var backspaced=false;
 var tabbed=false;
+
+var multiplayer=false;
 // Prevent the backspace key from navigating back.
 $(document).unbind('keydown').bind('keydown', function (event) {
     var doPrevent = false;
@@ -136,13 +138,13 @@ function textbox()
 			//this.response();
 			if(this.optionTrack-this.choicesStart===0)
 			{
-				this.optionOne(this.civil,civs[0]);
+				this.optionOne(this.civil,[playerCiv]);
 			}else if(this.optionTrack-this.choicesStart==1)
 			{
-				this.optionTwo(this.civil,civs[0]);
+				this.optionTwo(this.civil,[playerCiv]);
 			}else if(this.optionTrack-this.choicesStart==2)
 			{
-				this.optionThree(this.civil,civs[0]);
+				this.optionThree(this.civil,[playerCiv]);
 			}else{
 				holdEverything=false;
 			}
@@ -539,7 +541,7 @@ function buyScreen(customer,sell)
 function timesaver()
 {
 
-	civs[1].generateMessage(civs[0]);
+	civs[1].generateMessage([playerCiv]);
 }
 
 var monsta= new particleSystem();

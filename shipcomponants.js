@@ -154,13 +154,13 @@ function shipSystem(hip,t)
 		{
 			this.active=true;
 			this.on=true;
-			/*if((this.ship.civ)&&(this.ship.civ.name=="Humanity")){
+			/*if((this.ship.civ)&&(this.ship.civ==civs[playerCiv])){
 				console.log("turning on "+this.ship.name+"s "+this.name);
 			}*/
 			return true;
 		}else
 		{
-			if((this.ship.civ)&&(this.ship.civ.name=="Humanity")){
+			if((this.ship.civ)&&(this.ship.civ==civs[playerCiv])){
 				console.log("Not enough power for "+this.ship.name+"s "+this.name);
 			}
 			//console.log("Not enough power!");
@@ -462,7 +462,7 @@ function dude()
 		this.hasItem.push(false);
 	}
 	this.hasItem[0]=true;//everyone gets a phaser!
-	this.civ=civs[0];
+	this.civ=[playerCiv];
 	this.xp=0;
 	this.nextLevel=100;
 	this.ID=0;
@@ -504,7 +504,7 @@ function dude()
 		{
 			cause=" of unkown causes";
 		}
-		if((this.civ.name=="Humanity") || (logAll))
+		if((this.civ==civs[playerCiv]) || (logAll))
 		console.log(this.title+" "+this.name+ " has died"+cause);
 		this.alive=false;
 	};
@@ -542,7 +542,7 @@ function dude()
 			this.level++;
 			if(this.civ)
 			{
-				if((logAll) ||(this.civ.name=="Humanity"))
+				if((logAll) ||(this.civ==civs[playerCiv]))
 				{
 					console.log(this.name+" has gained a level!");
 					this.maxHp++;
@@ -555,7 +555,7 @@ function dude()
 			{
 				this.rank++;
 				this.setTitle();
-				if((logAll) ||(this.civ.name=="Humanity"))
+				if((logAll) ||(this.civ==civs[playerCiv]))
 				{
 					console.log(this.name+" was promoted to "+this. title);
 				}
@@ -986,7 +986,7 @@ function escapePod(){
 		{
 			if(this.passenger)
 			{
-				if((logAll) ||(this.passenger.civ.name=="Humanity"))
+				if((logAll) ||(this.passenger.civ==civs[playerCiv]))
 				{
 					console.log(this.passenger.title+" "+this.passenger.name+"'s escape pod arrived at "+this.destination.name);
 				}

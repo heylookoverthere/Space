@@ -1,6 +1,8 @@
 var techNames=["Aeroponics","Emergency Rations","Waffle Fries","Microbrewed Beer","Printers That Dont Need Paper With Those Holes On Each Side","Sneakers With Lights On Them","Captioning Pictures Of Cats","Inertial Dampners","Warp Drive","TransWarp","Slipstream","Shitty Sensors","Sensors","Long Range Sensors","Astrometrics","DetectTacheons","DetectCloakythings","DetectWormholethings","ShittyCloak","Cloak","BestCloak","Lasers","Phasers","Disruptors","BestEnergyWeapon","Torpedos","PhotonTorpedos","QuantumTorpedos","TransPhasicTorpedos","PowerCells","Grapple","TractorBeam","StructualIntegrityBeam","Transporter","TransportEnhancer","EmergencyTransporter","AdvTransporter","thatbullshitfromthenewmovie","Energy Shields","AdvEnergyShields","MetaPhasicShields","Armor","AblatativeArmor","MicroCircutry","BioNeuralCircutry","Nanobots","Assimilation","AlienMedican","AlienSurgery","Cloning","GeneticResequencing","Synthahol","AdvEnviromentalControls","ContainmentField","SubspaceTheory","ImpulseProbe","WarpProbe","Statis","WarpEscapePods","AdvEscapePods","AI","Robotics","Androids","Cybernetics","PowerManagment","Replicators","PowerManagment","Capacitors","Holodecks","EMH","MobileEmiter","AdvMetallurgy","DeuteriumCollector","Deflector"];
 var hasItem=[];
 var numItems=2;
+var playerCiv=1;
+var civs=[];
 var clean=false;//true;
 var Items={};
 Items.RomulanPrisoner=0;
@@ -420,7 +422,7 @@ function civilization()
 		}
 		
 		if(this.allied) {
-			if(!civs[0].alive)
+			if(![playerCiv].alive)
 			{
 				this.allied=false;
 			}
@@ -697,7 +699,7 @@ function civilization()
 		}
 		var jimmy=newPlatform(worldstart);
 		//jimmy.alive=false;
-		if((logAll) ||(this.name=="Humanity"))
+		if((logAll) ||(this==civs[playerCiv]))
 		{
 			console.log("Began contructing on an orbital weapons platform ");
 		}
@@ -755,13 +757,13 @@ function civilization()
 		{
 			var timmy=new building(type,wrld);
 			this.productionQueue.push(timmy);
-			if((logAll) ||(this.name=="Humanity"))
+			if((logAll) ||(this==civs[playerCiv]))
 			{
 				console.log("Began contructing a new "+timmy.name+" on " +wrld.name);
 			}
 		}else
 		{
-			if((logAll) ||(this.name=="Humanity"))
+			if((logAll) ||(this==civs[playerCiv]))
 			{
 				console.log("Can't fit any more buildings on " +wrld.name);
 			}
@@ -852,7 +854,7 @@ function civilization()
 			{
 				//finished researching somthing!
 				this.techs[this.researchProgress]=true;
-				if((logAll) ||(this.name=="Humanity"))
+				if((logAll) ||(this==civs[playerCiv]))
 				{
 					console.log(this.name+ " have discovered "+techNames[this.researchProgress]);
 				}
@@ -878,7 +880,7 @@ function civilization()
 					{
 						if(jerry.ship)
 						{
-							if((logAll) ||(this.name=="Humanity"))
+							if((logAll) ||(this==civs[playerCiv]))
 							{
 								console.log("Humanity produced the starship "+jerry.name);
 							}
@@ -887,7 +889,7 @@ function civilization()
 							ships.push(jerry);
 						}else if(jerry.platform)
 						{
-							if((logAll) ||(this.name=="Humanity"))
+							if((logAll) ||(this==civs[playerCiv]))
 							{
 								console.log("Humanity produced an orbital defense platform on "+jerry.orbitTarg.name);
 							}
@@ -909,7 +911,7 @@ function civilization()
 							{
 								ships.push(newPlatform(jerry.world));
 							}
-							if((logAll) ||(this.name=="Humanity"))
+							if((logAll) ||(this==civs[playerCiv]))
 							{
 								console.log("Humanity produced a "+jerry.name+ " on "+jerry.world.name);
 							}
@@ -930,7 +932,7 @@ function civilization()
 	};
 	this.generateMessage=function(other) //run on contact with other ships (with month or so break in between)
 	{
-		if(civs[0].AI)
+		if([playerCiv].AI)
 		{
 			return;
 		}
@@ -1142,7 +1144,7 @@ function civilization()
 			other.messages.push(ned);
 		}else if(this.civID==civIDs.Telaxian)
 		{
-			civs[0].flags[Flag.MetTelaxianBountyHunters]=true;
+			[playerCiv].flags[Flag.MetTelaxianBountyHunters]=true;
 			console.log(this.flags);
 			var ned=new textbox();
 			ned.label="Telaxian Captain:";
@@ -1271,7 +1273,7 @@ function civilization()
 			var ned=new textbox();
 			ned.label="Vidiian Captain:";
 			ned.setup("Nothing personal, but we need your organs to live.",150,370);
-			this.autoHostile.push(civs[0]);
+			this.autoHostile.push([playerCiv]);
 			ned.options=0;
 			ned.civil=this;
 			other.messages.push(ned);
@@ -1280,7 +1282,7 @@ function civilization()
 			var ned=new textbox();
 			ned.label="Pakled Captain:";
 			ned.setup("We need things.  Things to make us go.",150,370);
-			//this.autoHostile.push(civs[0]);
+			//this.autoHostile.push([playerCiv]);
 			ned.options=0;
 			ned.civil=this;
 			other.messages.push(ned);
