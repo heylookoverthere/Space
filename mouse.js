@@ -164,7 +164,8 @@ function mouseClick(e) {  //represents the mouse
 					{
 						if((isOver(ships[i],camera)) && (ships[i].alive))
 						{
-							selectedShip.destination=ships[i];
+							//selectedShip.destination=ships[i];
+							selectedShip.setDestination(ships[i],ships[i].cruisingSpeed);
 							console.log(selectedShip.name+ " was sent after "+ships[i].name);
 						}
 					}

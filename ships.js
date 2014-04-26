@@ -588,6 +588,38 @@ function starShip(civid){
 		return closest;
 	};
 	
+	this.setDestination=function(targ,speed)
+	{
+		if(targ.planet)
+		{
+			this.desiredOrbitTarg=targ;
+			this.destination=null;
+			if((this.civ==civs[playerCiv]) || (logAll))
+			{
+				console.log(this.name+" heading to orbit "+targ.name);
+			}
+		}else
+		{
+			this.destination=targ;
+			this.desiredOrbitTarg=null;
+			if((this.civ==civs[playerCiv]) || (logAll))
+			{
+				if(this.orders==Orders.Attak)
+				{
+					console.log(this.name+" heading to attack"+targ.name);
+				}else
+				{
+					console.log(this.name+" heading to meet"+targ.name);
+				}
+			}
+		}
+		if(this.orbiting)
+		{
+			this.orderLeaveOrbit();
+		}
+		this.desiredSpeed=speed;
+	};
+	
 	this.christen=function(){
 	if(this.civ.name=="Borg")
 	{
@@ -2569,7 +2601,7 @@ function fleet(){
 	this.addShip=function(shoap)
 	{
 		if(this.ships){
-			shoap.destination=this.ships[0];
+			shoap.setDestination(this.ships[0],this.ships[0].crusingSpeed);
 		}
 		
 		if(shoap.destination)
@@ -2623,7 +2655,7 @@ function fleet(){
 				this.ships[i].inFormation=false;
 				if(!this.ships[i].destination)
 				{
-					this.ships[i].destination=this.ships[0];
+					this.ships[i].setDestination(this.ships[0],this.ships[i].maxSpeed);
 				}
 				if((Math.abs(this.ships[i].x-this.ships[i].destination.x+this.ships[i].formationCoords.x)<50) && (Math.abs(this.ships[i].y-this.ships[i].destination.y+this.ships[i].formationCoords.y)<50)) 
 				{

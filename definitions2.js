@@ -1478,9 +1478,10 @@ function screenBox(obj)
 			if(!this.parent.planetBox.list) {return;}
 			var sally=this.parent.planetBox.list[this.parent.planetBox.listTrack];
 			if(!sally) {return;}
-			this.object.orderOrbit(sally);
+			/*this.object.orderOrbit(sally);
 			this.object.destination=null;
-			console.log(this.object.name+" heading to "+sally.name);
+			console.log(this.object.name+" heading to "+sally.name);*/
+			this.object.setDestination(sally,this.object.crusingSpeed);
 		};
 		buttons.push(this.goPlanetButton);
 		this.goShipButton=new button(this);
@@ -1500,9 +1501,7 @@ function screenBox(obj)
 			{
 				this.object.orderLeaveOrbit();
 			}
-			this.object.destination=sally;
-			this.object.desiredOrbitTarg=null;
-			console.log(this.object.name+" heading to "+sally.name);
+			this.object.setDestination(sally,this.object.crusingSpeed);
 		};
 		buttons.push(this.goShipButton);
 
