@@ -57,9 +57,74 @@ function getStarQuad(thing)
 		
 	}
 	return turnip;
+};
+
+function getStarQuadID(x,y)
+{
+	var sx=x;
+	var sy=y;
+	//console.log(sx,sy);
+	var turnip=0
+	for(var i=0;i<starQuads.length;i++)
+	{
+			if((starQuads[i].sx==sx) && (starQuads[i].sy==sy))
+			{
+				//console.log(i);
+				return i;
+			}
+		
+	}
+	return turnip;
 	
 	
 };
+
+function checkCamQuad(thing,cam)
+{
+		//if(((thing.x+cam.x)>0) && ((thing.x+cam.x)<CANVAS_WIDTH)&& ((thing.y+cam.y)>0) && ((thing.y+cam.y)<CANVAS_HEIGHT))
+		var mam={};
+		mam.x=-cam.x;
+		mam.y=-cam.y;
+		if ((thing.x+thing.width<mam.x) || (mam.x+mam.width<thing.x) || (thing.y+thing.height<mam.y) ||( mam.y+mam.height<thing.y))
+		{
+			return false;
+		}
+		return true;
+}
+
+function getVisibleQuads(cam)
+{
+	var nurkle=[];
+	for(var i=0;i<starQuads.length;i++)
+	{
+		//if(cam.isOn(starQuads[i]))
+		if(checkCamQuad(starQuads[i],cam))
+		{
+			nurkle.push(starQuads[i]);
+		}
+	}
+	return nurkle;
+}
+
+function shittyGetVisibleQuads(cam)
+{
+	var peem=starQuads[getStarQuad(selectedShip)];
+	var nurkle=[];
+
+	nurkle.push(peem);
+	nurkle.push(starQuads[getStarQuadID(peem.sx-1,peem.sy)]);
+	nurkle.push(starQuads[getStarQuadID(peem.sx+1,peem.sy)]);
+	
+	nurkle.push(starQuads[getStarQuadID(peem.sx,peem.sy-1)]);
+	nurkle.push(starQuads[getStarQuadID(peem.sx-1,peem.sy-1)]);
+	nurkle.push(starQuads[getStarQuadID(peem.sx+1,peem.sy-1)]);
+	
+	nurkle.push(starQuads[getStarQuadID(peem.sx,peem.sy+1)]);
+	nurkle.push(starQuads[getStarQuadID(peem.sx-1,peem.sy+1)]);
+	nurkle.push(starQuads[getStarQuadID(peem.sx+1,peem.sy+1)]);
+
+	return nurkle;
+}
 
 var backStarsX=new Array(numStars);
 var backStarsY=new Array(numStars);
@@ -424,7 +489,7 @@ function drawLittleMap(can, cam)
 			can.fillStyle="white";
 		}*/
 		var i=getStarQuad(selectedShip);
-		can.globalAlpha=0.20;
+		can.globalAlpha=0.10;
 		can.fillRect(mapedgex+starQuads[i].x/mapFactor,mapedgey+starQuads[i].y/mapFactor,quadSize/mapFactor,quadSize/mapFactor);
 		can.globalAlpha=1.0;
 	can.font = "8pt Calibri";
@@ -4239,12 +4304,15 @@ function newDrawStarfield(canv,cam){
 	/*for(var i=0;i<starQuads.length;i++)
 	{
 */	
-		var i=getStarQuad(selectedShip);
-		for(var j=0;j<starQuads[i].stars.length;j++)
+		//var i=getStarQuad(selectedShip);
+		var nurple=shittyGetVisibleQuads(cam);
+	//	console.log(nurple.length);
+		for(var i=0;i<nurple.length;i++)
 		{
-			/*if(((starQuads[i].stars[j].x+cam.x)*camera.zoom>0) && ((starQuads[i].stars[j].x+cam.x)*camera.zoom<CANVAS_WIDTH)&& ((starQuads[i].stars[j].y+cam.y)*camera.zoom>0) && ((starQuads[i].stars[j].y+cam.y)*camera.zoom<CANVAS_HEIGHT))*/
+		for(var j=0;j<nurple[i].stars.length;j++)
+		{
+			if(((nurple[i].stars[j].x+cam.x)*camera.zoom>0) && ((nurple[i].stars[j].x+cam.x)*camera.zoom<CANVAS_WIDTH)&& ((nurple[i].stars[j].y+cam.y)*camera.zoom>0) && ((nurple[i].stars[j].y+cam.y)*camera.zoom<CANVAS_HEIGHT))
 			//if((starQuads[i].stars[j].x>cam.x) &&(starQuads[i].stars[j].x<cam.x+CANVAS_WIDTH) && (starQuads[i].stars[j].y>cam.y) && (starQuads[i].stars[j].y<cam.y+CANVAS_HEIGHT))
-			if(true)
 			{
 				starsDrawn++;
 				//console.log("yar");
@@ -4276,9 +4344,9 @@ function newDrawStarfield(canv,cam){
 				{
 					canv.fillStyle="white";
 				}
-					canv.fillRect((starQuads[i].stars[j].x+cam.x)*camera.zoom, (starQuads[i].stars[j].y+cam.y)*camera.zoom, starQuads[i].stars[j].size+s, starQuads[i].stars[j].size+s);
+					canv.fillRect((nurple[i].stars[j].x+cam.x)*camera.zoom, (nurple[i].stars[j].y+cam.y)*camera.zoom, nurple[i].stars[j].size+s, nurple[i].stars[j].size+s);
 				//canv.fillRect((backStarsX[i]+cam.x), (backStarsY[i]+cam.y), starQuads[i].stars[j].size+s, starQuads[i].stars[j].size+s);
 			}
 		}
-	//}
+	}
 }
