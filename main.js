@@ -55,7 +55,7 @@ civScreenButton.x=10;
 civScreenButton.y=60;
 civScreenButton.width=80;
 civScreenButton.object=this.object;
-civScreenButton.text="   Civilizations";
+civScreenButton.text="    Civilizations";
 civScreenButton.on=false;
 civScreenButton.parent=null;
 civScreenButton.doThings=function()
@@ -302,7 +302,7 @@ function drawDebug()
 	//canvas.fillText("  New Game",175,450);
 	//canvas.fillStyle = "grey";
 	//canvas.fillText("  Load Game",175,475);
-	canvas.fillText("Camera: "+camera.x+", "+camera.y,755,10);
+	canvas.fillText("Camera: "+Math.floor(camera.x)+", "+Math.floor(camera.y),755,10);
 
    // canvas.fillText("Gamespeed: "+gameSpeed,755,25);
 	canvas.fillText("Particles: "+ monsta.particles.length,755,130);
@@ -555,7 +555,7 @@ function drawDebug()
 };
 
 function mainMenuDraw(){
-    drawStarfield(canvas,camera);
+    newDrawStarfield(canvas,camera);
 	monsta.draw(canvas,camera);
 	//canvas.fillStyle = "black";
 	//canvas.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);

@@ -3,30 +3,61 @@ var cuntx=-149550;
 var cunty=-149680;
 var universeWidth=600000;
 var universeHeight=600000;
+var quadSize=37500;//*4;
+var perQuad=6000;
 var numStars=950000;
-function starQuadrant()
+function backStar(quad)
+{
+	this.x=quad.x+Math.random()*quadSize;
+	this.y=quad.y+Math.random()*quadSize;
+	this.size=Math.floor((Math.random()*2)+1);
+};
+
+function starQuadrant(x,y)
 {
 	this.stars=[];
-	this.x=0;
-	this.y=0;
+	this.sx=x;
+	this.sy=y;
+	this.x=x*quadSize;
+	this.y=y*quadSize;
+	this.width=quadSize;
+	this.height=quadSize;
+	for(var i=0;i<perQuad;i++)
+	{
+		this.stars.push(new backStar(this));
+	}
 	
 }
 var starQuads=[];
-for(var i=0;i<4;i++)
+//for(var i=0;i<universeWidth/quadSize;i++)
+for(var i=0;i<16;i++)
 {
-	for(var j=0;j<4;j++)
+	//for(var j=0;j<universeHeight/quadSize;j++)
+	for(var j=0;j<16;j++)
 	{
-		var lemmy=new starQuadrant();
-		lemmy.x=i
-		lemmy.y=j;
+		var lemmy=new starQuadrant(j,i);
+
 		starQuads.push(lemmy);
 	}
 }
 
 function getStarQuad(thing)
 {
-	var sx=this.x/universeWidth;
-	var sy=this.y/universeWidth;
+	var sx=Math.floor(thing.x/quadSize);
+	var sy=Math.floor(thing.y/quadSize);
+	//console.log(sx,sy);
+	var turnip=0
+	for(var i=0;i<starQuads.length;i++)
+	{
+			if((starQuads[i].sx==sx) && (starQuads[i].sy==sy))
+			{
+				//console.log(i);
+				return i;
+			}
+		
+	}
+	return turnip;
+	
 	
 };
 
@@ -362,7 +393,41 @@ function drawLittleMap(can, cam)
 	var mapedgey=20;
 	can.fillRect(mapedgex,mapedgey,universeWidth/mapFactor,universeHeight/mapFactor);
 	can.fillStyle="white";
-	canvas.font = "8pt Calibri";
+	/*for(var i=0;i<starQuads.length;i++)
+	{
+		if(i==15)
+		{
+			can.fillStyle="red";
+		}else if(i==13)
+		{
+			can.fillStyle="blue";
+		}else if(i==11)
+		{
+			can.fillStyle="green";
+		}else if(i==9)
+		{
+			can.fillStyle="yellow";
+		}else if(i==7)
+		{
+			can.fillStyle="brown";
+		}else if(i==5)
+		{
+			can.fillStyle="purple";
+		}else if(i==3)
+		{
+			can.fillStyle="pink";
+		}else if(i==1)
+		{
+			can.fillStyle="grey";
+		}else
+		{
+			can.fillStyle="white";
+		}*/
+		var i=getStarQuad(selectedShip);
+		can.globalAlpha=0.20;
+		can.fillRect(mapedgex+starQuads[i].x/mapFactor,mapedgey+starQuads[i].y/mapFactor,quadSize/mapFactor,quadSize/mapFactor);
+		can.globalAlpha=1.0;
+	can.font = "8pt Calibri";
 	mapXButton.visible=true;
 	var xp=0;
 	var yp=0;
@@ -4161,4 +4226,59 @@ function drawStarfield(canv,cam){
 			//canv.fillRect((backStarsX[i]+cam.x), (backStarsY[i]+cam.y), backStarsS[i]+s, backStarsS[i]+s);
 		}
 	}
+}
+
+function newDrawStarfield(canv,cam){
+	if(spinArt) {return;}
+	//fill
+	canv.fillStyle="#00001E";
+	canvas.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
+	canv.fillStyle="#FFFFB2";//"#FFFF00";
+	//return;
+	starsDrawn=0;
+	/*for(var i=0;i<starQuads.length;i++)
+	{
+*/	
+		var i=getStarQuad(selectedShip);
+		for(var j=0;j<starQuads[i].stars.length;j++)
+		{
+			/*if(((starQuads[i].stars[j].x+cam.x)*camera.zoom>0) && ((starQuads[i].stars[j].x+cam.x)*camera.zoom<CANVAS_WIDTH)&& ((starQuads[i].stars[j].y+cam.y)*camera.zoom>0) && ((starQuads[i].stars[j].y+cam.y)*camera.zoom<CANVAS_HEIGHT))*/
+			//if((starQuads[i].stars[j].x>cam.x) &&(starQuads[i].stars[j].x<cam.x+CANVAS_WIDTH) && (starQuads[i].stars[j].y>cam.y) && (starQuads[i].stars[j].y<cam.y+CANVAS_HEIGHT))
+			if(true)
+			{
+				starsDrawn++;
+				//console.log("yar");
+				var s=0;
+				if(flicker) {
+					if((Math.random()*2000)<twinkRate){
+						s=Math.random()*2;
+					}
+				}
+				/*if(i>14)
+				{
+					canv.fillStyle="green";
+				}else if(i>13)
+				{
+					canv.fillStyle="blue";
+				}else if(i>12)
+				{
+					canv.fillStyle="red";
+				}else if(i==3)
+				{
+					canv.fillStyle="yellow";
+				}else if(i==2)
+				{
+					canv.fillStyle="brown";
+				}else if(i==1)
+				{
+					canv.fillStyle="purple";
+				}else*/
+				{
+					canv.fillStyle="white";
+				}
+					canv.fillRect((starQuads[i].stars[j].x+cam.x)*camera.zoom, (starQuads[i].stars[j].y+cam.y)*camera.zoom, starQuads[i].stars[j].size+s, starQuads[i].stars[j].size+s);
+				//canv.fillRect((backStarsX[i]+cam.x), (backStarsY[i]+cam.y), starQuads[i].stars[j].size+s, starQuads[i].stars[j].size+s);
+			}
+		}
+	//}
 }
