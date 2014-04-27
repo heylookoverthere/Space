@@ -1112,6 +1112,9 @@ function mainMenuUpdate(){
 			}
 			camera.unFollow();
 		}
+	}else
+	{
+		camera.follow(selectedShip);
 	}
 	if(endkey.check())
 	{

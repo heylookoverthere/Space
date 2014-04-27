@@ -622,6 +622,10 @@ function civilization()
 			console.log("You have no ships!");
 			return;
 		}
+		if(this.ships[this.curShip].manualControl)
+		{
+			this.ships[this.curShip].manualHelm();
+		}
 		this.curShip++;
 		if(this.curShip>this.ships.length-1) {
 			this.curShip=0;

@@ -1146,8 +1146,8 @@ function starShip(civid){
 		}else
 		{
 			this.manualControl=false;
-			this.desiredOrbitTarg=null;
-			this.desiredHeading=this.heading;
+			//this.desiredOrbitTarg=null;
+			//this.desiredHeading=this.heading;
 			this.desiredSpeed=this.crusingSpeed;
 		
 		}
