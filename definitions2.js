@@ -1,4 +1,4 @@
-var showShipScreen=true;
+var showShipMenu=true;
 var cuntx=-149550;
 var cunty=-149680;
 var universeWidth=600000;
@@ -1777,7 +1777,7 @@ function screenBox(obj)
 	}
 	this.update=function()
 	{
-		if((this.visible) && (showShipScreen)){
+		if((this.visible) && (showShipMenu)){
 			for(var i=0;i<this.tabs.length;i++)
 			{
 				this.tabs[i].visible=true;

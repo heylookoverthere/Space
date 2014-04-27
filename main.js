@@ -668,7 +668,7 @@ function mainMenuDraw(){
 	//for (var i=0;i<civs[playerCiv].messages.length;i++)
 	
 	
-	if(showShipScreen)
+	if(showShipMenu)
 	{
 		selectedShip.menu.visible=true;
 	}
@@ -683,6 +683,7 @@ function mainMenuDraw(){
 	
 	if(Map.visible)//keydown[mapkey.key])
 	{
+		showShipMenu=false;
 		drawLittleMap(canvas,camera);
 	}
 	
@@ -725,7 +726,7 @@ function mainMenuUpdate(){
 	{
 		if(shipscreenkey.check())
 		{
-			showShipScreen=!showShipScreen;
+			showShipMenu=!showShipMenu;
 		}
 		
 		if(mapkey.check())
@@ -734,12 +735,17 @@ function mainMenuUpdate(){
 			if(Map.visible)
 			{
 				mapXButton.visible=true;
+				showShipMenu=false;
 			}
 		}
 		
 		if(infokey.check())
 		{
 			roland.visible=!roland.visible;
+			if(!roland.visible)
+			{
+				showShipMenu=true;
+			}
 		}
 		
 		if(toggleinfokey.check())
@@ -749,6 +755,7 @@ function mainMenuUpdate(){
 		
 		if(roland.visible)
 		{
+			showShipMenu=false;
 			roland.update();
 		}
 	}
@@ -861,34 +868,49 @@ function mainMenuUpdate(){
 		//return;
 	}
 	
-	if(fleetattackkey.check())
+	if((fleetattackkey.check()) && (civs[playerCiv].fleets[0]))
 	{
 		civs[playerCiv].fleets[0].attacking=!civs[playerCiv].fleets[0].attacking;
 	}
 	if(evackey.check())
 		{
-			if((selectedShip.evacuating) || (selectedShip.evacDone))
+			if(roland.visible)
 			{
-				selectedShip.selfDestructActive=true;
+				roland.visible=false;
+				showShipMenu=true;
+			}else if(Map.visible)
+			{
+				Map.visible=false;
+				showShipMenu=true;
+				if(Map.visible)
+				{
+					mapXButton.visible=false;
+				}
 			}else
 			{
-				if(selectedShip.systems[SystemIDs.EscapePods].functional())
+				if((selectedShip.evacuating) || (selectedShip.evacDone))
 				{
-					selectedShip.Evac(selectedShip.civ.homeworld);
-					if(selectedShip.crew.length>1)
-					{
-						console.log(selectedShip.name+ "'s crew is abandoning ship.");
-					}else if(selectedShip.crew.length>0)
-					{
-						console.log(selectedShip.name+ "'s captain is abandoning ship.");
-					}else if(selectedShip.crew.length<0)
-					{
-						console.log(selectedShip.name+ "Confirm self destruct?");
-					}
-					//selectedShip.captainFlees=true;
+					selectedShip.selfDestructActive=true;
 				}else
 				{
-				 //todo some way to self destruct without escape pods?
+					if(selectedShip.systems[SystemIDs.EscapePods].functional())
+					{
+						selectedShip.Evac(selectedShip.civ.homeworld);
+						if(selectedShip.crew.length>1)
+						{
+							console.log(selectedShip.name+ "'s crew is abandoning ship.");
+						}else if(selectedShip.crew.length>0)
+						{
+							console.log(selectedShip.name+ "'s captain is abandoning ship.");
+						}else if(selectedShip.crew.length<0)
+						{
+							console.log(selectedShip.name+ "Confirm self destruct?");
+						}
+						//selectedShip.captainFlees=true;
+					}else
+					{
+					 //todo some way to self destruct without escape pods?
+					}
 				}
 			}
 		}
@@ -953,14 +975,14 @@ function mainMenuUpdate(){
 			/*ships[0].gotoDest=true;
 			ships[0].destx=420;
 			ships[0].desty=300;*/
-			if(selectedShip.orbiting)
+			/*if(selectedShip.orbiting)
 			{
 				selectedShip.orderLeaveOrbit();
 			}else
 			{
 				selectedShip.orderOrbit(selectedShip.civ.homeworld);
 				console.log(selectedShip.prefix+" "+selectedShip.name+" has been sent to " +selectedShip.civ.homeworld.name);
-			}
+			}*/
 		}
 	}else
 	{

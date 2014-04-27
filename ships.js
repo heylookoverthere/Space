@@ -595,7 +595,7 @@ function starShip(civid){
 	{
 		if(targ==this) 
 		{	
-			console.log(this.name+" tried to rendevou with itslef!");
+			console.log(this.name+" tried to rendezvous with itslef!");
 
 			return false;
 			
@@ -1012,6 +1012,10 @@ function starShip(civid){
 	};
 	
 	this.orderOrbit=function(targ){
+		if(targ==this.orbitTarg)
+		{
+			return; //hack
+		}
 		this.desiredOrbitTarg=targ;
 		this.orderLeaveOrbit();
 	};	

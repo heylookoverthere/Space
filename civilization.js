@@ -387,7 +387,7 @@ function civilization()
 						//this.ships[i].orbiting=false;
 						
 					}
-				}else if((this.enemyCiv.homeworld.civ==this.enemyCiv) && (this.ships[i].orbitTarg!=this.enemyCiv.homeworld)&& (this.ships[i].desiredOrbitTarg!=this.enemyCiv.homeworld))
+				}else if((this.enemyCiv.homeworld.civ===this.enemyCiv) && (this.ships[i].orbitTarg!=this.enemyCiv.homeworld)&& (this.ships[i].desiredOrbitTarg!=this.enemyCiv.homeworld))
 				{
 					this.ships[i].orderOrbit(this.enemyCiv.homeworld); //orderattack?
 					this.ships[i].orders=Orders.Attack;
@@ -399,7 +399,7 @@ function civilization()
 						console.log("The "+this.name+" have eliminated all "+this.enemyCiv.name+ " ships and are headed to " +this.enemyCiv.homeworld.name);
 						this.enemyCiv.homeworldWarning=false;
 					}
-				}else if((this.enemyCiv.worlds.length>0) && (!this.ships[i].desiredOrbitTarg))
+				}else if((this.enemyCiv.worlds.length>0) && (true)) // !this.ships[i].desiredOrbitTarg))
 				{
 					if((!this.ships[i].orbitTarg) || ((this.ships[i].orbitTarg) && (this.ships[i].orbitTarg.civ!=this.enemyCiv)))
 					{
@@ -523,7 +523,7 @@ function civilization()
 						this.enemyCiv.homeworldWarning=false;
 
 					}
-				}else if((this.targetWorlds.length>0) && (!this.ships[i].desiredOrbitTarg)) //&& (this.ships[i].orbitTarg.civ!=this.enemyCiv))
+				}else if((this.targetWorlds.length>0)) //&& (this.ships[i].orbitTarg.civ!=this.enemyCiv))
 				{
 					this.ships[i].orderOrbit(this.targetWorlds[0]);
 					this.ships[i].orders=Orders.Attack;
@@ -572,6 +572,17 @@ function civilization()
 	{
 //breen repeatidly conquoring dominion homeworld?
 		if(plan.civ==this) {return;}
+		if(plan.civ)
+		{
+			for(var i=0;i<plan.civ.worlds.length;i++)
+			{
+				if(plan.civ.worlds[i]==plan)
+				{
+					plan.civ.worlds.splice(i,1)
+					i--;
+				}
+			}
+		}
 		plan.civ=this;
 		plan.colonized=true;
 		var t=this.targetWorlds.indexOf(plan);
