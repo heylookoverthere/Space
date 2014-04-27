@@ -3437,7 +3437,10 @@ function killShip(targ,attacker)
 			i--;
 			targ.alive=false;
 			console.log("The "+targ.prefix+ " " +targ.name+" was destroyed. "+ targ.crew.length+ " crew were lost. ");
-			monsta.explosionTextured(200,targ.x,targ.y,1,"explosion0");
+			if(camera.isNear(targ))
+			{
+				monsta.explosionTextured(200,targ.x,targ.y,1,"explosion0");
+			}
 			if(targ==selectedShip)
 			{
 				camera.unFollow();
