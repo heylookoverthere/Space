@@ -50,6 +50,7 @@ function starShip(civid){
 	this.systems=[];
 	this.power=this.maxPower=1;
 	this.matchSpeed=false;
+	this.manualControl=false;
 	//todo
 	this.crusingSpeed=4.5;
 	this.rooms=6;
@@ -1135,9 +1136,20 @@ function starShip(civid){
 	
 	this.manualHelm=function()
 	{
-		if(selectedShip)
+		if(!this.manualControl)
 		{
-			selectedShip.desiredOrbitTarg=null;
+			this.manualControl=true;
+			this.desiredOrbitTarg=null;
+			this.orbiting=null;
+			this.desiredHeading=this.heading;
+			this.desiredSpeed=0;
+		}else
+		{
+			this.manualControl=false;
+			this.desiredOrbitTarg=null;
+			this.desiredHeading=this.heading;
+			this.desiredSpeed=this.crusingSpeed;
+		
 		}
 	};
 	
@@ -1156,7 +1168,13 @@ function starShip(civid){
 		this.acceltick=0;
 		if ((this.speed<this.maxSpeed)) //&& ((!this.destination) || (this.speed<this.destination.maxSpeed)))//don't go faster than lead ship!
 		{
-			this.speed+=this.acceleration*gameSpeed;
+			if(!this.manualControl)
+			{
+				this.speed+=this.acceleration*gameSpeed;
+			}else
+			{
+				this.speed+=0.4*gameSpeed;
+			}
 		}
 		if(this.speed>this.maxSpeed)
 		{
@@ -1802,6 +1820,81 @@ function starShip(civid){
 				this.y+=this.yv*gameSpeed*(this.tractorHost.speed+1);
 			}
 			//this.yv=this.tractorHost.yv;
+		}else if(this.manualControl)
+		{
+			if(this.speed>0)
+			{
+				this.speed-=0.02;
+				if(this.speed<0)
+				{
+					this.speed=0;
+				}
+			}
+			
+			if(firekey.check())
+			{
+				this.fireTorpedo();
+			}
+			
+			if(keydown.up)
+			{
+				if(this.speed<this.maxSpeed)
+				{
+					this.speed+=0.3;
+					if(this.speed>this.maxSpeed)
+					{
+						this.speed=this.maxSpeed;
+					}
+				}
+			}else if(keydown.down)
+			{
+				if(this.speed>0)
+				{
+					this.speed-=0.2;
+					if(this.speed<0)
+					{
+						this.speed=0;
+					}
+				}
+			}
+			if(keydown.left)
+			{
+				this.desiredHeading--;
+					if (beta < 0.0)
+					beta += 360.0;
+				else if (beta > 360.0)
+					beta -= 360;
+			}else if(keydown.right)
+			{
+				this.desiredHeading++;
+				if (beta < 0.0)
+					beta += 360.0;
+				else if (beta > 360.0)
+					beta -= 360;
+			}
+			
+				var differenceHeading = Math.abs(this.desiredHeading - this.heading);
+				//if we need to turn clockwise
+				if(differenceHeading>2)
+				{
+					if(isTurnCCW(this.heading, this.desiredHeading))
+					{
+						//Turn right
+						this.heading-=this.turnSpeed*gameSpeed;
+							this.turning=true;
+					}else
+					{
+						this.heading+=this.turnSpeed*gameSpeed;
+							this.turning=true;
+					}
+				}else{
+					this.turning=false;//totodo
+				}
+				
+				this.xv=Math.cos((Math.PI / 180)*Math.floor(this.heading));
+				this.yv=Math.sin((Math.PI / 180)*Math.floor(this.heading));
+				this.x+=this.xv*gameSpeed*this.speed;
+				this.y+=this.yv*gameSpeed*this.speed;
 		}else if(this.escorting) 
 		{
 			if(!this.escorting.alive)

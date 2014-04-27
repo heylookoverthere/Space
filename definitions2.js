@@ -1727,6 +1727,20 @@ function screenBox(obj)
 		};
 		buttons.push(this.mapShowButton);
 		
+		this.manualControlButton=new button(this);
+		this.manualControlButton.x=this.x+10+205;
+		this.manualControlButton.width+=15;
+		this.manualControlButton.y=this.y+75;
+		this.manualControlButton.object=this.object;
+		this.manualControlButton.text="Manual";
+		this.manualControlButton.parent=this;
+		//this.manualControlButton.center=true;
+		this.manualControlButton.doThings=function()
+		{
+			this.object.manualHelm();
+		};
+		buttons.push(this.manualControlButton);
+		
 		this.goPlanetButton=new button(this);
 		this.goPlanetButton.x=this.x+10+120;
 		this.goPlanetButton.y=this.y+145;
@@ -1865,6 +1879,7 @@ function screenBox(obj)
 					this.speedPlusButton.visible=true;
 					this.speedMinusButton.visible=true;
 					this.mapShowButton.visible=true;
+					this.manualControlButton.visible=true;
 				}else
 				{
 					this.headingBox.visible=false;
@@ -1877,6 +1892,7 @@ function screenBox(obj)
 					this.speedPlusButton.visible=false;
 					this.speedMinusButton.visible=false;
 					this.goShipButton.visible=false;
+					this.manualControlButton.visible=false;
 				}
 				if((this.page===0)&&(this.object==selectedShip))
 				{
@@ -2000,6 +2016,7 @@ function screenBox(obj)
 				this.awayFormButton.visible=false;
 				this.awayBeamButton.visible=false;
 				this.evacButton.visible=false;
+				this.manualControlButton.visible=false;
 			}
 		}
 		
@@ -2115,7 +2132,7 @@ function screenBox(obj)
 					{
 						var gt=can.font;
 						can.font== "8pt Calibri";
-						can.fillText("hit A to choose a target",this.x+10,this.y+2+242);
+						can.fillText("hit "+beamtargetkey.key.toUpperCase()+" to choose a target",this.x+10,this.y+2+242);
 						if(this.object.beamTarget)
 						{
 							can.fillText("Targeting "+this.object.beamTarget.name,this.x+10,this.y+2+262);
@@ -2189,7 +2206,7 @@ function screenBox(obj)
 					this.speedMinusButton.draw(can,cam);
 				}
 				
-				if((this.object.civ==civs[playerCiv]) && (this.object.systems[SystemIDs.Navigation].functional()))
+				if((this.object.civ==civs[playerCiv]) && (this.object.systems[SystemIDs.Navigation].functional()) &&(!this.object.manualControl))
 				{
 					can.fillStyle="white";
 					can.fillText("Enter Heading:",this.x+10,this.y+2+122);
@@ -2212,6 +2229,7 @@ function screenBox(obj)
 					this.goPlanetButton.draw(can,camera);
 					
 					this.mapShowButton.draw(can,camera);
+					this.manualControlButton.draw(can,camera);
 					
 					can.fillText("Civ:",this.x+10,this.y+2+184);
 					this.raceBox.x=this.x+10+50;
@@ -2231,6 +2249,12 @@ function screenBox(obj)
 					can.fillStyle="red";
 					can.fillText("NAVIGATION OFFLINE",this.x+10,this.y+2+122);
 					can.fillStyle="white";
+				}else if(this.object.manualControl)
+				{
+					can.fillText("Manual Control, use Arrow keys.",this.x+10,this.y+2+140);
+					can.fillText(firekey.key.toUpperCase()+" to fire",this.x+10,this.y+2+153);
+					this.mapShowButton.draw(can,camera);
+					this.manualControlButton.draw(can,camera);
 				}
 			}else if(this.page==3)//combat //somehow add list of nearby hostile ships.
 			{
@@ -2268,6 +2292,7 @@ function screenBox(obj)
 					{
 						can.fillText(this.object.nearbyHostiles.length+" enemy ships in sensor range.",this.x+10,this.y+2+32);
 						can.fillText("No Weapons Lock",this.x+10,this.y+2+64);
+						can.fillText("Hit "+ targetkey.key.toUpperCase()+" to choose a target",this.x+10,this.y+2+80);
 						if(!this.object.systems[SystemIDs.Weapons].functional())
 				{
 					can.fillStyle="red";
@@ -4216,7 +4241,7 @@ function newInitShips()
 	//hack
 	civs[playerCiv].ships[0].width=16;
 	civs[playerCiv].ships[0].height=16;
-	civs[playerCiv].ships[0].numTorpedos=0;
+	civs[playerCiv].ships[0].numTorpedos=10;
 	civs[playerCiv].ships[0].shieldSprite=Sprite("shields");
 	civs[playerCiv].ships[0].class=shuttlecraft;
 	civs[playerCiv].ships[0].unInstallSystem(SystemIDs.Shields);

@@ -153,8 +153,8 @@ var shipslowkey=new akey("r");
 var evackey=new akey("esc");
 var minekey=new akey("m");
 var crewscreenkey=new akey("c");
-var targetkey=new akey("t");
-var firekey=new akey("f");
+var targetkey=new akey("del");
+var firekey=new akey("shift");
 var fleetattackkey=new akey("j");
 var enterkey=startkey;
 var colonizekey=new akey("z");
@@ -671,6 +671,12 @@ function mainMenuDraw(){
 	if(showShipMenu)
 	{
 		selectedShip.menu.visible=true;
+	}else
+	{
+		var pt=canvas.font;
+		canvas.font = "10pt Calibri";
+		canvas.fillText("Hit "+shipscreenkey.key+" to show ship menu",40,600);
+		canvas.font=pt;
 	}
 	selectedShip.menu.draw(canvas,camera)
 	
@@ -950,10 +956,10 @@ function mainMenuUpdate(){
 		{
 			selectedShip.layMine();
 		}
-		if(firekey.check())
+		/*if(firekey.check())
 		{
 			selectedShip.fireTorpedo();
-		}
+		}*/
 		if(phaserkey.check())
 		{
 			selectedShip.firePhasers();
@@ -972,6 +978,8 @@ function mainMenuUpdate(){
 		}
 		if(gokey.check())
 		{
+			
+			selectedShip.manualHelm();
 			/*ships[0].gotoDest=true;
 			ships[0].destx=420;
 			ships[0].desty=300;*/
@@ -1070,39 +1078,41 @@ function mainMenuUpdate(){
 	{
 	  cmoverate=5;
 	}
-	if((keydown.left) && (!roland.visible))
+	if(!selectedShip.manualControl)
 	{
-		//if(camera.x<universeWidth-CANVAS_WIDTH)
+		if((keydown.left) && (!roland.visible))
 		{
-			camera.x+=cmoverate*camera.zoomMove;
+			//if(camera.x<universeWidth-CANVAS_WIDTH)
+			{
+				camera.x+=cmoverate*camera.zoomMove;
+			}
+			camera.unFollow();
 		}
-		camera.unFollow();
-	}
-	if((keydown.right) && (!roland.visible))
-	{
-		//if(camera.x>0)
+		if((keydown.right) && (!roland.visible))
 		{
-			camera.x-=cmoverate*camera.zoomMove;
+			//if(camera.x>0)
+			{
+				camera.x-=cmoverate*camera.zoomMove;
+			}
+			camera.unFollow();
 		}
-		camera.unFollow();
-	}
-	if((keydown.up) && (!roland.visible))
-	{
-		//if(camera.y<universeHeight-CANVAS_HEIGHT)
+		if((keydown.up) && (!roland.visible))
 		{
-			camera.y+=cmoverate*camera.zoomMove;
+			//if(camera.y<universeHeight-CANVAS_HEIGHT)
+			{
+				camera.y+=cmoverate*camera.zoomMove;
+			}
+			camera.unFollow();
 		}
-		camera.unFollow();
-	}
-	if((keydown.down) && (!roland.visible))
-	{
-		//if(camera.y>0)
+		if((keydown.down) && (!roland.visible))
 		{
-			camera.y-=cmoverate*camera.zoomMove;
+			//if(camera.y>0)
+			{
+				camera.y-=cmoverate*camera.zoomMove;
+			}
+			camera.unFollow();
 		}
-		camera.unFollow();
 	}
-	
 	if(endkey.check())
 	{
 		selectedShip=Cube;
