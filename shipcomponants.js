@@ -917,7 +917,8 @@ function escapePod(){
 	this.cloak=false;
 	this.shields=0;
 	this.turning=false;
-	this.launch=function(source,dest){
+}
+	escapePod.prototype.launch=function(source,dest){
 		this.x=source.x+16;
 		this.y=source.y+16;
 		this.xv=source.xv;
@@ -937,7 +938,7 @@ function escapePod(){
 		this.desiredSpeed=this.maxSpeed;
 	};
 	
-	this.getDamaged=function()
+	escapePod.prototype.getDamaged=function()
 	{
 		if(this.passenger)
 		{
@@ -948,7 +949,7 @@ function escapePod(){
 		//todo small explosion
 	};
 	
-		this.accelerate=function()
+	escapePod.prototype.accelerate=function()
 	{
 		this.acceltick++;
 		if(this.acceltick<this.accelrate*gameSpeed)
@@ -962,7 +963,7 @@ function escapePod(){
 		}
 	};
 	
-	this.decelerate=function()
+	escapePod.prototype.decelerate=function()
 	{
 		this.acceltick++;
 		if(this.acceltick<this.accelrate*gameSpeed)
@@ -976,7 +977,7 @@ function escapePod(){
 		}
 	};
 	
-	this.update=function(){
+	escapePod.prototype.update=function(){
 		//accel or decel to desired speed
 		if((!this.active) || (!this.alive)) {
 			return;
@@ -1111,7 +1112,7 @@ function escapePod(){
 			this.y=universeHeight;
 		}
 	};
-	this.draw=function(can,cam){
+	escapePod.prototype.draw=function(can,cam){
 		if((this.alive) && (this.active))
 		{
 			can.save();
@@ -1133,4 +1134,3 @@ function escapePod(){
 			//this.sprite.draw(can, this.x-cam.x-this.width/2,this.y-cam.y-this.height/2);
 		}
 	};
-}

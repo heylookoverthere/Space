@@ -67,11 +67,11 @@ function shipClass()
 	this.captainFlees=false;
 	this.baseRepair=0.25;
 	this.autoFireRate=40;
-	
+	this.sprite=Sprite("ship1");
 	
 	this.sensors=0;
 	this.torpedoTubes=2;
-	this.sprite=Sprite("ship1");
+
 	
 	this.impulseEngine=0;
 	this.armor=0;

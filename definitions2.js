@@ -321,7 +321,9 @@ function button(pt)
 	}	
 
 	};
-	this.draw=function(can,cam,nerf)
+}
+
+	button.prototype.draw=function(can,cam,nerf)
 	{
 		if((!nerf) && (!this.visible)) {return;}
 		can.save();
@@ -374,7 +376,7 @@ function button(pt)
 		}
 		can.restore();
 	};
-	this.specialDraw=function(can,cam,thing)
+	button.prototype.specialDraw=function(can,cam,thing)
 	{
 		//if(!this.visible) {return;} //todo, right now visibe means clickible and not visible.
 		can.save();
@@ -424,7 +426,6 @@ function button(pt)
 		can.restore();
 	};
 	
-}
 	var Map={};
 	var mapXButton=new button();
 	mapXButton.text="X";
@@ -720,6 +721,7 @@ function statusBox()
 	this.nextCivButton.object=this;
 	this.nextCivButton.parent=this;
 	this.nextCivButton.yCenter=false;
+
 	this.nextCivButton.update=function()
 	{
 	
@@ -777,8 +779,8 @@ function statusBox()
 	};
 	buttons.push(this.XButton);
 	
-
-	this.cycleCiv=function(neg)
+}
+	statusBox.prototype.cycleCiv=function(neg)
 	{
 		if(neg)
 		{
@@ -804,7 +806,7 @@ function statusBox()
 			this.civ=civs[this.civTrack];
 		}
 	};
-	this.update=function()
+	statusBox.prototype.update=function()
 	{
 		if(this.visible)
 		{
@@ -871,7 +873,7 @@ function statusBox()
 			}
 		}
 	};
-	this.draw=function(can,cam)
+	statusBox.prototype.draw=function(can,cam)
 	{
 		if(!this.visible)
 		{
@@ -1051,7 +1053,7 @@ function statusBox()
 		}
 		can.restore();
 	};
-}
+
 
 var roland=new statusBox();
 var textBoxes=[];
@@ -1064,32 +1066,25 @@ function textBox(pt)
 	this.font="14pt Calibri";
 	this.colorText=false;
 	this.limit=16;
+	this.hasFocus=false;
+	this.visible=false;
+	this.visibleOnlyFocus=false;
+	this.width=80;
+	this.object=null;
+	this.height=16;
+	this.blinkRate=30;
+	this.blink=false;
+	this.finalText=null;
+	this.type=0;
+	this.listTrack=0;
+	this.list=null;//civs[playerCiv].knownWorlds;
+	this.choice=null;
+	this.text="";
+	this.blinkTrack=0;
+	this.backColor="white";
+	this.borderSize=2;
 	if(pt){
 	this.parent=pt;
-	}
-	this.enter=function()
-	{
-		this.finalText=this.text;
-		this.hasFocus=false;
-		if((this.object) && (this.object.orbiting))
-		{
-			this.object.orderLeaveOrbit();
-		}
-		if(this.object)
-		{
-			
-			var dole=parseInt(this.text);
-			if((dole<361) && (dole>-1))
-			{
-				this.object.desiredHeading=parseInt(this.text);
-				this.object.destination=null;
-				this.object.desiredOrbitTarg=null;
-			}else
-			{
-				console.log("Not a valid heading!");
-			}
-		}
-	};
 	this.onClick=function()
 	{
 		if(this.type==1)
@@ -1114,24 +1109,34 @@ function textBox(pt)
 
 		}
 	};
-	this.hasFocus=false;
-	this.visible=false;
-	this.visibleOnlyFocus=false;
-	this.width=80;
-	this.object=null;
-	this.height=16;
-	this.blinkRate=30;
-	this.blink=false;
-	this.finalText=null;
-	this.type=0;
-	this.listTrack=0;
-	this.list=null;//civs[playerCiv].knownWorlds;
-	this.choice=null;
-	this.text="";
-	this.blinkTrack=0;
-	this.backColor="white";
-	this.borderSize=2;
-	this.update=function()
+	}
+}
+	textBox.prototype.enter=function()
+	{
+		this.finalText=this.text;
+		this.hasFocus=false;
+		if((this.object) && (this.object.orbiting))
+		{
+			this.object.orderLeaveOrbit();
+		}
+		if(this.object)
+		{
+			
+			var dole=parseInt(this.text);
+			if((dole<361) && (dole>-1))
+			{
+				this.object.desiredHeading=parseInt(this.text);
+				this.object.destination=null;
+				this.object.desiredOrbitTarg=null;
+			}else
+			{
+				console.log("Not a valid heading!");
+			}
+		}
+	};
+
+
+	textBox.prototype.update=function()
 	{
 		if(this.hasFocus)
 		{
@@ -1229,7 +1234,7 @@ function textBox(pt)
 				}
 		}
 	};
-	this.draw=function(can,cam)
+	textBox.prototype.draw=function(can,cam)
 	{
 		if(!this.visible) {return;}
 		
@@ -1267,8 +1272,6 @@ function textBox(pt)
 		can.fillStyle="white";
 		can.restore();
 	};
-	
-}
 
 clearFocus=function()
 {
@@ -1854,7 +1857,8 @@ function screenBox(obj)
 			buttons.push(this.targButtons[i]);
 		}
 	}
-	this.update=function()
+}
+	screenBox.prototype.update=function()
 	{
 		if((this.visible) && (showShipMenu)){
 			for(var i=0;i<this.tabs.length;i++)
@@ -2021,7 +2025,7 @@ function screenBox(obj)
 		}
 		
 	};
-	this.turnPage=function(back)
+	screenBox.prototype.turnPage=function(back)
 	{
 		if(!back)
 		{
@@ -2042,7 +2046,7 @@ function screenBox(obj)
 		}
 
 	};
-	this.draw=function(can,cam)
+	screenBox.prototype.draw=function(can,cam)
 	{
 		if(!this.visible){return;}
 		can.save();
@@ -2408,7 +2412,6 @@ function screenBox(obj)
 
 		can.restore();
 	};
-}
 
 function fuckoff()
 {
@@ -2431,7 +2434,8 @@ function progressBar()
 	this.color="green";
 	this.backColor="black";
 	this.label="Wangs: ";
-	this.draw=function(can,cam)
+}
+	progressBar.prototype.draw=function(can,cam)
 	{
 		can.save();
 		can.font = "12pt Calibri";
@@ -2447,7 +2451,7 @@ function progressBar()
 		can.fillRect(this.x+xoff+3,this.y+3,percent,this.height-2);
 		can.restore();
 	};
-}
+
 
 function newShip(iv,startworld,capt)
 {
@@ -3052,8 +3056,8 @@ function nebula(){
 	{
 		this.clouds[i]=new cloud(220);
 	}
-	
-	this.draw=function(can,cam){
+}
+	nebula.prototype.draw=function(can,cam){
 		for(var i=0;i<this.numClouds;i++)
 		{
 			if(cam.isNear(this))
@@ -3069,7 +3073,6 @@ function nebula(){
 		}
 		
 	};
-}
 //16.075
 function star(){
 	this.x=420;
@@ -3101,8 +3104,8 @@ function star(){
 	this.numAstroids=0;
 	this.selected=0;
 	this.discovered=false;
-	
-	this.cyclePlanets=function(){
+}
+	star.prototype.cyclePlanets=function(){
 		this.selected++;
 
 		if(this.selected>this.numPlanets-1)
@@ -3111,14 +3114,14 @@ function star(){
 		}
 	};
 	
-	this.scanAllPlanets=function(){
+	star.prototype.scanAllPlanets=function(){
 		for(var i=0;i<this.numPlanets;i++)
 		{
 			this.planetDetails[i].scanned=true;
 		}
 	};
 	
-	this.countMoons=function(){
+	star.prototype.countMoons=function(){
 		var ans=0;
 		for(var i=0;i<this.numPlanets;i++)
 		{
@@ -3127,7 +3130,7 @@ function star(){
 		return ans;
 	};
 	
-	this.randomizeSystem=function(){
+	star.prototype.randomizeSystem=function(){
 		var obt=Math.random()*180+70;
 		var obtw=Math.random()*35+15;
 		if((Math.random()*10) <5){
@@ -3170,7 +3173,7 @@ function star(){
 		}
 
 		};
-	this.draw=function(can,cam){
+	star.prototype.draw=function(can,cam){
 		if(this.alive)
 		{
 			can.save();
@@ -3198,7 +3201,7 @@ function star(){
 			//this.sprite.draw(can, this.x-cam.x-this.width/2,this.y-cam.y-this.height/2);
 		}
 	};
-}
+
 
 //var sun=new star();
 
@@ -3446,6 +3449,11 @@ function initUniverse()
 function killShip(targ,attacker)
 {
 	targ.civ.deadShips.push(targ);
+	if(targ.menu)
+	{
+		targ.menu.visible=false;
+		targ.menu.update();
+	}
 	if(targ.tractorClient)
 	{
 		targ.tractorClient.tractorHost=null;

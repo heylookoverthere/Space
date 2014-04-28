@@ -246,8 +246,8 @@ function civilization()
 	}
 	this.techs[Techs.Sensors]=true;
 	this.techs[Techs.Phasers]=true;
-	
-	this.checkDeath=function()
+}
+	civilization.prototype.checkDeath=function()
 	{
 		var live=false;
 		if(this.worlds.length+this.ships.length>0)
@@ -261,7 +261,7 @@ function civilization()
 		}
 	};
 	
-	this.inOurSpace=function(hip)
+	civilization.prototype.inOurSpace=function(hip)
 	{
 		for (var i=0;i<this.worlds.length;i++)
 		{
@@ -273,7 +273,7 @@ function civilization()
 		return false;
 	};
 	
-	this.knowAllHomeWorlds=function()
+	civilization.prototype.knowAllHomeWorlds=function()
 	{
 		this.knownWorlds=[];
 		for(var i=0;i<civs.length;i++)
@@ -282,7 +282,7 @@ function civilization()
 		}
 	};
 	
-	this.knowAllWorlds=function()
+	civilization.prototype.knowAllWorlds=function()
 	{
 		this.knownWorlds=[];
 		for(var i=0;i<stars.length;i++)
@@ -295,7 +295,7 @@ function civilization()
 		}
 	};
 	
-	this.getTax=function()
+	civilization.prototype.getTax=function()
 	{
 		var tax=0;
 		for(var i=0;i<this.worlds.length;i++)
@@ -305,7 +305,7 @@ function civilization()
 		this.money+=tax;
 	};
 	
-	this.cleanUp=function()
+	civilization.prototype.cleanUp=function()
 	{
 		for(var i=0;i<this.worlds.length;i++)
 		{
@@ -324,7 +324,7 @@ function civilization()
 	
 	var justOnce=false;
 	
-	this.newMasterAI=function()
+	civilization.prototype.newMasterAI=function()
 	{
 		//choose production
 		if(!this.initialProduction)
@@ -568,7 +568,7 @@ function civilization()
 	};
 	
 	
-	this.conquer=function(plan)
+	civilization.prototype.conquer=function(plan)
 	{
 //breen repeatidly conquoring dominion homeworld?
 		if(plan.civ==this) {return;}
@@ -610,21 +610,21 @@ function civilization()
 		}
 	};
 	
-	this.declareWar=function(them)
+	civilization.prototype.declareWar=function(them)
 	{
 		console.log(this.name+" declared war on "+them.name);
 		this.autoHostile.push(them);
 	};
-	this.cycleShips=function(cam)
+	civilization.prototype.cycleShips=function(cam)
 	{
 		if(this.ships.length<1)
 		{
 			console.log("You have no ships!");
 			return;
 		}
-		if(this.ships[this.curShip].manualControl)
+		if(selectedShip.manualControl)
 		{
-			this.ships[this.curShip].manualHelm();
+			selectedShip.manualHelm();
 		}
 		this.curShip++;
 		if(this.curShip>this.ships.length-1) {
@@ -634,7 +634,7 @@ function civilization()
 		cam.center(this.ships[this.curShip]);
 		cam.follow(this.ships[this.curShip]);
 	};
-	this.orderColonize=function(world){
+	civilization.prototype.orderColonize=function(world){
 		if(world.colonized)
 		{
 			console.log("The planet "+world.name+" has already been colonized by the "+races[world.civID]);
@@ -663,7 +663,7 @@ function civilization()
 		}
 		//set its destination, crew it
 	};
-	this.getProductionRate=function()
+	civilization.prototype.getProductionRate=function()
 	{
 		var rate=0;
 		for(var i=0;i<this.worlds.length;i++)
@@ -674,7 +674,7 @@ function civilization()
 		return rate;
 	};
 	
-	this.getResearchRate=function()
+	civilization.prototype.getResearchRate=function()
 	{
 		var rate=0;
 		for(var i=0;i<this.worlds.length;i++)
@@ -685,7 +685,7 @@ function civilization()
 		return rate;
 	};
 	
-	this.freeColonyShip=function() //todo find closest to world.
+	civilization.prototype.freeColonyShip=function() //todo find closest to world.
 	{
 		for (var i=0;i<this.ships.length;i++)
 		{
@@ -697,7 +697,7 @@ function civilization()
 		return null;
 	};
 	
-	this.producePlatform=function(lass,worldstart)
+	civilization.prototype.producePlatform=function(lass,worldstart)
 	{
 		var tar=false;
 		for(var i=0;i<worldstart.buildings.length;i++)
@@ -721,7 +721,7 @@ function civilization()
 		this.productionQueue.push(jimmy);
 	};
 	
-	this.produceShip=function(lass,worldstart,worldgo)//todo make worldstart do something
+	civilization.prototype.produceShip=function(lass,worldstart,worldgo)//todo make worldstart do something
 	{
 		if(this.player)
 		{
@@ -767,7 +767,7 @@ function civilization()
 		return true;
 	};
 	
-	this.produceBuilding=function(type,wrld){
+	civilization.prototype.produceBuilding=function(type,wrld){
 		if(wrld.buildings.length<wrld.maxBuildings)
 		{
 			var timmy=new building(type,wrld);
@@ -785,7 +785,7 @@ function civilization()
 		}
 	};
 	
-	this.colonize=function(world){
+	civilization.prototype.colonize=function(world){
 		if(world.colonized)
 		{
 			console.log("The planet "+world.name+" has already been colonized by the "+world.civ.name);
@@ -807,7 +807,7 @@ function civilization()
 		}
 	};
 	
-	this.addHostile=function(iv)
+	civilization.prototype.addHostile=function(iv)
 	{
 		if(this.autoHostile.indexOf(iv)>-1)
 		{
@@ -816,7 +816,7 @@ function civilization()
 		this.autoHostile.push(iv);
 	};
 	
-	this.update=function()
+	civilization.prototype.update=function()
 	{
 		
 		if(!this.alive) {return;}
@@ -945,7 +945,7 @@ function civilization()
 			}
 		}
 	};
-	this.generateMessage=function(other) //run on contact with other ships (with month or so break in between)
+	civilization.prototype.generateMessage=function(other) //run on contact with other ships (with month or so break in between)
 	{
 		if(civs[playerCiv].AI)
 		{
@@ -1444,4 +1444,3 @@ function civilization()
 			other.messages.push(ned);
 		}
 	};
-}

@@ -230,52 +230,7 @@ function starShip(civid){
 	this.lastYear=2000;
 	this.windows=[];
 	this.items=[];
-	this.routePower=function(sys)
-	{
-		if(sys.on) { return false;} //todo check this?
-		//if(this.power-sys.minPower>-1)
-		var belly=this.power-sys.minPower;
-		if(belly>-1) //PROBLEM
-		{
-			//if(belly<0) {belly=0;}
-			this.power=belly;
-			sys.power=sys.minPower;
-			//playASound
-			return true;
-		}else
-		{
-			return false;
-		}
-	};
-	
-	this.checkSystemPower=function()
-	{
-		var b=this.maxPower;
-		for(var i=1;i<this.systems.length;i++)
-		{
-			if(this.systems[i].on)
-			{
-				b-=this.systems[i].power;
-				this.systems[i].turnOff();
-				this.menu.sysButtons[this.systems[i].type].on=false;
-				if(b<0)
-				{
-					
-				}
-			}
-		}
-	};
-	
-	this.powerDown=function(sys)
-	{
-		sys.on=false;
-		if(sys.power<1) {return;}
-		this.power+=sys.power;
-		sys.power=0;
-		
-		//playASound
-	};
-	for(var i=0;i<NumSystems;i++)
+		for(var i=0;i<NumSystems;i++)
 	{
 		var wynn=new shipSystem(this,i);
 		if((wynn.type==SystemIDs.Weapons) ||(wynn.type==SystemIDs.LifeSupport)||(wynn.type==SystemIDs.DamageControl)||(wynn.type==SystemIDs.MedicalBay)||(wynn.type==SystemIDs.Engines) ||(wynn.type==SystemIDs.Scanners)||(wynn.type==SystemIDs.Targeting)||(wynn.type==SystemIDs.Navigation)||(wynn.type==SystemIDs.Tractor)||(wynn.type==SystemIDs.EscapePods)||(wynn.type==SystemIDs.Transporter)||(wynn.type==SystemIDs.MainPower)||(wynn.type==SystemIDs.Cloak))
@@ -319,8 +274,55 @@ function starShip(civid){
 		minny.range=10;
 		mines.push(minny);
 	};
+}
+	starShip.prototype.routePower=function(sys)
+	{
+		if(sys.on) { return false;} //todo check this?
+		//if(this.power-sys.minPower>-1)
+		var belly=this.power-sys.minPower;
+		if(belly>-1) //PROBLEM
+		{
+			//if(belly<0) {belly=0;}
+			this.power=belly;
+			sys.power=sys.minPower;
+			//playASound
+			return true;
+		}else
+		{
+			return false;
+		}
+	};
 	
-	this.classify=function()
+	starShip.prototype.checkSystemPower=function()
+	{
+		var b=this.maxPower;
+		for(var i=1;i<this.systems.length;i++)
+		{
+			if(this.systems[i].on)
+			{
+				b-=this.systems[i].power;
+				this.systems[i].turnOff();
+				this.menu.sysButtons[this.systems[i].type].on=false;
+				if(b<0)
+				{
+					
+				}
+			}
+		}
+	};
+	
+	starShip.prototype.powerDown=function(sys)
+	{
+		sys.on=false;
+		if(sys.power<1) {return;}
+		this.power+=sys.power;
+		sys.power=0;
+		
+		//playASound
+	};
+
+	
+	starShip.prototype.classify=function()
 	{
 		this.colony=this.class.colony;
 		this.canHasShields=this.class.canHasShields;
@@ -397,7 +399,7 @@ function starShip(civid){
 		this.cruisingSpeed=this.class.cruisingSpeed;
 	};
 	
-	this.prepareAwayTeam=function(num){
+	starShip.prototype.prepareAwayTeam=function(num){
 		if(this.crew.length<3)
 		{
 			console.log("not enough crew to form an away team");
@@ -420,7 +422,7 @@ function starShip(civid){
 		return true;
 	};
 	
-	this.recallAwayTeam=function(){
+	starShip.prototype.recallAwayTeam=function(){
 		//beam them, check range and all?
 		//if(!this.systems[SystemIDs.Transporter].functional(false)) {return;}
 		for(var i=0;i<this.awayTeam.length;i++)
@@ -430,7 +432,7 @@ function starShip(civid){
 		this.awayTeam=[];
 	};
 	
-	this.beamDown=function(target){
+	starShip.prototype.beamDown=function(target){
 		if(!this.systems[SystemIDs.Transporter].functional(false)) {return;}
 		if(this.awayTeamAt!==null)
 		{
@@ -471,7 +473,7 @@ function starShip(civid){
 		this.awayTeamAt=target;
 	};
 	
-	this.beamUpAwayTeam=function(){
+	starShip.prototype.beamUpAwayTeam=function(){
 		if(!this.systems[SystemIDs.Transporter].functional(false)) {return;}
 		if((this.shields>0)  && (this.systems[SystemIDs.Shields].functional()))
 		{
@@ -488,7 +490,7 @@ function starShip(civid){
 		//this.recallAwayTeam();
 	};
 	
-	this.beamUp=function(unt){
+	starShip.prototype.beamUp=function(unt){
 		if(!this.systems[SystemIDs.Transporter].functional(false)) {return;}
 		if((this.shields>0) && (this.systems[SystemIDs.Shields].functional()))
 		{
@@ -504,7 +506,7 @@ function starShip(civid){
 		this.crew.push(unt);
 	};
 	
-	this.unTractorSomething=function(){
+	starShip.prototype.unTractorSomething=function(){
 		//if somethign not in range return;
 		
 		if(this.tractorClient)
@@ -516,7 +518,7 @@ function starShip(civid){
 	
 	};
 	
-	this.tractorSomething=function(something){
+	starShip.prototype.tractorSomething=function(something){
 		//if somethign not in range return;
 		if(!this.systems[SystemIDs.Tractor].functional()) {
 			console.log("no functional tractor beam");
@@ -538,7 +540,7 @@ function starShip(civid){
 	
 	};
 	
-	this.addPhaser=function()
+	starShip.prototype.addPhaser=function()
 	{
 		var pim=new energyWeapon(this);
 		pim.xoff=12*this.phaserBanks.length;
@@ -546,7 +548,7 @@ function starShip(civid){
 		this.phaserBanks.push(pim);
 	};
 	
-	this.inPhaserRange=function(hip){
+	starShip.prototype.inPhaserRange=function(hip){
 		if((Math.abs(hip.x-this.x)<this.phaserRange) && (Math.abs(hip.y-this.y)<this.phaserRange)) 
 		{
 			return true;
@@ -554,7 +556,7 @@ function starShip(civid){
 		return false;
 	};
 	
-	this.inTractorRange=function(hip){
+	starShip.prototype.inTractorRange=function(hip){
 		if((Math.abs(hip.x-this.x)<this.tractorRange) && (Math.abs(hip.y-this.y)<this.tractorRange)) 
 		{
 			return true;
@@ -562,7 +564,7 @@ function starShip(civid){
 		return false;
 	};
 	
-	this.firePhasers=function(){
+	starShip.prototype.firePhasers=function(){
 		if((!this.torpedoTarget) || (!this.inPhaserRange(this.torpedoTarget))) {return;}
 		if(!this.systems[SystemIDs.Weapons].functional(false)) {return;}
 		for(var i=0;i<this.phaserBanks.length;i++)
@@ -578,7 +580,7 @@ function starShip(civid){
 		}
 	};
 	
-	this.nearestSpecificShip=function(enemyCiv)//todo range?
+	starShip.prototype.nearestSpecificShip=function(enemyCiv)//todo range?
 	{
 		var closest=enemyCiv.ships[0];
 		for(var i=1;i<enemyCiv.ships.length;i++)
@@ -592,7 +594,7 @@ function starShip(civid){
 		return closest;
 	};
 	
-	this.setDestination=function(targ,speed)
+	starShip.prototype.setDestination=function(targ,speed)
 	{
 		if(targ==this) 
 		{	
@@ -632,7 +634,7 @@ function starShip(civid){
 		return true;
 	};
 	
-	this.christen=function(){
+	starShip.prototype.christen=function(){
 	if(this.civ.name=="Borg")
 	{
 		this.name=" #"+(Math.floor(Math.random()*4999)+4000);
@@ -658,7 +660,7 @@ function starShip(civid){
 		}
 	};
 	
-	this.cycleBeamTarget=function()
+	starShip.prototype.cycleBeamTarget=function()
 	{
 		if(!this.nearbyVessels) {return;}
 		//this.unTractorSomething();
@@ -698,7 +700,7 @@ function starShip(civid){
 		}
 	};
 	
-	this.cycleTractorTarget=function()
+	starShip.prototype.cycleTractorTarget=function()
 	{
 		if(!this.nearbyVessels) {return;}
 		this.unTractorSomething();
@@ -738,7 +740,7 @@ function starShip(civid){
 		}
 	};
 	
-	this.cycleTarget=function()
+	starShip.prototype.cycleTarget=function()
 	{
 		var bearbyVessels=null;
 		if(!this.nearbyVessels) {return;}
@@ -786,7 +788,7 @@ function starShip(civid){
 		}
 	};
 
-	this.installSystem=function(id)
+	starShip.prototype.installSystem=function(id)
 	{
 		//todo 
 		this.systems[id].installed=true;
@@ -798,7 +800,7 @@ function starShip(civid){
 		}
 	};
 	
-	this.unInstallSystem=function(id)
+	starShip.prototype.unInstallSystem=function(id)
 	{
 		//todo 
 		this.systems[id].installed=false;
@@ -810,7 +812,7 @@ function starShip(civid){
 		}
 	};
 
-	this.fireTorpedo=function(){
+	starShip.prototype.fireTorpedo=function(){
 		if(!this.systems[SystemIDs.Weapons].functional(false)) {return;}
 		if(this.numTorpedos<1) {return;}
 		this.numTorpedos--;
@@ -851,7 +853,7 @@ function starShip(civid){
 		//console.log(torpy);
 	};
 	
-	this.refit=function(){
+	starShip.prototype.refit=function(){
 	//calculate and subtract cost
 		console.log("The "+this.prefix+ " "+this.name+" has been refit and repaired");
 		if((this.canHasShields) && (this.maxShields<1) &&(this.civ.techs[Techs.EnergyShields]))
@@ -863,19 +865,19 @@ function starShip(civid){
 		this.refitOrdered=false;
 	};
 	
-	this.repair=function(){
+	starShip.prototype.repair=function(){
 		this.shields=this.maxShields;
 		this.hp=this.maxHp;
 		this.breaches=0;
 		this.oxygen=100;
 	};
 	
-	this.orderRefit=function(){
+	starShip.prototype.orderRefit=function(){
 		this.orderOrbit(this.closestWorld(true));
 		this.refitOrdered=true;
 	};
 	
-	this.attackPlanet=function(plnt)
+	starShip.prototype.attackPlanet=function(plnt)
 	{
 		if(!this.systems[SystemIDs.Weapons].functional(false)) {return;}
 		if(plnt.civ)
@@ -893,7 +895,7 @@ function starShip(civid){
 		}
 	};
 	
-	this.closestWorld=function(refit){
+	starShip.prototype.closestWorld=function(refit){
 		var answer=this.homeworld;
 		var answerDist=distance(this,this.homeworld);
 		for(var i=0;i<this.civ.worlds.length;i++)
@@ -908,7 +910,7 @@ function starShip(civid){
 		return answer;
 	};
 	
-	this.getDamaged=function(amt,phaser,attacker){
+	starShip.prototype.getDamaged=function(amt,phaser,attacker){
 		if(this.systems[SystemIDs.Shields].functional())
 		{
 			this.shields-=amt;
@@ -942,7 +944,7 @@ function starShip(civid){
 		}
 	};
 	
-	this.crewVessel=function(cpt){
+	starShip.prototype.crewVessel=function(cpt){
 		this.crewMax=Math.floor(Math.random()*4)+4;
 		var i=0;
 		{
@@ -966,7 +968,7 @@ function starShip(civid){
 		this.crew[1].rank=3;
 	};
 	
-	this.checkCrew=function(){
+	starShip.prototype.checkCrew=function(){
 		
 		if(this.crew.length<1)
 		{
@@ -976,7 +978,7 @@ function starShip(civid){
 		return true;
 	};
 	
-	this.killRandomCrew=function(cause){
+	starShip.prototype.killRandomCrew=function(cause){
 		if(cause==null) {cause=".";}
 		if(this.checkCrew()){
 			var vict=null;
@@ -1004,15 +1006,15 @@ function starShip(civid){
 		}
 	};
 	
-	this.prepEvac=function(level){ //TODO: gets non essentail (judged by level var) personalle to escape pods.
+	starShip.prototype.prepEvac=function(level){ //TODO: gets non essentail (judged by level var) personalle to escape pods.
 		this.prevacuated=level*10;
 	};
 	
-	this.Evac=function(targ){//TODO: shoots out pods over time, can get headstart by preping evac.
+	starShip.prototype.Evac=function(targ){//TODO: shoots out pods over time, can get headstart by preping evac.
 		this.evacuating=true;
 	};
 	
-	this.orderOrbit=function(targ){
+	starShip.prototype.orderOrbit=function(targ){
 		if(targ==this.orbitTarg)
 		{
 			return; //hack
@@ -1021,13 +1023,13 @@ function starShip(civid){
 		this.orderLeaveOrbit();
 	};	
 	
-	this.orbit=function(targ){
+	starShip.prototype.orbit=function(targ){
 		this.orbiting=true;
 		this.orbitTarg=targ;
 		this.leavingProgress=null;
 	};
 	
-	this.leaveOrbit=function(){
+	starShip.prototype.leaveOrbit=function(){
 		this.leavingProgress=null;
 		this.orbiting=false;
 		this.orbitTarg=null;
@@ -1037,7 +1039,7 @@ function starShip(civid){
 		//this.speed=1;
 	};
 	
-	this.orderLeaveOrbit=function(){ //probably not neaded anymore if you use setDestination
+	starShip.prototype.orderLeaveOrbit=function(){ //probably not neaded anymore if you use setDestination
 		this.leavingProgress=0;
 		this.orbiting=false;
 		this.orbitTarg=null;
@@ -1045,7 +1047,7 @@ function starShip(civid){
 		this.actionText="Breaking Orbit";
 	};
 	
-	this.adjustHeading=function(targ){
+	starShip.prototype.adjustHeading=function(targ){
 		if (targ < 0.0)
 			targ += 360.0;
 		else if (targ > 360.0)
@@ -1054,7 +1056,7 @@ function starShip(civid){
 	};
 	
 	
-	this.generateEvent=function(){
+	starShip.prototype.generateEvent=function(){
 		var j=Math.floor(Math.random()*9);
 		var aRace=races[Math.floor(Math.random()*numRaces)];
 		if(playerCiv>0)
@@ -1134,7 +1136,7 @@ function starShip(civid){
 		}
 	};
 	
-	this.manualHelm=function()
+	starShip.prototype.manualHelm=function()
 	{
 		if(!this.manualControl)
 		{
@@ -1153,11 +1155,11 @@ function starShip(civid){
 		}
 	};
 	
-	this.orderSpeed=function(spd){
+	starShip.prototype.orderSpeed=function(spd){
 		this.desiredSpeed=spd;
 	};
 	
-	this.accelerate=function()
+	starShip.prototype.accelerate=function()
 	{
 		if(!this.systems[SystemIDs.Engines].functional(false))  {return;}
 		this.acceltick++;
@@ -1186,7 +1188,7 @@ function starShip(civid){
 		}
 	};
 	
-	this.decelerate=function()
+	starShip.prototype.decelerate=function()
 	{
 		this.acceltick++;
 		if(this.acceltick<this.accelrate)
@@ -1201,7 +1203,7 @@ function starShip(civid){
 		}
 	};
 	
-	this.isInSensorRange=function(thang){//todo
+	starShip.prototype.isInSensorRange=function(thang){//todo
 		if ((Math.abs(thang.x-this.x)<this.sensorRange) && (Math.abs(thang.y-this.y)<this.sensorRange))
 		{
 			return true;
@@ -1209,7 +1211,7 @@ function starShip(civid){
 		return false;
 	};
 	
-	this.isInTorpedoRange=function(thang){//todo
+	starShip.prototype.isInTorpedoRange=function(thang){//todo
 		if ((Math.abs(thang.x-this.x)<this.torpedoRange) && (Math.abs(thang.y-this.y)<this.torpedoRange))
 		{
 			return true;
@@ -1217,7 +1219,7 @@ function starShip(civid){
 		return false;
 	};
 	
-	this.inSensorRange=function(thangs){
+	starShip.prototype.inSensorRange=function(thangs){
 		var thongs=[];
 		for(var i=0;i<thangs.length;i++){
 			if ((Math.abs(thangs[i].x-this.x)<this.sensorRange) && (Math.abs(thangs[i].y-this.y)<this.sensorRange))
@@ -1246,7 +1248,7 @@ function starShip(civid){
 		return thongs;
 	};
 	
-	this.generatePlanetEvent=function(world)
+	starShip.prototype.generatePlanetEvent=function(world)
 	{
 		var numPlanetEvents=8;
 		var hich=Math.floor(Math.random()*numPlanetEvents);
@@ -1495,21 +1497,21 @@ function starShip(civid){
 		}
 	};
 	
-	this.getRepairRate=function()
+	starShip.prototype.getRepairRate=function()
 	{
 		//todo only engineering crew.
 		return this.crew.length*this.baseRepair;
 	};
 	
-	this.escort=function(hip){
+	starShip.prototype.escort=function(hip){
 		this.escorting=hip;
 	};
 	
-	this.cancelEscort=function(){
+	starShip.prototype.cancelEscort=function(){
 		this.escorting=null;
 	};
 	
-	this.offerSurrender=function(iv)
+	starShip.prototype.offerSurrender=function(iv)
 	{
 		//option to say no, like borg
 		this.enterLog("With no other options availible, we must surrender to the "+iv.name+".");
@@ -1523,7 +1525,7 @@ function starShip(civid){
 		this.surrendered=true;
 	};
 	
-	this.grantXp=function(amt)
+	starShip.prototype.grantXp=function(amt)
 	{
 		for(var i=0;i<this.crew.length;i++)
 		{
@@ -1531,11 +1533,11 @@ function starShip(civid){
 		}
 	};
 	
-	this.enterLog=function(txt){
+	starShip.prototype.enterLog=function(txt){
 		this.captainsLog.push(new logEntry(theTime.years+"."+theTime.days,this.crew[0],this,txt));
 	};
 	
-	this.logLog=function(){
+	starShip.prototype.logLog=function(){
 		for(var i=0;i<this.captainsLog.length;i++)
 		{
 			console.log(this.captainsLog[i].author.title+" "+this.captainsLog[i].author.name+ ", Stardate: "+this.captainsLog[i].date);
@@ -1543,7 +1545,7 @@ function starShip(civid){
 		}
 	};
 	
-	this.rechargeShields=function()
+	starShip.prototype.rechargeShields=function()
 	{
 		if(!this.systems[SystemIDs.Shields].functional(false)) {return;}
 		if(this.shields>this.maxShields-1)
@@ -1559,7 +1561,7 @@ function starShip(civid){
 		}
 	};
 	
-	this.sortNearbyVessels=function()
+	starShip.prototype.sortNearbyVessels=function()
 	{
 		if(!this.nearbyVessels) {return;}
 		var closest=0;
@@ -1579,7 +1581,7 @@ function starShip(civid){
 		}
 	};
 	
-	this.scanNearby=function(thangs)
+	starShip.prototype.scanNearby=function(thangs)
 	{
 		this.nearbyHostiles=[];
 		this.nearbyVessels=this.inSensorRange(thangs);
@@ -1592,7 +1594,7 @@ function starShip(civid){
 		}
 	};
 	
-	this.breathe=function()
+	starShip.prototype.breathe=function()
 	{
 		this.breatheTick+=1*gameSpeed;
 		if(this.breatheTick<this.breatheRate) {return;}
@@ -1605,7 +1607,7 @@ function starShip(civid){
 		}
 	};
 	
-	this.bodyDisposal=function()
+	starShip.prototype.bodyDisposal=function()
 	{
 		for(var i=0;i<this.crew.length;i++)
 		{
@@ -1617,7 +1619,7 @@ function starShip(civid){
 		}
 	};
 	
-	this.update=function(){
+	starShip.prototype.update=function(){
 		if(!this.alive){return;}
 		//if(!this.systems[SystemIDs.Shields].functional(false)) {this.activeSheilds=false;}
 		if(!this.systems[SystemIDs.Tractor].functional()) {this.unTractorSomething();}
@@ -2517,7 +2519,7 @@ function starShip(civid){
 			}
 	};
 	
-	this.draw=function(can,cam){
+	starShip.prototype.draw=function(can,cam){
 		if((this.alive) &&(cam.isNear(this)))
 		{
 			//can.fillRect(this.x+cam.x-this.width/2, this.y+cam.y-this.height/2, this.width, this.height);
@@ -2698,7 +2700,6 @@ function starShip(civid){
 			}	
 		}
 	};
-}
 
 function fleet(){
 	this.ships=[];
@@ -2707,7 +2708,7 @@ function fleet(){
 	this.xv=0;
 	this.yv=0;
 	this.attacking=false;
-	this.addShip=function(shoap)
+	this.prototype.addShip=function(shoap)
 	{
 		if(this.ships){
 			shoap.setDestination(this.ships[0],this.ships[0].crusingSpeed);
@@ -2727,11 +2728,11 @@ function fleet(){
 
 	};
 	
-	this.orderAttack=function(){
+	this.prototype.orderAttack=function(){
 		
 	};
 	
-	this.getFormationCoords=function(){
+	this.prototype.getFormationCoords=function(){
 		//if(this.formation===0){
 		for(var i=0;i<this.ships.length;i++)
 		{
@@ -2751,7 +2752,7 @@ function fleet(){
 			}
 		}
 	};
-	this.orderShips=function()
+	this.prototype.orderShips=function()
 	{
 		for(var i=0;i<this.ships.length;i++)
 		{
@@ -2812,7 +2813,7 @@ function fleet(){
 			//todo if lead vessel is attacking something, join in!;
 		}
 	};
-	this.countCrew=function(){
+	this.prototype.countCrew=function(){
 		var persons=0;
 		for(var i=0;i<this.ships.length;i++)
 		{
