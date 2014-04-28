@@ -2257,8 +2257,13 @@ function screenBox(obj)
 				{
 					can.fillText("Manual Control, use Arrow keys.",this.x+10,this.y+2+140);
 					can.fillText(firekey.key.toUpperCase()+" to fire",this.x+10,this.y+2+153);
-					this.mapShowButton.draw(can,camera);
-					this.manualControlButton.draw(can,camera);
+					if(this.mapShowButton){
+						this.mapShowButton.draw(can,camera);
+					}
+					if(this.manualControlButton)
+					{
+						this.manualControlButton.draw(can,camera);
+					}
 				}
 			}else if(this.page==3)//combat //somehow add list of nearby hostile ships.
 			{

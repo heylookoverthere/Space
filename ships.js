@@ -653,7 +653,7 @@ function starShip(civid){
 		if((this.civ===civs[playerCiv]))
 		{
 			//console.log(this.civ);
-			if(this.civ.name=="Humanity")
+			if((this.civ.name=="Humanity") && (this.menu.nameBox))
 			{
 				this.menu.nameBox.text=String(this.name);
 			}

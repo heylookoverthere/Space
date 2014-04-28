@@ -1,6 +1,6 @@
 var backspaced=false;
 var tabbed=false;
-
+var keydown={};
 var multiplayer=false;
 // Prevent the backspace key from navigating back.
 $(document).unbind('keydown').bind('keydown', function (event) {

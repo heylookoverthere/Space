@@ -811,7 +811,10 @@ function torpedo(){
 	};
 	this.detonate=function(){
 		//do damage on ships in range
-		monsta.explosionTextured(100,this.x,this.y,2,"explosionsmall");
+		if(camera.isNear(this))
+		{
+			monsta.explosionTextured(100,this.x,this.y,2,"explosionsmall");
+		}
 		this.active=false;
 	};
 }
@@ -880,8 +883,11 @@ function mine(){
 	};
 	this.detonate=function(){
 		//do damage on ships in range
-		monsta.explosionTextured(100,this.x,this.y,2,"explosionsmall");
-		console.log("boom");
+		if(camera.isNear(this))
+		{
+			monsta.explosionTextured(100,this.x,this.y,2,"explosionsmall");
+		}
+		//console.log("boom");
 		this.active=false;
 	};
 }

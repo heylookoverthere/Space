@@ -337,7 +337,7 @@ function civilization()
 		}else
 		{
 			var cost=300;
-			if(this.civID==civIDs.Borg) {cost=10000;}
+			if(this.civID==civIDs.Borg) {cost=15000;}
 			if((this.money>cost-1) && (this.ships.length<this.maxShips))
 			{
 				
