@@ -46,7 +46,6 @@ for(var i=0;i<100;i++)
 function starShip(civ){
 	//this.class=baseClass
 	this.civ=civ;//s[civid];
-	console.log(this.civ.name);
 	this.ship=true;
 	this.systems=[];
 	this.power=this.maxPower=1;
@@ -1878,7 +1877,7 @@ function starShip(civ){
 			
 				var differenceHeading = Math.abs(this.desiredHeading - this.heading);
 				//if we need to turn clockwise
-				if(differenceHeading>2)
+				if(differenceHeading>15)
 				{
 					if(isTurnCCW(this.heading, this.desiredHeading))
 					{
@@ -1937,7 +1936,7 @@ function starShip(civ){
 			//turn to desired heading
 			var differenceHeading = Math.abs(this.desiredHeading - this.heading);
 			//if we need to turn clockwise
-			if(differenceHeading>2)
+			if(differenceHeading>15)
 			{
 				if(isTurnCCW(this.heading, this.desiredHeading))
 				{
@@ -2030,7 +2029,7 @@ function starShip(civ){
 				//turn to desired heading
 				var differenceHeading = Math.abs(this.desiredHeading - this.heading);
 				//if we need to turn clockwise
-				if(differenceHeading>2)
+				if(differenceHeading>15)
 				{
 					if(isTurnCCW(this.heading, this.desiredHeading))
 					{
@@ -2132,7 +2131,7 @@ function starShip(civ){
 				this.desiredHeading=beta;
 				var differenceHeading = Math.abs(this.desiredHeading - this.heading);
 				//if we need to turn clockwise
-				if(differenceHeading>2)
+				if(differenceHeading>15)
 				{
 					if(isTurnCCW(this.heading, this.desiredHeading))
 					{
@@ -2220,7 +2219,7 @@ function starShip(civ){
 			
 			var differenceHeading = Math.abs(this.desiredHeading - this.heading);
 			//if we need to turn clockwise
-			if(differenceHeading>2)
+			if(differenceHeading>15)
 			{
 				if(isTurnCCW(this.heading, this.desiredHeading))
 				{

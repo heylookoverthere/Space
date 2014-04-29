@@ -702,7 +702,7 @@ function statusBox()
 	this.researchBar=new progressBar();
 	this.productionBar.x=550;
 	this.productionBar.label="Production:";
-	this.productionBar.y=50;
+	this.productionBar.y=25;
 	this.scale=1;
 	this.height=550;
 	this.width=650;
@@ -710,8 +710,34 @@ function statusBox()
 	this.borderSize=4;
 	this.researchBar.x=550;
 	this.researchBar.label="Research:  ";
-	this.researchBar.y=70;
+	this.researchBar.y=45;
 
+	
+		this.buildShipButton=new button(this);
+		this.buildShipButton.x=this.x+500;
+		this.buildShipButton.y=this.y+50;
+		this.buildShipButton.width=60;
+		this.buildShipButton.height=16;
+		this.buildShipButton.text="Build Ship";
+		this.buildShipButton.object
+		this.buildShipButton.parent=this;
+		this.buildShipButton.yCenter=false;
+		this.buildShipButton.update=function()
+		{
+			if(this.parent.civ==civs[playerCiv])
+			{	
+				this.greyed=false;
+			}else
+			{
+				this.greyed=true;
+			}
+		};
+		this.buildShipButton.doThings=function()
+		{
+			this.parent.civ.produceShip(9,this.homeworld);
+		};
+		buttons.push(this.buildShipButton);
+	
 	this.nextCivButton=new button(this);
 	this.nextCivButton.x=this.x+10+624;
 	this.nextCivButton.y=this.y+532;
@@ -808,15 +834,19 @@ function statusBox()
 	};
 	statusBox.prototype.update=function()
 	{
+		
+		this.buildShipButton.update();
 		if(this.visible)
 		{
 			this.nextCivButton.visible=true;
 			this.prevCivButton.visible=true;
+			this.buildShipButton.visible=true;
 			this.XButton.visible=true;
 		}else
 		{
 			this.nextCivButton.visible=false;
 			this.prevCivButton.visible=false;
+			this.buildShipButton.visible=false;
 			this.XButton.visible=false;
 		}
 		if(leftkey.check())
@@ -895,6 +925,7 @@ function statusBox()
 		{
 			this.nextCivButton.draw(can,cam);
 			this.prevCivButton.draw(can,cam);
+			this.buildShipButton.draw(can,cam);
 			this.XButton.draw(can,cam);
 			//can.fillStyle=this.civ.color;
 			can.fillText(this.civ.name,this.x+10,this.y+2+16);
