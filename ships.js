@@ -43,9 +43,10 @@ for(var i=0;i<100;i++)
 	usedEvents.push(false);
 }
 
-function starShip(civid){
+function starShip(civ){
 	//this.class=baseClass
-	this.civ=civs[civid];
+	this.civ=civ;//s[civid];
+	console.log(this.civ.name);
 	this.ship=true;
 	this.systems=[];
 	this.power=this.maxPower=1;
