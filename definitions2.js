@@ -3088,11 +3088,11 @@ function nebula(){
 	this.name="Some Nebula";
 	this.x=Math.random()*universeWidth;
 	this.y=Math.random()*universeHeight;
-	this.numClouds=Math.random()*100;
+	this.numClouds=Math.random()*100+150;
 	this.clouds=[];
 	for(var i=0;i<this.numClouds;i++)
 	{
-		this.clouds[i]=new cloud(220);
+		this.clouds[i]=new cloud(1020);
 	}
 }
 	nebula.prototype.draw=function(can,cam){

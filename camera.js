@@ -113,7 +113,7 @@ var camera = {  //represents the camera, aka what part of the map is on screen
 	
 	isNear: function(thing)
 	{
-		if(((thing.x+this.x)*this.zoom>-400) && ((thing.x+this.x)*this.zoom<CANVAS_WIDTH+400)&& ((thing.y+this.y)*this.zoom>-400) && ((thing.y+this.y)*this.zoom<CANVAS_HEIGHT+400))
+		if(((thing.x+this.x)*this.zoom>-2000) && ((thing.x+this.x)*this.zoom<CANVAS_WIDTH+2000)&& ((thing.y+this.y)*this.zoom>-2000) && ((thing.y+this.y)*this.zoom<CANVAS_HEIGHT+2000))
 		{
 			return true;
 		}
