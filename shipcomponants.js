@@ -408,7 +408,9 @@ updateTorpedos=function(thangs){
 
 var numShipNames=38;
 var races=new Array(40);
-races= ["Humanity","Vulcan","Andorian","Tellerite","Romulan","Klingon","Betazed","Vidiian","Cardassian","Borg","Orion","Telaxian","Ferengi","Pakled","Bajoran","Breen","Hirogen","Dominion"];
+races= ["Human","Vulcan","Andorian","Tellerite","Romulan","Klingon","Betazed","Vidiian","Cardassian","Borg","Orion","Telaxian","Ferengi","Pakled","Bajoran","Breen","Hirogen","Dominion"];
+racesPlural= ["Humans","Vulcans","Andorians","Tellerites","Romulans","Klingons","Betazoids","Vidiians","Cardassians","Borg","Orion Pirates","Telaxians","Ferengi","Pakled","Bajorans","Breen","Hirogen","Dominion"];
+
 var civIDs={};
 civIDs.Human=0;
 civIDs.Vulcan=1;

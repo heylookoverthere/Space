@@ -576,7 +576,7 @@ function starShip(civ){
 		if(this.torpedoTarget.civ.autoHostile.indexOf(this.civ)==-1)
 		{
 			this.torpedoTarget.civ.autoHostile.push(this.civ);
-			console.log(this.civ.name + " have pissed off " +this.torpedoTarget.civ.name+ " by firing on one of their ships");
+			console.log("The "+this.civ.namePlural + " have pissed off " +this.torpedoTarget.civ.namePlural+ " by firing on one of their ships");
 		}
 	};
 	
@@ -653,7 +653,7 @@ function starShip(civ){
 		if((this.civ===civs[playerCiv]))
 		{
 			//console.log(this.civ);
-			if((this.civ.name=="Humanity") && (this.menu.nameBox))
+			if((this.civ==civs[playerCiv]) && (this.menu.nameBox))
 			{
 				this.menu.nameBox.text=String(this.name);
 			}
@@ -836,7 +836,7 @@ function starShip(civ){
 			if(this.torpedoTarget.civ.autoHostile.indexOf(this.civ)==-1)
 			{
 					this.torpedoTarget.civ.autoHostile.push(this.civ);
-					console.log(this.civ.name + " have pissed off " +this.torpedoTarget.civ.name+ " by firing on one of their ships");
+					console.log("The "+this.civ.namePlural+ " have pissed off " +this.torpedoTarget.civ.namePlural+ " by firing on one of their ships");
 			}
 			
 		}
@@ -2376,11 +2376,11 @@ function starShip(civ){
 			}else if((this.civ.hostileOnContact) && (this.civ!=this.nearbyVessels[i].civ))
 			{
 				this.civ.autoHostile.push(this.nearbyVessels[i].civ);
-				console.log("The "+this.nearbyVessels[i].civ.name+" have pissed off the "+this.civ.name+" by existing.");
+				console.log("The "+this.nearbyVessels[i].civ.namePlural+" have pissed off the "+this.civ.namePlural+" by existing.");
 			}else if((this.civ.hostileOnIncursion) && (this.civ!=this.nearbyVessels[i].civ) && (this.civ.inOurSpace(this.nearbyVessels[i])))
 			{
 				this.civ.autoHostile.push(this.nearbyVessels[i].civ);
-				console.log("The "+this.nearbyVessels[i].civ.name+" have pissed off the "+this.civ.name+" by entering their space.");
+				console.log("The "+this.nearbyVessels[i].civ.namePlural+" have pissed off the "+this.civ.namePlural+" by entering their space.");
 			}
 		}
 		if((!this.torpedoTarget) || (!this.torpedoTarget.alive))

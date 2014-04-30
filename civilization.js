@@ -871,7 +871,7 @@ function civilization()
 				this.techs[this.researchProgress]=true;
 				if((logAll) ||(this==civs[playerCiv]))
 				{
-					console.log(this.name+ " have discovered "+techNames[this.researchProgress]);
+					console.log("The "+this.namePlural+ " have discovered "+techNames[this.researchProgress]);
 				}
 				if(this.researchProgress<this.techs.length)
 				{
@@ -989,7 +989,7 @@ function civilization()
 				ped.optionTrack=0;
 				ped.options=0;
 				civil1.autoHostile.push(civil2);
-				console.log(civil2.name + " have pissed off " +civil1.name+ " by demanding their surrender!");
+				console.log("The "+civil2.namePlural + " have pissed off the" +civil1.namePlural+ " by demanding their surrender!");
 				civil2.messages.push(ped);
 				holdEverything=true;
 			};

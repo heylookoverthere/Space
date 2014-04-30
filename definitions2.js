@@ -149,6 +149,7 @@ for(var i=0;i<numCivilizations;i++)
 	civs[i]=new civilization();
 	civs[i].civID=i;
 	civs[i].name=races[i];
+	civs[i].namePlural=racesPlural[i];
 }
 
 function clearTails()
@@ -724,7 +725,7 @@ function statusBox()
 		this.buildShipButton.yCenter=false;
 		this.buildShipButton.update=function()
 		{
-			if(this.parent.civ==civs[playerCiv])
+			if((this.parent.civ==civs[playerCiv]) && (this.parent.civ.alive))
 			{	
 				this.greyed=false;
 			}else
@@ -1033,7 +1034,8 @@ function statusBox()
 				{
 					can.fillStyle="green";
 				}
-				can.fillText(this.civ.ships[i].name+", "+this.civ.ships[i].actionText,this.x+350,this.y+2+128+i*16);
+				var reek=elipseString(this.civ.ships[i].name+", "+this.civ.ships[i].actionText,65);
+				can.fillText(reek,this.x+350,this.y+2+128+i*16);
 				can.fillStyle="white";
 			}
 			if(elipsis)
