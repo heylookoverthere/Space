@@ -576,7 +576,7 @@ function starShip(civ){
 		if(this.torpedoTarget.civ.autoHostile.indexOf(this.civ)==-1)
 		{
 			this.torpedoTarget.civ.autoHostile.push(this.civ);
-			console.log("The "+this.civ.namePlural + " have pissed off " +this.torpedoTarget.civ.namePlural+ " by firing on one of their ships");
+			console.log("The "+this.civ.namePlural + " have pissed off the " +this.torpedoTarget.civ.namePlural+ " by firing on one of their ships");
 		}
 	};
 	
@@ -836,7 +836,7 @@ function starShip(civ){
 			if(this.torpedoTarget.civ.autoHostile.indexOf(this.civ)==-1)
 			{
 					this.torpedoTarget.civ.autoHostile.push(this.civ);
-					console.log("The "+this.civ.namePlural+ " have pissed off " +this.torpedoTarget.civ.namePlural+ " by firing on one of their ships");
+					console.log("The "+this.civ.namePlural+ " have pissed off the " +this.torpedoTarget.civ.namePlural+ " by firing on one of their ships");
 			}
 			
 		}
@@ -939,7 +939,13 @@ function starShip(civ){
 			if(pete<20)
 			{
 				this.breaches++;
-				console.log("The " +this.prefix+ " "+this.name+"'s hull was breached!");
+				if(this.platform)
+				{
+					console.log("The "+this.name+" orbiting "+this.orbitTarg.name+"'s hull was breached!");
+				}else
+				{
+					console.log("The " +this.prefix+ " "+this.name+"'s hull was breached!");
+				}
 			}
 		}
 	};

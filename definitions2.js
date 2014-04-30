@@ -3507,7 +3507,13 @@ function killShip(targ,attacker)
 			ships.splice(i,1);
 			i--;
 			targ.alive=false;
-			console.log("The "+targ.prefix+ " " +targ.name+" was destroyed. "+ targ.crew.length+ " crew were lost. ");
+			if(targ.platform)
+			{
+				console.log("The "+targ.name+" orbiting "+targ.orbitTarg.name+" was destroyed. ");
+			}else
+			{
+				console.log("The "+targ.prefix+ " " +targ.name+" was destroyed. "+ targ.crew.length+ " crew were lost. ");
+			}
 			if(camera.isNear(targ))
 			{
 				monsta.explosionTextured(200,targ.x,targ.y,1,"explosion0");

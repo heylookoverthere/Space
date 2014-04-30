@@ -705,7 +705,7 @@ function torpedo(){
 	
 	this.accelerate=function()
 	{
-		this.acceltick++;
+		this.acceltick+=1*gameSpeed;;
 		if(this.acceltick<this.accelrate)
 		{
 			return;
@@ -713,7 +713,7 @@ function torpedo(){
 		this.acceltick=0;
 		if ((this.speed<this.maxSpeed)) //&& ((!this.destination) || (this.speed<this.destination.maxSpeed)))//don't go faster than lead ship!
 		{
-			this.speed+=this.acceleration*gameSpeed;
+			this.speed+=this.acceleration
 		}
 		if(this.speed>this.maxSpeed)
 		{
@@ -727,13 +727,13 @@ function torpedo(){
 	
 	this.decelerate=function()
 	{
-		this.acceltick++;
+		this.acceltick+=1*gameSpeed;;
 		if(this.acceltick<this.accelrate)
 		{
 			return;
 		}
 		this.acceltick=0;
-		this.speed-=this.acceleration*gameSpeed;
+		this.speed-=this.acceleration
 		if (this.speed<0.1)
 		{
 			this.speed=0;

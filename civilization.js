@@ -440,7 +440,7 @@ function civilization()
 					this.ships[i].orderOrbit(this.homeworld);
 					this.ships[i].desiredSpeed=this.ships[i].maxSpeed;
 				}
-				console.log("all ships returning to "+this.homeworld.name+" to aid in its defense");
+				console.log("All ships returning to "+this.homeworld.name+" to aid in its defense");
 			}
 		}else
 		{
