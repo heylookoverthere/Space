@@ -165,6 +165,7 @@ var mapkey=new akey("8");
 var cleartailskey=new akey("9");
 var maxspeedkey=new akey("0");
 var shipscreenkey=new akey("2");
+var autoplaykey=new akey("3");
 
 var letterkeys=[];
 letterkeys.push(new akey("a"));
@@ -726,6 +727,18 @@ function mainMenuUpdate(){
 	for(var i=0;i<civs.length;i++)
 	{
 		civs[i].update();
+	}
+	
+	if(autoplaykey.check())
+	{
+		civs[playerCiv].AI=!civs[playerCiv].AI;
+		if(civs[playerCiv].AI)
+		{
+			console.log("AI taking over control of the "+civs[playerCiv].namePlural);
+		}else
+		{
+			console.log("Player taking over control of the "+civs[playerCiv].namePlural);
+		}
 	}
 	
 	if(!holdInput)
