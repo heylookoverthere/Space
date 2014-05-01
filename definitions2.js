@@ -13,6 +13,7 @@ function backStar(quad)
 	this.size=Math.floor((Math.random()*2)+1);
 };
 
+
 function starQuadrant(x,y)
 {
 	this.stars=[];
@@ -1089,6 +1090,7 @@ function statusBox()
 
 
 var roland=new statusBox();
+roland.civTrack=playerCiv;
 var textBoxes=[];
 
 
@@ -2924,7 +2926,7 @@ function newShip(iv,startworld,capt)
 			james.civID=9;
 			james.civ=iv;
 			james.christen();
-			james.hp=1500;
+			james.hp=1000;
 			james.maxHp=1500;
 			james.shields=100;
 			
@@ -3090,6 +3092,7 @@ function cloud(dense){
 
 function nebula(){
 	this.name="Some Nebula";
+	this.wtf="Nebula";
 	this.x=Math.random()*universeWidth;
 	this.y=Math.random()*universeHeight;
 	this.numClouds=Math.random()*100+150;
@@ -3117,6 +3120,7 @@ function nebula(){
 	};
 //16.075
 function star(){
+	this.wtf="Star";
 	this.x=420;
 	this.y=300;
 	this.type=0;
@@ -4317,7 +4321,7 @@ function newInitShips()
 				james.installSystem(SystemIDs.Shields);
 				james.systems[SystemIDs.Shields].on=true;
 				james.christen();
-				james.hp=1500;
+				james.hp=1000;
 				james.maxHp=1500;
 				//james.activeShields=true;
 				james.hasShields=true;

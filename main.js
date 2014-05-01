@@ -77,6 +77,7 @@ function akey(k) {  //represents a keyboard button
     this.key =k;
     this.aflag=false;
     this.dflag=false;
+	this.desc="A small brown mushroom.";
     this.check= function(){
         if (keydown[this.key]) { 
             this.aflag=true;
@@ -119,54 +120,149 @@ var randomwalk=false;
 var gamestart=false;
 var radar=true;
 
+var edskeys=[];
+
+
 var pausekey=new akey("space");
-var debugkey=new akey("k");
+pausekey.desc="Set game speed to 0";
+edskeys.push(pausekey);
+
 var escapekey=new akey("esc");
-var pageupkey=new akey("o");
-var pagedownkey=new akey("l");
+escapekey.desc="Evacuate a ship or back out of a menu.";
+edskeys.push(escapekey);
+
+
 var homekey=new akey("home");
+homekey.desc="Jump to homeworld";
+edskeys.push(homekey);
 var endkey=new akey("end");
+endkey.desc="Jump to Bord cube";
+edskeys.push(endkey);
 var upkey=new akey("up");
+upkey.desc="Manual Control: Increase Speed.  Otherwise moves the camera";
+edskeys.push(upkey);
 var rightkey=new akey("right");
+rightkey.desc="Manual Control: Turn Speed.  Otherwise moves the camera";
+edskeys.push(rightkey);
+
 var downkey=new akey("down");
+downkey.desc="Manual Control: Decrese Speed.  Otherwise moves the camera";
+edskeys.push(downkey);
 var leftkey=new akey("left");
-var tabkey=new akey("capslock");
+leftkey.desc="Manual Control: Turns ship.  Otherwise moves the camera";
+edskeys.push(leftkey);
+var tabkey=new akey("tab");
+tabkey.desc="Cycle through your ships";
+edskeys.push(tabkey);
 var camspeedkey=new akey("shift");
+camspeedkey.desc="Hold to increase camera pan speed";
+edskeys.push(camspeedkey);
 var plkey=new akey("p");
+plkey.desc="Toggle Planets.  this might not do anything anymore.";
+edskeys.push(plkey);
 var startkey=new akey("return");
+startkey.desc="";
 var phaserkey=new akey("u");
+phaserkey.desc="Manually fire phasers";
+edskeys.push(phaserkey);
 var tractorkey=new akey("b");
+tractorkey.desc="Deploy tractor beam";
+edskeys.push(tractorkey);
 var tractortargetkey=new akey("n");
+tractortargetkey.desc="Target tractor beam";
+edskeys.push(tractortargetkey);
 var beamkey=new akey("i");
+beamkey.desc="Transporter";
+edskeys.push(beamkey);
 var beamtargetkey=new akey("a");
-var textkey=new akey("1");
+beamtargetkey.desc="Target transporter";
+edskeys.push(beamtargetkey);
 
+var debugkey=new akey("k");
+debugkey.desc="dunno"
+edskeys.push(debugkey);
+var pageupkey=new akey("o");
+pageupkey.desc="Increase gamespeed";
+edskeys.push(pageupkey);
+var pagedownkey=new akey("l");
+pagedownkey.desc="Decrease gamespeed";
+edskeys.push(pagedownkey);
 var dkey=new akey("d");
+dkey.desc="";
 var starkey=new akey("s");
+starkey.dext="cycle stars?";
 var gokey=new akey("g");
-var toggleshipkey=new akey("h");
+gokey.desc="";
+edskeys.push(gokey);
+var helpkey=new akey("h");
+helpkey.desc="You just pressed it.";
+edskeys.push(helpkey);
 var toggleallshipskey=new akey("v");
+toggleallshipskey.desc="";
 var shipleftkey=new akey("q");
+shipleftkey.desc="";
 var shiprightkey=new akey("w");
+shiprightkey.desc="";
 var shipgokey=new akey("e");
-var shipslowkey=new akey("r");
-var evackey=new akey("esc");
-var minekey=new akey("m");
-var crewscreenkey=new akey("c");
-var targetkey=new akey("del");
-var firekey=new akey("shift");
-var fleetattackkey=new akey("j");
-var enterkey=startkey;
-var colonizekey=new akey("z");
-var toggleinfokey=new akey("5");
-var infokey=new akey("6");
-var shieldskey=new akey("7");
-var mapkey=new akey("8");
-var cleartailskey=new akey("9");
-var maxspeedkey=new akey("0");
-var shipscreenkey=new akey("2");
-var autoplaykey=new akey("3");
+shipgokey.desc="";
 
+var shipslowkey=new akey("r");
+shipslowkey.desc="";
+var evackey=escapekey;
+
+var minekey=new akey("m");
+minekey.desc="Deploy Mine";
+edskeys.push(minekey);
+var crewscreenkey=new akey("c");
+crewscreenkey.desc="Display crew pool";
+edskeys.push(crewscreenkey);
+var targetkey=new akey("del");
+targetkey.desc="Target weapons";
+edskeys.push(targetkey);
+var firekey=new akey("shift");
+firekey.desc="Fire torpedos";
+var fleetattackkey=new akey("j");
+fleetattackkey.desc="Order a fleet to attack*";
+edskeys.push(fleetattackkey);
+var enterkey=startkey;
+enterkey.desc="Call your allies to defend Earth";
+edskeys.push(enterkey);
+var colonizekey=new akey("z");
+colonizekey.desc="Colonize?";
+edskeys.push(colonizekey);
+
+
+
+var maxspeedkey=new akey("0");
+maxspeedkey.desc="Set the gamespeed to maximum";
+edskeys.push(maxspeedkey);
+var textkey=new akey("1");
+textkey.desc="Display debug info";
+edskeys.push(textkey);
+var shipscreenkey=new akey("2");
+shipscreenkey.desc="Toggle display of ship info panel";
+edskeys.push(shipscreenkey);
+var autoplaykey=new akey("3");
+autoplaykey.desc="Toggle AI control of player Civilization";
+edskeys.push(autoplaykey);
+var unusedkey=new akey("4");
+unusedkey.desc="unused";
+edskeys.push(unusedkey);
+var toggleinfokey=new akey("5");
+toggleinfokey.desc="Cycle through civilizations on civilzation screen";
+edskeys.push(toggleinfokey);
+var infokey=new akey("6");
+infokey.desc="Display civilization screen";
+edskeys.push(infokey);
+var shieldskey=new akey("7");
+shieldskey.desc="Toggle selected ship's shields, if availible";
+edskeys.push(shieldskey);
+var mapkey=new akey("8");
+mapkey.desc="Display the map";
+edskeys.push(mapkey);
+var cleartailskey=new akey("9");
+cleartailskey.desc="Clear the map trails";
+edskeys.push(cleartailskey);
 var letterkeys=[];
 letterkeys.push(new akey("a"));
 letterkeys.push(new akey("b"));
@@ -375,7 +471,7 @@ function drawDebug()
 	{
 		if(selectedShip.leavingProgress)
 		{
-			selectedShip.actionText="Breaking Orbit";
+			selectedShip.actionText="Breaking Orbit1";
 		}else
 		{
 			selectedShip.actionText="Orbiting "+selectedShip.orbitTarg.name;
@@ -468,7 +564,7 @@ function drawDebug()
 	canvas.fillText("Systems Detected Nearby: "+ selectedShip.nearbySystems.length,755,635)
 	
 	
-	//-===========/
+	//-===========/take out this whole section?
 	if((selectedShip.torpedoTarget) && (false))
 	{
 	var actionText="Full Stop";
@@ -494,7 +590,7 @@ function drawDebug()
 	{
 		if(selectedShip.torpedoTarget.leavingProgress)
 		{
-			actionText="Breaking Orbit";
+			//actionText="Breaking Orbit2";
 		}else
 		{
 			actionText="Orbiting "+selectedShip.torpedoTarget.orbitTarg.name;
@@ -1013,12 +1109,6 @@ function mainMenuUpdate(){
 		}
 	}
 	
-	
-	
-	if(toggleshipkey.check()) //todo!
-	{
-		//civs[playerCiv].cycleShips(camera);
-	}
 	if(tabbed)
 	{
 		tabbed=false;
@@ -1058,9 +1148,13 @@ function mainMenuUpdate(){
 		camera.center(stars[curSystem]);
 	}
 	
-	if(dkey.check())
+	if(helpkey.check())
 	{
-		stars[curSystem].planets[stars[curSystem].selected].orbitDecay=1;
+		//stars[curSystem].planets[stars[curSystem].selected].orbitDecay=1;
+		for(var i=0;i<edskeys.length;i++)
+		{
+			console.log(edskeys[i].key.toUpperCase() + ": "+edskeys[i].desc);
+		}
 	}
 	
 	if(plkey.check())

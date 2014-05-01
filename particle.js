@@ -13,6 +13,7 @@ function particle(){
 	this.alive=false;
 	this.x=0;
 	this.y=0;
+	this.wtf="Planet";
 	this.sun=null;
 	this.oxygen=100;
 	this.colonizeDate=2000.00;
@@ -337,6 +338,7 @@ function particleSystem(){
 		//tod.x=x;
 		//tod.y=y;
 		//tod.name=names[1][Math.floor(Math.random()*20)];
+		this.wtf="Planet";
 		son.planets[son.numPlanets]=tod;
 		son.planetDetails[son.numPlanets]=new planetInfo();
 		tod.planetNum=son.numPlanets;
@@ -406,6 +408,7 @@ function particleSystem(){
 		//if(!exploader) {exploader=false;}
 		//tod.x=x;
 		//tod.y=y;
+		this.wtf="Moon";
 		tod.name=names[1][Math.floor(Math.random()*20)];
 		son.moons[son.numMoons]=tod;
 		tod.moonNum=son.numMoons;
@@ -451,6 +454,7 @@ function particleSystem(){
 		//tod.x=x;
 		//tod.y=y;
 		//son.astroids[son.numAstroids]=tod;
+		this.wtf="Asteroid";
 		son.numAstroids++;
 		tod.gameSped=true;
 		tod.orbx=son.x;

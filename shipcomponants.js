@@ -897,6 +897,7 @@ function mine(){
 function escapePod(){
 	this.x=0;
 	this.y=0;
+	this.wtf="EscapePod";
 	this.alive=true;
 	this.hp=10;
 	this.active=false;

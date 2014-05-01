@@ -1,7 +1,7 @@
 var techNames=["Aeroponics","Emergency Rations","Waffle Fries","Microbrewed Beer","Printers That Dont Need Paper With Those Holes On Each Side","Sneakers With Lights On Them","Captioning Pictures Of Cats","Inertial Dampners","Warp Drive","TransWarp","Slipstream","Shitty Sensors","Sensors","Long Range Sensors","Astrometrics","DetectTacheons","DetectCloakythings","DetectWormholethings","ShittyCloak","Cloak","BestCloak","Lasers","Phasers","Disruptors","BestEnergyWeapon","Torpedos","PhotonTorpedos","QuantumTorpedos","TransPhasicTorpedos","PowerCells","Grapple","TractorBeam","StructualIntegrityBeam","Transporter","TransportEnhancer","EmergencyTransporter","AdvTransporter","thatbullshitfromthenewmovie","Energy Shields","AdvEnergyShields","MetaPhasicShields","Armor","AblatativeArmor","MicroCircutry","BioNeuralCircutry","Nanobots","Assimilation","AlienMedican","AlienSurgery","Cloning","GeneticResequencing","Synthahol","AdvEnviromentalControls","ContainmentField","SubspaceTheory","ImpulseProbe","WarpProbe","Statis","WarpEscapePods","AdvEscapePods","AI","Robotics","Androids","Cybernetics","PowerManagment","Replicators","PowerManagment","Capacitors","Holodecks","EMH","MobileEmiter","AdvMetallurgy","DeuteriumCollector","Deflector"];
 var hasItem=[];
 var numItems=2;
-var playerCiv=1;
+var playerCiv=0;
 var civs=[];
 var clean=false;//true;
 var Items={};
@@ -738,7 +738,10 @@ function civilization()
 				var jimmy=newShip(this,worldstart,theguy);
 			}else
 			{
-				console.log("No qualified captain for proposed new ship!");
+				if(!this.AI)
+				{
+					console.log("No qualified captain for proposed new ship!");
+				}
 				return false;
 			}
 		}else
@@ -869,7 +872,7 @@ function civilization()
 			{
 				//finished researching somthing!
 				this.techs[this.researchProgress]=true;
-				if((logAll) ||(this==civs[playerCiv]))
+				if((logAll) ||((this==civs[playerCiv]) &&(!this.AI)))
 				{
 					console.log("The "+this.namePlural+ " have discovered "+techNames[this.researchProgress]);
 				}
@@ -1121,7 +1124,7 @@ function civilization()
 				ped.choicesStart=2;
 				ped.optionTrack=2;
 				ped.options=2;
-				ped.addText("    You must defend your people's honor, attak!");
+				ped.addText("    You must defend your people's honor, attack!");
 				ped.addText("    Let it go");
 				ped.optionOne=function(civil1,civil2)
 				{

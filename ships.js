@@ -46,6 +46,7 @@ for(var i=0;i<100;i++)
 function starShip(civ){
 	//this.class=baseClass
 	this.civ=civ;//s[civid];
+	this.wtf="Ship";
 	this.ship=true;
 	this.systems=[];
 	this.power=this.maxPower=1;
@@ -611,18 +612,18 @@ function starShip(civ){
 			{
 				console.log(this.name+" heading to orbit "+targ.name);
 			}
-		}else
+		}else if(this.destination!=targ)
 		{
 			this.destination=targ;
 			this.desiredOrbitTarg=null;
 			if((this.civ==civs[playerCiv]) || (logAll))
 			{
-				if(this.orders==Orders.Attak)
+				if(this.orders==Orders.Attack)
 				{
 					console.log(this.name+" heading to attack "+targ.name);
 				}else
 				{
-					console.log(this.name+" heading to meet "+targ.name);
+					console.log(this.name+" heading to meet "+targ.name); //blaaa
 				}
 			}
 		}
@@ -939,12 +940,15 @@ function starShip(civ){
 			if(pete<20)
 			{
 				this.breaches++;
-				if(this.platform)
+				if((this.civ==civs[playerCiv]) || (logAll))
 				{
-					console.log("The "+this.name+" orbiting "+this.orbitTarg.name+"'s hull was breached!");
-				}else
-				{
-					console.log("The " +this.prefix+ " "+this.name+"'s hull was breached!");
+					if(this.platform)
+					{
+						console.log("The "+this.name+" orbiting "+this.orbitTarg.name+"'s hull was breached!");
+					}else
+					{
+						console.log("The " +this.prefix+ " "+this.name+"'s hull was breached!");
+					}
 				}
 			}
 		}
@@ -1050,7 +1054,7 @@ function starShip(civ){
 		this.orbiting=false;
 		this.orbitTarg=null;
 		this.desiredSpeed=this.cruisingSpeed;
-		this.actionText="Breaking Orbit";
+		this.actionText="Breaking Orbit3";
 	};
 	
 	starShip.prototype.adjustHeading=function(targ){
@@ -1242,8 +1246,8 @@ function starShip(civ){
 						this.civ.fContacted[thangs[i].civID]=true;
 						if((thangs[i].civID>0) && (thangs[i].alive) && (this.civ.civID===0))
 						{
-							console.log("The "+this.prefix+ " "+this.name+ " made first contact with the "+races[thangs[i].civID]+"s.");
-							this.enterLog("Today we made first contact with the "+races[thangs[i].civID]+"s.");
+							console.log("The "+this.prefix+ " "+this.name+ " made first contact with the "+thangs[i].civ.namePlural);
+							this.enterLog("Today we made first contact with the "+thangs[i].civ.namePlural);
 							civs[thangs[i].civID].generateMessage(this.civ);
 							
 						}
@@ -2329,10 +2333,16 @@ function starShip(civ){
 						//todo ship adrift
 						if(this.crew.length<1)
 						{
-							console.log("The "+this.prefix+ " "+this.name+" has been evacuated");
+							if((this.civ==civs[playerCiv]) || (logAll))
+							{
+								console.log("The "+this.prefix+ " "+this.name+" has been evacuated");
+							}
 							this.adrift=true;
 						}else if(this.crew.length<2){
-							console.log("The "+this.prefix+ " "+this.name+" has been evacuated, except for the captain.");
+							if((this.civ==civs[playerCiv]) || (logAll))
+							{
+								console.log("The "+this.prefix+ " "+this.name+" has been evacuated, except for the captain.");
+							}
 						}
 					//}
 				}
@@ -2416,7 +2426,10 @@ function starShip(civ){
 		{
 			this.Evac(this.civ.homeworld);
 			this.enterLog("The crew is abandoning ship, I will remain behind for now.");
-			console.log(this.prefix+ " "+this.name+ "'s crew is abandoning ship.");
+			if((this.civ==civs[playerCiv]) || (logAll))
+			{
+				console.log(this.prefix+ " "+this.name+ "'s crew is abandoning ship.");
+			}
 		}
 		
 			if((this.planetTarget) &&(this.planetTarget.civ==this.civ))
