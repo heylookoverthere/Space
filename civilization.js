@@ -621,6 +621,10 @@ function civilization()
 		{
 			console.log("You have no ships!");
 			return;
+		}else
+		{
+			console.log("You have no other ships!");
+			return;
 		}
 		if(selectedShip.manualControl)
 		{

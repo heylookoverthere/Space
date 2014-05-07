@@ -2927,7 +2927,7 @@ function newShip(iv,startworld,capt)
 			james.civ=iv;
 			james.christen();
 			james.hp=1000;
-			james.maxHp=1500;
+			james.maxHp=1000;
 			james.shields=100;
 			
 			james.oxygen=10000;
@@ -4322,7 +4322,7 @@ function newInitShips()
 				james.systems[SystemIDs.Shields].on=true;
 				james.christen();
 				james.hp=1000;
-				james.maxHp=1500;
+				james.maxHp=1000;
 				//james.activeShields=true;
 				james.hasShields=true;
 				james.maxShields=100;
